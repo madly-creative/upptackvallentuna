@@ -1,0 +1,2753 @@
+import { events as EVENTS_SEED, EVENT_CONTENT } from "../data/events.js";
+import { SITE } from "../data/site.js";
+import { deliverForm } from "../lib/forms.js";
+import {
+  swedishHoliday,
+  daySlot as libDaySlot,
+  isOpenAt,
+} from "../lib/hours.js";
+import { places as PLACES_SEED, placeSlug, placeBySlug } from "../data/places.js";
+import { PLACE_META, A } from "../data/placeMeta.js";
+import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "../data/guides.js";
+
+  const CONFIG = { kommun: SITE.kommun, region: SITE.region, center: SITE.center, zoom: SITE.zoom };
+  const K = CONFIG.kommun;
+
+  const places = PLACES_SEED;
+  const guides = GUIDES_SEED;
+
+  let events = EVENTS_SEED.map(e => ({ ...e }));
+  let currentGuideSlug = null;
+
+  // Bygdens röster — editorial portraits (published = sort only, never shown)
+  const portraits=[
+    {
+      slug:"stenugnsbageriet-bagaren",
+      person:"Bagaren",
+      role:"Bagare & eldsjäl",
+      place:"Vallentuna Stenugnsbageri",
+      heroImg:"/assets/roester/stenugnsbageriet-bagaren/hero.webp",
+      portraitImg:"/assets/roester/stenugnsbageriet-bagaren/portratt.webp",
+      dek:"Om surdegen som tar tre dygn och varför det är värt det.",
+      body:[
+        "Det luktar redan från Allévägen innan du öppnar dörren. Inte den söta, påträngande doften av industriell kanel — utan något djupare. Mjöl, ugn, tid.",
+        "Bakom stenugnen i Vallentuna centrum börjar dagen tidigt. Surdegen har sitt eget schema, och det är inte förhandlingsbart. Tre dygn från start till ett bröd som faktiskt smakar något. I en värld som vill ha allt nu, är det en sorts trots.",
+        "Bageriet har blivit en träffpunkt utan att någon egentligen planerat det. Folk kommer för bullen och stannar för samtalet — för lunchmackan, gelaton, doften av nybakat. Stamgästerna syns på hur de tar sin latte, och på om de frågar efter gårdagens surdegslimpa som nästan alltid är slut före lunch.",
+        "Här handlar det sällan om trender. Hellre om mjöl, om hur en kall natt påverkar jäsningen, om barnen som står på tå vid disken och pekar. Det är det som gör stället mer än en bageriadress: att någon bryr sig hela vägen från deg till påse.",
+        "När solen ligger på uteplatserna och filtarna kommer fram, ser man det tydligt — bygden samlas där det finns värme. I ugnen, och bakom disken."
+      ],
+      quote:"Ett bra bröd kan man inte skynda på.",
+      published:"2026-10"
+    },
+    {
+      slug:"markims-bergby-erik",
+      person:"Erik Holm",
+      role:"Gårdsägare",
+      place:"Markims Bergby",
+      heroImg:"",
+      portraitImg:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=75",
+      dek:"På en 1700-talsgård i Markim möter barnen djuren — och köttet kommer från samma jord.",
+      body:[
+        "Markim ligger en bit från centrum, men känslan när man svänger in på gårdsplanen är omedelbar: här har någon bott och brukat länge. Timret, ängen, lukten av hö när vinden ligger rätt.",
+        "Erik Holm tar emot som om man vore grannens barnbarn. Inte som kund i första hand, utan som någon som ska förstå var maten kommer ifrån. Barnen får ofta möta djuren. De vuxna får svar på frågor om köttlådor, säsong och vad som faktiskt växer här just nu.",
+        "Gårdsbutiken är inte stor, och det är poängen. Det som finns i disken har en historia som går att peka på — ängen där borta, stallet, den långa raden av arbete som inte syns på en etikett i en stormarknad.",
+        "Erik pratar om ansvar mer än om varumärke. Om att hålla gården vid liv så att nästa generation fortfarande har något att ta över. Om marknader där grannar träffas och byter recept lika gärna som pengar.",
+        "När skördemarknaden kommer och gårdsplanen fylls, ser man vad bygden egentligen är: inte en lista på kartan, utan människor som väljer att stanna och göra något av jorden."
+      ],
+      quote:"Om barnen får se djuren, förstår de maten på ett annat sätt.",
+      published:"2026-09"
+    },
+    {
+      slug:"angarn-lisa",
+      person:"Lisa Norén",
+      role:"Naturguide & eldsjäl",
+      place:"Angarnssjöängen",
+      heroImg:"",
+      portraitImg:"https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=800&q=75",
+      dek:"Vid spängerna i Angarn lär hon folk att stå still — och faktiskt se fåglarna.",
+      body:[
+        "Angarnssjöängen ser vidöppen ut första gången. Nästan som en nordisk savann, brukar folk säga. Lisa Norén ler åt det — hon har hört det förr — men hon håller med om känslan. Här krymper brådskan.",
+        "Hon har guidat skolklasser, nyfikna stockholmare och Vallentunabor som bott här i trettio år utan att egentligen gått ut på spängerna. Hennes knep är enkelt: gå långsamt. Stanna. Titta igen. Kikaren är bara ett verktyg; tålamodet är det egentliga.",
+        "Lisa pratar om fåglarna som grannar mer än som arter på en lista. Om vårens brus, om höstens tysta mellanrum, om hur ett kafé i kanten av reservatet kan bli pausen som gör att fler orkar hela rundan.",
+        "Hon är noga med att det inte ska kännas som prestation. En utflykt hit kan vara en kvart på klipphällen. Det räcker. Det är fortfarande att vara i bygden på riktigt — inte bara köra förbi på väg någon annanstans.",
+        "När skymningen kommer och ljuset lägger sig mjukt över vattnet, förstår man varför hon aldrig tröttnar. Angarn ger tillbaka varje gång man ger den tid."
+      ],
+      quote:"Man behöver inte se allt. Man behöver bara se något ordentligt.",
+      published:"2026-08"
+    }
+  ];
+
+  // Vallentuna levererar — one chronological stream (published = sort only, never shown as date)
+  // Deep link: #levererar=<id>  → opens stream and scrolls to that moment
+  const moments = [
+    {
+      id: "sigrids-sjalvplock-markim",
+      title: "Sigrids självplock i Markim",
+      img: "/assets/levererar/sigrids-sjalvplock-markim/cover.webp",
+      imgs: [
+        "/assets/levererar/sigrids-sjalvplock-markim/cover.webp",
+        "/assets/levererar/sigrids-sjalvplock-markim/skylt.webp",
+        "/assets/levererar/sigrids-sjalvplock-markim/falt.webp"
+      ],
+      body: "Frugan såg en blänkare på Facebook om Sigrids självplock av solrosor i Markim. Sagt och gjort — vi satte oss i bilen och tog kringelkrokvägarna bort mot Snåttsta gård.\n\nJag älskar initiativ som det här. Alla intäkter går oavkortat till Blågula Bilen och Ukraina. Man plockar sina egna solrosor och swishar till ett nummer som stod handmålat på en skylt vid vägen.\n\nVi gick därifrån med en famn full av solrosor och en fin känsla i kroppen. Det enkla, det lokala, det som görs av hjärtat — det finns här, om man bara vet var man ska titta.",
+      published: "2026-08-02"
+    },
+    {
+      id: "biltraff-ur-tomma-intet",
+      title: "En bilträff ur tomma intet",
+      img: "/assets/levererar/biltraff-ur-tomma-intet/cover.webp",
+      body: "På väg mot Arninge för lite ärenden idag får vi plötsligt syn på en enorm bilträff på Vallentuna flygfält. Jag har varit på bilträffar förr, men detta var nog den största hittills. Så otroligt många häftiga bilar — veteranare i alla former, men också nyare modeller. Vi hade ingen aning om att den skulle vara där.\n\nVi stannade till. Och blev kvar i flera timmar.\n\nJag har alltid dragits till formerna, hantverket och designen på bilar från förr — det fanns en själ i dem, ett uttryck. Mycket av det känns förlorat idag. Att få stå mitt i en hel äng av det, helt oväntat, var något extra.\n\nEn riktigt fin överraskning på vad som skulle ha blivit en helt vanlig mathandling.",
+      published: "2026-08-01"
+    }
+  ];
+
+  // Rich editorial content + gallery images (Unsplash: free-to-use stämningsbilder).
+  // Texter är omskrivna utifrån offentliga källor (kommun, verksamheters sidor, lokalpress).
+  const U=(id,w=900)=>`https://images.unsplash.com/${id}?w=${w}&q=75`;
+  const CONTENT={
+    "Vallentuna Stenugnsbageri":{
+      address:"Allévägen 6A, Vallentuna centrum",
+      facts:["Stenugnsbakat","Lunch & pizza","Gelato","Familjevänligt"],
+      localPhotos:true,
+      images:[
+        {url:"/assets/upplev/vallentuna-stenugnsbageri/brod.webp",alt:"Surdegsbröd framför stenugnen"},
+        {url:"/assets/upplev/vallentuna-stenugnsbageri/bullar.webp",alt:"Bullar, kakor och bakverk i disken"},
+        {url:"/assets/upplev/vallentuna-stenugnsbageri/lunch.webp",alt:"Lunch, bulle och kaffe på Stenugnsbageriet"},
+        {url:"/assets/upplev/vallentuna-stenugnsbageri/gelato.webp",alt:"Hemgjord gelato med citron"}
+      ],
+      body:`<p>Mitt i Vallentuna centrum bakas det på riktigt — surdeg, bullar och bröd ur stenugn, ofta omtalade kanelbullar med seg, mochig lyster. Här finns mer än fikadisk: kallkök och lunch, napolitanskt inspirerad pizza, hemgjord gelato och en liten shop med delikatesser.</p>
+      <p>Ordinarie öppettider (centrum): mån–fre 07–19, lör–sön 08–18 enligt vsbageri.se. Förbeställning går bra (pizza tidsbokas dock inte). Tel 08-511 705 70 · <a href="https://www.vsbageri.se/" target="_blank" rel="noopener">vsbageri.se</a>.</p>`
+    },
+    "Café Valkyria":{
+      address:"Lingsbergsvägen 49, Vallentuna",
+      facts:["Helgfik","Hembakat","Barnvänligt","Hundvänligt"],
+      images:[
+        {url:U("photo-1554118811-1e0d58224f24"),alt:"Mysigt caféinteriör"},
+        {url:U("photo-1495474472287-4d71bcdd2085"),alt:"Kaffe latte"},
+        {url:U("photo-1517248135467-4c7edcad34c4"),alt:"Cafébord och samtal"}
+      ],
+      body:`<p>Familjedrivet helgfik en bit utanför centrum, öppnat av Monica, Alexandra och Andrea Brink-Sehlberg. Namnet Valkyria nickar åt Vallentunas runstenar och nordisk mytologi — fokus på gemenskap snarare än snabb fika.</p>
+      <p>Hembakat, caffè latte, lekhörna, hundvänligt och loppis intill. Öppet främst helger året runt (ägarnas heltidsjobb styr). Ingen egen webb — kolla Facebook/Instagram för aktuella tider innan du åker ut på Lingsbergsvägen.</p>`
+    },
+    "Orkesta Granby Gård":{
+      address:"Orkesta-Granby, 186 94 Vallentuna",
+      facts:["Hökeriet","Granbyhällen","Charolais","Växthus"],
+      localPhotos:true,
+      images:[
+        {url:"/assets/upplev/orkesta-granby-gard/cover.webp",alt:"Vy mot Hökeriet på Orkesta Granby Gård"},
+        {url:"/assets/upplev/orkesta-granby-gard/kor.webp",alt:"Kor i solnedgång på Granby"},
+        {url:"/assets/upplev/orkesta-granby-gard/runsten.webp",alt:"Granbyhällen — vikingatida runhäll"}
+      ],
+      body:`<p>Välkommen till Orkesta Granby Gård — ett modernt livsmedelsproducerande lantbruk mitt i ett historiskt kulturlandskap. På gården ligger <strong>Hökeriet</strong>: butik, servering och mötesplats med gårdens Charolais-kött, potatis, honung och fika. Växthus ger gurka, tomat och örter till köket.</p>
+      <p>Mitt i betesmarken ligger <strong>Granbyhällen</strong>, en av Sveriges till ytan största vikingatida runhällar. Boka gärna guidad visning av Granby Vikingagård eller hantverkstorpet Granbylund.</p>
+      <p>Sommaröppet med servering lördag–söndag 12–16 (enligt hokeriet.se). Frågor och event: <a href="mailto:info@hokeriet.se">info@hokeriet.se</a> · tel 08-612 30 05 / 076-945 90 10. Mer på <a href="https://hokeriet.se/" target="_blank" rel="noopener">hokeriet.se</a>.</p>`
+    },
+    "Tarby Gårdsbutik":{
+      address:"Tarbyvägen / Tarby gård, Frösunda",
+      facts:["Självbetjäning","Ägg & kött","Swish","Öppet dagligen"],
+      localPhotos:true,
+      images:[
+        {url:"/assets/upplev/tarby-gardsbutik/cover.webp",alt:"Kor på bete vid Tarby gård"},
+        {url:"/assets/upplev/tarby-gardsbutik/kor.webp",alt:"Kor i ladugården på Tarby"},
+        {url:"/assets/upplev/tarby-gardsbutik/traktor.webp",alt:"Höskörd med traktor på Tarby"},
+        {url:"/assets/upplev/tarby-gardsbutik/rapsolja.webp",alt:"Kallpressad rapsolja från Tarby Gård"}
+      ],
+      body:`<p>Liten självbetjäningsbutik vid landsvägen — ägg, korv, köttfärs, styckdetaljer och mer från gården. Betalning med Swish; ingen personal bakom disk. Öppet alla dagar ca 07–19.</p>
+      <p>Drivs av Marianne Holmström och Fredrik Andersson med fokus på närproducerat och kretslopp; delar av betesmarken är Natura 2000. GPS kan lura dig fel — följ skylt på grusväg från vägen mellan Gottröra och Frösunda. Tel 070-303 93 96.</p>`
+    },
+    "Markims Bergby":{
+      address:"Markim, Vallentuna (ca fyra mil norr om Stockholm)",
+      facts:["Nöt & lamm","Tre generationer","Gårdsbutik i klockboden","Öppet efter överenskommelse"],
+      localPhotos:true,
+      images:[
+        {url:"/assets/upplev/markims-bergby/cover.webp",alt:"Markims Bergby och Markims kyrka i kulturlandskapet"},
+        {url:"/assets/upplev/markims-bergby/butik.webp",alt:"Gårdsbutiken i klockboden på Markims Bergby"},
+        {url:"/assets/upplev/markims-bergby/far.webp",alt:"Får på bete vid Markims Bergby"}
+      ],
+      body:`<p>Välkommen till Markims Bergby i kulturlandskapet Markim. Gården har drivits i tre generationer och erbjuder högkvalitativt nöt- och lammkött — djuren föds upp på gården, fodret odlas på plats och slakten sker på ett närbeläget slakteri i Roslagen.</p>
+      <p>Gårdsbutiken ligger i klockboden (med vällingklocka över taknocken). Utbudet följer säsongen: nötkött under höst, vinter och vår; lammkött tidigt på hösten. Här finns också egen honung, fårskinn, linoljesåpa, tvålar och annat hantverk när lagret räcker.</p>
+      <p>Öppet enligt överenskommelse — mejla <a href="mailto:matilda@markimsbergby.se">matilda@markimsbergby.se</a> och boka en tid. Följ gärna gården på Instagram eller Facebook (@markimsbergby) för aktuellt utbud. Mer info på <a href="https://www.markimsbergby.se/" target="_blank" rel="noopener">markimsbergby.se</a>.</p>`
+    },
+    "Gårdsbutiken Gamla Mjölkrummet":{
+      address:"Skålhamravägen 112, 186 92 Vallentuna",
+      facts:["Ägg & ost","Nära centrum","Närproducerat"],
+      images:[
+        {url:U("photo-1595855759920-86582396756c"),alt:"Gårdsbutikshylla"},
+        {url:U("photo-1464226184884-fa280b87c399"),alt:"Lokala mejeriprodukter"},
+        {url:U("photo-1560493676-04071c5f467b"),alt:"Färska råvaror"}
+      ],
+      body:`<p>En liten gårdsbutik på Skålhamravägen för den som vill handla lokalt utan lång bilresa. Här hittar du ägg, potatis, kött och den där osten folk återvänder för — enkelt och ärligt i mjölkrummets anda.</p>
+      <p>Ingen egen webbplats hittad; utbud och tider skiftar med säsong. Ta med egen kasse och fråga gärna om veckans favoriter.</p>`
+    },
+    "Angarnssjöängen":{
+      address:"Angarnssjöängens naturreservat, Brottby",
+      facts:["Fågelsjö","~7 km slinga","Natura 2000","Alltid öppet"],
+      localPhotos:true,
+      photoCredit:"Foto: Wikimedia Commons (landskap) — platsen är naturreservat.",
+      images:[
+        {url:"/assets/upplev/angarnsjoangen/cover.webp",alt:"Angarnssjöängen från utsiktspunkt"},
+        {url:"/assets/upplev/angarnsjoangen/kor.webp",alt:"Kor i betesmark vid Angarnssjöängen"},
+        {url:"/assets/upplev/angarnsjoangen/sjo.webp",alt:"Angarnssjöängens öppna landskap"}
+      ],
+      body:`<p>En av Stockholms läns främsta fågelsjöar — betade strandängar, spänger och den knappt sju kilometer långa <strong>Sjöängsslingan</strong>. Är du inte fågelskådare redan blir du kanske det efter ett besök. Skyddat sedan 1982, förvaltas av Länsstyrelsen.</p>
+      <h3>Bra att veta</h3>
+      <ul>
+        <li>Fågelskyddsområde: tillträdesförbud i markerad zon 1 apr–30 sep</li>
+        <li>Hundar ska vara kopplade; tält/eld endast på anvisade platser</li>
+        <li>Parkering vid Örsta, Olhamra och Skesta hage — Örsta bäst för tillgänglighet</li>
+        <li>Buss från Vallentuna mot Kårsta, hållplats Örsta</li>
+      </ul>
+      <p>Mer: <a href="https://www.lansstyrelsen.se/stockholm/besoksmal/naturreservat/angarnssjoangen.html" target="_blank" rel="noopener">Länsstyrelsen</a> · <a href="https://www.naturkartan.se/sv/stockholms-lan/angarnssjoangen" target="_blank" rel="noopener">Naturkartan</a>.</p>`
+    },
+    "Kvarnbadet":{
+      address:"Vid Vallentunasjöns norra ände, Vallentuna",
+      facts:["50 m bassäng","Plaskdamm","Beachvolley","Kiosk & grill"],
+      localPhotos:true,
+      images:[
+        {url:"/assets/upplev/kvarnbadet/cover.webp",alt:"Översikt över Kvarnbadet med plaskdamm och 50-metersbassäng"},
+        {url:"/assets/upplev/kvarnbadet/bassang.webp",alt:"50-metersbassängen på Kvarnbadet en solig dag"},
+        {url:"/assets/upplev/kvarnbadet/skylt.webp",alt:"Välkommen till Kvarnbadet — kartskylt med badets faciliteter"}
+      ],
+      body:`<p>Kommunalt utomhusbad vid Vallentunasjöns norra ände: tempererad 50-metersbassäng (djup 120–180 cm), grundare bassäng (80 cm) och plaskdamm (30 cm). På området finns kiosk &amp; grill, omklädning, lekplats, soldäck, beachvolley, fotbollsplan — och den röda kvarnen i bakgrunden.</p>
+      <p>Säsong 2026: öppet 1 juni–30 augusti. Ordinarie tider mån–tors 09–21, fre 09–19, lör–sön 10–19. Midsommarafton stängt; v.33–35 stänger badet 19:00 alla dagar. För att bada utan vuxen: minst 12 år och simkunnig.</p>
+      <p>Tillgänglighet: RWC, lyft till bassäng och ramper. Info: <a href="https://www.vallentuna.se/fritid-och-kultur/idrott-och-motion/simhallar-badhus-utomhusbad-och-simskola/" target="_blank" rel="noopener">vallentuna.se</a>.</p>`
+    },
+    "Toftesta Holme":{
+      address:"Lilla Garn / väster om Össeby-Garns kyrka",
+      facts:["Kommunalt bad","Sandbotten","Hundvänligt","Ramp"],
+      localPhotos:true,
+      photoCredit:"Foto: Vallentuna kommun.",
+      images:[
+        {url:"/assets/upplev/toftesta-holme/cover.webp",alt:"Badplats i Vallentuna kommun"}
+      ],
+      body:`<p>En av kommunens fyra skötta badplatser — i vackert kulturlandskap väster om Össeby-Garns kyrka. Parkera gärna mitt emot kyrkan och gå genom bygden; badet ligger strax utanför bebyggelsen.</p>
+      <p>Sandbotten, stillhet och ramp som underlättar för rullstolsburna. Hundar välkomna kopplade. Vattenkvalitet och temperatur publiceras på Havs- och vattenmyndighetens badplatsinfo (sök Vallentuna → Toftesta Holme).</p>
+      <p>Mer: <a href="https://www.vallentuna.se/fritid-och-kultur/friluftsliv-och-natur/badplatser-och-sjoar/" target="_blank" rel="noopener">vallentuna.se / badplatser</a>.</p>`
+    },
+    "Arkils Tingstad":{
+      address:"Bällsta, söder om Vallentuna kyrka",
+      facts:["Runriket","Tingsplats","U 225 & U 226","1010-talet"],
+      localPhotos:true,
+      photoCredit:"Foto: Wikimedia Commons.",
+      images:[
+        {url:"/assets/upplev/arkils-tingstad/cover.webp",alt:"Arkils tingstad vid Vallentunasjön"},
+        {url:"/assets/upplev/arkils-tingstad/img1.webp",alt:"Stensättningen vid Arkils tingstad"}
+      ],
+      body:`<p>Vikingatida tingsplats vid Vallentunasjön — kvadratisk stensättning (ca 10×10 m) och två runstenar (U 225 och U 226), resta av Skålhamrasläkten till minne av Ulv. Stenarna har sammanhängande text; platsen anlades troligen på 1010-talet.</p>
+      <p>Ett av nio stopp i <strong>Runriket</strong>. Fri entré, alltid öppet. Ljudguide finns på informationstavlan. Läs mer på <a href="https://www.vallentuna.se/runriket/runrikets-platser/arkils-tingstad/" target="_blank" rel="noopener">vallentuna.se / Runriket</a>.</p>`
+    },
+    "Vallentuna Kulturhus":{
+      address:"Allévägen 1, Vallentuna centrum",
+      facts:["Bibliotek","Scen","Utställningar","Mötesplats"],
+      localPhotos:true,
+      photoCredit:"Foto: Wikimedia Commons.",
+      images:[
+        {url:"/assets/upplev/vallentuna-kulturhus/cover.webp",alt:"Vallentuna Kulturhus"}
+      ],
+      body:`<p>Kulturhus mitt i centrum med stort bibliotek, utställningar, scener, mötesrum och kreativ verkstad. Foajén öppnar ofta kl. 9 på vardagar; biblioteket bemannas från kl. 10.</p>
+      <p>Ordinarie bibliotekstider: mån–tors 10–19, fre 10–18, lör 10–16, sön 12–16. Avvikelser förekommer (t.ex. sommaröppet och underhåll) — kolla <a href="https://bibliotek.vallentuna.se/" target="_blank" rel="noopener">bibliotek.vallentuna.se</a>.</p>
+      <ul><li>Telefon: 08-587 853 50</li><li>bibliotek@vallentuna.se</li><li><a href="https://www.vallentuna.se/fritid-och-kultur/kultur/vallentuna-kulturhus/" target="_blank" rel="noopener">vallentuna.se / Kulturhuset</a></li></ul>`
+    },
+    "Lilla Valentina":{
+      address:"Tuna Torg 3, Vallentuna centrum",
+      facts:["Pizza","Kvarterskrog","Generösa portioner"],
+      images:[
+        {url:U("photo-1513104890138-7c749659a591"),alt:"Pizza från ugnen"},
+        {url:U("photo-1571407970349-bc81e7e96d47"),alt:"Italiensk mat"},
+        {url:U("photo-1555396273-367ea4eb4db5"),alt:"Restaurangkänsla"}
+      ],
+      body:`<p>Folkkär kvarterspizzeria vid Tuna Torg — generösa portioner, vänlig personal och priser som inte skrämmer. En måltid att dela; fina råvaror och mycket kärlek i rätterna, enligt restaurangens egen meny.</p>
+      <p>Telefon 08-511 737 04. Meny: <a href="https://lillavalentina.se/" target="_blank" rel="noopener">lillavalentina.se</a>.</p>`
+    },
+    "Lejonkulan Presenter & Inredning":{
+      address:"Tuna Torg 4C, Vallentuna centrum",
+      facts:["Presenter","Inredning","Fotoframkallning"],
+      localPhotos:true,
+      images:[
+        {url:"/assets/upplev/lejonkulan-presenter-och-inredning/cover.webp",alt:"Lejonkulan Foto & Interiör"}
+      ],
+      body:`<p>Hos Lejonkulan Foto &amp; Interiör hittar du inredning, presenter, kläder, smycken — och personlig hjälp med fotoframkallning, ramar och album. Studentplakat och andra trycksaker går också att ordna.</p>
+      <p>Öppet mån–fre 10–18, lör 10–15 enligt Vallentuna Centrum. Tel 08-511 807 30. Mer: <a href="https://vallentunacentrum.se/butik/lejonkulan-trend-interior/" target="_blank" rel="noopener">vallentunacentrum.se</a>.</p>`
+    },
+    "Ellen's Corner":{
+      address:"Mörbyvägen 1a, 186 32 Vallentuna",
+      facts:["Mode","Inredning","Personlig service"],
+      localPhotos:true,
+      images:[
+        {url:"/assets/upplev/ellens-corner/cover.webp",alt:"Kläder på Ellen's Corner"},
+        {url:"/assets/upplev/ellens-corner/accessoarer.webp",alt:"Accessoarer i butiken"},
+        {url:"/assets/upplev/ellens-corner/inredning.webp",alt:"Inredning hos Ellen's Corner"}
+      ],
+      body:`<p>När du kommer till Ellen’s ska du känna dig sedd och unik — butiken utstrålar charm, glädje och inspiration. Personlig service och omsorg om att hitta det perfekta för just dig ligger i fokus.</p>
+      <p>Kläder, accessoarer och inredning. Aktuella öppettider via Instagram/Facebook. Mail: <a href="mailto:info@ellenscorner.se">info@ellenscorner.se</a>. Webb: <a href="https://ellenscorner.se/" target="_blank" rel="noopener">ellenscorner.se</a>.</p>`
+    },
+    "Silver & Sånt":{
+      address:"Torggatan 19A / centrumpassagen, Vallentuna",
+      facts:["Smycken","Klockor","Rozaro Jewelry"],
+      localPhotos:true,
+      images:[
+        {url:"/assets/upplev/silver-och-sant/cover.webp",alt:"Smycken hos Silver & Sånt"}
+      ],
+      body:`<p>Noga utvalt sortiment av smycken och klockor i silver, guld och stål. Eget varumärke <strong>Rozaro Jewelry</strong> plus märken som Snö of Sweden. Det rätta smycket för varje tillfälle — du är i centrum.</p>
+      <p>Öppet mån–fre 10–18, lör 10–15 enligt Vallentuna Centrum. Tel 08-511 737 97. Mer: <a href="https://vallentunacentrum.se/butik/silver-sant/" target="_blank" rel="noopener">vallentunacentrum.se</a>.</p>`
+    },
+    "Ljuvliga Bakverk":{
+      address:"Söderbydal 8, 186 94 Vallentuna",
+      facts:["Hembakat","Glutenfritt","Bakgårdscafé"],
+      images:[
+        {url:U("photo-1486427944299-d1955d23e34d"),alt:"Hembakta bakverk"},
+        {url:U("photo-1509440159596-0249088772ff"),alt:"Surdeg och bröd"},
+        {url:U("photo-1555507036-ab1f4038808a"),alt:"Bullar på fat"}
+      ],
+      body:`<p>Susannes bakgårdscafé i Söderbydal — litet, personligt och känt för hembakat inklusive ett starkt glutenfritt utbud. Allt bakas på plats av Susanne Olsen / Susannes Ljuvliga Bakverk AB.</p>
+      <p>Öppettider kan vara begränsade (ofta helger i säsong). Hör av dig på 073-633 16 85 eller <a href="mailto:susanne@ljuvligabakverk.se">susanne@ljuvligabakverk.se</a> innan du åker, särskilt om du vill säkra glutenfritt bröd.</p>`
+    },
+    "Össby Handelsträdgård":{
+      address:"Forsenberg / Brottby, nära Össeby-Garns kyrka",
+      facts:["Självplock","Plantor","Honung & ägg","Swish"],
+      images:[
+        {url:U("photo-1416879595882-3373a0480b5b"),alt:"Handelsträdgård och blommor"},
+        {url:U("photo-1464226184884-fa280b87c399"),alt:"Odling och skörd"},
+        {url:U("photo-1500382017468-9049fed747ef"),alt:"Lantlig trädgård"}
+      ],
+      body:`<p>Ösby (Össby) handelsträdgård i Brottby — avslappnad plantskola där Björn Furugren Beselin driver upp merparten av växterna på plats sedan 2007. Självplock av blommor och grönt, plus ägg, honung, saft och mer i bodarna. Betalning med Swish eller kontanter.</p>
+      <p>Öppet året om i praktiken (vintertid mer ägg/sylt/honung än plantor). Potatisplock styrs ofta till tider när personal finns. Aktuellt i Facebook-gruppen. Tel 070-718 81 79.</p>`
+    },
+    "Antikladan":{
+      address:"Angarns-Veda 7, 186 91 Vallentuna",
+      facts:["Antik & retro","Ons 16–18","Lör–sön 11–16","Dödsbon"],
+      localPhotos:true,
+      images:[
+        {url:"/assets/upplev/antikladan/cover.webp",alt:"Antikladan utifrån — röd lada med antikviteter utanför"},
+        {url:"/assets/upplev/antikladan/interior.webp",alt:"Interiör i Antikladan — högt trätak och rader av antika stolar"},
+        {url:"/assets/upplev/antikladan/slade.webp",alt:"Gammal hästsläde utanför Antikladan"},
+        {url:"/assets/upplev/antikladan/vas.webp",alt:"Turkos vas med lejonmotiv inne i Antikladan"}
+      ],
+      body:`<p>Stor antik- och kuriosalada två minuter från E18-avfarten mot Åkersberga — möbler, lampor, glas, porslin och samlarobjekt som byts från vecka till vecka (ofta via dödsbon). Grannen Handelshuset Cedergren kompletterar med vintagekläder och maritimt.</p>
+      <p>Öppet onsdag 16–18 samt lördag–söndag 11–16 enligt antikladangillinge.se (kolla Facebook för avvikelser). Tel 070-756 80 18. Webb: <a href="https://www.antikladangillinge.se/" target="_blank" rel="noopener">antikladangillinge.se</a>.</p>`
+    },
+    "Lindra Second Hand":{
+      address:"Svedjevägen 2, 186 32 Vallentuna",
+      facts:["Second hand","Ideell","Human Bridge"],
+      localPhotos:true,
+      images:[
+        {url:"/assets/upplev/lindra-second-hand/cover.webp",alt:"Lindra Second Hand"},
+        {url:"/assets/upplev/lindra-second-hand/klader.webp",alt:"Second hand-kläder hos Lindra"},
+        {url:"/assets/upplev/lindra-second-hand/porslin.webp",alt:"Porslin och husgeråd hos Lindra"}
+      ],
+      body:`<p>Lindras butik i Vallentuna — kläder, hemtextil, husgeråd, lampor, tavlor, leksaker och elektronik. När du handlar eller skänker bidrar du till Human Bridges arbete med sjukvårdsutrustning till länder där resurserna är små.</p>
+      <p>Öppet mån–fre 11–18, lör 11–15. Tel 08-511 700 41. Mer: <a href="https://lindra.se/vara-butiker/" target="_blank" rel="noopener">lindra.se</a>.</p>`
+    },
+    "Risbyle Runstenar":{
+      address:"Risbyle / Skålhamra, Vallentunasjöns västra sida",
+      facts:["Runriket","U 160 & U 161","Skålhamrasläkten"],
+      localPhotos:true,
+      photoCredit:"Foto: Wikimedia Commons.",
+      images:[
+        {url:"/assets/upplev/risbyle-runstenar/cover.webp",alt:"Runsten U 161 vid Risbyle"},
+        {url:"/assets/upplev/risbyle-runstenar/img2.webp",alt:"Detalj av runsten vid Risbyle"}
+      ],
+      body:`<p>Två runstenar (U 160 och U 161) vid Risbyle på Vallentunasjöns västra sida, knutna till Skålhamrasläkten — samma ätt som rest Arkils tingstad på andra sidan sjön. En sten är signerad av Ulv i Bårresta; kristna böneformler syns i inskrifterna.</p>
+      <p>Fri entré, alltid öppet. Ljudguide finns på plats. Mer: <a href="https://www.vallentuna.se/runriket/runrikets-platser/risbyle/" target="_blank" rel="noopener">vallentuna.se / Risbyle</a>.</p>`
+    },
+    "Gullbron":{
+      address:"Gullbron, vägen Vallentuna–Upplands Väsby",
+      facts:["Runriket","Lindösläkten","Brobyggnad","1000-talet"],
+      localPhotos:true,
+      photoCredit:"Historisk avbildning: Wikimedia Commons (Bautil / U 237).",
+      images:[
+        {url:"/assets/upplev/gullbron/cover.webp",alt:"Historisk avbildning av runsten U 237 vid Gullbron"}
+      ],
+      body:`<p>Här möter du Lindösläkten — Ulf och Astrid och deras söner — som på 1000-talet byggde en bro och reste stenar. En 1600-talsbeskrivning nämner fyra resta stenar; tre runstenar finns kvar i området (bl.a. signerad av Visäte).</p>
+      <p>Bron låg på södra sidan av vägen mellan Upplands Väsby och Vallentuna; få fysiska spår kvar, men skyltning och ljudguide hjälper dig läsa platsen. Mer: <a href="https://www.vallentuna.se/runriket/runrikets-platser/gullbron/" target="_blank" rel="noopener">vallentuna.se / Gullbron</a>.</p>`
+    },
+    "Vallentuna Naturreservat":{
+      address:"Björkby-Kyrkviken, vid Vallentunasjön",
+      facts:["Nära centrum","Fågelliv","Kulturlandskap","Alltid öppet"],
+      localPhotos:true,
+      photoCredit:"Foto: Länsstyrelsen Stockholm.",
+      images:[
+        {url:"/assets/upplev/vallentuna-naturreservat/cover.webp",alt:"Vassrik vik vid Vallentunasjön"}
+      ],
+      body:`<p><strong>Björkby-Kyrkvikens naturreservat</strong> ligger vid Vallentunasjön — öppet odlingslandskap, vassrik Kyrkvik och betesmarker med torrbacksflora. Ett välfrekventerat friluftsområde för boende i tätorten, med Vallentuna kyrka och Kvarnbadet i närheten.</p>
+      <p>Rik fågelfauna: flyttfåglar på åkrarna om våren, sjöfågel i vassarna. Fornlämningar finns i området. Mer: <a href="https://www.lansstyrelsen.se/stockholm/besoksmal/naturreservat/bjorkby-kyrkviken.html" target="_blank" rel="noopener">Länsstyrelsen / Björkby-Kyrkviken</a>.</p>`
+    },
+    "Rookie Café & Restaurang":{
+      address:"Parkvägen 2 / Vallentuna ishall",
+      facts:["Lunch","Husman","Ishallen"],
+      images:[
+        {url:U("photo-1414235077428-338989a2e8c0"),alt:"Lunchrätt på tallrik"},
+        {url:U("photo-1559339352-11d035aa65de"),alt:"Restaurangkök"},
+        {url:U("photo-1554118811-1e0d58224f24"),alt:"Cafémiljö"}
+      ],
+      body:`<p>Oväntat god lunch i Vallentuna ishall — lagat från grunden, prisvärt. En dold pärla för den som redan är i trakten till träning eller match.</p>
+      <p>Öppettider följer ofta lunchtider på vardagar. Tel 08-30 06 80. Aktuellt: <a href="https://www.facebook.com/rookiecaferestaurang/" target="_blank" rel="noopener">Facebook</a>.</p>`
+    },
+    "Kristorante":{
+      address:"Bällstabergsvägen 2, Vallentuna",
+      facts:["Pizza","Uteservering","Kvarterskrog"],
+      images:[
+        {url:U("photo-1571407970349-bc81e7e96d47"),alt:"Pizza och restaurangmat"},
+        {url:U("photo-1555396273-367ea4eb4db5"),alt:"Trivsam krog"},
+        {url:U("photo-1517248135467-4c7edcad34c4"),alt:"Uteservering"}
+      ],
+      body:`<p>Trivsam kvarterskrog i Bällstaberg med uteservering, italiensk pizza, burgare och husmansidéer. Vällagat och omtyckt av många i bygden.</p>
+      <p>Enligt kristorante.se: måndag 10–14 (lunch), tisdag–fredag 10–21, lördag–söndag 11–21. Tel 08-511 772 20. Webb: <a href="https://kristorante.se/" target="_blank" rel="noopener">kristorante.se</a>.</p>`
+    },
+    "Presto Grillen":{
+      address:"Tuna Torg 6, Vallentuna centrum",
+      facts:["Streetfood","Tunnbrödsrulle","Take away"],
+      localPhotos:true,
+      images:[
+        {url:"/assets/upplev/presto-grillen/cover.webp",alt:"Presto Grillen"},
+        {url:"/assets/upplev/presto-grillen/mat.webp",alt:"Mat från Presto Grillen"},
+        {url:"/assets/upplev/presto-grillen/om.webp",alt:"Om Presto Grillen"}
+      ],
+      body:`<p>Grillen vid Tuna Torg — hamburgare, kebab, tunnbrödsrullar och vegetariskt i generösa portioner. Snabbt, vänligt och med tips över disk. En lokal klassiker mitt i centrum.</p>
+      <p>Tel 08-37 76 06. Meny och mer: <a href="https://www.prestogrillen.se/" target="_blank" rel="noopener">prestogrillen.se</a>.</p>`
+    },
+
+    "Grävelsta Gård":{
+      address:"Grävelsta, väster om Vallentuna",
+      facts:["KRAV","Nöt & lamm","Ägg","Grillstuga"],
+      localPhotos:true,
+      photoCredit:"Stämningsfoto: Wikimedia Commons (Angus-kor — rasen som föds upp på gården).",
+      images:[
+        {url:"/assets/upplev/gravelsta-gard/cover.webp",alt:"Angus-kor i bete — stämningsbild för Grävelsta Gård"}
+      ],
+      body:`<p>Familjegård med KRAV-inriktning — nötkött, lamm, ägg, honung och mer från egna djur. Ägg finns i skåp bakom butiken alla dagar (Swish). Själva gårdsbutiken har sommaruppehåll och öppnar igen 29 augusti 2026 enligt gravelsta.se; hör av dig för avhämtning av övriga varor.</p>
+      <p>Kontakt via <a href="https://gravelsta.se/" target="_blank" rel="noopener">gravelsta.se</a>.</p>`
+    },
+    "Röda Magasinet":{
+      address:"Lindholmen, Vallentuna kommun",
+      facts:["Antik & kuriosa","Tre våningar","Fika","Säsongsöppet"],
+      localPhotos:true,
+      images:[
+        {url:"/assets/upplev/roda-magasinet/cover.webp",alt:"Röda Magasinet i Lindholmen"}
+      ],
+      body:`<p>Antikaffär i Lindholmen, strax bakom Lindholmens gård — glas, porslin, möbler, lampor och fynd i lantlig miljö. Öppet maj–september (perfekt söndagsutflykt); kan även öppna utanför säsong.</p>
+      <p>Mer: <a href="https://rodamagasinet.se/" target="_blank" rel="noopener">rodamagasinet.se</a>.</p>`
+    },
+    "Vallentuna kyrka":{
+      address:"Kyrkvägen / Vallentuna centrum",
+      facts:["Runriket","Medeltid","Runinskrifter","Ljudguide"],
+      localPhotos:true,
+      photoCredit:"Foto: Wikimedia Commons.",
+      images:[
+        {url:"/assets/upplev/vallentuna-kyrka/cover.webp",alt:"Vallentuna kyrka"}
+      ],
+      body:`<p>Medeltidskyrka mitt i byn (ca 1150–1250) — ett av Runrikets stopp med flera runinskrifter. I tornet och bogårdsmuren har murmästare ristat sina namn; inne i tornrummet sitter en runsten inmurad. Ljudguide finns på plats.</p>
+      <p>Fri entré till området runt kyrkan. Mer: <a href="https://www.vallentuna.se/runriket/runrikets-platser/vallentuna-kyrka/" target="_blank" rel="noopener">vallentuna.se / Vallentuna kyrka</a>.</p>`
+    },
+    "Gällsta":{
+      address:"Gällsta, väster om Vallentuna",
+      facts:["Runriket","Runstenar","Kulturlandskap"],
+      localPhotos:true,
+      photoCredit:"Foto: Wikimedia Commons.",
+      images:[
+        {url:"/assets/upplev/gallsta/cover.webp",alt:"Runsten vid Gällsta"}
+      ],
+      body:`<p>Vid Gällsta står tre runstenar som omnämner fyra generationer av samma släkt — ristade av Öpir kring 1000-talets slut — plus en fjärde sten med kors men utan inskrift. Ljudguide finns på informationstavlan.</p>
+      <p>Fri entré, alltid öppet. Mer: <a href="https://www.vallentuna.se/runriket/runrikets-platser/gallsta/" target="_blank" rel="noopener">vallentuna.se / Gällsta</a>.</p>`
+    },
+    "Gustavs udde":{
+      address:"Wirséns väg 19, Bällsta",
+      facts:["Kommunalt bad","Brygga","Gräsytor","Bergsjön"],
+      localPhotos:true,
+      photoCredit:"Foto: Naturkartan.",
+      images:[
+        {url:"/assets/upplev/gustavs-udde/cover.webp",alt:"Badplatsen Gustavs udde"}
+      ],
+      body:`<p>En av kommunens skötta badplatser — vid Bergsjön i Bällsta, med brygga och gräsytor. Lugnare alternativ till Kvarnbadets bassänger när du vill ha sjöbad.</p>
+      <p>Vattenkvalitet publiceras via Havs- och vattenmyndigheten. Mer: <a href="https://www.vallentuna.se/fritid-och-kultur/friluftsliv-och-natur/badplatser-och-sjoar/" target="_blank" rel="noopener">vallentuna.se / badplatser</a>.</p>`
+    },
+    "Vallboden":{
+      address:"Centralvägen 6, Vallentuna centrum",
+      facts:["Keramik","Hantverk","Lokalt"],
+      localPhotos:true,
+      images:[
+        {url:"/assets/upplev/vallboden/cover.webp",alt:"Vallboden — keramik och hantverk"}
+      ],
+      body:`<p>Liten butik med keramik och hantverk i centrum — personligt urval och lokala händer bakom hyllorna. Titta in när du ändå är på Centralvägen.</p>
+      <p>Öppettider kan variera — kolla skylt eller fråga i området innan du åker långt.</p>`
+    },
+    "Gästis Kök & Bar":{
+      address:"Tuna Torg 5, Vallentuna centrum",
+      facts:["Kök & bar","Tuna Torg","Lokal kvarterskänsla"],
+      localPhotos:true,
+      images:[
+        {url:"/assets/upplev/gastis-kok-och-bar/cover.webp",alt:"Gästis Kök & Bar"}
+      ],
+      body:`<p>Kök och bar vid Tuna Torg — mat och dryck mitt i centrum, med lokal kvarterskänsla. Lunch mån–fre 09–14, helg 12–15; köket stänger 21:00. Fre–lör nattklubb till 01:00.</p>
+      <p>Öppet mån–tors 09–22, fre 09–01, lör 12–01, sön 12–22 enligt gastiskokochbar.se. Tel 08-511 793 40. Webb: <a href="https://gastiskokochbar.se/" target="_blank" rel="noopener">gastiskokochbar.se</a>.</p>`
+    },
+  };
+
+    const cats=[{key:"alla",label:"Allt"},{key:"fika",label:"Fika & Mat"},{key:"gard",label:"Gård & Handelsträdgård"},{key:"natur",label:"Natur & Historia"},{key:"butik",label:"Butik & Kultur"},{key:"loppis",label:"Loppis & Antikt"}];
+
+  const DOW=["SÖN","MÅN","TIS","ONS","TOR","FRE","LÖR"];
+  const MON=["JAN","FEB","MAR","APR","MAJ","JUN","JUL","AUG","SEP","OKT","NOV","DEC"];
+  const typeLabel={fika:"FIKA",gard:"HANDLA LOKALT",butik:"BUTIK",loppis:"LOPPIS",natur:"NATUR"};
+
+  // Editorial category landings (nav + view-kategori)
+  const CATEGORIES={
+    attgora:{
+      key:"attgora", nav:"Att göra", title:"Att göra i Vallentuna",
+      lede:"Handplockade upplevelser i bygden — fika, gårdar, natur och små upptäckter värda en omväg.",
+      types:null, mapKey:"alla"
+    },
+    fika:{
+      key:"fika", nav:"Äta & fika", title:"Äta & fika",
+      lede:"Bagerier, caféer och kök där doften av nybakat och gott kaffe får dig att stanna en stund till.",
+      types:["fika"], mapKey:"fika"
+    },
+    gard:{
+      key:"gard", nav:"Handla lokalt", title:"Handla lokalt",
+      lede:"Gårdsbutiker, handelsträdgårdar, presentshoppar och fynd — stötta dem som får bygden att blomstra.",
+      types:["gard","butik","loppis"], mapKey:"gard"
+    },
+    natur:{
+      key:"natur", nav:"Natur & uteliv", title:"Natur & uteliv",
+      lede:"Spänger, bad, runstenar och öppna landskap — utflykter nära dig när du vill andas ut.",
+      types:["natur"], mapKey:"natur"
+    }
+  };
+  let currentCategory="attgora";
+
+  // Newer listings get a "Nytt"-badge for ~45 days from this date
+  const NEW_SINCE={
+    "Ljuvliga Bakverk":"2026-07-10",
+    "Ellen's Corner":"2026-07-18",
+    "Rookie Café & Restaurang":"2026-07-22",
+    "Antikladan":"2026-06-28",
+    "Grävelsta Gård":"2026-08-02",
+    "Röda Magasinet":"2026-08-02",
+    "Vallentuna kyrka":"2026-08-02",
+    "Gällsta":"2026-08-02",
+    "Gustavs udde":"2026-08-02",
+    "Vallboden":"2026-08-02",
+    "Gästis Kök & Bar":"2026-08-02"
+  };
+
+  const now=new Date();
+  const hour=now.getHours();
+  const minute=now.getMinutes();
+  const month=now.getMonth();
+  const day=now.getDay(); // 0=Sun
+  const todayISO=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}`;
+  const isWeekend=day===0||day===6;
+  const daypart=hour<10?"morgon":hour<14?"lunch":hour<18?"eftermiddag":"kvall";
+
+  const holidayToday=swedishHoliday(now);
+  const DOW_FULL=["söndag","måndag","tisdag","onsdag","torsdag","fredag","lördag"];
+  const TAG_LABEL={barn:"Barnvänligt",hund:"Hund",rullstol:"Rullstol",ute:"Uteservering",gratis:"Gratis",inomhus:"Inomhus"};
+  const SEARCH_FILTERS=[
+    {key:"open",label:"Öppet nu"},
+    {key:"barn",label:"Barnvänligt"},
+    {key:"hund",label:"Hund"},
+    {key:"rullstol",label:"Rullstol"},
+    {key:"ute",label:"Uteservering"},
+    {key:"gratis",label:"Gratis"}
+  ];
+
+  function metaOf(p){return PLACE_META[p.name]||{};}
+  function daySlot(p,d=day){
+    return libDaySlot(p, metaOf(p), d, now);
+  }
+  function isHolidayClosed(p,d){
+    // Guard: Array#filter passes (el, index) — never treat a number as a Date.
+    if(!(d instanceof Date)) d=now;
+    const hol=swedishHoliday(d);
+    if(!hol) return false;
+    const m=metaOf(p);
+    if(m.holidayClosed===false) return false;
+    // always-open outdoor sites stay open
+    if(daySlot(p,d.getDay())===A) return false;
+    return !!hol && m.holidayClosed!==false && !!m.hours;
+  }
+  function isOpen(p,at){
+    if(!(at instanceof Date)) at=now;
+    return isOpenAt(p, metaOf(p), at);
+  }
+  function minutesUntilClose(p){
+    if(isHolidayClosed(p)) return -1;
+    if(!isOpen(p)) return -1;
+    const mins=hour*60+minute;
+    const slot=daySlot(p);
+    if(slot===A) return Infinity;
+    if(slot && mins>=slot.o*60 && mins<slot.c*60) return (slot.c*60)-mins;
+    const prev=daySlot(p,(day+6)%7);
+    if(prev && prev!==A && prev.c>24 && mins<(prev.c-24)*60) return (prev.c-24)*60-mins;
+    return -1;
+  }
+  function isClosingSoon(p){const m=minutesUntilClose(p);return m>0&&m<=75;}
+  function fmtHoursSlot(slot){
+    if(slot===A) return "Öppet dygnet runt";
+    if(!slot) return "Stängt";
+    const closeH=slot.c>24?slot.c-24:slot.c;
+    const suffix=slot.c>24?" (natt)":"";
+    return `${String(slot.o).padStart(2,"0")}:00 – ${String(closeH).padStart(2,"0")}:00${suffix}`;
+  }
+  function hoursTableHTML(p){
+    const m=metaOf(p);
+    const rows=DOW_FULL.map((name,i)=>{
+      const slot=daySlot(p,i);
+      const cls=[i===day?"today":"",!slot&&slot!==A?"closed":""].filter(Boolean).join(" ");
+      return `<tr class="${cls}"><td>${name}</td><td>${fmtHoursSlot(slot)}</td></tr>`;
+    }).join("");
+    let note=`<p class="hours-disclaimer">Öppettider kan ändras — dubbelkolla med stället innan du åker.</p>`;
+    if(holidayToday) note+=`<div class="sun-note" style="margin-top:8px">Idag är det <strong>${holidayToday}</strong>${isHolidayClosed(p)?" — vi antar stängt (röda dagar).":" — kolla gärna med stället."}</div>`;
+    if(m.seasonNote) note+=`<div class="sun-note" style="margin-top:6px">${m.seasonNote}</div>`;
+    return `<table class="hours-table"><tbody>${rows}</tbody></table>${note}`;
+  }
+  function sourcesHTML(p){
+    const m=metaOf(p);
+    const src=(m.sources||[]).map(s=>s.url?`<a href="${s.url}" target="_blank" rel="noopener">${s.label}</a>`:s.label).join(" · ");
+    const upd=m.updated?`Senast uppdaterad <strong>${m.updated}</strong>. `:"";
+    return `<div class="source-box">${upd}${src?`Källor: ${src}. `:""}Öppettider kan ändras. Ser du fel? <a href="#" onclick="openReport();return false">Rapportera</a>.</div>`;
+  }
+  function isNewPlace(p){
+    const s=NEW_SINCE[p.name]; if(!s) return false;
+    const added=new Date(s+"T12:00:00");
+    return (now-added)/(1000*60*60*24) <= 45;
+  }
+  function haversineKm(a,b,c,d){
+    const R=6371,toR=x=>x*Math.PI/180;
+    const dLat=toR(c-a),dLon=toR(d-b);
+    const x=Math.sin(dLat/2)**2+Math.cos(toR(a))*Math.cos(toR(c))*Math.sin(dLon/2)**2;
+    return 2*R*Math.asin(Math.sqrt(x));
+  }
+  function fmtDist(km){
+    if(km==null) return "";
+    if(km<1) return Math.round(km*1000)+" m";
+    return km.toFixed(1).replace(".",",")+" km";
+  }
+
+  const liveEvents=events.filter(e=>e.date>=todayISO).sort((a,b)=>a.date.localeCompare(b.date));
+  const eventsToday=liveEvents.filter(e=>e.date===todayISO);
+  const eventsByHost={};liveEvents.forEach(e=>{(eventsByHost[e.host]=eventsByHost[e.host]||[]).push(e);});
+  function trackEvent(n,l){if(window.umami){try{umami.track(n,{label:l});}catch(e){}}}
+
+  // UX-TEST-V1 mobile nav
+  function toggleMobileNav(open){
+    const bg=document.getElementById("mnavBg");
+    const nav=document.getElementById("mobileNav");
+    const btn=document.getElementById("menuToggle");
+    if(!bg||!nav) return;
+    const on=!!open;
+    bg.hidden=!on; nav.hidden=!on;
+    bg.classList.toggle("on",on); nav.classList.toggle("on",on);
+    document.body.classList.toggle("mnav-open",on);
+    if(btn){ btn.setAttribute("aria-expanded", on?"true":"false"); btn.setAttribute("aria-label", on?"Stäng meny":"Öppna meny"); }
+    if(on){ const c=nav.querySelector(".mnav-close"); if(c) c.focus(); }
+  }
+  function mobileGo(fn){ toggleMobileNav(false); try{ fn(); }catch(e){} }
+  document.addEventListener("keydown",e=>{ if(e.key==="Escape") toggleMobileNav(false); });
+
+  // ---- localStorage: favorites, last visit, soft interest ----
+  const LS_FAV="vii_favs_v1", LS_LAST="vii_last_place_v1", LS_INTEREST="vii_interest_v1", LS_GEO_ASKED="vii_geo_asked_v1";
+  const LS_LISTS="uv_lists_v1", LS_PENDING="uv_pending_events_v1", LS_REPORTS="uv_reports_v1", LS_NOTIFY="uv_notify_seen_v1";
+  function loadJSON(k,fb){try{return JSON.parse(localStorage.getItem(k))??fb;}catch(e){return fb;}}
+  function saveJSON(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+  let favorites=new Set(loadJSON(LS_FAV,[]));
+  let interest=loadJSON(LS_INTEREST,{}); // place -> {saves, views}
+  let userPos=null; // {lat,lng}
+  let openNowOnly=false, favOnly=false;
+  let ctx={mood:"mild",temp:null,sunset:null,sunrise:null,code:null};
+  let searchFilters=new Set();
+  let activeListId=null;
+  let routeSeed=0;
+  /** Place names already shown higher on the homepage — keep later blocks varied */
+  let homeShownNames=new Set();
+  let map,markers=[];
+  let active="alla";
+  let miniMap=null, lastViewBeforePlats='start';
+  let lists=loadJSON(LS_LISTS,null);
+  if(!lists||!Array.isArray(lists)||!lists.length){
+    lists=[
+      {id:"kids",name:"Helg med kids",places:["Kvarnbadet","Gustavs udde","Vallentuna Kulturhus","Angarnssjöängen"]},
+      {id:"hund",name:"Utflykt med hund",places:["Angarnssjöängen","Toftesta Holme","Gustavs udde","Vallentuna Naturreservat"]}
+    ];
+    saveJSON(LS_LISTS,lists);
+  }
+  function originLatLng(){
+    if(userPos) return [userPos.lat,userPos.lng];
+    return CONFIG.center;
+  }
+  function distToPlace(p){
+    const [la,ln]=originLatLng();
+    return haversineKm(la,ln,p.lat,p.lng);
+  }
+  function travelEstimate(p){
+    const km=distToPlace(p);
+    const car=Math.max(3,Math.round(km/45*60));
+    const bike=Math.max(5,Math.round(km/15*60));
+    const sl=Math.max(12,Math.round(km/22*60)+8);
+    return {km,car,bike,sl,fromUser:!!userPos};
+  }
+  function travelHTML(p){
+    const t=travelEstimate(p);
+    const from=t.fromUser?"från dig":"från centrum";
+    return `<strong>${fmtDist(t.km)}</strong> ${from}<br>Bil ~${t.car} min · Cykel ~${t.bike} min · SL ~${t.sl} min`;
+  }
+  function placeTags(p){return metaOf(p).tags||[];}
+  function hasTag(p,t){return placeTags(p).includes(t);}
+
+  function bumpInterest(name,kind){
+    if(!interest[name]) interest[name]={saves:0,views:0};
+    interest[name][kind]=(interest[name][kind]||0)+1;
+    saveJSON(LS_INTEREST,interest);
+  }
+  function interestLabel(name){
+    const n=(interest[name]?.saves||0)+(interest[name]?.views||0);
+    if(n>=3) return "Populärt hos dig just nu";
+    if(favorites.has(name)) return "Sparad av dig";
+    return "";
+  }
+  function updateFavBadge(){
+    const el=document.getElementById('favCountBadge');
+    if(!el) return;
+    if(favorites.size){el.hidden=false;el.textContent=String(favorites.size);}
+    else el.hidden=true;
+  }
+  function toggleFavorite(name){
+    if(favorites.has(name)) favorites.delete(name);
+    else {favorites.add(name);bumpInterest(name,"saves");}
+    saveJSON(LS_FAV,[...favorites]);
+    updateFavBadge();
+    trackEvent(favorites.has(name)?'fav-add':'fav-remove',name);
+    renderFavorites();
+    refreshPulse();
+    return favorites.has(name);
+  }
+  function toggleFavFromPlats(){
+    const name=document.getElementById('platsName')?.textContent;
+    if(!name) return;
+    const on=toggleFavorite(name);
+    const btn=document.getElementById('platsFavBtn');
+    if(btn){btn.classList.toggle('on',on);btn.textContent=on?'♥ Sparad':'♡ Spara som favorit';}
+  }
+
+  // Municipal / local rhythms (soft editorial cues)
+  function municipalRhythm(){
+    if(day===2 && month>=4 && month<=8) return {text:"Tisdag i Brottby — bilträff-känsla vid Össby Handelsträdgård.",place:"Össby Handelsträdgård"};
+    if(day===6) return {text:"Lördag i bygden — bra dag för fika, torgkänsla och fynd.",place:null};
+    if(day===0) return {text:"Söndagsutflykt? Gårdar, natur och lugnare tempo.",place:null};
+    if(daypart==="lunch") return {text:"Lunchrundan: flera kök i centrum har öppet nu.",place:null};
+    if(holidayToday) return {text:holidayToday+" i "+K+" — kolla öppettider innan du åker.",place:null};
+    return null;
+  }
+
+  function daypartTypes(){
+    if(daypart==="morgon") return ["fika","gard"];
+    if(daypart==="lunch") return ["fika"];
+    if(daypart==="eftermiddag") return isWeekend?["natur","gard","loppis","fika"]:["butik","gard","fika"];
+    return isWeekend?["fika","natur"]:["fika","butik"]; // kväll — planera / öppet sent
+  }
+
+  function scorePlace(p){
+    let s=0;
+    const reasons=[];
+    const open=isOpen(p);
+    const soon=isClosingSoon(p);
+    const mins=minutesUntilClose(p);
+    if(open){s+=40;reasons.push("Öppet nu");}
+    else {s-=25;}
+    if(soon){s+=8;reasons.push("Stänger snart");}
+    if(daypartTypes().includes(p.type)){
+      s+=18;
+      let fit=
+        daypart==="morgon"?"Passar morgonen":
+        daypart==="lunch"?"Bra till lunch":
+        daypart==="eftermiddag"?"Passar eftermiddagen":
+        (open?"Kvällsläge":"Planera kvällen");
+      // Avoid contradicting "Öppet nu" with a second open-status reason
+      if(fit && !(open && (fit==="Kvällsläge"))) reasons.push(fit);
+    }
+    if(isWeekend && ["natur","gard","loppis","fika"].includes(p.type)){s+=12;reasons.push("Helgläge");}
+    if(!isWeekend && ["fika","butik"].includes(p.type) && daypart==="lunch"){s+=8;}
+    if(ctx.mood==="nice" && ["natur","gard","loppis"].includes(p.type)){s+=16;reasons.push("Vädret bjuder ut");}
+    if(ctx.mood==="rough" && ["fika","butik"].includes(p.type)){s+=16;reasons.push("Mysigt inomhus");}
+    if(ctx.mood==="mild" && open){s+=4;}
+    if(eventsByHost[p.name]?.some(e=>e.date===todayISO)){s+=22;reasons.push("Event idag");}
+    if(isNewPlace(p)){s+=6;reasons.push("Nytt i guiden");}
+    if(favorites.has(p.name)){s+=10;reasons.push("Din favorit");}
+    if(userPos){
+      const km=haversineKm(userPos.lat,userPos.lng,p.lat,p.lng);
+      p._km=km;
+      if(km<1.2){s+=20;reasons.push(fmtDist(km)+" bort");}
+      else if(km<4){s+=10;reasons.push(fmtDist(km)+" bort");}
+      else if(km<10){s+=4;}
+      else {s-=6;}
+    } else {p._km=null;}
+    // Soft sunset boost for nature in evening light window
+    if(p.type==="natur" && ctx.sunset){
+      const [sh,sm]=ctx.sunset.split(":").map(Number);
+      const sunsetMin=sh*60+sm;
+      const nowMin=hour*60+minute;
+      if(nowMin>=sunsetMin-120 && nowMin<=sunsetMin+20){s+=10;reasons.push("Fint ljus fram till skymning");}
+    }
+    if(mins>0 && mins<40){reasons[0]=`Stänger om ${mins} min`;}
+    return {score:s,reasons:reasons.slice(0,2),open,soon,mins};
+  }
+
+  function rankedPlaces(){
+    return places.map(p=>({p,...scorePlace(p)})).sort((a,b)=>b.score-a.score);
+  }
+
+  document.title="Upptäck "+K;
+  const S=(id,t)=>{const e=document.getElementById(id);if(e)e.textContent=t;};
+  S('brandKommun',K);S('handerKommun',K);S('wPlace',K);
+  S('seasonHeading',"I säsong just nu");
+  S('footTag',"Tillsammans gör vi "+K+" levande.");S('omKommun',K);
+  {const y=document.getElementById('footYear'); if(y) y.textContent=String(now.getFullYear());}
+  S('omLede',"Jag heter Juha. Jag är egentligen Sundsvallsbo, men har bott i södra Stockholm i snart femton år.");
+  const omBody=document.getElementById('omBody');
+  if(omBody){omBody.innerHTML=`
+    <p>När vi började längta efter något annat blev det till slut ${K} — här finns något som påminner mig om hemma. Ett lugn, en närhet, en känsla av att bygden faktiskt är en bygd.</p>
+    <p>Jag minns dagen vi hade skrivit på för huset. Vi svängde förbi Ica i centrum, och på väg tillbaka till bilen stod en liten handskriven skylt:</p>
+    <p class="om-quote">“Hönsfoder säljes, ring…”</p>
+    <p>Något så enkelt — men både jag och min fru kände det direkt. Det var äkta. En påminnelse om något jordnära och mänskligt som sakta håller på att försvinna. Och som är värt att hålla fast vid.</p>
+    <p>Det är därför den här sidan finns. Google visar dig kedjorna och det du redan vet att du ska. Men bagaren som är uppe klockan fyra för surdegen, gårdsbutiken där du betalar i en burk på förtroende, runstenarna vid sjön som stått där i tusen år — och skylten om hönsfodret — det hittar du inte där.</p>
+    <p>Upptäck ${K} är min lilla insats: en handplockad karta över det lokala, det äkta, det värda att stötta. Ingen katalog, inga annonser — bara ställen jag själv tycker om, beskrivna med omsorg. Den är och förblir gratis, för både dig och verksamheterna. Mitt enda syfte är att lyfta det som gör ${K} till ${K}.</p>
+    <p>Så: välkommen. Ge dig ut, hälsa på grannen, upptäck något du inte visste fanns.</p>
+    <p class="om-sign">— Juha</p>`;}
+
+  let greet;
+  if(holidayToday){greet=holidayToday+" i "+K;}
+  else if(hour<10){greet="God morgon, "+K;}
+  else if(hour<14){greet=isWeekend?"Helglunch i bygden":"Lunchdags i bygden";}
+  else if(hour<18){greet=isWeekend?"Helgeftermiddag i "+K:"Eftermiddag i "+K;}
+  else {greet="God kväll, "+K;}
+  S('heroGreet',greet);
+  const heroTitleEl=document.getElementById('heroTitle');
+  if(heroTitleEl) heroTitleEl.textContent="Vad vill du upptäcka idag?";
+  S('heroTagline',"Smultronställen · Fika · Natur · Evenemang");
+  const heroSubBase="Handplockade lokala favoriter — inte kedjorna du redan känner till.";
+  S('heroSub', isWeekend ? "Helgläge: utflykter, fika och det som gör bygden levande — nära dig." : heroSubBase);
+  updateFavBadge();
+
+  // Return visit memory
+  (function showReturn(){
+    const last=loadJSON(LS_LAST,null);
+    if(!last?.name) return;
+    const p=places.find(x=>x.name===last.name); if(!p) return;
+    const open=isOpen(p);
+    const banner=document.getElementById('returnBanner');
+    const text=document.getElementById('returnText');
+    const btn=document.getElementById('returnBtn');
+    if(!banner||!text||!btn) return;
+    const when=last.at?new Date(last.at):null;
+    const whenStr=when?when.toLocaleDateString("sv-SE",{weekday:"short",day:"numeric",month:"short"}):"";
+    text.innerHTML=`Senast tittade du på <strong>${p.name}</strong>${whenStr?" ("+whenStr+")":""} — ${open?"öppet nu":"stängt just nu"}${p.ch&&open?`, till ${String(p.ch).padStart(2,"0")}:00`:""}.`;
+    btn.onclick=()=>openPlace(p.name);
+    banner.hidden=false;
+  })();
+
+  // ---- Botanical SVGs for season cards ----
+  const BOTANICALS={
+    berry:`<svg width="90" height="90" viewBox="0 0 90 90" fill="none"><circle cx="30" cy="48" r="8" stroke="currentColor" stroke-width="1.4"/><circle cx="44" cy="40" r="8" stroke="currentColor" stroke-width="1.4"/><circle cx="48" cy="56" r="8" stroke="currentColor" stroke-width="1.4"/><path d="M36 28c8-14 22-16 30-10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M52 22c6 2 10 8 10 14" stroke="currentColor" stroke-width="1.3"/></svg>`,
+    leaf:`<svg width="90" height="90" viewBox="0 0 90 90" fill="none"><path d="M20 62c8-28 28-42 52-46-2 26-14 48-40 58-6-2-10-6-12-12z" stroke="currentColor" stroke-width="1.4"/><path d="M28 58c14-10 28-28 36-44" stroke="currentColor" stroke-width="1.2"/></svg>`,
+    stalk:`<svg width="90" height="90" viewBox="0 0 90 90" fill="none"><path d="M40 78V28" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M40 48c-12-4-18-14-16-24" stroke="currentColor" stroke-width="1.3"/><path d="M40 40c12-2 20-10 22-20" stroke="currentColor" stroke-width="1.3"/><path d="M34 24c4-8 10-12 18-12" stroke="currentColor" stroke-width="1.3"/></svg>`
+  };
+
+  function seasonCards(){
+    if(month>=2&&month<=4){
+      return [
+        {title:"Första grönskan",text:"Vitsippor, fågelsång och de första promenaderna i Angarn.",img:"/assets/upplev/angarnsjoangen/cover.webp",link:"Se naturpärlor →",type:"natur",bot:"leaf"},
+        {title:"Ägg från gården",text:"Frigående höns och vårens första leveranser i gårdsbodarna.",img:"/assets/upplev/gravelsta-gard/cover.webp",link:"Se var du kan köpa →",type:"gard",bot:"stalk"},
+        {title:"Rabarber och första skörden",text:"Syrligt, rosa och alldeles vårigt — fyll korgen.",img:"/assets/upplev/markims-bergby/cover.webp",link:"Hitta gårdsbutiker →",type:"gard",bot:"berry"}
+      ];
+    }
+    if(month>=5&&month<=7){
+      return [
+        {title:"Svenska jordgubbar",text:"Säsongens sötaste — plocka eller köp lokalt.",img:"/assets/upplev/orkesta-granby-gard/cover.webp",link:"Se var du kan köpa →",type:"gard",bot:"berry"},
+        {title:"Vandra i grönskan",text:"Spänger, fågelliv och öppna landskap nära dig.",img:"/assets/upplev/angarnsjoangen/cover.webp",link:"Utforska natur →",type:"natur",bot:"leaf"},
+        {title:"Uteserveringarnas tid",text:"Långa ljusa kvällar och fika under öppet himlavalv.",img:"/assets/upplev/vallentuna-stenugnsbageri/cover.webp",link:"Hitta fik →",type:"fika",bot:"stalk"}
+      ];
+    }
+    if(month>=8&&month<=9){
+      return [
+        {title:"Skördens tid",text:"Rotfrukter, äpplen och honung direkt från gården.",img:"/assets/upplev/gravelsta-gard/cover.webp",link:"Se var du kan köpa →",type:"gard",bot:"stalk"},
+        {title:"Svamppromenad",text:"Skogar och stigar när luften blir krispig.",img:"/assets/upplev/vallentuna-naturreservat/cover.webp",link:"Utforska natur →",type:"natur",bot:"leaf"},
+        {title:"Höstfika",text:"Kanel, kardemumma och nybakat ur stenugnen.",img:"/assets/upplev/vallentuna-stenugnsbageri/cover.webp",link:"Hitta bagerier →",type:"fika",bot:"berry"}
+      ];
+    }
+    return [
+      {title:"Värm dig lokalt",text:"Nybakat ur stenugnen när mörkret faller.",img:"/assets/upplev/vallentuna-stenugnsbageri/cover.webp",link:"Hitta fik →",type:"fika",bot:"berry"},
+      {title:"Julmarknadskänsla",text:"Små evenemang, ljus och lokala smaker.",img:"/assets/hero/2.webp",link:"Se evenemang →",type:"hander",bot:"leaf"},
+      {title:"Handla nära",text:"Presenttips och hantverk från bygdens verkstäder.",img:"/assets/upplev/lejonkulan-presenter-och-inredning/cover.webp",link:"Utforska butiker →",type:"butik",bot:"stalk"}
+    ];
+  }
+
+  // Season tips live in the hero "Just nu"-panel — no duplicate strip on the homepage.
+  const seasonStrip=document.getElementById('seasonStrip');
+  if(seasonStrip){
+    seasonStrip.innerHTML=seasonCards().map(s=>`
+      <article class="season" onclick="${s.type==='hander'?"showView('hander')":(CATEGORIES[s.type]?`openCategory('${s.type}')`:`filterAndMap('${s.type}')`)}">
+        <div class="im" style="background-image:url('${s.img}')" role="img" aria-label="${s.title}"></div>
+        <div class="bd">
+          <h3>${s.title}</h3>
+          <p>${s.text}</p>
+          <span class="lnk">${s.link}</span>
+        </div>
+        <div class="botanical" aria-hidden="true">${BOTANICALS[s.bot]||BOTANICALS.leaf}</div>
+      </article>`).join('');
+  }
+
+  /** Escape for single-quoted JS string in HTML onclick attributes */
+  function jsEsc(s){
+    return String(s||"").replace(/\\/g,"\\\\").replace(/'/g,"\\'");
+  }
+  function eventKeyAttr(e){
+    return jsEsc(e.title+"||"+e.date);
+  }
+  function resolveHostPlace(host){
+    const h=String(host||"").trim();
+    if(!h) return null;
+    const exact=places.find(p=>p.name===h);
+    if(exact) return exact;
+    const hits=places.filter(p=>h.includes(p.name)||p.name.includes(h));
+    if(!hits.length) return null;
+    return hits.sort((a,b)=>b.name.length-a.name.length)[0];
+  }
+  function eventHostActionHTML(e){
+    const hostPlace=resolveHostPlace(e.host);
+    if(hostPlace){
+      return `<button type="button" class="btn-ghost-ink" onclick="closeEventModal();openPlace('${jsEsc(hostPlace.name)}')">Visa ${escHtml(hostPlace.name)} →</button>`;
+    }
+    if(e.source){
+      return `<a class="btn-ghost-ink" href="${String(e.source).replace(/"/g,"&quot;")}" target="_blank" rel="noopener" onclick="trackEvent('event-source','${jsEsc(e.title)}')">Mer info →</a>`;
+    }
+    const q=encodeURIComponent(e.host+", Vallentuna");
+    return `<a class="btn-ghost-ink" href="https://www.google.com/maps/search/?api=1&query=${q}" target="_blank" rel="noopener">Hitta platsen →</a>`;
+  }
+  function remindBtnHTML(e){
+    return `<button type="button" class="remind-btn" data-remind onclick="event.stopPropagation();openRemindChooser(event,'${eventKeyAttr(e)}')">Påminn mig</button>`;
+  }
+  function eventCard(e,withFav){
+    const d=new Date(e.date+"T12:00:00");
+    const isFavHost=favorites.has(e.host);
+    const hostEsc=jsEsc(e.host);
+    const keyAttr=eventKeyAttr(e);
+    const fav=withFav?`<button class="fav ${isFavHost?'on':''}" type="button" aria-label="Spara favorit" onclick="event.stopPropagation();toggleFavorite('${hostEsc}');this.classList.toggle('on',favorites.has('${hostEsc}'))"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 20s-7-4.35-7-9.2A3.8 3.8 0 0 1 12 7.1a3.8 3.8 0 0 1 7 3.7C19 15.65 12 20 12 20z" stroke="currentColor" stroke-width="1.7"/></svg></button>`:"";
+    return `<article class="ev" role="button" tabindex="0" onclick="openEvent('${keyAttr}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openEvent('${keyAttr}')}">
+      <div class="media">
+        <div class="thumb" style="background-image:url('${e.img}')" role="img" aria-label="${e.title.replace(/"/g,"&quot;")}"></div>
+        <div class="date"><span class="dow">${DOW[d.getDay()]}</span><span class="d">${d.getDate()}</span><span class="m">${MON[d.getMonth()]}</span></div>
+        ${fav}
+      </div>
+      <div class="bd">
+        <h3>${e.title}</h3>
+        <div class="meta">
+          <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s6-5.2 6-10a6 6 0 1 0-12 0c0 4.8 6 10 6 10z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="11" r="2" stroke="currentColor" stroke-width="2"/></svg>${e.host}</span>
+          <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2"/><path d="M12 8v4l2.5 2.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>${e.time||e.when}</span>
+        </div>
+        <div class="tag">${e.date===todayISO?"IDAG · ":""}${e.cat||"EVENEMANG"}</div>
+        ${remindBtnHTML(e)}
+      </div>
+    </article>`;
+  }
+
+  let eventModalKey=null;
+  function openEvent(key){
+    const e=findEventByKey(key);
+    if(!e) return;
+    eventModalKey=key;
+    const d=new Date(e.date+"T12:00:00");
+    const modal=document.getElementById('eventModal');
+    const hero=document.getElementById('eventModalHero');
+    const dateEl=document.getElementById('eventModalDate');
+    const rich=EVENT_CONTENT[e.title];
+    const hostPlace=resolveHostPlace(e.host);
+    if(hero) hero.style.backgroundImage=`url('${e.img}')`;
+    if(dateEl) dateEl.innerHTML=`<span class="dow">${DOW[d.getDay()]}</span><span class="d">${d.getDate()}</span><span class="m">${MON[d.getMonth()]}</span>`;
+    const cat=document.getElementById('eventModalCat');
+    if(cat) cat.textContent=(e.date===todayISO?"IDAG · ":"")+(e.cat||"EVENEMANG");
+    const title=document.getElementById('eventModalTitle');
+    if(title) title.textContent=e.title;
+    const meta=document.getElementById('eventModalMeta');
+    if(meta){
+      meta.innerHTML=`
+        <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s6-5.2 6-10a6 6 0 1 0-12 0c0 4.8 6 10 6 10z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="11" r="2" stroke="currentColor" stroke-width="2"/></svg>${escHtml(e.host)}${hostPlace&&hostPlace.short?" · "+escHtml(hostPlace.short):""}</span>
+        <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2"/><path d="M12 8v4l2.5 2.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>${escHtml(e.when||e.time||e.date)}</span>
+        ${e.time&&e.when&&e.time!==e.when?`<span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Klockslag: ${escHtml(e.time)}</span>`:""}`;
+    }
+    const note=document.getElementById('eventModalNote');
+    if(note){
+      note.textContent=e.note||"";
+      note.hidden=!e.note;
+    }
+    const body=document.getElementById('eventModalBody');
+    if(body){
+      body.innerHTML=rich?.body||"";
+      body.hidden=!rich?.body;
+    }
+    const actions=document.getElementById('eventModalActions');
+    if(actions){
+      actions.innerHTML=`
+        <button type="button" class="btn-primary" data-remind onclick="openRemindChooser(event,'${eventKeyAttr(e)}')">Påminn mig</button>
+        ${eventHostActionHTML(e)}`;
+    }
+    if(modal){
+      modal.hidden=false;
+      modal.classList.add('on');
+      document.body.style.overflow="hidden";
+      modal.querySelector('.em-close')?.focus();
+    }
+    trackEvent('event-open', e.title);
+  }
+  function closeEventModal(){
+    const modal=document.getElementById('eventModal');
+    if(!modal) return;
+    modal.classList.remove('on');
+    modal.hidden=true;
+    document.body.style.overflow="";
+    eventModalKey=null;
+  }
+  document.getElementById('eventModal')?.addEventListener('click',(ev)=>{
+    if(ev.target.id==='eventModal') closeEventModal();
+  });
+  // Calendar reminder (.ics + Google Calendar) — client-side only
+  let remindEventRef=null;
+  function findEventByKey(key){
+    const [title,date]=String(key||"").split("||");
+    return liveEvents.find(ev=>ev.title===title && ev.date===date) || events.find(ev=>ev.title===title && ev.date===date) || null;
+  }
+  function parseEventBounds(e){
+    const m=String(e.time||"").match(/(\d{1,2}):(\d{2})\s*[–\-—]\s*(\d{1,2}):(\d{2})/);
+    const sh=m?String(m[1]).padStart(2,"0"):"10";
+    const sm=m?m[2]:"00";
+    const eh=m?String(m[3]).padStart(2,"0"):"12";
+    const em=m?m[4]:"00";
+    const startLocal=`${e.date.replace(/-/g,"")}T${sh}${sm}00`;
+    const endLocal=`${e.date.replace(/-/g,"")}T${eh}${em}00`;
+    return {startLocal,endLocal};
+  }
+  function icsEscape(s){
+    return String(s||"").replace(/\\/g,"\\\\").replace(/\n/g,"\\n").replace(/,/g,"\\,").replace(/;/g,"\\;");
+  }
+  function buildIcs(e){
+    const {startLocal,endLocal}=parseEventBounds(e);
+    const stamp=new Date().toISOString().replace(/[-:]/g,"").replace(/\.\d{3}Z$/,"Z");
+    const uid=`${e.date}-${e.title}`.toLowerCase().replace(/[^a-z0-9]+/g,"-")+"@upptack-vallentuna";
+    const desc=[e.note||"",e.when?`Tid: ${e.when}`:"",`Värd: ${e.host}`,"— Upptäck Vallentuna"].filter(Boolean).join("\n");
+    return [
+      "BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Upptack Vallentuna//SV","CALSCALE:GREGORIAN","METHOD:PUBLISH",
+      "BEGIN:VEVENT",
+      "UID:"+uid,
+      "DTSTAMP:"+stamp,
+      "DTSTART;TZID=Europe/Stockholm:"+startLocal,
+      "DTEND;TZID=Europe/Stockholm:"+endLocal,
+      "SUMMARY:"+icsEscape(e.title),
+      "LOCATION:"+icsEscape(e.host+", Vallentuna"),
+      "DESCRIPTION:"+icsEscape(desc),
+      "END:VEVENT","END:VCALENDAR"
+    ].join("\r\n");
+  }
+  function googleCalUrl(e){
+    const {startLocal,endLocal}=parseEventBounds(e);
+    const params=new URLSearchParams({
+      action:"TEMPLATE",
+      text:e.title,
+      dates:`${startLocal}/${endLocal}`,
+      details:[e.note||"",e.when?`Tid: ${e.when}`:"","— Upptäck Vallentuna"].filter(Boolean).join("\n"),
+      location:e.host+", Vallentuna"
+    });
+    return "https://calendar.google.com/calendar/render?"+params.toString();
+  }
+  function downloadIcs(e){
+    const blob=new Blob([buildIcs(e)],{type:"text/calendar;charset=utf-8"});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a");
+    a.href=url;
+    a.download=(e.title||"event").toLowerCase().replace(/[^a-z0-9åäö]+/gi,"-").replace(/^-|-$/g,"")+".ics";
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),1500);
+  }
+  function closeRemindChooser(){
+    const pop=document.getElementById('remindPop');
+    if(!pop) return;
+    pop.classList.remove('on');
+    pop.hidden=true;
+    remindEventRef=null;
+  }
+  function openRemindChooser(domEvent,key){
+    if(domEvent){
+      domEvent.preventDefault?.();
+      domEvent.stopPropagation?.();
+    }
+    const e=findEventByKey(key); if(!e) return;
+    remindEventRef=e;
+    trackEvent('reminder', e.title);
+    const pop=document.getElementById('remindPop'); if(!pop) return;
+    const g=document.getElementById('remindGcal');
+    if(g) g.href=googleCalUrl(e);
+    pop.hidden=false;
+    pop.classList.add('on');
+    const anchor=domEvent?.currentTarget;
+    const r=anchor?.getBoundingClientRect?.() || {left:16,bottom:window.innerHeight/2,top:window.innerHeight/2};
+    const pw=Math.min(260, window.innerWidth-24), ph=130;
+    let left=Math.min(window.innerWidth-pw-12, Math.max(12, r.left));
+    let top=r.bottom+8;
+    if(top+ph>window.innerHeight-12) top=Math.max(12, r.top-ph-8);
+    pop.style.left=left+"px";
+    pop.style.top=top+"px";
+    pop.style.width=pw+"px";
+  }
+  document.getElementById('remindIcs')?.addEventListener('click',()=>{
+    if(remindEventRef) downloadIcs(remindEventRef);
+    closeRemindChooser();
+  });
+  document.getElementById('remindGcal')?.addEventListener('click',()=>setTimeout(closeRemindChooser,80));
+  document.addEventListener('click',(ev)=>{
+    const pop=document.getElementById('remindPop');
+    if(!pop||!pop.classList.contains('on')) return;
+    if(pop.contains(ev.target)||ev.target.closest?.('[data-remind]')) return;
+    closeRemindChooser();
+  });
+  document.addEventListener('keydown',(ev)=>{
+    if(ev.key!=='Escape') return;
+    const pop=document.getElementById('remindPop');
+    if(pop?.classList.contains('on')){ closeRemindChooser(); return; }
+    closeEventModal();
+  });
+
+  // Hero image carousel — images only; copy/CTA untouched
+  const HERO_FALLBACK="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1800&q=80";
+  const heroImages=[
+    "/assets/hero/1.webp",
+    "/assets/hero/2.webp",
+    "/assets/hero/3.webp",
+    "/assets/hero/4.webp"
+  ];
+  function bootHeroCarousel(){
+    const host=document.getElementById('heroSlides'); if(!host) return;
+    const urls=heroImages.map(u=>(u&&String(u).trim())?u:HERO_FALLBACK);
+    host.innerHTML=urls.map((u,i)=>`<div class="hero-slide${i===0?" on":""}" style="background-image:url('${u}')"></div>`).join("");
+    const reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const allSame=urls.every(u=>u===urls[0]);
+    if(reduce||allSame||urls.length<2) return;
+    let i=0;
+    setInterval(()=>{
+      const slides=host.querySelectorAll(".hero-slide");
+      if(!slides.length) return;
+      slides[i].classList.remove("on");
+      i=(i+1)%slides.length;
+      slides[i].classList.add("on");
+    },5600);
+  }
+  bootHeroCarousel();
+
+  function daysUntil(dateISO){
+    const a=new Date(todayISO+"T12:00:00");
+    const b=new Date(dateISO+"T12:00:00");
+    return Math.round((b-a)/(1000*60*60*24));
+  }
+  function eventFeatureHTML(e){
+    const key=eventKeyAttr(e);
+    const tm=(e.time||e.when||"").match(/(\d{1,2}:\d{2})/);
+    const when=e.date===todayISO
+      ? (tm ? `Idag kl. ${tm[1]}` : "Idag")
+      : (e.when||e.date);
+    return `<article class="ev-feature" onclick="openEvent('${key}')" role="button" tabindex="0"
+      onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openEvent('${key}')}">
+      <div class="im" style="background-image:url('${e.img}')" role="img" aria-hidden="true"></div>
+      <div class="shade"></div>
+      <div class="bd">
+        <div class="when">${when} · ${e.cat||"Evenemang"}</div>
+        <h3>${e.title}</h3>
+        <div class="meta">${e.host||""}${e.note?" — "+e.note:""}</div>
+      </div>
+    </article>`;
+  }
+  function renderHappenHome(){
+    const grid=document.getElementById('happenGrid');
+    const sec=document.getElementById('eventsHomeSec');
+    const why=document.getElementById('happenWhy');
+    if(!grid) return;
+    const pool=[];
+    const seen=new Set();
+    for(const e of [...eventsToday, ...liveEvents]){
+      const k=e.title+"|"+e.date;
+      if(seen.has(k)) continue;
+      seen.add(k);
+      pool.push(e);
+      if(pool.length>=4) break;
+    }
+    if(!pool.length){
+      if(sec) sec.style.display="none";
+      grid.innerHTML="";
+      return;
+    }
+    if(sec) sec.style.display="";
+    const [feat, ...rest]=pool;
+    if(eventsToday.length){
+      S('happenHeading',"Händer i bygden");
+      if(why) why.textContent=eventsToday.length===1?"Ett event idag — och mer i kalendern":`${eventsToday.length} events idag`;
+    } else {
+      const n=daysUntil(feat.date);
+      S('happenHeading',"Händer i bygden");
+      if(why) why.textContent=n===1?"Nästa upp: imorgon":`Nästa upp om ${n} dagar`;
+    }
+    const more=rest.slice(0,2).map(e=>eventCard(e,true)).join("");
+    grid.innerHTML=eventFeatureHTML(feat)+(more?`<div class="happen-more">${more}</div>`:"");
+  }
+  renderHappenHome();
+
+  const manifestoArt=`<img class="botanical" src="/assets/shared/botanical-sprig.png" alt="" width="200" height="300" decoding="async" aria-hidden="true" />`;
+
+  const WEATHER_ICONS={sun:"☀️",cloud:"☁️",part:"⛅",rain:"🌧️",snow:"❄️",fog:"🌫️",storm:"⛈️"};
+  function weatherKind(code){
+    if(code===0)return{k:"sun",t:"Soligt"};
+    if([1,2].includes(code))return{k:"part",t:"Växlande moln"};
+    if(code===3)return{k:"cloud",t:"Mulet"};
+    if([45,48].includes(code))return{k:"fog",t:"Dimma"};
+    if([51,53,55,56,57,61,63,65,66,67,80,81,82].includes(code))return{k:"rain",t:"Regn"};
+    if([71,73,75,77,85,86].includes(code))return{k:"snow",t:"Snö"};
+    if([95,96,99].includes(code))return{k:"storm",t:"Åska"};
+    return{k:"cloud",t:"Blandat"};
+  }
+  function weatherMood(code,temp){
+    const rainy=[51,53,55,56,57,61,63,65,66,67,71,73,75,77,80,81,82,85,86,95,96,99].includes(code);
+    const cold=temp!=null&&temp<8;
+    if(rainy||cold)return "rough";
+    if(code<=2 && temp!=null && temp>=15)return "nice";
+    return "mild";
+  }
+  function statusPill(p){
+    if(isOpen(p)){
+      const m=minutesUntilClose(p);
+      if(m!==Infinity && m<=75) return `<span class="status-pill soon">Stänger om ${m} min</span>`;
+      return `<span class="status-pill open">Öppet nu</span>`;
+    }
+    const meta=metaOf(p);
+    if(meta.hours && meta.hours.every(h=>!h) && meta.seasonNote){
+      return `<span class="status-pill closed">Efter överenskommelse</span>`;
+    }
+    return `<span class="status-pill closed">Stängt</span>`;
+  }
+  function pickToday(){
+    return rankedPlaces().filter(x=>x.open||x.score>10).slice(0,4).map(x=>x.p);
+  }
+  function renderScoreRow(){ /* merged into renderPicks */ }
+  const WEATHER_SVG={
+    sun:`<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4" stroke="#e0a020" stroke-width="1.7"/><path d="M12 3v2.2M12 18.8V21M3 12h2.2M18.8 12H21M5.6 5.6l1.6 1.6M16.8 16.8l1.6 1.6M5.6 18.4l1.6-1.6M16.8 7.2l1.6-1.6" stroke="#e0a020" stroke-width="1.7" stroke-linecap="round"/></svg>`,
+    part:`<svg viewBox="0 0 24 24" fill="none"><circle cx="9.5" cy="10" r="3.2" stroke="#e0a020" stroke-width="1.5"/><path d="M9.5 3.8V5.5M3.8 10H5.5M5.2 5.2l1.2 1.2" stroke="#e0a020" stroke-width="1.5" stroke-linecap="round"/><path d="M8.5 16.5h8.2a3.2 3.2 0 1 0-.6-6.3 4.2 4.2 0 0 0-7.8 1.4A2.7 2.7 0 0 0 8.5 16.5z" stroke="#6b7280" stroke-width="1.5" stroke-linejoin="round"/></svg>`,
+    cloud:`<svg viewBox="0 0 24 24" fill="none"><path d="M7.5 17h9a3.5 3.5 0 1 0-.7-6.9 4.5 4.5 0 0 0-8.5 1.6A3 3 0 0 0 7.5 17z" stroke="#6b7280" stroke-width="1.6" stroke-linejoin="round"/></svg>`,
+    rain:`<svg viewBox="0 0 24 24" fill="none"><path d="M7.5 14.5h9a3.5 3.5 0 1 0-.7-6.9 4.5 4.5 0 0 0-8.5 1.6A3 3 0 0 0 7.5 14.5z" stroke="#5b7c99" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 17.5 8 20M12.5 17.5 11.5 20M16 17.5 15 20" stroke="#5b7c99" stroke-width="1.5" stroke-linecap="round"/></svg>`,
+    snow:`<svg viewBox="0 0 24 24" fill="none"><path d="M7.5 14h9a3.5 3.5 0 1 0-.7-6.9 4.5 4.5 0 0 0-8.5 1.6A3 3 0 0 0 7.5 14z" stroke="#7a8fa6" stroke-width="1.6" stroke-linejoin="round"/><path d="M9.5 17v3M12.5 17v3M15.5 17v3M9.5 18.5h2M13.5 18.5h2" stroke="#7a8fa6" stroke-width="1.4" stroke-linecap="round"/></svg>`,
+    fog:`<svg viewBox="0 0 24 24" fill="none"><path d="M4 10h16M5 13.5h14M7 17h10" stroke="#8a8270" stroke-width="1.6" stroke-linecap="round"/></svg>`,
+    storm:`<svg viewBox="0 0 24 24" fill="none"><path d="M7.5 13.5h9a3.5 3.5 0 1 0-.7-6.9 4.5 4.5 0 0 0-8.5 1.6A3 3 0 0 0 7.5 13.5z" stroke="#5b6070" stroke-width="1.6" stroke-linejoin="round"/><path d="m12 14.5-2 4h3l-1.5 3.5" stroke="#e0a020" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+  };
+  const SEASON_ICO={
+    berry:`<svg viewBox="0 0 24 24" fill="none"><path d="M12 20c0-4 3-7 3-11a3 3 0 1 0-6 0c0 4 3 7 3 11z" fill="#c23b3b"/><path d="M12 9c-1.2-2.2-3.5-3.2-5-3.4.8 2.2 2.4 3.4 5 3.4 2.6 0 4.2-1.2 5-3.4-1.5.2-3.8 1.2-5 3.4z" fill="#3d6b32"/></svg>`,
+    leaf:`<svg viewBox="0 0 24 24" fill="none"><path d="M5 19c6-1 11-6 13-13-7 2-12 7-13 13z" stroke="#3d6b32" stroke-width="1.6" fill="rgba(61,107,50,.12)"/><path d="M6 18c4-4 8-7 12-9" stroke="#3d6b32" stroke-width="1.4" stroke-linecap="round"/></svg>`,
+    stalk:`<svg viewBox="0 0 24 24" fill="none"><path d="M12 21V8" stroke="#3d6b32" stroke-width="1.6" stroke-linecap="round"/><path d="M12 10c-3-2-5-2.5-7-2 1.5 2.5 4 4 7 4.5 3-.5 5.5-2 7-4.5-2 .5-4 1-7 2z" fill="#c8912f" stroke="#a85a3a" stroke-width="1"/></svg>`
+  };
+  let heroSeasonAction=null;
+  let heroEventKey=null;
+  function refreshPulse(){ refreshHeroToday(); }
+  function refreshHeroToday(){
+    const openN=places.filter(isOpen).length;
+    const elOpen=document.getElementById('pulseOpen');
+    const elMsg=document.getElementById('pulseMsg');
+    if(elOpen) elOpen.textContent=`${openN} platser öppna`;
+    if(elMsg) elMsg.textContent=openN?"just nu":"kolla öppettider";
+
+    const ev=eventsToday[0]||liveEvents[0]||null;
+    const evTitle=document.getElementById('heroEventTitle');
+    const evSub=document.getElementById('heroEventSub');
+    const evRow=document.getElementById('heroEventRow');
+    if(ev){
+      heroEventKey=eventKeyAttr(ev);
+      if(evTitle) evTitle.textContent=ev.title;
+      if(evSub){
+        if(ev.date===todayISO){
+          const t=(ev.time||ev.when||"").match(/(\d{1,2}:\d{2})/);
+          evSub.textContent=t?`idag kl. ${t[1]}`:(ev.when||"idag");
+        } else {
+          const n=daysUntil(ev.date);
+          evSub.textContent=n===1?"imorgon":(ev.when||`om ${n} dagar`);
+        }
+      }
+      if(evRow) evRow.hidden=false;
+    } else {
+      heroEventKey=null;
+      if(evTitle) evTitle.textContent="Inga evenemang just nu";
+      if(evSub) evSub.textContent="Se kalendern";
+    }
+
+    const season=seasonCards()[0];
+    const sTitle=document.getElementById('heroSeasonTitle');
+    const sSub=document.getElementById('heroSeasonSub');
+    const sIco=document.getElementById('heroSeasonIco');
+    if(season){
+      if(sTitle) sTitle.textContent=season.title.includes("i säsong")||/jordgubbar|ägg|skörd|svamp|rabarber/i.test(season.title)
+        ? (season.title.toLowerCase().includes("jordgubb")?"Jordgubbar i säsong":season.title)
+        : season.title;
+      if(sSub){
+        if(/jordgubb/i.test(season.title)) sSub.textContent="hos gårdsbutikerna";
+        else if(season.type==="gard") sSub.textContent="hos gårdsbutikerna";
+        else if(season.type==="natur") sSub.textContent="i naturen runt knuten";
+        else if(season.type==="fika") sSub.textContent="hos bygdens fik";
+        else sSub.textContent=season.text.split("—")[0].trim().slice(0,42);
+      }
+      if(sIco) sIco.innerHTML=SEASON_ICO[season.bot]||SEASON_ICO.berry;
+      heroSeasonAction=()=>{
+        if(season.type==="hander") showView('hander');
+        else if(CATEGORIES[season.type]) openCategory(season.type);
+        else filterAndMap(season.type);
+      };
+    }
+  }
+  function heroTodayOpenEvent(){
+    if(heroEventKey) openEvent(heroEventKey);
+    else showView('hander');
+  }
+  function heroTodayOpenSeason(){
+    if(typeof heroSeasonAction==="function") heroSeasonAction();
+    else openCategory('gard');
+  }
+  function heroTodaySeeMore(){
+    const el=document.getElementById('picksHeading');
+    if(el){
+      showView('start');
+      setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'start'}),50);
+    } else openCategory('attgora');
+  }
+  /** Prefer different types so Handplockat doesn't stack three fik. */
+  function selectDiversePicks(count=3){
+    const ranked=rankedPlaces();
+    const openFirst=ranked.filter(x=>x.open);
+    const pool=openFirst.length?openFirst:ranked;
+    if(!pool.length) return [];
+    const picked=[pool[0]];
+    const types=new Set([pool[0].p.type]);
+    const names=new Set([pool[0].p.name]);
+    for(const x of pool.slice(1)){
+      if(picked.length>=count) break;
+      if(names.has(x.p.name) || types.has(x.p.type)) continue;
+      picked.push(x);
+      types.add(x.p.type);
+      names.add(x.p.name);
+    }
+    for(const x of pool.slice(1)){
+      if(picked.length>=count) break;
+      if(names.has(x.p.name)) continue;
+      picked.push(x);
+      names.add(x.p.name);
+    }
+    return picked;
+  }
+  function renderPicks(){
+    const grid=document.getElementById('picksGrid'); if(!grid) return;
+    const whyBits=[];
+    if(holidayToday) whyBits.push(holidayToday);
+    if(isWeekend) whyBits.push("Helgläge");
+    if(ctx.mood==="nice") whyBits.push("fint väder");
+    else if(ctx.mood==="rough") whyBits.push("inomhustips");
+    else whyBits.push(isWeekend?"helgens bästa":"handplockat för dagen");
+    if(daypart==="morgon") whyBits.push("morgonläge");
+    if(daypart==="lunch") whyBits.push("lunchläge");
+    if(userPos) whyBits.push("nära dig");
+    S('picksWhy', whyBits.join(" · "));
+
+    const pool=selectDiversePicks(3);
+    const feature=pool[0];
+    const side=pool.slice(1,3);
+    if(!feature){
+      homeShownNames=new Set();
+      grid.innerHTML="";
+      refreshPulse();
+      return;
+    }
+    homeShownNames=new Set(pool.map(x=>x.p.name));
+
+    // Prefer contextual reasons over open/close status (pill already shows that)
+    const nonStatus=r=>r && !/^(Öppet|Stänger|Planera kvällen|Kvällsläge)/.test(r);
+    const featWhy=feature.reasons.find(nonStatus)||feature.p.short||"Tips just nu";
+    const featSub=feature.reasons.filter(nonStatus).find(r=>r!==featWhy)||feature.p.short||feature.p.blurb||feature.p.cat;
+    const featHTML=`
+      <article class="pick-feature" onclick="openPlace('${jsEsc(feature.p.name)}')" role="button" tabindex="0"
+        onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openPlace('${jsEsc(feature.p.name)}')}">
+        <div class="im" style="background-image:url('${feature.p.img}')" role="img" aria-label="${feature.p.name}"></div>
+        <div class="shade"></div>
+        <div class="bd">
+          <div class="why">${featWhy}${feature.p._km!=null?" · "+fmtDist(feature.p._km):""}</div>
+          <h3>${feature.p.name}</h3>
+          <p>${featSub}</p>
+          ${statusPill(feature.p)}
+        </div>
+      </article>`;
+
+    const sideHTML=side.map(({p,reasons})=>{
+      const badges=[`<span class="badge">${typeLabel[p.type]||p.cat}</span>`];
+      if(isNewPlace(p)) badges.push(`<span class="badge new">Nytt</span>`);
+      if(p._km!=null && p._km<5) badges.push(`<span class="badge near">${fmtDist(p._km)}</span>`);
+      const why=reasons.find(nonStatus)||p.short||p.blurb;
+      return `
+      <article class="tcard" onclick="openPlace('${jsEsc(p.name)}')">
+        <div class="im" style="background-image:url('${p.img}')"></div>
+        <div class="shade"></div>
+        <div class="badge-row">${badges.join("")}</div>
+        <div class="bd">
+          <h3>${p.name}</h3>
+          <p>${why}</p>
+          ${statusPill(p)}
+        </div>
+      </article>`;
+    }).join("");
+
+    const quoteHTML=`
+      <aside class="pick-quote">
+        <div>
+          <div class="eyebrow">Om Upptäck ${K}</div>
+          <blockquote>Lokalt, på riktigt.</blockquote>
+          <p>Människorna, platserna och de små verksamheterna som får bygden att blomstra — helt gratis, gjort av kärlek.</p>
+        </div>
+        <button type="button" class="lnk" onclick="event.stopPropagation();showView('om')">Läs vår berättelse →</button>
+        ${manifestoArt}
+      </aside>`;
+
+    grid.innerHTML=featHTML+`<div class="picks-row">${sideHTML}${quoteHTML}</div>`;
+    refreshPulse();
+  }
+  function renderToday(){ renderPicks(); }
+  function renderFavorites(){
+    const grid=document.getElementById('favGrid');
+    const lede=document.getElementById('favLede');
+    if(!grid) return;
+    const items=[...favorites].map(n=>places.find(p=>p.name===n)).filter(Boolean);
+    const openN=items.filter(isOpen).length;
+    if(lede) lede.textContent=items.length
+      ? `${items.length} sparade · ${openN} öppna just nu`
+      : "Spara ställen du vill återvända till — vi visar vilka som är öppna just nu.";
+    if(!items.length){
+      grid.innerHTML=`<div class="ev-empty" style="grid-column:1/-1">Inga favoriter ännu. Tryck på hjärtat på ett evenemang eller spara från en platssida.</div>`;
+      return;
+    }
+    grid.innerHTML=items.map(p=>`
+      <article class="fav-card" onclick="openPlace('${jsEsc(p.name)}')">
+        <div class="im" style="background-image:url('${p.img}')"></div>
+        <div class="bd">
+          <h3>${p.name}</h3>
+          <div class="meta">${p.cat} · ${isOpen(p)?"Öppet nu":"Stängt"}${p._km!=null?" · "+fmtDist(p._km):""}</div>
+        </div>
+      </article>`).join('');
+  }
+  try{ renderToday(); }catch(e){ console.warn('renderToday', e); }
+  try{ renderFavorites(); }catch(e){ console.warn('renderFavorites', e); }
+
+  // ============================================================
+  //  SÖK · RUTTER · LISTOR · NOTISER · EVENT · RAPPORT
+  // ============================================================
+  function toggleSearchFilter(key){
+    if(searchFilters.has(key)) searchFilters.delete(key); else searchFilters.add(key);
+    runSearch();
+  }
+  function initSearchUI(){
+    const row=document.getElementById('searchFilters');
+    if(!row) return;
+    row.innerHTML=SEARCH_FILTERS.map(f=>`
+      <button type="button" class="chip ${searchFilters.has(f.key)?'on':''}" data-key="${f.key}" onclick="toggleSearchFilter('${f.key}')">${f.label}</button>`).join('');
+  }
+  function placeMatchesSearch(p){
+    for(const f of searchFilters){
+      if(f==="open" && !isOpen(p)) return false;
+      if(f!=="open" && !hasTag(p,f)) return false;
+    }
+    const q=(document.getElementById('globalSearch')?.value||"").trim().toLowerCase();
+    if(!q) return true;
+    const m=metaOf(p);
+    const hay=[p.name,p.cat,p.blurb,p.short,p.type,m.district,(m.tags||[]).join(" "),CONTENT[p.name]?.address||""].join(" ").toLowerCase();
+    return q.split(/\s+/).every(w=>hay.includes(w));
+  }
+  function runSearch(){
+    initSearchUI();
+    const box=document.getElementById('searchResults'); if(!box) return;
+    const hits=places.filter(placeMatchesSearch).map(p=>{
+      const t=travelEstimate(p);
+      p._km=t.km;
+      return p;
+    }).sort((a,b)=>(a._km||99)-(b._km||99));
+    if(!hits.length){
+      box.innerHTML=`<div class="ev-empty">Inga träffar — prova ett annat ord eller färre filter.</div>`;
+      return;
+    }
+    box.innerHTML=hits.map(p=>{
+      const tags=placeTags(p).slice(0,4).map(t=>`<span class="tag">${TAG_LABEL[t]||t}</span>`).join("");
+      const t=travelEstimate(p);
+      return `<article class="s-item" onclick="openPlace('${jsEsc(p.name)}')">
+        <div class="im" style="background-image:url('${p.img}')"></div>
+        <div>
+          <h3>${p.name}</h3>
+          <div class="meta">${p.cat}${metaOf(p).district?" · "+metaOf(p).district:""} · ${isOpen(p)?"Öppet nu":"Stängt"}</div>
+          <div class="tags">${tags}</div>
+        </div>
+        <div class="travel">${fmtDist(t.km)}<br>Bil ${t.car} min<br>Cykel ${t.bike} min<br>SL ${t.sl} min</div>
+      </article>`;
+    }).join('');
+  }
+
+  function pickBest(type,except=new Set()){
+    const scored=places
+      .filter(p=>p.type===type)
+      .map(p=>({p,s:scorePlace(p).score+(isOpen(p)?8:0)+(hasTag(p,"barn")?2:0)}))
+      .sort((a,b)=>b.s-a.s);
+    const fresh=scored.filter(x=>!except.has(x.p.name));
+    return fresh.length?fresh:scored; // fall back only if type is exhausted
+  }
+  function pickFromPool(pool, offset){
+    if(!pool.length) return null;
+    return pool[offset%pool.length]?.p || pool[0]?.p || null;
+  }
+  function buildRoute(){
+    // Skip places already featured in Handplockat so the afternoon feels fresh
+    const except=new Set(homeShownNames);
+    const fika=pickFromPool(pickBest("fika",except), routeSeed);
+    if(fika) except.add(fika.name);
+    const gard=pickFromPool(pickBest("gard",except), routeSeed+1);
+    if(gard) except.add(gard.name);
+    const natur=pickFromPool(pickBest("natur",except), routeSeed+2);
+    return [fika,gard,natur].filter(Boolean);
+  }
+  function placeRouteCardHTML(p,stepLabel){
+    const step=stepLabel || typeLabel[p.type] || p.cat;
+    const open=isOpen(p);
+    const status=open?(isClosingSoon(p)?"Stänger snart":"Öppet nu"):"Stängt";
+    return `<article class="route-card" onclick="openPlace('${jsEsc(p.name)}')">
+      <div class="step">${step}</div>
+      <div class="im" style="background-image:url('${p.img}')"></div>
+      <div class="bd">
+        <h3>${p.name}</h3>
+        <p>${p.short||p.blurb}</p>
+        <div class="meta" style="margin-top:8px;font-size:12px;color:var(--ink-soft)">${status} · ${travelHTML(p).replace(/<br>/g," · ")}</div>
+      </div>
+    </article>`;
+  }
+  function journeyStepHTML(p, n, kind){
+    const open=isOpen(p);
+    const status=open?(isClosingSoon(p)?"Stänger snart":"Öppet nu"):"Stängt";
+    return `<article class="journey-step" onclick="openPlace('${jsEsc(p.name)}')">
+      <span class="n" aria-hidden="true">${n}</span>
+      <div class="im" style="background-image:url('${p.img}')" role="img" aria-hidden="true"></div>
+      <div class="bd">
+        <div class="kind">${kind}</div>
+        <h3>${p.name}</h3>
+        <p>${p.short||p.blurb}</p>
+        <div class="meta" style="margin-top:8px;font-size:12px;color:var(--ink-soft)">${status}</div>
+      </div>
+    </article>`;
+  }
+  function renderRoute(){
+    const grid=document.getElementById('routeGrid'); if(!grid) return;
+    const steps=buildRoute();
+    const kinds=["Fika","Gård","Natur"];
+    const parts=[];
+    steps.forEach((p,i)=>{
+      if(i) parts.push(`<div class="journey-arrow" aria-hidden="true">→</div>`);
+      parts.push(journeyStepHTML(p, i+1, kinds[i]||typeLabel[p.type]));
+    });
+    grid.innerHTML=parts.join("");
+  }
+  function reshuffleRoute(){routeSeed++;renderRoute();trackEvent('route-reshuffle','');}
+
+  function placesForCategory(key){
+    const cat=CATEGORIES[key]||CATEGORIES.attgora;
+    let list=places.slice();
+    if(cat.types) list=list.filter(p=>cat.types.includes(p.type));
+    return list
+      .map(p=>({p,s:scorePlace(p).score+(isOpen(p)?6:0)}))
+      .sort((a,b)=>b.s-a.s)
+      .map(x=>x.p);
+  }
+  function closeUpplevMenu(){
+    const dd=document.getElementById('navUpplev');
+    const btn=document.getElementById('nav-upplev');
+    if(dd) dd.classList.remove('open');
+    if(btn) btn.setAttribute('aria-expanded','false');
+  }
+  function toggleUpplevMenu(ev){
+    ev?.stopPropagation?.();
+    const dd=document.getElementById('navUpplev');
+    const btn=document.getElementById('nav-upplev');
+    if(!dd||!btn) return;
+    const open=!dd.classList.contains('open');
+    dd.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', open?'true':'false');
+  }
+  document.addEventListener('click',(ev)=>{
+    const dd=document.getElementById('navUpplev');
+    if(!dd||!dd.classList.contains('open')) return;
+    if(dd.contains(ev.target)) return;
+    closeUpplevMenu();
+  });
+  document.addEventListener('keydown',(ev)=>{ if(ev.key==='Escape') closeUpplevMenu(); });
+
+  function openCategory(key){
+    currentCategory=CATEGORIES[key]?key:"attgora";
+    closeUpplevMenu();
+    renderCategory();
+    showView('kategori');
+    trackEvent('view-category', currentCategory);
+  }
+  function renderCategory(){
+    const cat=CATEGORIES[currentCategory]||CATEGORIES.attgora;
+    const list=placesForCategory(cat.key);
+    S('catTitle', cat.title);
+    S('catLede', cat.lede);
+    const countEl=document.getElementById('catCount');
+    if(countEl){
+      const openN=list.filter(p=>isOpen(p)).length;
+      countEl.textContent=`${list.length} ställen · ${openN} öppna just nu`;
+    }
+    const grid=document.getElementById('catGrid');
+    if(grid){
+      grid.innerHTML=list.length
+        ? list.map(p=>placeRouteCardHTML(p)).join('')
+        : `<div class="ev-empty" style="grid-column:1/-1">Inga platser i den här kategorin just nu.</div>`;
+    }
+    document.querySelectorAll('.nav button[id^="nav-cat-"]').forEach(b=>b.classList.remove('on'));
+    document.getElementById('nav-cat-'+cat.key)?.classList.add('on');
+    document.getElementById('nav-upplev')?.classList.add('on');
+  }
+  function filterAndMapFromCategory(){
+    const cat=CATEGORIES[currentCategory]||CATEGORIES.attgora;
+    filterAndMap(cat.mapKey||'alla');
+  }
+
+  function indoorCandidates(){
+    return places.filter(p=>hasTag(p,"inomhus")||p.type==="butik"||p.type==="loppis"||p.name.includes("Kulturhus")||p.name.includes("Rookie")||p.name.includes("Stenugns"))
+      .filter(p=>p.type!=="natur")
+      .sort((a,b)=>scorePlace(b).score-scorePlace(a).score);
+  }
+  function outdoorCandidates(){
+    return places.filter(p=>p.type==="natur"||hasTag(p,"ute")).sort((a,b)=>scorePlace(b).score-scorePlace(a).score);
+  }
+  function renderWxShare(){
+    const card=document.getElementById('wxShareCard'); if(!card) return;
+    const rain=ctx.mood==="rough";
+    const list=(rain?indoorCandidates():outdoorCandidates()).slice(0,5);
+    const title=rain?"Regn? Här är 5 inomhus":"Sol? Här är 5 utomhus";
+    const why=rain?"Mysiga stopp när vädret inte bjuder ut.":"Ut och andas — handplockat för fint väder.";
+    S('wxShareHeading', rain?"Väder + inomhus":"Väder + uteliv");
+    S('wxShareWhy', why);
+    const shareText=`${title} i ${K}:\n`+list.map((p,i)=>`${i+1}. ${p.name}`).join("\n")+`\n— Upptäck ${K}`;
+    card.innerHTML=`
+      <div>
+        <h3>${title}</h3>
+        <p>${why}${ctx.temp!=null?` Just nu ca ${ctx.temp}°.`:""}</p>
+        <div class="actions">
+          <button type="button" class="chip on" onclick="shareWxCard()">Dela listan</button>
+          <button type="button" class="chip" onclick="navigator.clipboard?.writeText(document.getElementById('wxShareText').textContent);pushNotify('Kopierat','Listan ligger i urklipp.');">Kopiera</button>
+        </div>
+        <pre id="wxShareText" hidden>${shareText.replace(/</g,"")}</pre>
+      </div>
+      <div class="mini">${list.map(p=>`<button type="button" onclick="openPlace('${jsEsc(p.name)}')">${p.name}</button>`).join("")}</div>`;
+    window.__wxShareText=shareText;
+  }
+  async function shareWxCard(){
+    const text=window.__wxShareText||"";
+    try{
+      if(navigator.share){await navigator.share({title:`Upptäck ${K}`,text});}
+      else {await navigator.clipboard.writeText(text);pushNotify("Kopierat","Väderlistan ligger i urklipp.");}
+      trackEvent('wx-share',ctx.mood);
+    }catch(e){}
+  }
+
+  function renderLists(){
+    const grid=document.getElementById('listsGrid'); if(!grid) return;
+    grid.innerHTML=lists.map(L=>`
+      <article class="list-card" onclick="openList('${L.id}')">
+        <h3>${L.name}</h3>
+        <p>${L.places.length} ställen · klicka för att öppna</p>
+        <div class="row">
+          <button type="button" class="chip" onclick="event.stopPropagation();shareList('${L.id}')">Dela länk</button>
+          <button type="button" class="chip" onclick="event.stopPropagation();deleteList('${L.id}')">Ta bort</button>
+        </div>
+      </article>`).join('');
+    if(activeListId) openList(activeListId);
+  }
+  function createList(){
+    const name=(document.getElementById('newListName')?.value||"").trim();
+    if(!name){alert("Ge listan ett namn.");return;}
+    const id="l_"+Date.now().toString(36);
+    lists.push({id,name,places:[]});
+    saveJSON(LS_LISTS,lists);
+    document.getElementById('newListName').value="";
+    activeListId=id;
+    renderLists();
+    trackEvent('list-create',name);
+  }
+  function deleteList(id){
+    if(!confirm("Ta bort listan?")) return;
+    lists=lists.filter(L=>L.id!==id);
+    saveJSON(LS_LISTS,lists);
+    if(activeListId===id) activeListId=null;
+    document.getElementById('listDetail').innerHTML="";
+    renderLists();
+  }
+  function openList(id){
+    activeListId=id;
+    const L=lists.find(x=>x.id===id); if(!L) return;
+    const detail=document.getElementById('listDetail');
+    const items=L.places.map(n=>places.find(p=>p.name===n)).filter(Boolean);
+    const routeBtn=items.length>=2
+      ? `<div style="margin-bottom:16px"><button type="button" class="chip" onclick="planRouteFromList('${L.id}')">Planera rutten</button></div>`
+      : "";
+    detail.innerHTML=`<h2 style="font-family:var(--font-serif);font-size:28px;color:var(--moss-deep);margin-bottom:12px">${L.name}</h2>
+      ${routeBtn}
+      ${items.length?items.map(p=>`<article class="s-item" onclick="openPlace('${jsEsc(p.name)}')">
+        <div class="im" style="background-image:url('${p.img}')"></div>
+        <div><h3>${p.name}</h3><div class="meta">${p.cat} · ${isOpen(p)?"Öppet":"Stängt"}</div></div>
+        <div class="travel"><button type="button" class="chip" onclick="event.stopPropagation();removeFromList('${L.id}','${jsEsc(p.name)}')">Ta bort</button></div>
+      </article>`).join(""):`<div class="ev-empty">Tom lista — öppna en plats och tryck “Lägg i lista”.</div>`}`;
+  }
+
+  // ============================================================
+  //  GUIDER — redaktionella dagsguider
+  // ============================================================
+  function guideResolvedStops(g){
+    return (g?.stops||[]).map(s=>{
+      const p=places.find(x=>x.name===s.place);
+      return p?{...s,placeObj:p}:null;
+    }).filter(Boolean);
+  }
+  function mapsRouteUrl(placeObjs){
+    if(!placeObjs.length) return null;
+    const coords=placeObjs.map(p=>`${p.lat},${p.lng}`);
+    const destination=coords[coords.length-1];
+    const waypoints=coords.slice(0,-1).join("|");
+    let url=`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}`;
+    if(waypoints) url+=`&waypoints=${encodeURIComponent(waypoints)}`;
+    return url;
+  }
+  function syncGuidesVisibility(){
+    const has=guides.length>0;
+    for(const id of ["nav-guider","mnav-guider","guidesHomeSec"]){
+      const el=document.getElementById(id);
+      if(el) el.hidden=!has;
+    }
+  }
+  function guideActionsHTML(slug){
+    return `<button type="button" class="btn-guide primary" onclick="saveGuideAsList('${slug}')">Spara som lista</button>
+      <button type="button" class="btn-guide" onclick="planGuideRoute('${slug}')">Planera rutten</button>`;
+  }
+  function renderGuidesHome(){
+    syncGuidesVisibility();
+    const wrap=document.getElementById('guidesHomeTeaser');
+    if(!wrap) return;
+    if(!guides.length){ wrap.innerHTML=""; return; }
+    // Featured season guide first, then fill up to 3
+    const featured=featuredGuide(guides, month);
+    const ordered=[];
+    if(featured) ordered.push(featured);
+    for(const g of guides){
+      if(ordered.length>=3) break;
+      if(!ordered.some(x=>x.slug===g.slug)) ordered.push(g);
+    }
+    wrap.innerHTML=ordered.map(g=>{
+      const img=g.heroImg || guideResolvedStops(g)[0]?.placeObj?.img || "";
+      const n=g.stops.length;
+      return `<button type="button" class="guide-home-card" onclick="openGuide('${g.slug}')">
+        <div class="im" style="background-image:url('${img}')" role="img" aria-hidden="true"></div>
+        <div class="bd">
+          <div class="tag">${seasonLabel(g.season)} · ${n} stopp</div>
+          <h3>${g.title}</h3>
+          <p>${g.intro}</p>
+          <span class="lnk">Läs guiden →</span>
+        </div>
+      </button>`;
+    }).join("");
+  }
+  function renderGuidesGrid(){
+    const grid=document.getElementById('guidesGrid'); if(!grid) return;
+    if(!guides.length){
+      grid.innerHTML=`<div class="ev-empty">Inga guider ännu — kom tillbaka snart.</div>`;
+      return;
+    }
+    grid.innerHTML=guides.map(g=>{
+      const img=g.heroImg || guideResolvedStops(g)[0]?.placeObj?.img || "";
+      return `<button type="button" class="guide-card" onclick="openGuide('${g.slug}')">
+        <div class="im" style="background-image:url('${img}')"></div>
+        <div class="bd">
+          <div class="tag">${seasonLabel(g.season)}</div>
+          <h3>${g.title}</h3>
+          <p>${g.intro}</p>
+          <span class="lnk">Läs guiden →</span>
+        </div>
+      </button>`;
+    }).join("");
+  }
+  function openGuide(slug){
+    const g=guideBySlug(slug, guides); if(!g) return;
+    currentGuideSlug=slug;
+    const stops=guideResolvedStops(g);
+    const hero=document.getElementById('guideHero');
+    if(hero) hero.style.backgroundImage=`url('${g.heroImg || stops[0]?.placeObj?.img || ""}')`;
+    S('guideSeason', `${seasonLabel(g.season)}guide`);
+    S('guideTitle', g.title);
+    S('guideIntro', g.intro);
+    const leadEl=document.getElementById('guideLead');
+    if(leadEl){
+      leadEl.textContent=g.lead||"";
+      leadEl.hidden=!g.lead;
+    }
+    const actions=guideActionsHTML(slug);
+    const a1=document.getElementById('guideActions');
+    const a2=document.getElementById('guideActionsBottom');
+    if(a1) a1.innerHTML=actions;
+    if(a2) a2.innerHTML=actions;
+    const stopsEl=document.getElementById('guideStops');
+    if(stopsEl){
+      stopsEl.innerHTML=stops.map((s,i)=>{
+        return `<article class="guide-stop">
+          <div class="num" aria-hidden="true">${i+1}</div>
+          <div>
+            <h2>${s.place}</h2>
+            <p>${s.text}</p>
+            <button type="button" class="place-link" onclick="openPlace('${jsEsc(s.place)}')">Om platsen →</button>
+          </div>
+        </article>`;
+      }).join("");
+    }
+    const outroEl=document.getElementById('guideOutro');
+    if(outroEl){
+      outroEl.innerHTML=`${g.outro||""}${g.signature?`<span class="sig">${g.signature}</span>`:""}`;
+    }
+    showView('guide');
+    trackEvent('view-guide', slug);
+  }
+  function saveGuideAsList(slug){
+    const g=guideBySlug(slug, guides); if(!g) return;
+    const names=g.stops.map(s=>s.place);
+    let L=lists.find(x=>x.name===g.title);
+    if(!L){
+      L={id:"l_"+Date.now().toString(36),name:g.title,places:[]};
+      lists.push(L);
+    }
+    L.places=[...names];
+    saveJSON(LS_LISTS,lists);
+    activeListId=L.id;
+    pushNotify("Sparad som lista", g.title);
+    trackEvent('guide-save-list', slug);
+  }
+  function planGuideRoute(slug){
+    const g=guideBySlug(slug, guides); if(!g) return;
+    const stops=guideResolvedStops(g).map(s=>s.placeObj);
+    const url=mapsRouteUrl(stops);
+    if(!url){ pushNotify("Ingen rutt", "Guiden saknar platser med koordinater."); return; }
+    trackEvent('planera-rutt', slug);
+    window.open(url, "_blank", "noopener");
+  }
+  function planRouteFromList(id){
+    const L=lists.find(x=>x.id===id); if(!L) return;
+    const objs=L.places.map(n=>places.find(p=>p.name===n)).filter(Boolean);
+    const url=mapsRouteUrl(objs);
+    if(!url){ pushNotify("Ingen rutt", "Listan behöver minst en plats med koordinater."); return; }
+    trackEvent('planera-rutt', L.name);
+    window.open(url, "_blank", "noopener");
+  }
+  function removeFromList(id,name){
+    const L=lists.find(x=>x.id===id); if(!L) return;
+    L.places=L.places.filter(n=>n!==name);
+    saveJSON(LS_LISTS,lists);
+    openList(id); renderLists();
+  }
+  function addCurrentToList(){
+    const name=document.getElementById('platsName')?.textContent; if(!name) return;
+    const names=lists.map(L=>L.name);
+    const pick=prompt("Lägg i vilken lista?\n\n"+names.map((n,i)=>`${i+1}. ${n}`).join("\n")+"\n\nSkriv nummer eller nytt namn:");
+    if(!pick) return;
+    let L=null;
+    const n=parseInt(pick,10);
+    if(n>=1&&n<=lists.length) L=lists[n-1];
+    else {
+      L={id:"l_"+Date.now().toString(36),name:pick.trim(),places:[]};
+      lists.push(L);
+    }
+    if(!L.places.includes(name)) L.places.push(name);
+    saveJSON(LS_LISTS,lists);
+    pushNotify("Sparad i lista",`${name} → ${L.name}`);
+    trackEvent('list-add',name);
+  }
+  function shareList(id){
+    const L=lists.find(x=>x.id===id); if(!L) return;
+    const url=new URL(location.href);
+    url.hash=`lista=${encodeURIComponent(JSON.stringify({n:L.name,p:L.places}))}`;
+    const link=url.toString();
+    navigator.clipboard?.writeText(link).then(()=>pushNotify("Länk kopierad",L.name)).catch(()=>prompt("Kopiera länken:",link));
+    trackEvent('list-share',L.name);
+  }
+  function importListFromHash(){
+    if(!location.hash.startsWith("#lista=")) return;
+    try{
+      const raw=decodeURIComponent(location.hash.slice(7));
+      const data=JSON.parse(raw);
+      if(!data?.n||!Array.isArray(data.p)) return;
+      const id="l_"+Date.now().toString(36);
+      lists.push({id,name:data.n+(data.n.includes("(delad)")?"":" (delad)"),places:data.p});
+      saveJSON(LS_LISTS,lists);
+      activeListId=id;
+      history.replaceState(null,"",location.pathname+location.search);
+      showView('listor');
+      pushNotify("Lista importerad",data.n);
+    }catch(e){}
+  }
+
+  function pushNotify(title,body,actions=[]){
+    const stack=document.getElementById('notifyStack'); if(!stack) return;
+    const el=document.createElement('div');
+    el.className='notify';
+    el.innerHTML=`<strong>${title}</strong><p>${body}</p><div class="row">${actions.map(a=>`<button type="button" class="${a.cls||'ok'}" data-act="${a.id||''}">${a.label}</button>`).join("")}<button type="button" class="no">Stäng</button></div>`;
+    stack.appendChild(el);
+    el.querySelectorAll('button').forEach(btn=>{
+      btn.onclick=()=>{
+        const act=btn.dataset.act;
+        if(act&&window.__notifyActs?.[act]) window.__notifyActs[act]();
+        el.remove();
+      };
+    });
+    setTimeout(()=>el.remove(),14000);
+  }
+  function runNotifications(){
+    const seen=new Set(loadJSON(LS_NOTIFY,[]));
+    window.__notifyActs={};
+    // Favorites closing soon
+    const closing=[...favorites].map(n=>places.find(p=>p.name===n)).filter(p=>p&&isClosingSoon(p));
+    if(closing[0]){
+      const key="close_"+todayISO+"_"+closing[0].name;
+      if(!seen.has(key)){
+        seen.add(key);
+        const act="open_"+closing[0].name;
+        window.__notifyActs[act]=()=>openPlace(closing[0].name);
+        pushNotify("Favorit stänger snart",`${closing[0].name} stänger om ${minutesUntilClose(closing[0])} min.`,[{id:act,label:"Öppna",cls:"ok"}]);
+      }
+    }
+    // Event tomorrow
+    const tmr=addDays(now,1); const tmrISO=iso(tmr);
+    const tomorrow=liveEvents.find(e=>e.date===tmrISO);
+    if(tomorrow){
+      const key="ev_"+tomorrow.date+"_"+tomorrow.title;
+      if(!seen.has(key)){
+        seen.add(key);
+        window.__notifyActs.openEv=()=>showView('hander');
+        pushNotify("Event imorgon",`${tomorrow.title} · ${tomorrow.when}`,[{id:"openEv",label:"Visa",cls:"ok"}]);
+      }
+    }
+    // New place in district (Markim demo)
+    const newbie=places.find(p=>isNewPlace(p)&&metaOf(p).district==="Markim")||places.find(p=>isNewPlace(p));
+    if(newbie){
+      const key="new_"+newbie.name;
+      if(!seen.has(key)){
+        seen.add(key);
+        window.__notifyActs.openNew=()=>openPlace(newbie.name);
+        const dist=metaOf(newbie).district||K;
+        pushNotify(`Nytt ställe i ${dist}`,`${newbie.name} — ${newbie.short||newbie.cat}`,[{id:"openNew",label:"Läs mer",cls:"ok"}]);
+      }
+    }
+    saveJSON(LS_NOTIFY,[...seen].slice(-40));
+  }
+
+  function fillEventHosts(){
+    const sel=document.getElementById('evHost'); if(!sel) return;
+    sel.innerHTML=places.map(p=>`<option value="${p.name.replace(/"/g,"&quot;")}">${p.name}</option>`).join("");
+  }
+  async function submitEventForm(){
+    const title=document.getElementById('evTitle')?.value.trim();
+    const host=document.getElementById('evHost')?.value;
+    const date=document.getElementById('evDate')?.value;
+    const time=document.getElementById('evTime')?.value.trim();
+    const cat=document.getElementById('evCat')?.value;
+    const note=document.getElementById('evNote')?.value.trim();
+    const email=document.getElementById('evEmail')?.value.trim();
+    const msg=document.getElementById('evFormMsg');
+    if(!title||!host||!date){if(msg) msg.textContent="Fyll i titel, värd och datum.";return;}
+    const payload={id:"pe_"+Date.now(),title,host,date,time,cat,note,email,status:"pending",at:new Date().toISOString()};
+    if(msg) msg.textContent="Skickar…";
+    try{
+      const result=await deliverForm({
+        kind:"event",
+        subject:`Evenemangstips: ${title}`,
+        fields:{title,host,date,time,cat,note,email,source:location.href},
+        persistLocal:(fields)=>{
+          const pending=loadJSON(LS_PENDING,[]);
+          pending.push(payload);
+          saveJSON(LS_PENDING,pending);
+        }
+      });
+      if(msg) msg.textContent=result.channel==="mailto"
+        ? "Öppnar din e-post — skicka utkastet så granskar vi tipset."
+        : "Tack! Skickat för granskning — syns inte publikt förrän det godkänts.";
+      ["evTitle","evTime","evNote","evEmail"].forEach(id=>{const el=document.getElementById(id);if(el) el.value="";});
+      renderPendingAdmin();
+      trackEvent('event-submit',title);
+    }catch(err){
+      if(msg) msg.textContent=err.message||"Kunde inte skicka. Försök igen eller mejla oss.";
+    }
+  }
+  function renderPendingAdmin(){
+    const box=document.getElementById('pendingAdmin'); if(!box) return;
+    if(!/admin=1/.test(location.search)){box.innerHTML="";return;}
+    const pending=loadJSON(LS_PENDING,[]);
+    if(!pending.length){box.innerHTML="";return;}
+    box.innerHTML=`<h3 style="font-family:var(--font-serif);font-size:22px;color:var(--moss-deep);margin-bottom:10px">Inkomna (lokal kö)</h3>
+      ${pending.map(e=>`<div class="s-item" style="cursor:default">
+        <div class="im" style="background:#efe8dc"></div>
+        <div>
+          <h3>${e.title}</h3>
+          <div class="meta">${e.host} · ${e.date} · ${e.cat} · ${e.status}</div>
+          <p style="font-size:13px;color:var(--ink-soft);margin-top:6px">${e.note||""}</p>
+        </div>
+        <div class="travel">
+          ${e.status==="pending"?`<button type="button" class="chip on" onclick="approvePending('${e.id}')">Godkänn</button>`:`<span class="tag">Godkänd</span>`}
+        </div>
+      </div>`).join("")}`;
+  }
+  function approvePending(id){
+    const pending=loadJSON(LS_PENDING,[]);
+    const e=pending.find(x=>x.id===id); if(!e) return;
+    e.status="approved";
+    saveJSON(LS_PENDING,pending);
+    // Surface as live event in-session
+    events.push({host:e.host,title:e.title,date:e.date,when:e.date+(e.time?" · "+e.time:""),time:e.time||"",cat:e.cat,note:e.note||"",img:places.find(p=>p.name===e.host)?.img||places[0].img});
+    liveEvents.push(events[events.length-1]);
+    liveEvents.sort((a,b)=>a.date.localeCompare(b.date));
+    renderPendingAdmin();
+    pushNotify("Event godkänt",e.title);
+    trackEvent('event-approve',e.title);
+  }
+
+  function openReport(){
+    const name=document.getElementById('platsName')?.textContent||"";
+    document.getElementById('reportPlace').value=name;
+    document.getElementById('reportText').value="";
+    document.getElementById('reportModal').classList.add('on');
+  }
+  function closeReport(){document.getElementById('reportModal').classList.remove('on');}
+  async function submitReport(){
+    const place=document.getElementById('reportPlace').value;
+    const type=document.getElementById('reportType').value;
+    const text=document.getElementById('reportText').value.trim();
+    try{
+      await deliverForm({
+        kind:"report",
+        subject:`Felrapport: ${place} (${type})`,
+        fields:{place,type,text,source:location.href},
+        persistLocal:(fields)=>{
+          const reports=loadJSON(LS_REPORTS,[]);
+          reports.push({...fields,at:new Date().toISOString()});
+          saveJSON(LS_REPORTS,reports);
+        }
+      });
+      closeReport();
+      pushNotify("Tack för tipset","Vi tar med rapporten i nästa uppdatering.");
+      trackEvent('report',type);
+    }catch(err){
+      pushNotify("Kunde inte skicka", err.message||"Försök igen.");
+    }
+  }
+
+  function bootSmartPack(){
+    try{
+      initSearchUI();
+      runSearch();
+      renderRoute();
+      renderGuidesHome();
+      renderGuidesGrid();
+      renderVoicesHome();
+      renderLevererarHome();
+      renderHappenHome();
+      renderLists();
+      fillEventHosts();
+      renderPendingAdmin();
+      importListFromHash();
+      setTimeout(runNotifications,900);
+    }catch(e){ console.warn('bootSmartPack', e); }
+  }
+
+  function requestNearMe(){
+    if(!navigator.geolocation){alert("Din webbläsare stödjer inte plats.");return;}
+    navigator.geolocation.getCurrentPosition(pos=>{
+      userPos={lat:pos.coords.latitude,lng:pos.coords.longitude};
+      saveJSON(LS_GEO_ASKED,true);
+      trackEvent('geo','granted');
+      renderPicks();
+      renderRoute();
+      if(document.getElementById('view-sok')?.classList.contains('on')) runSearch();
+      if(map){buildList();renderFilter();}
+    },()=>{
+      trackEvent('geo','denied');
+      alert("Kunde inte hämta din plats. Du kan fortsätta utan den.");
+    },{enableHighAccuracy:false,timeout:8000,maximumAge:300000});
+  }
+  function toggleOpenNow(){
+    openNowOnly=!openNowOnly;
+    document.getElementById('chipOpenNow')?.classList.toggle('on',openNowOnly);
+    if(map) renderFilter();
+  }
+  function toggleFavOnly(){
+    favOnly=!favOnly;
+    document.getElementById('chipFavOnly')?.classList.toggle('on',favOnly);
+    if(map) renderFilter();
+  }
+
+  function paintHeroWeatherFallback(){
+    if(ctx.temp!=null) return;
+    const ico=document.getElementById('wIcon');
+    if(ico) ico.innerHTML=WEATHER_SVG.part;
+    const t=document.getElementById('wTemp');
+    const p=document.getElementById('wPlace');
+    const w=document.getElementById('wText');
+    const s=document.getElementById('wSub');
+    if(t) t.textContent="–°";
+    if(p) p.textContent=K;
+    if(w) w.textContent="Lokalt väder";
+    if(s) s.textContent="hämtas strax";
+  }
+  async function loadWeather(){
+    try{
+      const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${CONFIG.center[0]}&longitude=${CONFIG.center[1]}&current=temperature_2m,weather_code,wind_speed_10m,apparent_temperature&daily=sunrise,sunset&timezone=Europe/Stockholm`);
+      const d=await r.json();
+      const code=d.current.weather_code, temp=Math.round(d.current.temperature_2m);
+      const feels=Math.round(d.current.apparent_temperature);
+      const wind=Math.round(d.current.wind_speed_10m);
+      const wk=weatherKind(code);
+      const sunrise=(d.daily?.sunrise?.[0]||"").slice(11,16);
+      const sunset=(d.daily?.sunset?.[0]||"").slice(11,16);
+      ctx={mood:weatherMood(code,temp),temp,code,sunrise,sunset,feels,wind};
+      const ico=document.getElementById('wIcon');
+      if(ico) ico.innerHTML=WEATHER_SVG[wk.k]||WEATHER_SVG.cloud;
+      document.getElementById('wTemp').textContent=temp+"°";
+      document.getElementById('wPlace').textContent=K;
+      document.getElementById('wText').textContent=wk.t;
+      document.getElementById('wSub').textContent=`känns som ${feels}°`;
+      try{ refreshHeroToday(); }catch(e){ console.warn('refreshHeroToday', e); }
+      try{ renderPicks(); }catch(e){ console.warn('renderPicks after weather', e); }
+      try{ renderRoute(); }catch(e){ console.warn('renderRoute after weather', e); }
+    }catch(e){
+      paintHeroWeatherFallback();
+      try{ refreshHeroToday(); }catch(err){}
+    }
+  }
+  try{ refreshHeroToday(); }catch(e){}
+  loadWeather();
+
+  // ============================================================
+  //  KARTA
+  // ============================================================
+  function initMap(){
+    if(map)return;
+    map=L.map('map',{zoomControl:true,scrollWheelZoom:true}).setView(CONFIG.center,CONFIG.zoom);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap, © CARTO',subdomains:'abcd',maxZoom:20}).addTo(map);
+    places.forEach((p,i)=>{
+      const open=isOpen(p);
+      const tag=open?`<span class="card-tag open">● Öppet nu</span>`:`<span class="card-tag closed">○ Stängt</span>`;
+      const evs=eventsByHost[p.name]||[];
+      const evHtml=evs.length?`<div class="ev-badge">📅 ${evs[0].title} · ${evs[0].when}</div>`:'';
+      const dir=`https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}`;
+      const webLink=p.url?`<a class="weblink" href="${p.url}" target="_blank" rel="noopener" onclick="trackEvent('website','${jsEsc(p.name)}')">🌐 Besök hemsidan →</a>`:'';
+      const hook=p.url
+        ?`<div class="hook">Vill du veta hur din hemsida presterar? <a onclick="trackEvent('hook-scout','${jsEsc(p.name)}')">Klicka här →</a></div>`
+        :`<div class="hook">Äger du den här verksamheten och saknar hemsida? <a onclick="trackEvent('hook-formverket','${jsEsc(p.name)}')">Synas bättre →</a></div>`;
+      const html=`<div class="card-img" style="background-image:url('${p.img}')"></div><div class="card-body"><div class="cat">${p.cat}</div><h3>${p.name}</h3><p>${p.blurb}</p>${tag}${evHtml}${webLink?`<div class="card-actions" style="margin-bottom:6px">${webLink}</div>`:""}<div class="card-actions"><a class="btn-dir" href="${dir}" target="_blank" rel="noopener" onclick="trackEvent('hitta-hit','${jsEsc(p.name)}')">📍 Hitta hit</a></div><button class="popup-more" onclick="openPlace('${jsEsc(p.name)}')">Läs mer →</button>${hook}</div>`;
+      markers.push(L.marker([p.lat,p.lng],{icon:pinIcon(p.color,open?'':'closed')}).addTo(map).bindPopup(html,{closeButton:false,maxWidth:262}));
+    });
+    buildFilters();buildList();renderFilter();
+    setTimeout(()=>map.invalidateSize(),50);
+  }
+  function pinIcon(color,cls){return L.divIcon({className:'',html:`<div class="pin ${cls||''}"><svg width="26" height="34" viewBox="0 0 26 34" fill="none"><path d="M13 0C5.8 0 0 5.8 0 13c0 9.2 13 21 13 21s13-11.8 13-21C26 5.8 20.2 0 13 0z" fill="${color}"/><circle cx="13" cy="13" r="5" fill="#f7f3eb"/></svg></div>`,iconSize:[26,34],iconAnchor:[13,34],popupAnchor:[0,-32]});}
+
+  function buildFilters(){const bar=document.getElementById('filters');bar.innerHTML='';cats.forEach(c=>{const b=document.createElement('div');b.className='chip'+(c.key==="alla"?' on':'');b.textContent=c.label;b.dataset.key=c.key;b.onclick=()=>{active=c.key;document.getElementById('search').value='';renderFilter();};bar.appendChild(b);});}
+  function buildList(){
+    const list=document.getElementById('mlist');list.innerHTML='';
+    // Sort by score (and distance if available)
+    const order=rankedPlaces();
+    const indexByName=Object.fromEntries(places.map((p,i)=>[p.name,i]));
+    order.forEach(({p,soon,mins})=>{
+      const i=indexByName[p.name];
+      const open=isOpen(p);
+      const el=document.createElement('div');
+      el.className='item';
+      el.dataset.type=p.type;
+      el.dataset.name=p.name;
+      let sub="";
+      if(open&&soon) sub=`<div class="submeta soon">Stänger om ${mins} min</div>`;
+      else if(open) sub=`<div class="submeta open">Öppet nu${p._km!=null?" · "+fmtDist(p._km):""}</div>`;
+      else if(p._km!=null) sub=`<div class="submeta">${fmtDist(p._km)}</div>`;
+      if(isNewPlace(p)) sub+=`<div class="submeta">Nytt i guiden</div>`;
+      el.innerHTML=`<div class="thumb" style="background-image:url('${p.img}')"></div><div><h3><span class="dot ${open?'open':'closed'}"></span>${p.name}${favorites.has(p.name)?" ♥":""}</h3><div class="cat">${p.cat}</div>${sub}</div>`;
+      el.onclick=()=>{document.querySelectorAll('#mlist .item').forEach(x=>x.classList.remove('active'));el.classList.add('active');map.flyTo([p.lat,p.lng],16,{duration:.6});setTimeout(()=>markers[i].openPopup(),620);};
+      list.appendChild(el);
+    });
+  }
+  function placeMatchesFilters(p){
+    if(active!=="alla"&&p.type!==active) return false;
+    if(openNowOnly&&!isOpen(p)) return false;
+    if(favOnly&&!favorites.has(p.name)) return false;
+    return true;
+  }
+  function renderFilter(){
+    document.querySelectorAll('#filters .chip').forEach(c=>c.classList.toggle('on',c.dataset.key===active));
+    let shown=0;
+    const items=[...document.querySelectorAll('#mlist .item')];
+    items.forEach(el=>{
+      const p=places.find(x=>x.name===el.dataset.name);
+      if(!p){el.classList.add('hidden');return;}
+      const m=placeMatchesFilters(p);
+      el.classList.toggle('hidden',!m);
+      const i=places.indexOf(p);
+      if(m){markers[i].addTo(map);shown++;}else{markers[i].remove();}
+    });
+    let label=shown+' platser i '+K;
+    if(openNowOnly) label=shown+' öppna nu';
+    if(favOnly) label=shown+' favoriter';
+    if(userPos) label+=' · närmast först';
+    document.getElementById('mcount').textContent=label;
+  }
+
+  document.getElementById('search')?.addEventListener('input',function(){
+    const q=this.value.trim().toLowerCase();document.getElementById('searchClr')?.classList.toggle('show',q.length>0);
+    if(!q){renderFilter();return;}
+    let shown=0;
+    document.querySelectorAll('#mlist .item').forEach(el=>{
+      const p=places.find(x=>x.name===el.dataset.name); if(!p) return;
+      const i=places.indexOf(p);
+      const hay=(p.name+' '+p.cat+' '+p.blurb+' '+p.type).toLowerCase();
+      const m=hay.includes(q)&&placeMatchesFilters(p);
+      el.classList.toggle('hidden',!m);
+      if(m){markers[i]?.addTo(map);shown++;}else{markers[i]?.remove();}
+    });
+    document.querySelectorAll('#filters .chip').forEach(c=>c.classList.toggle('on',c.dataset.key==='alla'));active='alla';
+    const mc=document.getElementById('mcount'); if(mc) mc.textContent=(shown?shown+' träffar':'Inga träffar')+' · '+K;
+  });
+  document.getElementById('searchClr')?.addEventListener('click',()=>{const s=document.getElementById('search');if(!s)return;s.value='';s.dispatchEvent(new Event('input'));s.focus();});
+
+  const evFull=document.getElementById('eventsFull');
+  if(evFull){
+    if(liveEvents.length){
+      evFull.innerHTML=liveEvents.map(e=>eventCard(e,true)).join('');
+    } else {
+      evFull.innerHTML=`<div class="ev-empty">Inga inplanerade evenemang just nu — kika in snart igen.</div>`;
+    }
+  }
+
+
+  // ============================================================
+  //  PLATS — detaljsida
+  // ============================================================
+  function openPlace(name){
+    const p=places.find(x=>x.name===name); if(!p)return;
+    lastViewBeforePlats = document.querySelector('.view.on')?.id.replace('view-','')||'start';
+    const open=isOpen(p);
+    const soon=isClosingSoon(p);
+    const mins=minutesUntilClose(p);
+    const scored=scorePlace(p);
+    bumpInterest(p.name,"views");
+    saveJSON(LS_LAST,{name:p.name,at:new Date().toISOString()});
+    document.getElementById('platsHero').style.backgroundImage=`url('${p.img}')`;
+    S('platsCat',p.cat); S('platsName',p.name);
+    S('platsLead',p.blurb);
+    const rich=CONTENT[p.name]||{};
+    const factsEl=document.getElementById('platsFacts');
+    if(factsEl){
+      const facts=[...(rich.facts||[])];
+      if(rich.address) facts.unshift(rich.address);
+      factsEl.innerHTML=facts.map(f=>`<span>${f}</span>`).join('');
+    }
+    const gal=document.getElementById('platsGallery');
+    if(gal){
+      // Dedupe by URL — never repeat the same photo in the gallery.
+      const raw=rich.images&&rich.images.length?rich.images:[{url:p.img,alt:p.name}];
+      const seen=new Set();
+      const imgs=raw.filter(im=>{
+        const u=(im&&im.url||"").trim();
+        if(!u||seen.has(u)) return false;
+        seen.add(u); return true;
+      }).slice(0,3);
+      const isStock=/unsplash\.com/i.test(p.img)||(rich.images||[]).some(im=>/unsplash\.com/i.test(im?.url||""));
+      const credit=rich.photoCredit
+        || (rich.localPhotos && !isStock
+          ? "Foto från verksamheten."
+          : "Stämningsfoto (Unsplash) — inte nödvändigtvis taget på platsen. Ersätts när eget foto finns.");
+      const n=imgs.length;
+      gal.className="plats-gallery g-count-"+n;
+      if(!n){ gal.innerHTML=""; }
+      else if(n===1){
+        gal.innerHTML=`
+        <div class="g-main" style="background-image:url('${imgs[0].url}')" role="img" aria-label="${imgs[0].alt||p.name}"></div>
+        <div class="g-credit">${credit}</div>`;
+      } else if(n===2){
+        gal.innerHTML=`
+        <div class="g-main" style="background-image:url('${imgs[0].url}')" role="img" aria-label="${imgs[0].alt||p.name}"></div>
+        <div class="g-side" style="background-image:url('${imgs[1].url}')" role="img" aria-label="${imgs[1].alt||''}"></div>
+        <div class="g-credit">${credit}</div>`;
+      } else {
+        gal.innerHTML=`
+        <div class="g-main" style="background-image:url('${imgs[0].url}')" role="img" aria-label="${imgs[0].alt||p.name}"></div>
+        <div class="g-side" style="background-image:url('${imgs[1].url}')" role="img" aria-label="${imgs[1].alt||''}"></div>
+        <div class="g-side" style="background-image:url('${imgs[2].url}')" role="img" aria-label="${imgs[2].alt||''}"></div>
+        <div class="g-credit">${credit}</div>`;
+      }
+    }
+    let body = rich.body || (p.short && !p.blurb.includes(p.short) ? `<p>${p.short}</p>` : '');
+    // Attach longer event copy if this place hosts an upcoming event
+    const hostEv=(eventsByHost[p.name]||[])[0];
+    if(hostEv && EVENT_CONTENT[hostEv.title]){
+      body += `<h3>Kommande: ${hostEv.title}</h3>`+EVENT_CONTENT[hostEv.title].body;
+    }
+    const proof=interestLabel(p.name);
+    if(proof) body += `<p class="plats-proof">${proof}</p>`;
+    if(p.type==="natur" && ctx.sunset){
+      body += `<div class="sun-note">Solnedgång idag ca <strong>${ctx.sunset}</strong>${ctx.sunrise?" · soluppgång "+ctx.sunrise:""}. Fint ljus sista timmarna innan skymning.</div>`;
+    }
+    if(scored.reasons.length) body += `<div class="sun-note">Varför just nu: ${scored.reasons.join(" · ")}</div>`;
+    document.getElementById('platsBody').innerHTML = body;
+    const todayHrs=fmtHoursSlot(daySlot(p));
+    let statusTxt=open?(soon?`Öppet — stänger om ${mins} min`:'Öppet nu'):'Stängt just nu';
+    if(holidayToday&&isHolidayClosed(p)) statusTxt=`Stängt (${holidayToday})`;
+    const tags=placeTags(p).map(t=>TAG_LABEL[t]||t);
+    let info = `<div class="irow"><span class="k">Kategori</span><span class="v">${p.cat}${isNewPlace(p)?" · Nytt":""}</span></div>`;
+    info += `<div class="irow"><span class="k">Status</span><span class="v ${open?'open':'closed'}">${statusTxt}</span></div>`;
+    info += `<div class="irow"><span class="k">Idag</span><span class="v">${todayHrs}</span></div>`;
+    if(tags.length) info += `<div class="irow"><span class="k">Passar</span><span class="v">${tags.join(" · ")}</span></div>`;
+    const t=travelEstimate(p); p._km=t.km;
+    info += `<div class="irow"><span class="k">Avstånd</span><span class="v">${fmtDist(t.km)} ${t.fromUser?"från dig":"från centrum"}</span></div>`;
+    if(p.phone) info += `<div class="irow"><span class="k">Telefon</span><span class="v"><a href="tel:${p.phone.replace(/\s/g,'')}" onclick="trackEvent('phone','${jsEsc(p.name)}')">${p.phone}</a></span></div>`;
+    if(p.url) info += `<div class="irow"><span class="k">Hemsida</span><span class="v"><a href="${p.url}" target="_blank" rel="noopener" onclick="trackEvent('website','${jsEsc(p.name)}')">Besök hemsidan →</a></span></div>`;
+    document.getElementById('platsInfo').innerHTML=info;
+    const trav=document.getElementById('platsTravel'); if(trav) trav.innerHTML=travelHTML(p);
+    const hrsEl=document.getElementById('platsHours'); if(hrsEl) hrsEl.innerHTML=hoursTableHTML(p);
+    const favBtn=document.getElementById('platsFavBtn');
+    if(favBtn){const on=favorites.has(p.name);favBtn.classList.toggle('on',on);favBtn.textContent=on?'♥ Sparad':'♡ Spara som favorit';}
+    document.getElementById('platsDir').href=`https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}`;
+    document.getElementById('platsDir').onclick=()=>trackEvent('hitta-hit',p.name);
+    const evs=eventsByHost[p.name]||[];
+    document.getElementById('platsEvent').innerHTML = evs.length
+      ? `<div class="plats-ev"><div class="lbl">📅 Händer här</div><h4>${evs[0].title}</h4><div class="when">${evs[0].when}</div><p>${evs[0].note}</p><div class="remind-actions">${remindBtnHTML(evs[0])}</div></div>` : '';
+    document.getElementById('platsHook').innerHTML = sourcesHTML(p) + (p.url
+      ? `<div style="margin-top:12px">Vill du veta hur din hemsida presterar? <a onclick="trackEvent('hook-scout','${jsEsc(p.name)}')">Klicka här →</a></div>`
+      : `<div style="margin-top:12px">Äger du den här verksamheten och saknar hemsida? <a onclick="trackEvent('hook-formverket','${jsEsc(p.name)}')">Synas bättre →</a></div>`);
+    showView('plats');
+    try{
+      const url=new URL(location.href);
+      url.searchParams.set("plats", placeSlug(p.name));
+      history.replaceState(null,"",url.pathname+url.search+url.hash);
+    }catch(e){}
+    setTimeout(()=>{
+      if(!miniMap){
+        miniMap=L.map('miniMap',{zoomControl:false,scrollWheelZoom:false,dragging:true,attributionControl:false}).setView([p.lat,p.lng],15);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{subdomains:'abcd',maxZoom:20}).addTo(miniMap);
+      } else { miniMap.setView([p.lat,p.lng],15); miniMap.eachLayer(l=>{if(l instanceof L.Marker)miniMap.removeLayer(l);}); }
+      L.marker([p.lat,p.lng],{icon:pinIcon(p.color,'')}).addTo(miniMap);
+      miniMap.invalidateSize();
+    },80);
+    trackEvent('view-place',p.name);
+  }
+  function goBackFromPlats(){
+    try{
+      const url=new URL(location.href);
+      url.searchParams.delete("plats");
+      history.replaceState(null,"",url.pathname+url.search+url.hash);
+    }catch(e){}
+    showView(lastViewBeforePlats||'start');
+  }
+  function bootPlaceDeepLink(){
+    try{
+      const q=new URLSearchParams(location.search).get("plats");
+      if(!q) return;
+      const decoded=decodeURIComponent(q);
+      const p=places.find(x=>x.name===decoded) || placeBySlug(decoded) || places.find(x=>placeSlug(x.name)===decoded);
+      if(p) setTimeout(()=>openPlace(p.name), 40);
+    }catch(e){}
+  }
+
+  // ============================================================
+  //  BYGDENS RÖSTER — editorial portraits
+  // ============================================================
+  let lastViewBeforePortratt='start';
+  let currentPortraitSlug=null;
+  function sortedPortraits(){
+    return [...portraits].sort((a,b)=>(b.published||"").localeCompare(a.published||""));
+  }
+  function portraitHeroUrl(pr){
+    if(pr.heroImg) return pr.heroImg;
+    const place=places.find(p=>p.name===pr.place);
+    return place?.img || "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=1200&q=75";
+  }
+  function portraitPersonUrl(pr){
+    if(pr.portraitImg) return pr.portraitImg;
+    // Reserved slot fallback — replace with real portrait when you have one
+    return "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=800&q=75";
+  }
+  function portraitMidHTML(pr){
+    const src=portraitPersonUrl(pr);
+    const isLocal=!!pr.portraitImg && !/^https?:\/\//i.test(pr.portraitImg);
+    const isStock=!!pr.portraitImg && /unsplash\.com/i.test(pr.portraitImg);
+    const note=!pr.portraitImg || isStock
+      ? "Platshållare tills riktigt porträttfoto finns — inte den avbildade personen."
+      : (isLocal ? `${pr.role} · ${pr.place}` : `${pr.person} · ${pr.place}`);
+    return `<aside class="portratt-mid" aria-label="Porträtt">
+      <figure class="shot">
+        <img src="${src}" alt="Porträtt — ${pr.place}" loading="lazy" />
+      </figure>
+      <div class="meta">
+        <div class="who">${pr.person}</div>
+        <div class="what">${pr.role}</div>
+        <div class="note">${note}</div>
+      </div>
+    </aside>`;
+  }
+  function renderVoicesHome(){
+    const sec=document.getElementById('voicesSec');
+    const feature=document.getElementById('voicesFeature');
+    const more=document.getElementById('voicesMore');
+    if(!sec||!feature) return;
+    const list=sortedPortraits();
+    if(!list.length){ sec.hidden=true; feature.innerHTML=""; if(more){more.hidden=true;more.innerHTML="";} return; }
+    sec.hidden=false;
+    const top=list[0];
+    const esc=s=>(s||"").replace(/'/g,"\\'");
+    const q=top.quote || "";
+    feature.innerHTML=`
+      <article class="voice-feature">
+        <div class="vf-img" style="background-image:url('${portraitHeroUrl(top)}')" role="img" aria-label="${top.person}"></div>
+        <div class="vf-body">
+          <div class="eyebrow">Intervju</div>
+          ${q?`<blockquote class="vf-quote">${q}</blockquote>`:""}
+          <h3>${top.person}</h3>
+          <div class="role">${top.role} · ${top.place}</div>
+          <p class="dek">${top.dek}</p>
+          <button type="button" class="read-btn" onclick="openPortrait('${esc(top.slug)}')">Läs porträttet →</button>
+        </div>
+      </article>`;
+    if(more){
+      const rest=list.slice(1);
+      if(rest.length){
+        more.hidden=false;
+        more.innerHTML=`<span>Fler röster</span>`+rest.map(pr=>
+          `<button type="button" onclick="openPortrait('${esc(pr.slug)}')">${pr.person} — ${pr.role}</button>`
+        ).join("");
+      } else {
+        more.hidden=true; more.innerHTML="";
+      }
+    }
+  }
+  function openVoicesNav(){
+    const list=sortedPortraits();
+    if(!list.length) return;
+    openPortrait(list[0].slug);
+  }
+  function openPortrait(slug){
+    const list=sortedPortraits();
+    const pr=list.find(x=>x.slug===slug)||list[0];
+    if(!pr) return;
+    currentPortraitSlug=pr.slug;
+    lastViewBeforePortratt=document.querySelector('.view.on')?.id.replace('view-','')||'start';
+    if(lastViewBeforePortratt==='portratt') lastViewBeforePortratt='start';
+    const hero=document.getElementById('portrattHero');
+    if(hero) hero.style.backgroundImage=`url('${portraitHeroUrl(pr)}')`;
+    S('portrattName', pr.person);
+    S('portrattRole', `${pr.role} · ${pr.place}`);
+    S('portrattDek', pr.dek);
+    const bodyEl=document.getElementById('portrattBody');
+    const quoteWrap=document.getElementById('portrattQuote');
+    const quoteText=document.getElementById('portrattQuoteText');
+    const paras=(pr.body||[]).map(t=>`<p>${t}</p>`);
+    const mid=portraitMidHTML(pr);
+    const qHtml=pr.quote?`<figure class="portratt-quote"><p>${pr.quote}</p></figure>`:"";
+    if(bodyEl){
+      // Flow: lead paragraphs → quote → portrait → rest of article
+      if(paras.length>=2){
+        bodyEl.innerHTML=paras.slice(0,2).join("")+qHtml+mid+paras.slice(2).join("");
+        if(quoteWrap) quoteWrap.hidden=true;
+      } else {
+        bodyEl.innerHTML=paras.join("")+qHtml+mid;
+        if(pr.quote && quoteText && quoteWrap){
+          // quote already in body; keep footer quote hidden
+          quoteWrap.hidden=true;
+        } else if(quoteWrap) quoteWrap.hidden=true;
+      }
+    }
+    const placeCard=document.getElementById('portrattPlace');
+    const place=places.find(p=>p.name===pr.place);
+    if(placeCard){
+      if(place){
+        placeCard.hidden=false;
+        S('portrattPlaceName', place.name);
+        S('portrattPlaceGo', `Besök ${place.name} →`);
+        placeCard.onclick=()=>{ trackEvent('portrait-place', pr.slug); openPlace(place.name); };
+      } else placeCard.hidden=true;
+    }
+    const also=document.getElementById('portrattAlso');
+    const alsoLinks=document.getElementById('portrattAlsoLinks');
+    const others=list.filter(x=>x.slug!==pr.slug);
+    if(also&&alsoLinks){
+      if(others.length){
+        also.hidden=false;
+        alsoLinks.innerHTML=others.map(x=>
+          `<button type="button" onclick="openPortrait('${x.slug.replace(/'/g,"\\'")}')">${x.person} — ${x.role}</button>`
+        ).join("");
+      } else also.hidden=true;
+    }
+    showView('portratt');
+    trackEvent('view-portrait', pr.slug);
+  }
+  function goBackFromPortratt(){ showView(lastViewBeforePortratt||'start'); }
+
+  // ============================================================
+  //  VALLENTUNA LEVERERAR — one chronological stream + id anchors
+  // ============================================================
+  const MOMENT_FALLBACK="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1400&q=75";
+  function sortedMoments(){
+    return [...moments].sort((a,b)=>(b.published||"").localeCompare(a.published||""));
+  }
+  function momentId(m){
+    return (m&&m.id) ? String(m.id) : "";
+  }
+  function momentImgs(m){
+    if(m&&Array.isArray(m.imgs)&&m.imgs.length) return m.imgs.map(u=>String(u).trim()).filter(Boolean);
+    const one=(m&&m.img)?String(m.img).trim():"";
+    return one ? [one] : [MOMENT_FALLBACK];
+  }
+  function momentImg(m){
+    return momentImgs(m)[0] || MOMENT_FALLBACK;
+  }
+  function escHtml(s){
+    return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  }
+  function momentBodyHTML(body){
+    const parts=String(body||"").trim().split(/\n+/).filter(Boolean);
+    if(!parts.length) return "";
+    return parts.map(p=>`<p>${escHtml(p)}</p>`).join("");
+  }
+  function momentExcerpt(body,max){
+    const t=String(body||"").replace(/\s+/g," ").trim();
+    if(t.length<=max) return t;
+    const cut=t.slice(0,max);
+    const i=cut.lastIndexOf(" ");
+    return (i>40?cut.slice(0,i):cut).trim()+"…";
+  }
+  function openLightbox(src){
+    const box=document.getElementById('imgLightbox');
+    const img=document.getElementById('imgLightboxImg');
+    if(!box||!img||!src) return;
+    img.src=src;
+    img.alt="";
+    box.hidden=false;
+    box.classList.add('on');
+    document.body.style.overflow='hidden';
+  }
+  function closeLightbox(){
+    const box=document.getElementById('imgLightbox');
+    const img=document.getElementById('imgLightboxImg');
+    if(!box) return;
+    box.classList.remove('on');
+    box.hidden=true;
+    if(img) img.src="";
+    document.body.style.overflow='';
+  }
+  document.getElementById('imgLightbox')?.addEventListener('click',(ev)=>{
+    if(ev.target.id==='imgLightbox' || ev.target.classList.contains('lb-close')) closeLightbox();
+  });
+  document.addEventListener('keydown',(ev)=>{ if(ev.key==='Escape') closeLightbox(); });
+
+  function momentExtrasHTML(m){
+    const imgs=momentImgs(m);
+    const extras=imgs.slice(1);
+    if(!extras.length) return "";
+    return `<div class="moment-extras">${extras.map(src=>
+      `<button type="button" class="thumb" onclick="openLightbox('${escHtml(src)}')" aria-label="Visa större bild">
+        <img src="${escHtml(src)}" alt="" loading="lazy" />
+      </button>`
+    ).join("")}</div>`;
+  }
+  function momentCardHTML(m){
+    const id=momentId(m);
+    const anchor=id?` id="moment-${escHtml(id)}"`:"";
+    const hero=momentImg(m);
+    return `<article class="moment"${anchor}>
+      <h2>${escHtml(m.title)}</h2>
+      <button type="button" class="moment-hero" onclick="openLightbox('${escHtml(hero)}')" aria-label="Visa större bild">
+        <img src="${escHtml(hero)}" alt="" loading="lazy" />
+      </button>
+      <div class="moment-body">${momentBodyHTML(m.body)}</div>
+      ${momentExtrasHTML(m)}
+      <p class="moment-sign">Vallentuna levererar.</p>
+    </article>`;
+  }
+  function openLevererarMoment(id){
+    const slug=id||"";
+    if(slug) location.hash="levererar="+encodeURIComponent(slug);
+    else location.hash="levererar";
+    showView('levererar');
+    // showView scrolls to top — scroll to moment after paint
+    setTimeout(()=>scrollToLevererarMoment(slug),60);
+  }
+  function scrollToLevererarMoment(id){
+    if(!id) return;
+    const el=document.getElementById('moment-'+id);
+    if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  function parseLevererarHash(){
+    const h=location.hash.slice(1);
+    if(!h) return null;
+    if(h==="levererar") return {view:true,id:""};
+    if(h.startsWith("levererar=")) return {view:true,id:decodeURIComponent(h.slice(10))};
+    // Also accept bare #moment-<id>
+    if(h.startsWith("moment-")) return {view:true,id:h.slice(7)};
+    return null;
+  }
+  function applyLevererarHash(){
+    const parsed=parseLevererarHash();
+    if(!parsed) return false;
+    showView('levererar');
+    if(parsed.id) setTimeout(()=>scrollToLevererarMoment(parsed.id),80);
+    return true;
+  }
+  function renderLevererarHome(){
+    const sec=document.getElementById('levererarSec');
+    const host=document.getElementById('levererarTeaser');
+    if(!sec||!host) return;
+    const list=sortedMoments();
+    if(!list.length){ sec.hidden=true; host.innerHTML=""; return; }
+    sec.hidden=false;
+    const m=list[0];
+    const id=momentId(m);
+    host.innerHTML=`
+      <article class="levererar-latest" onclick="openLevererarMoment('${escHtml(id)}')" role="button" tabindex="0"
+        onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLevererarMoment('${escHtml(id)}')}">
+        <div class="ll-img" style="background-image:url('${escHtml(momentImg(m))}')" role="img" aria-hidden="true"></div>
+        <div class="ll-body">
+          <div class="eyebrow">Senaste inlägget</div>
+          <h3>${escHtml(m.title)}</h3>
+          <p>${escHtml(momentExcerpt(m.body,200))}</p>
+          <span class="more-link">Läs mer →</span>
+        </div>
+      </article>`;
+  }
+  function renderLevererarView(){
+    const stream=document.getElementById('levererarStream');
+    if(!stream) return;
+    const list=sortedMoments();
+    if(!list.length){
+      stream.innerHTML=`<div class="levererar-empty">Inga ögonblick här ännu.<span class="hint">Kom tillbaka snart — bygden levererar alltid något.</span></div>`;
+      return;
+    }
+    stream.innerHTML=list.map(momentCardHTML).join("");
+  }
+  window.addEventListener('hashchange',()=>{ applyLevererarHash(); });
+
+
+  function showView(v){
+    document.querySelectorAll('.view').forEach(x=>x.classList.remove('on'));
+    const viewEl=document.getElementById('view-'+v);
+    if(!viewEl) return;
+    viewEl.classList.add('on');
+    if(v!=='kategori') closeUpplevMenu();
+    document.querySelectorAll('.nav button[id^="nav-"]').forEach(b=>b.classList.remove('on'));
+    const navBtn=document.getElementById('nav-'+v);
+    if(navBtn) navBtn.classList.add('on');
+    if(v==='start') document.getElementById('nav-start')?.classList.add('on');
+    if(v==='portratt') document.getElementById('nav-roester')?.classList.add('on');
+    if(v==='guider' || v==='guide') document.getElementById('nav-guider')?.classList.add('on');
+    if(v==='kategori'){
+      document.getElementById('nav-upplev')?.classList.add('on');
+      document.getElementById('nav-cat-'+currentCategory)?.classList.add('on');
+    }
+    if(v==='karta'){initMap();setTimeout(()=>map&&map.invalidateSize(),60);}
+    if(v==='favoriter') renderFavorites();
+    if(v==='sok'){runSearch();setTimeout(()=>document.getElementById('globalSearch')?.focus(),80);}
+    if(v==='listor') renderLists();
+    if(v==='skicka'){fillEventHosts();renderPendingAdmin();}
+    if(v==='kategori') renderCategory();
+    if(v==='guider') renderGuidesGrid();
+    if(v==='levererar') renderLevererarView();
+    trackEvent('view-'+v, '');
+    if(v==='start'){
+      try{ refreshHeroToday(); }catch(e){}
+      try{ renderPicks(); }catch(e){}
+      try{ renderGuidesHome(); }catch(e){}
+      try{ renderVoicesHome(); }catch(e){}
+      try{ renderLevererarHome(); }catch(e){}
+      try{ renderHappenHome(); }catch(e){}
+      try{ renderRoute(); }catch(e){}
+    }
+    // Keep scroll position when deep-linking into a moment; otherwise go to top
+    const levHash=parseLevererarHash();
+    if(!(v==='levererar' && levHash && levHash.id)) window.scrollTo(0,0);
+  }
+  function filterAndMap(type){
+    active=type||'alla';
+    showView('karta');
+    setTimeout(()=>{if(map){renderFilter();}},80);
+  }
+  function openOnMap(name){
+    showView('karta');
+    const i=places.findIndex(p=>p.name===name);
+    if(i>=0){setTimeout(()=>{map.flyTo([places[i].lat,places[i].lng],16,{duration:.7});setTimeout(()=>markers[i].openPopup(),720);},120);}
+  }
+
+  // Fill events page once showView helpers exist (map listeners are above)
+  try{
+    const evFullLate=document.getElementById('eventsFull');
+    if(evFullLate && !evFullLate.children.length){
+      evFullLate.innerHTML=liveEvents.length
+        ? liveEvents.map(e=>eventCard(e,true)).join('')
+        : `<div class="ev-empty">Inga inplanerade evenemang just nu — kika in snart igen.</div>`;
+    }
+  }catch(e){}
+  setTimeout(bootSmartPack, 0);
+  setTimeout(()=>{ try{ applyLevererarHash(); }catch(e){} }, 20);
+  setTimeout(bootPlaceDeepLink, 30);
+
+// --- window exports (HTML onclick / SPA nav) ---
+Object.assign(window, {
+  addCurrentToList,
+  approvePending,
+  closeEventModal,
+  closeLightbox,
+  closeReport,
+  createList,
+  deleteList,
+  favorites,
+  filterAndMapFromCategory,
+  goBackFromPlats,
+  goBackFromPortratt,
+  heroTodayOpenEvent,
+  heroTodayOpenSeason,
+  heroTodaySeeMore,
+  mobileGo,
+  openCategory,
+  openEvent,
+  openGuide,
+  openLevererarMoment,
+  openLightbox,
+  openList,
+  openPlace,
+  openPortrait,
+  openRemindChooser,
+  openReport,
+  openVoicesNav,
+  planGuideRoute,
+  planRouteFromList,
+  removeFromList,
+  requestNearMe,
+  reshuffleRoute,
+  runSearch,
+  saveGuideAsList,
+  shareList,
+  shareWxCard,
+  showView,
+  submitEventForm,
+  submitReport,
+  toggleFavorite,
+  toggleFavFromPlats,
+  toggleFavOnly,
+  toggleMobileNav,
+  toggleOpenNow,
+  toggleSearchFilter,
+  toggleUpplevMenu,
+  trackEvent
+});

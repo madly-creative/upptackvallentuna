@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Upptäck Vallentuna">
+  <!-- Maskable: keep mark inside ~80% safe zone -->
+  <rect width="512" height="512" fill="#f5f1e8"/>
+  <g transform="translate(56 56) scale(0.78)" fill="none" stroke="#37472f" stroke-width="22" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M256 78 L256 198"/>
+    <path d="M256 78 L168 128"/>
+    <path d="M256 78 L344 128"/>
+    <path d="M256 78 L196 48"/>
+    <path d="M256 78 L316 48"/>
+    <path d="M188 210 H324 L348 420 H164 Z"/>
+    <path d="M236 420 V340 H276 V420"/>
+    <rect x="236" y="250" width="40" height="40" rx="4"/>
+  </g>
+  <g transform="translate(56 56) scale(0.78)">
+    <circle cx="256" cy="78" r="16" fill="#37472f"/>
+  </g>
+</svg>

@@ -1,0 +1,25 @@
+{
+  "name": "upptack-vallentuna",
+  "private": true,
+  "version": "2.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "prebuild": "node scripts/generate-seo.mjs",
+    "predev": "node scripts/generate-seo.mjs",
+    "build": "vite build",
+    "generate:seo": "node scripts/generate-seo.mjs",
+    "generate:icons": "node scripts/generate-pwa-icons.mjs",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "typecheck": "node -e \"console.log('no TS yet')\""
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.54.2",
+    "jsdom": "^26.1.0",
+    "vite": "^7.0.6",
+    "vitest": "^3.2.4"
+  }
+}

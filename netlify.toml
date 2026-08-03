@@ -1,0 +1,21 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Formspree + contact — set in Netlify UI:
+# VITE_CONTACT_EMAIL, VITE_FORMSPREE_EVENT, VITE_FORMSPREE_REPORT
+
+# Service worker must revalidate so clients pick up new shell caches
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/manifest.webmanifest"
+  [headers.values]
+    Content-Type = "application/manifest+json"
+    Cache-Control = "public, max-age=3600"

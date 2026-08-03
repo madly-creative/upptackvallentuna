@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upptäck Vallentuna — lokal guide till fik, gårdar, natur & evenemang</title>
+  <meta name="description" content="Din handplockade guide till småföretag, caféer, gårdsbutiker, naturpärlor och evenemang i Vallentuna. Lokalt på riktigt.">
+  <link rel="canonical" href="https://upptackvallentuna.se/">
+  <meta name="theme-color" content="#37472f">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Vallentuna">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="sv_SE">
+  <meta property="og:site_name" content="Upptäck Vallentuna">
+  <meta property="og:title" content="Upptäck Vallentuna — lokal guide">
+  <meta property="og:description" content="Handplockad guide till fik, gårdar, natur och evenemang i Vallentuna.">
+  <meta property="og:url" content="https://upptackvallentuna.se/">
+  <meta property="og:image" content="https://upptackvallentuna.se/assets/hero/1.webp">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Upptäck Vallentuna">
+  <meta name="twitter:description" content="Handplockad guide till fik, gårdar, natur och evenemang i Vallentuna.">
+  <meta name="twitter:image" content="https://upptackvallentuna.se/assets/hero/1.webp">
+  <link rel="icon" href="/assets/shared/logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="/src/styles/main.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Upptäck Vallentuna",
+    "url": "https://upptackvallentuna.se/",
+    "description": "Handplockad lokal guide till Vallentuna",
+    "inLanguage": "sv-SE",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Upptäck Vallentuna"
+    }
+  }
+  </script>
+  <script defer src="https://cloud.umami.is/script.js" data-website-id="f52ab92f-5136-450c-b9b7-cef84fe73c02"></script>
+</head>
+<body>
+
+<a class="skip" href="#main">Hoppa till innehåll</a>
+
+<header class="topbar">
+  <div class="brand" onclick="showView('start')" role="link" aria-label="Upptäck Vallentuna — startsida" title="Upptäck Vallentuna">
+    <img class="logo" src="/assets/shared/logo.svg" alt="Upptäck Vallentuna" width="250" height="112" decoding="async" />
+  </div>
+  <nav class="nav" aria-label="Huvudmeny">
+    <button id="nav-start" class="on" onclick="showView('start')">Upptäck Vallentuna</button>
+    <div class="nav-dd" id="navUpplev">
+      <button type="button" id="nav-upplev" class="nav-dd-btn" aria-haspopup="true" aria-expanded="false" aria-controls="navUpplevMenu" onclick="toggleUpplevMenu(event)">
+        Upplev Vallentuna
+        <svg class="chev" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-dd-menu" id="navUpplevMenu" role="menu">
+        <button type="button" role="menuitem" id="nav-cat-attgora" onclick="openCategory('attgora')">Att göra</button>
+        <button type="button" role="menuitem" id="nav-cat-fika" onclick="openCategory('fika')">Äta &amp; fika</button>
+        <button type="button" role="menuitem" id="nav-cat-gard" onclick="openCategory('gard')">Handla lokalt</button>
+        <button type="button" role="menuitem" id="nav-cat-natur" onclick="openCategory('natur')">Natur &amp; uteliv</button>
+      </div>
+    </div>
+    <button id="nav-hander" onclick="showView('hander')">Evenemang</button>
+    <button id="nav-guider" type="button" onclick="showView('guider')" hidden>Guider</button>
+    <button id="nav-roester" type="button" onclick="openVoicesNav()">Bygdens röster</button>
+    <button id="nav-levererar" type="button" onclick="openLevererarMoment('')">Vallentuna levererar</button>
+    <button id="nav-karta" onclick="showView('karta')">Karta</button>
+    <button id="nav-om" type="button" onclick="showView('om')">Om oss</button>
+  </nav>
+  <div class="nav-utils">
+    <button class="util-btn" type="button" id="navFavBtn" onclick="showView('favoriter')" aria-label="Favoriter" title="Favoriter">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 20s-7-4.35-7-9.2A3.8 3.8 0 0 1 12 7.1a3.8 3.8 0 0 1 7 3.7C19 15.65 12 20 12 20z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+      <span>Favoriter</span>
+      <span class="fav-count" id="favCountBadge" hidden>0</span>
+    </button>
+    <button class="util-btn" type="button" onclick="showView('sok')" aria-label="Sök">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.7"/><path d="M16.5 16.5 20 20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+      <span>Sök</span>
+    </button>
+    <button class="util-btn" type="button" onclick="showView('listor')" aria-label="Listor">
+      <span>Listor</span>
+    </button>
+    <button class="btn-outline" type="button" onclick="showView('skicka')">Skicka event</button>
+    <button class="menu-toggle" type="button" id="menuToggle" aria-label="Öppna meny" aria-expanded="false" aria-controls="mobileNav" onclick="toggleMobileNav(true)">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+</header>
+<div class="mnav-bg" id="mnavBg" onclick="toggleMobileNav(false)" hidden></div>
+<aside class="mnav" id="mobileNav" aria-label="Mobilmeny" hidden>
+  <div class="mnav-head">
+    <strong>Meny</strong>
+    <button type="button" class="mnav-close" aria-label="Stäng meny" onclick="toggleMobileNav(false)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <nav>
+    <button type="button" onclick="mobileGo(()=>showView('start'))">Upptäck Vallentuna</button>
+    <button type="button" onclick="mobileGo(()=>openCategory('attgora'))">Att göra</button>
+    <div class="mnav-sub">
+      <button type="button" onclick="mobileGo(()=>openCategory('fika'))">Äta &amp; fika</button>
+      <button type="button" onclick="mobileGo(()=>openCategory('gard'))">Handla lokalt</button>
+      <button type="button" onclick="mobileGo(()=>openCategory('natur'))">Natur &amp; uteliv</button>
+    </div>
+    <button type="button" onclick="mobileGo(()=>showView('hander'))">Evenemang</button>
+    <button type="button" id="mnav-guider" onclick="mobileGo(()=>showView('guider'))" hidden>Guider</button>
+    <button type="button" onclick="mobileGo(()=>openVoicesNav())">Bygdens röster</button>
+    <button type="button" onclick="mobileGo(()=>openLevererarMoment(''))">Vallentuna levererar</button>
+    <button type="button" onclick="mobileGo(()=>showView('karta'))">Karta</button>
+    <button type="button" onclick="mobileGo(()=>showView('om'))">Om oss</button>
+  </nav>
+  <div class="mnav-utils">
+    <button type="button" onclick="mobileGo(()=>showView('favoriter'))">Favoriter</button>
+    <button type="button" onclick="mobileGo(()=>showView('sok'))">Sök</button>
+    <button type="button" onclick="mobileGo(()=>showView('listor'))">Listor</button>
+    <button type="button" onclick="mobileGo(()=>showView('skicka'))">Skicka event</button>
+  </div>
+</aside>
+<div class="notify-stack" id="notifyStack" aria-live="polite"></div>
+<div class="modal-bg" id="reportModal" role="dialog" aria-modal="true" aria-labelledby="reportTitle">
+  <div class="modal">
+    <h3 id="reportTitle">Rapportera fel</h3>
+    <p class="lede" style="margin-bottom:8px;font-size:14px">Hjälp oss hålla guiden korrekt — öppettider ändras, ställen stänger.</p>
+    <div class="form-card" style="border:none;padding:0;background:transparent">
+      <label>Plats</label>
+      <input id="reportPlace" readonly />
+      <label>Vad gäller?</label>
+      <select id="reportType">
+        <option value="hours">Fel öppettider</option>
+        <option value="closed">Stängt för gott</option>
+        <option value="moved">Flyttat / fel adress</option>
+        <option value="other">Annat</option>
+      </select>
+      <label>Beskrivning</label>
+      <textarea id="reportText" placeholder="T.ex. stänger 16 på lördagar…"></textarea>
+      <button type="button" class="submit" onclick="submitReport()">Skicka rapport</button>
+      <button type="button" class="side-actions" style="margin-top:8px;border:none;background:none;color:var(--ink-soft)" onclick="closeReport()">Avbryt</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg event-modal-bg" id="eventModal" role="dialog" aria-modal="true" aria-labelledby="eventModalTitle" hidden>
+  <div class="modal event-modal" onclick="event.stopPropagation()">
+    <button type="button" class="em-close" aria-label="Stäng" onclick="closeEventModal()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </button>
+    <div class="em-hero" id="eventModalHero">
+      <div class="em-date" id="eventModalDate" aria-hidden="true"></div>
+    </div>
+    <div class="em-body">
+      <div class="em-cat" id="eventModalCat"></div>
+      <h2 class="em-title" id="eventModalTitle"></h2>
+      <div class="em-meta" id="eventModalMeta"></div>
+      <p class="em-note" id="eventModalNote"></p>
+      <div class="em-rich" id="eventModalBody"></div>
+      <div class="em-actions" id="eventModalActions"></div>
+    </div>
+  </div>
+</div>
+
+<main id="main">
+<!-- ===================== START ===================== -->
+<section class="view on" id="view-start">
+  <div class="hero-full" id="heroFull">
+    <div class="hero-slides" id="heroSlides" aria-hidden="true"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <div class="greet" id="heroGreet"></div>
+        <h1 id="heroTitle">Vad vill du upptäcka idag?</h1>
+        <p class="hero-tagline" id="heroTagline">Smultronställen · Fika · Natur · Evenemang</p>
+        <p id="heroSub">Handplockade lokala favoriter — inte kedjorna du redan känner till.</p>
+        <div class="cta">
+          <button class="btn-primary" onclick="showView('karta')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s7-5.8 7-11a7 7 0 1 0-14 0c0 5.2 7 11 7 11z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10" r="2.4" stroke="currentColor" stroke-width="1.8"/></svg>
+            Öppna kartan
+          </button>
+          <button class="btn-ghost" onclick="showView('hander')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M8 3.5v3M16 3.5v3M3.5 10h17" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+            Se vad som händer
+          </button>
+        </div>
+      </div>
+      <div class="hero-top">
+        <aside class="hero-today" id="heroToday" aria-label="Just nu i Vallentuna">
+          <div class="ht-row weather" id="heroWeather">
+            <span class="ht-ico" id="wIcon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4" stroke="#e0a020" stroke-width="1.7"/><path d="M12 3v2.2M12 18.8V21M3 12h2.2M18.8 12H21M5.6 5.6l1.6 1.6M16.8 16.8l1.6 1.6M5.6 18.4l1.6-1.6M16.8 7.2l1.6-1.6" stroke="#e0a020" stroke-width="1.7" stroke-linecap="round"/></svg>
+            </span>
+            <div class="ht-temp" id="wTemp">–°</div>
+            <div class="ht-text ht-weather-text">
+              <div class="ht-title" id="wPlace">Vallentuna</div>
+              <div class="ht-sub" id="wText">Hämtar väder…</div>
+              <div class="ht-sub" id="wSub">Lokalt väder just nu</div>
+            </div>
+          </div>
+          <div class="ht-row" id="livePulse" aria-live="polite">
+            <span class="ht-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3.5" fill="#3d6b32"/><circle cx="12" cy="12" r="7" stroke="#3d6b32" stroke-width="1.5" opacity=".35"/><circle cx="12" cy="12" r="10" stroke="#cfc6b6" stroke-width="1.2"/></svg>
+            </span>
+            <div class="ht-text">
+              <div class="ht-title" id="pulseOpen">– platser öppna</div>
+              <div class="ht-sub" id="pulseMsg">just nu</div>
+            </div>
+          </div>
+          <button type="button" class="ht-row as-btn" id="heroEventRow" onclick="heroTodayOpenEvent()">
+            <span class="ht-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="15" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M8 3.5v3M16 3.5v3M4 10h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </span>
+            <div class="ht-text">
+              <div class="ht-title" id="heroEventTitle">Inga evenemang just nu</div>
+              <div class="ht-sub" id="heroEventSub">Se kalendern</div>
+            </div>
+          </button>
+          <button type="button" class="ht-row as-btn" id="heroSeasonRow" onclick="heroTodayOpenSeason()">
+            <span class="ht-ico" id="heroSeasonIco" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 20c0-4 3-7 3-11a3 3 0 1 0-6 0c0 4 3 7 3 11z" fill="#c23b3b"/><path d="M12 9c-1.2-2.2-3.5-3.2-5-3.4.8 2.2 2.4 3.4 5 3.4 2.6 0 4.2-1.2 5-3.4-1.5.2-3.8 1.2-5 3.4z" fill="#3d6b32"/></svg>
+            </span>
+            <div class="ht-text">
+              <div class="ht-title" id="heroSeasonTitle">I säsong</div>
+              <div class="ht-sub" id="heroSeasonSub">Lokala tips</div>
+            </div>
+          </button>
+          <button type="button" class="ht-more" onclick="heroTodaySeeMore()">Se mer idag →</button>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <div class="quick-paths" id="quickPaths" aria-label="Snabbvägar">
+    <div class="inner">
+      <span class="qlabel">Utforska</span>
+      <button type="button" class="qchip" onclick="openCategory('fika')">Äta &amp; fika</button>
+      <button type="button" class="qchip" onclick="openCategory('gard')">Handla lokalt</button>
+      <button type="button" class="qchip" onclick="openCategory('natur')">Natur &amp; uteliv</button>
+      <button type="button" class="qchip" onclick="showView('hander')">Evenemang</button>
+      <button type="button" class="qchip" onclick="showView('karta')">Karta</button>
+    </div>
+  </div>
+
+  <div class="return-banner" id="returnBanner" hidden>
+    <div class="inner">
+      <span id="returnText"></span>
+      <button type="button" id="returnBtn">Öppna igen →</button>
+    </div>
+  </div>
+
+  <!-- Handplockat: en sektion (ersätter Passar dig + Att göra) -->
+  <div class="sec picks-sec">
+    <div class="sec-head">
+      <div>
+        <h2 id="picksHeading">Handplockat just nu</h2>
+        <div class="wtip" id="picksWhy" style="margin-top:6px"></div>
+      </div>
+      <button type="button" class="more" onclick="openCategory('attgora')">Se alla →</button>
+    </div>
+    <div class="picks-grid" id="picksGrid"></div>
+  </div>
+
+  <!-- Guider — egna dagsrundor, tre kort i rad -->
+  <div class="sec guides-sec" id="guidesHomeSec" hidden>
+    <div class="sec-head">
+      <div>
+        <h2>Guider</h2>
+        <div class="wtip" style="margin-top:6px">Säsongens dagsrundor — berättade stopp i en följd</div>
+      </div>
+      <button type="button" class="more" onclick="showView('guider')">Alla guider →</button>
+    </div>
+    <div class="guides-home-row" id="guidesHomeTeaser"></div>
+  </div>
+
+  <!-- Bygdens röster — intervjuer, full width för sig -->
+  <div class="sec voices-sec" id="voicesSec" hidden>
+    <div class="sec-head">
+      <div>
+        <h2>Bygdens röster</h2>
+        <div class="wtip" style="margin-top:6px">Porträtt som lyfter dem som får bygden att leva</div>
+      </div>
+      <button type="button" class="more" onclick="openVoicesNav()">Alla porträtt →</button>
+    </div>
+    <div id="voicesFeature"></div>
+    <div class="voice-more" id="voicesMore" hidden></div>
+  </div>
+
+  <!-- Vallentuna levererar — redaktionell röst, senaste inlägget -->
+  <div class="sec levererar-sec" id="levererarSec" hidden>
+    <div class="sec-head">
+      <div>
+        <h2>Vallentuna levererar</h2>
+        <div class="wtip" style="margin-top:6px">Senaste ögonblicket från bygden — vår egen röst</div>
+      </div>
+      <button type="button" class="more" onclick="openLevererarMoment('')">Alla ögonblick →</button>
+    </div>
+    <div id="levererarTeaser"></div>
+  </div>
+
+  <!-- Evenemang: en sektion -->
+  <div class="sec" id="eventsHomeSec">
+    <div class="sec-head">
+      <div>
+        <h2 id="happenHeading">Händer i bygden</h2>
+        <div class="wtip" id="happenWhy" style="margin-top:6px"></div>
+      </div>
+      <button type="button" class="more" onclick="showView('hander')">Alla evenemang →</button>
+    </div>
+    <div class="happen-grid" id="happenGrid"></div>
+  </div>
+
+  <!-- Rutt: tydlig journey, inte fler lika kort -->
+  <div class="sec route-sec">
+    <div class="sec-head">
+      <div>
+        <h2>Gör en eftermiddag</h2>
+        <div class="wtip" style="margin-top:6px">Tre stopp — fika, gård och natur</div>
+      </div>
+      <button type="button" class="more" onclick="reshuffleRoute()">Ny rutt →</button>
+    </div>
+    <div class="journey" id="routeGrid"></div>
+  </div>
+</section>
+
+<!-- ===================== KATEGORI ===================== -->
+<section class="view" id="view-kategori">
+  <div class="cat-page">
+    <div class="cat-head">
+      <div class="eyebrow">Upptäck Vallentuna</div>
+      <h1 id="catTitle">Kategori</h1>
+      <p class="lede" id="catLede"></p>
+    </div>
+    <div class="cat-tools">
+      <span class="count" id="catCount"></span>
+      <button type="button" class="chip" id="catMapBtn" onclick="filterAndMapFromCategory()">Visa på karta →</button>
+    </div>
+    <div class="cat-grid" id="catGrid"></div>
+  </div>
+</section>
+
+<!-- ===================== GUIDER ===================== -->
+<section class="view" id="view-guider">
+  <div class="guides-page">
+    <div class="eyebrow">Dagsguider</div>
+    <h1>Guider</h1>
+    <p class="lede">Säsongsvisa rundor som knyter ihop fik, natur och gård till en berättad dag. Spara som lista och planera rutten i Maps.</p>
+    <div class="guides-grid" id="guidesGrid"></div>
+  </div>
+</section>
+
+<section class="view" id="view-guide">
+  <div class="guide-hero" id="guideHero">
+    <button type="button" class="back" onclick="showView('guider')">← Alla guider</button>
+    <div class="ov"></div>
+    <div class="htext">
+      <div class="series" id="guideSeason">Guide</div>
+      <h1 id="guideTitle"></h1>
+    </div>
+  </div>
+  <div class="guide-wrap">
+    <p class="guide-intro" id="guideIntro"></p>
+    <p class="guide-lead" id="guideLead"></p>
+    <div class="guide-actions" id="guideActions"></div>
+    <div class="guide-stops" id="guideStops"></div>
+    <div class="guide-outro" id="guideOutro"></div>
+    <div class="guide-actions guide-actions-bottom" id="guideActionsBottom"></div>
+  </div>
+</section>
+
+<!-- ===================== PORTRÄTT ===================== -->
+<section class="view" id="view-portratt">
+  <div class="portratt-hero" id="portrattHero">
+    <button type="button" class="back" onclick="goBackFromPortratt()">← Tillbaka</button>
+    <div class="ov"></div>
+    <div class="htext">
+      <div class="series">Bygdens röster</div>
+      <h1 id="portrattName"></h1>
+      <div class="role" id="portrattRole"></div>
+    </div>
+  </div>
+  <div class="portratt-wrap">
+    <p class="portratt-dek" id="portrattDek"></p>
+    <div class="portratt-body" id="portrattBody"></div>
+    <figure class="portratt-quote" id="portrattQuote" hidden>
+      <p id="portrattQuoteText"></p>
+    </figure>
+    <div class="portratt-place" id="portrattPlace" hidden>
+      <div>
+        <div class="lbl">Kopplad plats</div>
+        <div class="name" id="portrattPlaceName"></div>
+      </div>
+      <div class="go" id="portrattPlaceGo">Besök →</div>
+    </div>
+    <div class="portratt-also" id="portrattAlso" hidden>
+      <h3>Fler röster</h3>
+      <div class="links" id="portrattAlsoLinks"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== VALLENTUNA LEVERERAR ===================== -->
+<section class="view" id="view-levererar">
+  <div class="levererar-page">
+    <div class="series">Från redaktionen</div>
+    <h1>Vallentuna levererar</h1>
+    <p class="lede">Korta ögonblick från bygden — saker vi snubblar över, stannar till vid, och inte vill glömma. Ingen katalog. Bara det som händer.</p>
+    <div class="levererar-stream" id="levererarStream"></div>
+  </div>
+</section>
+
+<!-- ===================== OM OSS ===================== -->
+<section class="view" id="view-om">
+  <div class="events-page">
+    <h1>En kärleksförklaring till <em id="omKommun">Vallentuna</em></h1>
+    <p class="lede" id="omLede"></p>
+    <div class="om-body" id="omBody"></div>
+  </div>
+</section>
+
+<!-- Image lightbox -->
+<div class="lightbox" id="imgLightbox" role="dialog" aria-modal="true" aria-label="Förstorad bild" hidden>
+  <button type="button" class="lb-close" aria-label="Stäng" onclick="closeLightbox()">×</button>
+  <img id="imgLightboxImg" src="" alt="" />
+</div>
+
+<!-- Remind chooser (calendar — no push/email) -->
+<div class="remind-pop" id="remindPop" role="dialog" aria-label="Lägg till i kalender" hidden>
+  <div class="ttl">Påminn mig</div>
+  <button type="button" id="remindIcs">Ladda ner .ics-fil</button>
+  <a id="remindGcal" href="#" target="_blank" rel="noopener">Lägg till i Google Calendar</a>
+</div>
+
+<!-- ===================== PLATS (detaljsida) ===================== -->
+<section class="view" id="view-plats">
+  <div class="plats-hero" id="platsHero">
+    <button class="back" onclick="goBackFromPlats()">← Tillbaka</button>
+    <div class="ov"></div>
+    <div class="htext"><span class="hcat" id="platsCat"></span><h1 id="platsName"></h1></div>
+  </div>
+  <div class="plats-wrap">
+    <div class="plats-main">
+      <p class="lead" id="platsLead"></p>
+      <div class="plats-facts" id="platsFacts"></div>
+      <div class="plats-gallery" id="platsGallery"></div>
+      <div class="body-rich" id="platsBody"></div>
+      <div id="platsEvent"></div>
+    </div>
+    <aside class="plats-side">
+      <div class="infobox">
+        <div id="miniMap"></div>
+        <div class="info" id="platsInfo"></div>
+        <button type="button" class="fav-toggle" id="platsFavBtn" onclick="toggleFavFromPlats()">♡ Spara som favorit</button>
+        <div class="side-actions">
+          <button type="button" onclick="addCurrentToList()">＋ Lägg i lista</button>
+          <button type="button" onclick="openReport()">⚑ Rapportera fel</button>
+        </div>
+        <a class="btn-dir" id="platsDir" href="#" target="_blank" rel="noopener">📍 Hitta hit</a>
+        <div id="platsTravel" class="sun-note" style="margin:12px 18px 0"></div>
+        <div id="platsHours" style="padding:8px 18px 0"></div>
+        <div class="hook" id="platsHook"></div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ===================== SÖK ===================== -->
+<section class="view" id="view-sok">
+  <div class="panel">
+    <h1>Sök i Vallentuna</h1>
+    <p class="lede">Fritext plus filter — öppet nu, barnvänligt, hund, rullstol, uteservering eller gratis.</p>
+    <div class="search-box">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="#8a8270" stroke-width="2"/><path d="M20 20l-3.2-3.2" stroke="#8a8270" stroke-width="2" stroke-linecap="round"/></svg>
+      <input id="globalSearch" type="search" placeholder="Sök fik, gård, bad, runsten…" oninput="runSearch()" />
+    </div>
+    <div class="filter-row" id="searchFilters"></div>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</section>
+
+<!-- ===================== LISTOR ===================== -->
+<section class="view" id="view-listor">
+  <div class="panel">
+    <h1>Dina listor</h1>
+    <p class="lede">Spara samlingar som “Helg med kids” eller “Utflykt med hund” — och dela via länk.</p>
+    <div class="list-grid" id="listsGrid"></div>
+    <div class="form-card" style="margin-top:22px">
+      <label>Ny lista</label>
+      <input id="newListName" placeholder="T.ex. Söndagsrunda" />
+      <button type="button" class="submit" onclick="createList()">Skapa lista</button>
+    </div>
+    <div id="listDetail" style="margin-top:28px"></div>
+  </div>
+</section>
+
+<!-- ===================== SKICKA EVENT ===================== -->
+<section class="view" id="view-skicka">
+  <div class="panel">
+    <h1>Skicka in evenemang</h1>
+    <p class="lede">Äger du en verksamhet? Skicka in loppis, marknad eller konsert — vi granskar innan det syns publikt. Tips går till <a href="mailto:tips@upptackvallentuna.se">tips@upptackvallentuna.se</a> (eller Formspree när det är inkopplat).</p>
+    <div class="form-card">
+      <label>Titel</label>
+      <input id="evTitle" placeholder="Smaka på Vallentuna" />
+      <label>Värd / plats</label>
+      <select id="evHost"></select>
+      <label>Datum</label>
+      <input id="evDate" type="date" />
+      <label>Tid</label>
+      <input id="evTime" placeholder="10:00 – 15:00" />
+      <label>Kategori</label>
+      <select id="evCat"><option>MARKNAD</option><option>FIKA</option><option>KULTUR</option><option>LOPPIS</option><option>ÖVRIGT</option></select>
+      <label>Kort beskrivning</label>
+      <textarea id="evNote" placeholder="Vad händer, för vem, entré?"></textarea>
+      <label>Din e-post (för uppföljning)</label>
+      <input id="evEmail" type="email" placeholder="du@exempel.se" />
+      <button type="button" class="submit" onclick="submitEventForm()">Skicka för granskning</button>
+      <p id="evFormMsg" style="margin-top:12px;font-size:13px;color:var(--ink-soft)"></p>
+    </div>
+    <div id="pendingAdmin" style="margin-top:28px"></div>
+  </div>
+</section>
+
+<!-- ===================== FAVORITER ===================== -->
+<section class="view" id="view-favoriter">
+  <div class="fav-panel">
+    <h1>Dina favoriter</h1>
+    <p class="lede" id="favLede">Spara ställen du vill återvända till — vi visar vilka som är öppna just nu.</p>
+    <div class="fav-grid" id="favGrid"></div>
+  </div>
+</section>
+
+<!-- ===================== KARTA ===================== -->
+<section class="view" id="view-karta">
+  <div class="mapwrap">
+    <aside class="mside">
+      <div class="map-tools">
+        <div class="chip soft" id="chipOpenNow" onclick="toggleOpenNow()">Öppet nu</div>
+        <div class="chip soft" id="chipNear" onclick="requestNearMe()">Nära dig</div>
+        <div class="chip soft" id="chipFavOnly" onclick="toggleFavOnly()">Favoriter</div>
+      </div>
+      <div class="filters" id="filters"></div>
+      <div class="mcount" id="mcount"></div>
+      <div class="mlist" id="mlist"></div>
+    </aside>
+    <div class="mapcol">
+      <div id="map"></div>
+      <div class="searchbar">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="#8a8270" stroke-width="2"/><path d="M20 20l-3.2-3.2" stroke="#8a8270" stroke-width="2" stroke-linecap="round"/></svg>
+        <input id="search" type="text" placeholder="Sök — fik, gårdsbutik, keramik…" />
+        <button class="clr" id="searchClr" aria-label="Rensa sökning">×</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== HÄNDER ===================== -->
+<section class="view" id="view-hander">
+  <div class="events-page">
+    <h1>Händer i <em id="handerKommun">Vallentuna</em></h1>
+    <p class="lede">Marknader, loppisar, konserter och små lokala händelser — allt som gör bygden levande. Passerade datum försvinner av sig själva.</p>
+    <div class="events-grid" id="eventsFull"></div>
+  </div>
+</section>
+</main>
+
+<footer class="sitefooter">
+  <div class="foot-inner">
+    <div class="foot-brand">
+      <button type="button" class="foot-logo" onclick="showView('start')" aria-label="Till startsidan">
+        <img src="/assets/shared/logo.svg" alt="" width="224" height="101" decoding="async" />
+      </button>
+      <p class="foot-tag" id="footTag">Tillsammans gör vi Vallentuna levande.</p>
+      <p class="foot-lede">Handplockad guide till fik, gårdar, natur och evenemang — lokalt på riktigt.</p>
+      <p class="foot-values"><span>Handla lokalt</span><span>Stöd din granne</span><span>Skapa gemenskap</span></p>
+    </div>
+
+    <nav class="foot-col" aria-label="Upptäck">
+      <h2 class="foot-h">Upptäck</h2>
+      <ul class="foot-list">
+        <li><button type="button" onclick="showView('karta')">Karta</button></li>
+        <li><button type="button" onclick="showView('guider')">Guider</button></li>
+        <li><button type="button" onclick="showView('hander')">Evenemang</button></li>
+        <li><button type="button" onclick="openCategory('fika')">Äta &amp; fika</button></li>
+        <li><button type="button" onclick="openCategory('gard')">Handla lokalt</button></li>
+        <li><button type="button" onclick="openCategory('natur')">Natur &amp; uteliv</button></li>
+      </ul>
+    </nav>
+
+    <nav class="foot-col" aria-label="Berättelser">
+      <h2 class="foot-h">Berättelser</h2>
+      <ul class="foot-list">
+        <li><button type="button" onclick="openLevererarMoment('')">Vallentuna levererar</button></li>
+        <li><button type="button" onclick="openVoicesNav()">Bygdens röster</button></li>
+        <li><button type="button" onclick="showView('om')">Om oss</button></li>
+      </ul>
+    </nav>
+
+    <div class="foot-col">
+      <h2 class="foot-h">Delta</h2>
+      <ul class="foot-list">
+        <li><button type="button" onclick="showView('skicka')">Skicka evenemang</button></li>
+        <li><a href="mailto:tips@upptackvallentuna.se">tips@upptackvallentuna.se</a></li>
+        <li><a href="/evenemang.html">Evenemangskalender</a></li>
+        <li><a href="/om.html">Om guidningen</a></li>
+        <li><a href="/integritet.html">Integritet</a></li>
+      </ul>
+      <p class="foot-note">Har du sett något vi missat? Mejla — vi uppdaterar gärna.</p>
+    </div>
+  </div>
+
+  <div class="foot-bar-wrap">
+    <div class="foot-bar">
+      <p class="foot-copy">© <span id="footYear">2026</span> Upptäck Vallentuna</p>
+      <p class="built-by"><a href="https://www.fvno.se/" target="_blank" rel="noopener">Byggd av Formverket Norrort</a></p>
+    </div>
+  </div>
+</footer>
+
+<!-- hidden nav targets -->
+<button id="nav-favoriter" hidden onclick="showView('favoriter')"></button>
+<button id="nav-sok" hidden onclick="showView('sok')"></button>
+<button id="nav-listor" hidden onclick="showView('listor')"></button>
+<button id="nav-skicka" hidden onclick="showView('skicka')"></button>
+<button id="nav-portratt" hidden></button>
+<button id="nav-plats" hidden></button>
+
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
