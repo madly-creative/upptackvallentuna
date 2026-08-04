@@ -6,6 +6,17 @@ const FALLBACK_IMG = "/assets/hero/2.webp";
 
 export const events = [
   {
+    host: "Orkesta Bygdegård Lindholmen",
+    title: "Utomhusbio – Grannfejden",
+    date: "2026-08-09",
+    when: "Sön 9 aug · 21–23",
+    time: "21:00 – 23:00",
+    cat: "KULTUR",
+    note: "Fri entré till utomhusbio vid Orkesta bygdegård — feelgoodfilmen Grannfejden. Ta med filt eller campingstol; popcorn och biosnacks till försäljning.",
+    img: "/assets/hero/3.webp",
+    source: "https://www.orkestahembygd.se/event",
+  },
+  {
     host: "Gravröset Festival / Svista",
     title: "Gravröset Festival",
     date: "2026-08-14",
@@ -28,6 +39,39 @@ export const events = [
     source: "https://www.orkestahembygd.se/event",
   },
   {
+    host: "Orkesta Bygdegård Lindholmen",
+    title: "Linedance en-dagskurs",
+    date: "2026-08-22",
+    when: "Lör 22 aug · 10–13",
+    time: "10:00 – 13:00",
+    cat: "KULTUR",
+    note: "Prova-på linedance utan partner i Orkesta hembygdsgård. Inga förkunskaper krävs — instruktör Linda Blumenthal. Se bygdegårdens kalender för pris/anmälan.",
+    img: "/assets/hero/1.webp",
+    source: "https://www.orkestahembygd.se/event",
+  },
+  {
+    host: "Vallentuna Kulturhus",
+    title: "Scenfredag – Axman Band",
+    date: "2026-08-28",
+    when: "Fre 28 aug · 19:00",
+    time: "19:00 – 21:00",
+    cat: "KULTUR",
+    note: "Blues och rock på Caféscenen i Vallentuna Kulturhus. Insläpp från 18:30. Biljetter från 150 kr via Nortic (även biblioteket).",
+    img: "/assets/upplev/vallentuna-kulturhus/cover.webp",
+    source: "https://www.nortic.se/ticket/show/353467",
+  },
+  {
+    host: "Vallentuna kommun",
+    title: "Naturen och idrottens dag",
+    date: "2026-08-29",
+    when: "Lör 29 aug · 11–14",
+    time: "11:00 – 14:00",
+    cat: "NATUR",
+    note: "Prova-på-dag på Vallentuna IP med ~30 föreningar och aktörer — idrott, fritid och natur för hela familjen. Fri entré. Samma dag som Smaka på Vallentuna i Markim.",
+    img: "/assets/upplev/vallentuna-naturreservat/cover.webp",
+    source: "https://www.vallentuna.se/fritid-och-kultur/kulturskola/aktuellt-och-evenemang/",
+  },
+  {
     host: "Langhard Lantbruk",
     title: "Smaka på Vallentuna",
     date: "2026-08-29",
@@ -37,6 +81,17 @@ export const events = [
     note: "Lokal matdag på Langhard Lantbruk, Lena 50 i Markim. Matmakare, föreläsning och smakprover (anmälan krävs för att smaka, enligt arrangören).",
     img: "/assets/evenemang/smaka-pa-vallentuna/cover.webp",
     source: "https://upplandsbygd.se/save-the-date-smaka-pa-vallentuna/",
+  },
+  {
+    host: "Vallentuna Hockey",
+    title: "Vallentuna Hockey Week",
+    date: "2026-09-04",
+    when: "4–12 sep",
+    time: "Matcher kväll/helg",
+    cat: "SPORT",
+    note: "Hockeyfest i Vallentuna Ishall (Parkvägen 3): bl.a. VHF–Huddinge 4/9, AIK–BIK Karlskoga 9/9 och Hammarby-dubbel 12/9. Grill, öl och musik utomhus — biljetter via hockeyweek.se.",
+    img: "/assets/upplev/rookie-cafe-och-restaurang/cover.webp",
+    source: "https://hockeyweek.se/",
   },
   {
     host: "Orkesta Bygdegård Lindholmen",
@@ -130,8 +185,8 @@ export const events = [
     host: "Orkesta Bygdegård Lindholmen",
     title: "Pub & musikquiz",
     date: "2026-10-17",
-    when: "Lör 17 okt · från 19:00",
-    time: "19:00",
+    when: "Lör 17 okt · 19–22",
+    time: "19:00 – 22:00",
     cat: "KULTUR",
     note: "Pub- och musikquizkväll i Orkesta Bygdegård kl. 19–22. Samla lag eller kom solo — följ bygdegårdens kanaler för bord/biljett.",
     img: "/assets/hero/3.webp",
@@ -165,13 +220,33 @@ export const events = [
 }));
 
 export const EVENT_CONTENT = {
+  "Utomhusbio – Grannfejden": {
+    body: `<p>Söndag 9 augusti kl. 21–23 vid Orkesta bygdegård i Lindholmen. Fri entré — ta med filt eller campingstol. Filmen <em>Grannfejden</em> (feelgood/drama). Popcorn och biosnacks till försäljning.</p>
+      <p>Kalender: <a href="https://www.orkestahembygd.se/event" target="_blank" rel="noopener">orkestahembygd.se/event</a>.</p>`,
+  },
   "Gravröset Festival": {
     body: `<p>Experimentell musik- och konstfestival i <strong>Svista, Brottby</strong> (14–16 augusti). Biljetter via Billetto; arrangören Rosa Händer anger att det är ett medlemsarrangemang.</p>
-      <p>Mer info och biljetter: <a href="https://billet.to/1859379-web" target="_blank" rel="noopener">billet.to</a>.</p>`,
+      <p>Mer info: <a href="https://www.gravrosetfestival.se/sv" target="_blank" rel="noopener">gravrosetfestival.se</a> · biljetter: <a href="https://billetto.se/e/gravroset-festival-2026-biljetter-1859379" target="_blank" rel="noopener">Billetto</a>.</p>`,
   },
   "Smaka på Vallentuna": {
     body: `<p>Lokal matdag på <strong>Langhard Lantbruk</strong> i Markim (Lena 50) lördag 29 augusti kl. 11–14 — matmakare, föreläsning och smakprover.</p>
       <p>För att smaka lokal mat krävs anmälan enligt arrangören. Info: <a href="https://upplandsbygd.se/save-the-date-smaka-pa-vallentuna/" target="_blank" rel="noopener">upplandsbygd.se</a>.</p>`,
+  },
+  "Naturen och idrottens dag": {
+    body: `<p>Lördag 29 augusti kl. 11–14 på <strong>Vallentuna IP</strong>. Prova aktiviteter med föreningar och aktörer — en familjedag kring idrott, fritid och natur. Fri entré.</p>
+      <p>Info: <a href="https://www.vallentuna.se/fritid-och-kultur/kulturskola/aktuellt-och-evenemang/" target="_blank" rel="noopener">vallentuna.se</a>.</p>`,
+  },
+  "Scenfredag – Axman Band": {
+    body: `<p>Fredag 28 augusti kl. 19 på Caféscenen i Vallentuna Kulturhus — blues och rock med Axman Band. Insläpp från 18:30. Biljetter från 150 kr.</p>
+      <p>Boka: <a href="https://www.nortic.se/ticket/show/353467" target="_blank" rel="noopener">Nortic</a>.</p>`,
+  },
+  "Linedance en-dagskurs": {
+    body: `<p>Lördag 22 augusti kl. 10–13 i Orkesta hembygdsgård. Linedance utan partner — enkla danser, inga förkunskaper. Instruktör Linda Blumenthal.</p>
+      <p>Se <a href="https://www.orkestahembygd.se/event" target="_blank" rel="noopener">orkestahembygd.se/event</a> för pris och anmälan.</p>`,
+  },
+  "Vallentuna Hockey Week": {
+    body: `<p>4–12 september i Vallentuna Ishall (Parkvägen 3). Matcher bl.a. Vallentuna–Huddinge (4/9), AIK–BIK Karlskoga (9/9) och Hammarby-dubbel (12/9). Grill, öl och musik utomhus.</p>
+      <p>Program och biljetter: <a href="https://hockeyweek.se/" target="_blank" rel="noopener">hockeyweek.se</a>.</p>`,
   },
   "Skördefest i Lindholmen": {
     body: `<p>Skördefest söndag 6 september kl. 11–15 vid Orkesta Bygdegård Lindholmen (Lindholmsvägen 245). Lokala producenter och hantverk; foodtrucks, café, ponnyridning och workshops kan tillkomma.</p>`,
