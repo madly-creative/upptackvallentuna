@@ -1385,11 +1385,166 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     else openCategory('gard');
   }
   function heroTodaySeeMore(){
-    const el=document.getElementById('picksHeading');
+    const el=document.getElementById('todayBrief')||document.getElementById('picksHeading');
     if(el){
       showView('start');
       setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'start'}),50);
     } else openCategory('attgora');
+  }
+
+  function isoPlusDays(n){
+    const d=new Date(todayISO+"T12:00:00");
+    d.setDate(d.getDate()+n);
+    const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,"0"), dd=String(d.getDate()).padStart(2,"0");
+    return `${y}-${m}-${dd}`;
+  }
+  function weekendEndISO(){
+    if(day===0) return todayISO;
+    if(day===6) return isoPlusDays(1);
+    if(day===5) return isoPlusDays(2);
+    return isoPlusDays(7-day);
+  }
+  function isWeekendWindow(){ return day===5||day===6||day===0; }
+
+  function todayBriefEventBundle(){
+    if(eventsToday.length) return {mode:"today", list:eventsToday.slice(0,2)};
+    if(isWeekendWindow()){
+      const end=weekendEndISO();
+      const list=liveEvents.filter(e=>e.date<=end).slice(0,2);
+      if(list.length) return {mode:"weekend", list};
+    }
+    const list=liveEvents.slice(0,2);
+    return {mode:list.length?"soon":"empty", list};
+  }
+  function eventWhenShort(e){
+    const tm=(e.time||e.when||"").match(/(\d{1,2}:\d{2})/);
+    if(e.date===todayISO) return tm?`Idag kl. ${tm[1]}`:"Idag";
+    const n=daysUntil(e.date);
+    if(n===1) return tm?`Imorgon kl. ${tm[1]}`:"Imorgon";
+    return e.when||e.date;
+  }
+  function weatherFitBundle(){
+    const ranked=rankedPlaces();
+    const wk=ctx.code!=null?weatherKind(ctx.code):null;
+    if(ctx.mood==="nice"){
+      const hit=ranked.find(x=>["natur","gard","loppis"].includes(x.p.type))||ranked.find(x=>x.open);
+      return {
+        label: ctx.temp!=null?`${wk?.t||"Fint"} · ${ctx.temp}°`:"Fint väder",
+        hint:"Passar uteliv",
+        place:hit?.p||null,
+        why:hit?.reasons?.find(r=>!/^Öppet|^Stänger/.test(r))||"Ut och njut i bygden"
+      };
+    }
+    if(ctx.mood==="rough"){
+      const hit=ranked.find(x=>["fika","butik"].includes(x.p.type)&&x.open)
+        ||ranked.find(x=>x.p.type==="fika")
+        ||ranked.find(x=>x.open);
+      return {
+        label: ctx.temp!=null?`${wk?.t||"Mulet"} · ${ctx.temp}°`:"Inomhusväder",
+        hint:"Mysigt inomhus",
+        place:hit?.p||null,
+        why:hit?.reasons?.find(r=>!/^Öppet|^Stänger/.test(r))||"Varm dryck under tak"
+      };
+    }
+    const hit=ranked.find(x=>x.open)||ranked[0];
+    return {
+      label: ctx.temp!=null?`${wk?.t||"Lokalt"} · ${ctx.temp}°`:`Just nu i ${K}`,
+      hint:"Passar läget",
+      place:hit?.p||null,
+      why:hit?.reasons?.find(r=>!/^Öppet|^Stänger/.test(r))||hit?.p?.short||"Handplockat tips"
+    };
+  }
+  function todayBriefItem(thumb, name, sub, onclick){
+    return `<button type="button" class="tc-item" onclick="${onclick}">
+      <span class="tc-thumb" style="background-image:url('${thumb}')" aria-hidden="true"></span>
+      <span>
+        <span class="tc-name">${name}</span>
+        <span class="tc-sub">${sub}</span>
+      </span>
+    </button>`;
+  }
+  function renderTodayBrief(){
+    const grid=document.getElementById('todayBriefGrid');
+    if(!grid) return;
+
+    const titleEl=document.getElementById('todayBriefTitle');
+    const eyeEl=document.getElementById('todayBriefEyebrow');
+    const metaEl=document.getElementById('todayBriefMeta');
+    const weekend=isWeekendWindow();
+    if(eyeEl) eyeEl.textContent=weekend?"Helgen":"Just nu";
+    if(titleEl) titleEl.textContent=weekend?`Helgen i ${K}`:`Idag i ${K}`;
+
+    const openRanked=rankedPlaces().filter(x=>x.open).slice(0,3);
+    const openN=places.filter(isOpen).length;
+    if(metaEl){
+      const bits=[];
+      if(ctx.temp!=null){
+        const wk=ctx.code!=null?weatherKind(ctx.code):null;
+        bits.push(`${ctx.temp}°${wk?.t?" · "+wk.t:""}`);
+      }
+      bits.push(openN?`${openN} öppna`:"Kolla öppettider");
+      if(eventsToday.length) bits.push(eventsToday.length===1?"1 event idag":`${eventsToday.length} event idag`);
+      else if(weekend && liveEvents.length) bits.push("Se helgens program");
+      metaEl.textContent=bits.join(" · ");
+    }
+
+    const evBundle=todayBriefEventBundle();
+    let evBody="";
+    if(evBundle.list.length){
+      evBody=`<div class="tc-list">${evBundle.list.map(e=>todayBriefItem(
+        e.img, escHtml(e.title), escHtml(eventWhenShort(e)), `openEvent('${eventKeyAttr(e)}')`
+      )).join("")}</div>`;
+    } else {
+      evBody=`<p class="tc-empty">Inga inplanerade evenemang just nu — kika in snart igen.</p>`;
+    }
+    const evLabel=evBundle.mode==="today"?"Händer idag"
+      :evBundle.mode==="weekend"?"Händer i helgen"
+      :evBundle.mode==="soon"?"Nästa evenemang"
+      :"Evenemang";
+    const evCard=`<article class="today-card">
+      <p class="tc-label">${evLabel}</p>
+      ${evBody}
+      <button type="button" class="tc-foot" onclick="showView('hander')">Alla evenemang →</button>
+    </article>`;
+
+    let openBody="";
+    if(openRanked.length){
+      openBody=`<div class="tc-list">${openRanked.map(({p,reasons,mins})=>{
+        const sub=mins!==Infinity&&mins<=75?`Stänger om ${mins} min`
+          :(reasons.find(r=>!/^Öppet/.test(r))||p.short||p.cat);
+        return todayBriefItem(p.img, escHtml(p.name), escHtml(sub), `openPlace('${jsEsc(p.name)}')`);
+      }).join("")}</div>`;
+    } else {
+      openBody=`<p class="tc-empty">Få ställen har öppet i just den här stunden — planera med kartan eller kom tillbaka senare.</p>`;
+    }
+    const openCard=`<article class="today-card">
+      <p class="tc-label">Öppet nu${openN?` · ${openN}`:""}</p>
+      ${openBody}
+      <button type="button" class="tc-foot" onclick="showOpenNowOnMap()">Visa på karta →</button>
+    </article>`;
+
+    const wx=weatherFitBundle();
+    let wxBody="";
+    if(wx.place){
+      wxBody=`<div class="tc-list">${todayBriefItem(
+        wx.place.img, escHtml(wx.place.name), escHtml(wx.why), `openPlace('${jsEsc(wx.place.name)}')`
+      )}<p class="tc-empty" style="flex:0">${escHtml(wx.hint)}</p></div>`;
+    } else {
+      wxBody=`<p class="tc-empty">${escHtml(wx.hint)}. Tipsen uppdateras när vädret hämtats.</p>`;
+    }
+    const wxCard=`<article class="today-card">
+      <p class="tc-label">Passar vädret</p>
+      <p class="tc-sub" style="margin:0;font-weight:600;color:var(--moss-deep)">${escHtml(wx.label)}</p>
+      ${wxBody}
+      <button type="button" class="tc-foot" onclick="document.getElementById('picksHeading')?.scrollIntoView({behavior:'smooth',block:'start'})">Fler tips →</button>
+    </article>`;
+
+    grid.innerHTML=evCard+openCard+wxCard;
+  }
+  function showOpenNowOnMap(){
+    openNowOnly=true;
+    document.getElementById('chipOpenNow')?.classList.add('on');
+    filterAndMap('alla');
   }
   /** Prefer different types so Handplockat doesn't stack three fik. */
   function selectDiversePicks(count=3){
@@ -1435,6 +1590,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
       homeShownNames=new Set();
       grid.innerHTML="";
       refreshPulse();
+      try{ renderTodayBrief(); }catch(e){}
       return;
     }
     homeShownNames=new Set(pool.map(x=>x.p.name));
@@ -1487,6 +1643,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
 
     grid.innerHTML=featHTML+`<div class="picks-row">${sideHTML}${quoteHTML}</div>`;
     refreshPulse();
+    try{ renderTodayBrief(); }catch(e){}
   }
   function renderToday(){ renderPicks(); }
   function renderFavorites(){
@@ -2228,14 +2385,17 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
       document.getElementById('wText').textContent=wk.t;
       document.getElementById('wSub').textContent=`känns som ${feels}°`;
       try{ refreshHeroToday(); }catch(e){ console.warn('refreshHeroToday', e); }
+      try{ renderTodayBrief(); }catch(e){ console.warn('renderTodayBrief after weather', e); }
       try{ renderPicks(); }catch(e){ console.warn('renderPicks after weather', e); }
       try{ renderRoute(); }catch(e){ console.warn('renderRoute after weather', e); }
     }catch(e){
       paintHeroWeatherFallback();
       try{ refreshHeroToday(); }catch(err){}
+      try{ renderTodayBrief(); }catch(err){}
     }
   }
   try{ refreshHeroToday(); }catch(e){}
+  try{ renderTodayBrief(); }catch(e){}
   loadWeather();
 
   // ============================================================
@@ -2855,6 +3015,7 @@ Object.assign(window, {
   heroTodayOpenSeason,
   heroTodaySeeMore,
   mobileGo,
+  showOpenNowOnMap,
   openCategory,
   openEvent,
   openGuide,
