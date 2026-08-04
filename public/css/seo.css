@@ -71,3 +71,7 @@
 .built-by a:hover{border-bottom-color:currentColor;opacity:1}
 .seo-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
 .seo-actions a{font-size:14px;font-weight:600;color:var(--rust,#a85a3a)}
+.seo-guide-stops{margin:16px 0 24px;padding-left:1.25em}
+.seo-guide-stops li{margin:0 0 18px}
+.seo-guide-stops h3{font-family:var(--font-serif,Georgia,serif);font-size:1.15rem;font-weight:600;margin:0 0 6px}
+.seo-guide-stops h3 a{color:var(--rust,#a85a3a)}
