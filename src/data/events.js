@@ -13,7 +13,7 @@ export const events = [
     time: "21:00 – 23:00",
     cat: "KULTUR",
     note: "Fri entré till utomhusbio vid Orkesta bygdegård — feelgoodfilmen Grannfejden. Ta med filt eller campingstol; popcorn och biosnacks till försäljning.",
-    img: "/assets/hero/3.webp",
+    img: "/assets/evenemang/utomhusbio-grannfejden/cover.webp",
     source: "https://www.orkestahembygd.se/event",
   },
   {
