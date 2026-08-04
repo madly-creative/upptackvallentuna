@@ -73,7 +73,7 @@
     <button id="nav-roester" type="button" onclick="openVoicesNav()">Bygdens röster</button>
     <button id="nav-levererar" type="button" onclick="openLevererarMoment('')">Vallentuna levererar</button>
     <button id="nav-karta" onclick="showView('karta')">Karta</button>
-    <button id="nav-om" type="button" onclick="showView('om')">Om oss</button>
+    <button id="nav-om" type="button" onclick="showView('om')">Om Upptäck Vallentuna</button>
   </nav>
   <div class="nav-utils">
     <button class="util-btn" type="button" id="navFavBtn" onclick="showView('favoriter')" aria-label="Favoriter" title="Favoriter">
@@ -116,7 +116,7 @@
     <button type="button" onclick="mobileGo(()=>openVoicesNav())">Bygdens röster</button>
     <button type="button" onclick="mobileGo(()=>openLevererarMoment(''))">Vallentuna levererar</button>
     <button type="button" onclick="mobileGo(()=>showView('karta'))">Karta</button>
-    <button type="button" onclick="mobileGo(()=>showView('om'))">Om oss</button>
+    <button type="button" onclick="mobileGo(()=>showView('om'))">Om Upptäck Vallentuna</button>
   </nav>
   <div class="mnav-utils">
     <button type="button" onclick="mobileGo(()=>showView('favoriter'))">Favoriter</button>
@@ -416,6 +416,23 @@
   </div>
 </section>
 
+<!-- ===================== BYGDENS RÖSTER — kommer snart ===================== -->
+<section class="view" id="view-roester">
+  <div class="events-page roester-soon">
+    <div class="eyebrow">Bygdens röster</div>
+    <h1>Kommer inom kort</h1>
+    <p class="lede">Här tar vi dig bakom disken, in i ladan och ut på spängerna — porträtt av människorna som får Vallentuna att leva.</p>
+    <div class="om-body">
+      <p>Snart möter du bagaren som vaknar före gryningen, gårdsägaren som visar barnen djuren, och eldsjälarna i naturen och på torget. Korta intervjuer, riktiga röster, ingen reklamkatalog.</p>
+      <p>Vi skriver klart de första berättelserna. Tills dess: upptäck ställen på kartan, fika lokalt — och kika in här igen snart.</p>
+      <p class="om-sign">— Upptäck Vallentuna</p>
+    </div>
+    <p style="margin-top:28px">
+      <button type="button" class="more" onclick="showView('start')">Tillbaka till startsidan →</button>
+    </p>
+  </div>
+</section>
+
 <!-- ===================== OM OSS ===================== -->
 <section class="view" id="view-om">
   <div class="events-page">
@@ -599,7 +616,7 @@
       <ul class="foot-list">
         <li><button type="button" onclick="openLevererarMoment('')">Vallentuna levererar</button></li>
         <li><button type="button" onclick="openVoicesNav()">Bygdens röster</button></li>
-        <li><button type="button" onclick="showView('om')">Om oss</button></li>
+        <li><button type="button" onclick="showView('om')">Om Upptäck Vallentuna</button></li>
       </ul>
     </nav>
 
@@ -609,7 +626,7 @@
         <li><button type="button" onclick="showView('skicka')">Skicka evenemang</button></li>
         <li><a href="mailto:info@upptackvallentuna.se">info@upptackvallentuna.se</a></li>
         <li><a href="/evenemang.html">Evenemangskalender</a></li>
-        <li><a href="/om.html">Om guidningen</a></li>
+        <li><button type="button" onclick="showView('om')">Om Upptäck Vallentuna</button></li>
         <li><a href="/integritet.html">Integritet</a></li>
       </ul>
       <p class="foot-note">Har du sett något vi missat? Mejla — vi uppdaterar gärna.</p>

@@ -628,6 +628,15 @@
     font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--moss-deep);
     background:var(--paper-2);border:1px solid var(--line);border-radius:999px;padding:8px 15px;
   }
+  .roester-soon .eyebrow{
+    font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--rust);margin-bottom:12px;
+  }
+  .roester-soon .more{
+    font-size:14px;font-weight:700;color:var(--rust);background:none;border:none;
+    cursor:pointer;padding:0;font-family:inherit;
+  }
+  .roester-soon .more:hover{color:var(--moss-deep)}
 
   /* ---------- KARTA ---------- */
   .mapwrap{display:flex;height:calc(100dvh - 69px)}

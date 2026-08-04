@@ -26,6 +26,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
       person:"Bagaren",
       role:"Bagare & eldsjäl",
       place:"Vallentuna Stenugnsbageri",
+      draft:true, // gömd tills Bygdens röster öppnas på riktigt
       heroImg:"/assets/roester/stenugnsbageriet-bagaren/hero.webp",
       portraitImg:"/assets/roester/stenugnsbageriet-bagaren/portratt.webp",
       dek:"Om surdegen som tar tre dygn och varför det är värt det.",
@@ -2414,10 +2415,15 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
   // ============================================================
   //  BYGDENS RÖSTER — editorial portraits
   // ============================================================
+  // Bygdens röster — true = visa “kommer inom kort” i stället för porträtt
+  const VOICES_COMING_SOON = true;
+
   let lastViewBeforePortratt='start';
   let currentPortraitSlug=null;
   function sortedPortraits(){
-    return [...portraits].sort((a,b)=>(b.published||"").localeCompare(a.published||""));
+    return [...portraits]
+      .filter(p=>!p.draft)
+      .sort((a,b)=>(b.published||"").localeCompare(a.published||""));
   }
   function portraitHeroUrl(pr){
     if(pr.heroImg) return pr.heroImg;
@@ -2452,6 +2458,9 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     const feature=document.getElementById('voicesFeature');
     const more=document.getElementById('voicesMore');
     if(!sec||!feature) return;
+    if(VOICES_COMING_SOON){
+      sec.hidden=true; feature.innerHTML=""; if(more){more.hidden=true;more.innerHTML="";} return;
+    }
     const list=sortedPortraits();
     if(!list.length){ sec.hidden=true; feature.innerHTML=""; if(more){more.hidden=true;more.innerHTML="";} return; }
     sec.hidden=false;
@@ -2483,8 +2492,12 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     }
   }
   function openVoicesNav(){
+    if(VOICES_COMING_SOON){
+      showView('roester');
+      return;
+    }
     const list=sortedPortraits();
-    if(!list.length) return;
+    if(!list.length){ showView('roester'); return; }
     openPortrait(list[0].slug);
   }
   function openPortrait(slug){
@@ -2698,7 +2711,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     const navBtn=document.getElementById('nav-'+v);
     if(navBtn) navBtn.classList.add('on');
     if(v==='start') document.getElementById('nav-start')?.classList.add('on');
-    if(v==='portratt') document.getElementById('nav-roester')?.classList.add('on');
+    if(v==='portratt' || v==='roester') document.getElementById('nav-roester')?.classList.add('on');
     if(v==='guider' || v==='guide') document.getElementById('nav-guider')?.classList.add('on');
     if(v==='kategori'){
       document.getElementById('nav-upplev')?.classList.add('on');

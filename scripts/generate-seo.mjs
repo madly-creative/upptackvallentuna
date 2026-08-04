@@ -114,7 +114,7 @@ ${body}
     <span>·</span>
     <a href="/evenemang.html">Evenemang</a>
     <span>·</span>
-    <a href="/om.html">Om</a>
+    <a href="/om.html">Om Upptäck Vallentuna</a>
     <span>·</span>
     <a href="/integritet.html">Integritet</a>
     <span>·</span>
@@ -364,7 +364,7 @@ writeFileSync(
     <nav aria-label="Sekundär">
       <a href="/">Startsida</a>
       <a href="/evenemang.html" aria-current="page">Evenemang</a>
-      <a href="/om.html">Om</a>
+      <a href="/om.html">Om Upptäck Vallentuna</a>
       <a href="/integritet.html">Integritet</a>
     </nav>
   </header>
@@ -379,7 +379,7 @@ ${evArticles}
   <footer class="seo-foot">
     <a href="/">Startsida</a>
     <span>·</span>
-    <a href="/om.html">Om</a>
+    <a href="/om.html">Om Upptäck Vallentuna</a>
     <span>·</span>
     <a href="/integritet.html">Integritet</a>
     <span>·</span>
