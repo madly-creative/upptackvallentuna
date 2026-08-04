@@ -31,9 +31,9 @@ async function trySmtpOnce({ host, port, secure, user, pass, subject, fields }) 
     host,
     port,
     secure,
-    connectionTimeout: 8000,
-    greetingTimeout: 8000,
-    socketTimeout: 10000,
+    connectionTimeout: 3500,
+    greetingTimeout: 3500,
+    socketTimeout: 5000,
     auth: { user, pass },
   });
 
@@ -53,29 +53,11 @@ async function sendViaSmtp(subject, fields) {
   const pass = process.env.SMTP_PASS;
   if (!pass) return null;
 
+  // Loopia: mailcluster + 465 SSL. Keep one short attempt — Netlify functions ~10s timeout.
   const host = process.env.SMTP_HOST || "mailcluster.loopia.se";
-  const preferPort = Number(process.env.SMTP_PORT || 465);
-  const attempts =
-    preferPort === 587
-      ? [
-          { host, port: 587, secure: false },
-          { host, port: 465, secure: true },
-        ]
-      : [
-          { host, port: 465, secure: true },
-          { host, port: 587, secure: false },
-        ];
-
-  let lastErr;
-  for (const a of attempts) {
-    try {
-      return await trySmtpOnce({ ...a, user, pass, subject, fields });
-    } catch (err) {
-      lastErr = err;
-      console.warn(`SMTP ${a.host}:${a.port} failed:`, err.message);
-    }
-  }
-  throw lastErr || new Error("SMTP failed");
+  const port = Number(process.env.SMTP_PORT || 465);
+  const secure = port === 465;
+  return trySmtpOnce({ host, port, secure, user, pass, subject, fields });
 }
 
 async function sendViaFormSubmit(subject, fields) {
