@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url";
 import { places, placeSlug, schemaTypeFor } from "../src/data/places.js";
 import { PLACE_META } from "../src/data/placeMeta.js";
 import { events, eventSlug } from "../src/data/events.js";
+import { EVENT_FILTERS, eventCatLabel, filterKeyForCat } from "../src/data/eventCategories.js";
 import { guides, seasonLabel } from "../src/data/guides.js";
 import { SITE } from "../src/data/site.js";
 
@@ -429,20 +430,56 @@ const evListJsonLd = {
   url: `${base}/evenemang.html`,
   isPartOf: { "@type": "WebSite", name: SITE.name, url: `${base}/` },
 };
+const evFilterChips = EVENT_FILTERS.map(
+  (f, i) =>
+    `      <button type="button" class="chip${i === 0 ? " on" : ""}" data-filter="${esc(f.key)}" aria-pressed="${i === 0 ? "true" : "false"}">${esc(f.label)}</button>`
+).join("\n");
 const evArticles = events
   .slice()
   .sort((a, b) => a.date.localeCompare(b.date))
   .map((e) => {
     const slug = eventSlug(e);
-    return `    <article class="ev-seo">
+    const fk = filterKeyForCat(e.cat);
+    return `    <article class="ev-seo" data-filter="${esc(fk)}">
       <time datetime="${esc(e.date)}">${esc(e.when)}</time>
-      <span class="cat">${esc(e.cat)}</span>
+      <span class="cat">${esc(eventCatLabel(e.cat))}</span>
       <h2><a href="/evenemang/${slug}.html">${esc(e.title)}</a></h2>
       <p class="host">${esc(e.host)}${e.time ? ` · ${esc(e.time)}` : ""}</p>
       <p>${esc(e.note)}</p>
     </article>`;
   })
   .join("\n");
+const evFilterScript = `<script>
+(function(){
+  var bar=document.getElementById('eventFilters');
+  var list=document.getElementById('evSeoList');
+  var count=document.getElementById('eventCount');
+  if(!bar||!list) return;
+  var items=[].slice.call(list.querySelectorAll('.ev-seo'));
+  var empty=document.getElementById('evSeoEmpty');
+  function apply(key){
+    bar.querySelectorAll('.chip').forEach(function(b){
+      var on=b.getAttribute('data-filter')===key;
+      b.classList.toggle('on',on);
+      b.setAttribute('aria-pressed',on?'true':'false');
+    });
+    var n=0;
+    items.forEach(function(el){
+      var show=key==='alla'||el.getAttribute('data-filter')===key;
+      el.hidden=!show;
+      if(show) n++;
+    });
+    if(count) count.textContent=key==='alla'? (n+' evenemang') : (n+' av '+items.length);
+    if(empty) empty.hidden=n>0;
+  }
+  bar.addEventListener('click',function(e){
+    var btn=e.target.closest('[data-filter]');
+    if(!btn) return;
+    apply(btn.getAttribute('data-filter'));
+  });
+  apply('alla');
+})();
+</script>`;
 
 writeFileSync(
   join(root, "evenemang.html"),
@@ -489,9 +526,14 @@ writeFileSync(
   <main class="seo-main">
     <h1>Evenemang i ${esc(SITE.kommun)}</h1>
     <p class="lede">Handplockade marknader, matdagar och kultur i bygden. Uppgifter är hämtade från arrangörerna — kolla alltid källan närmare datum.</p>
-    <div class="ev-seo-list">
+    <div class="filter-row event-pills" id="eventFilters" role="navigation" aria-label="Evenemangskategorier">
+${evFilterChips}
+    </div>
+    <p class="event-count" id="eventCount" aria-live="polite"></p>
+    <div class="ev-seo-list" id="evSeoList">
 ${evArticles}
     </div>
+    <p class="ev-empty" id="evSeoEmpty" hidden>Inga evenemang i den här kategorin just nu.</p>
     <p class="seo-cta"><a href="/#hander">Öppna den interaktiva kalendern →</a> · <a href="/#skicka">Tipsa om ett event</a></p>
   </main>
   <footer class="seo-foot">
@@ -504,6 +546,7 @@ ${evArticles}
     <a href="mailto:${esc(SITE.contactEmail)}">Tips</a>
   </footer>
   <p class="built-by"><a href="https://www.fvno.se/" target="_blank" rel="noopener">Byggd av Formverket Norrort</a></p>
+  ${evFilterScript}
 </body>
 </html>
 `,

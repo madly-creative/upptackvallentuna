@@ -28,7 +28,14 @@
   font-size:clamp(32px,5vw,44px);font-weight:500;color:var(--moss-deep, #3d4f3a);
   line-height:1.15;margin-bottom:12px;
 }
-.seo-main .lede{font-size:16px;line-height:1.55;color:var(--ink-soft, #5c5648);margin-bottom:32px}
+.seo-main .lede{font-size:16px;line-height:1.55;color:var(--ink-soft, #5c5648);margin-bottom:18px}
+.seo-main .event-pills{margin:0 0 10px}
+.seo-main .event-pills .chip{background:var(--card, #fbf8f2)}
+.seo-main .event-count{
+  font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--ink-soft, #5c5648);margin:0 0 16px;min-height:1.2em;
+}
+.seo-main .ev-empty{font-size:15px;color:var(--ink-soft, #5c5648);margin:8px 0 24px}
 .seo-main h2{
   font-family:var(--font-serif), Georgia, serif;
   font-size:26px;font-weight:500;color:var(--moss-deep, #3d4f3a);margin:28px 0 10px;

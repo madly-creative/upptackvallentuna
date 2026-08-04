@@ -1,4 +1,5 @@
 import { events as EVENTS_SEED, EVENT_CONTENT } from "../data/events.js";
+import { EVENT_FILTERS, eventCatLabel, eventMatchesFilter } from "../data/eventCategories.js";
 import { SITE } from "../data/site.js";
 import { deliverForm, buildMailtoUrl } from "../lib/forms.js";
 import {
@@ -1017,7 +1018,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
           <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s6-5.2 6-10a6 6 0 1 0-12 0c0 4.8 6 10 6 10z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="11" r="2" stroke="currentColor" stroke-width="2"/></svg>${e.host}</span>
           <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2"/><path d="M12 8v4l2.5 2.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>${e.time||e.when}</span>
         </div>
-        <div class="tag">${e.date===todayISO?"IDAG · ":""}${e.cat||"EVENEMANG"}</div>
+        <div class="tag">${e.date===todayISO?"IDAG · ":""}${eventCatLabel(e.cat)}</div>
         ${remindBtnHTML(e)}
       </div>
     </article>`;
@@ -1037,7 +1038,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     if(hero) hero.style.backgroundImage=`url('${e.img}')`;
     if(dateEl) dateEl.innerHTML=`<span class="dow">${DOW[d.getDay()]}</span><span class="d">${d.getDate()}</span><span class="m">${MON[d.getMonth()]}</span>`;
     const cat=document.getElementById('eventModalCat');
-    if(cat) cat.textContent=(e.date===todayISO?"IDAG · ":"")+(e.cat||"EVENEMANG");
+    if(cat) cat.textContent=(e.date===todayISO?"IDAG · ":"")+eventCatLabel(e.cat);
     const title=document.getElementById('eventModalTitle');
     if(title) title.textContent=e.title;
     const meta=document.getElementById('eventModalMeta');
@@ -1229,7 +1230,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
       <div class="im" style="background-image:url('${e.img}')" role="img" aria-hidden="true"></div>
       <div class="shade"></div>
       <div class="bd">
-        <div class="when">${when} · ${e.cat||"Evenemang"}</div>
+        <div class="when">${when} · ${eventCatLabel(e.cat)}</div>
         <h3>${e.title}</h3>
         <div class="meta">${e.host||""}${e.note?" — "+e.note:""}</div>
       </div>
@@ -2112,6 +2113,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     events.push({host:e.host,title:e.title,date:e.date,when:e.date+(e.time?" · "+e.time:""),time:e.time||"",cat:"ÖVRIGT",note:e.note||"",img:places.find(p=>p.name===e.host)?.img||places[0].img});
     liveEvents.push(events[events.length-1]);
     liveEvents.sort((a,b)=>a.date.localeCompare(b.date));
+    renderEventsFull();
     renderPendingAdmin();
     pushNotify("Event godkänt",e.title);
     trackEvent('event-approve',e.title);
@@ -2326,14 +2328,41 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
   });
   document.getElementById('searchClr')?.addEventListener('click',()=>{const s=document.getElementById('search');if(!s)return;s.value='';s.dispatchEvent(new Event('input'));s.focus();});
 
-  const evFull=document.getElementById('eventsFull');
-  if(evFull){
-    if(liveEvents.length){
-      evFull.innerHTML=liveEvents.map(e=>eventCard(e,true)).join('');
-    } else {
-      evFull.innerHTML=`<div class="ev-empty">Inga inplanerade evenemang just nu — kika in snart igen.</div>`;
-    }
+  let activeEventCat="alla";
+  function renderEventChips(){
+    const bar=document.getElementById('eventFilters');
+    if(!bar) return;
+    bar.innerHTML=EVENT_FILTERS.map(f=>
+      `<button type="button" class="chip${f.key===activeEventCat?" on":""}" data-key="${f.key}" aria-pressed="${f.key===activeEventCat?"true":"false"}" onclick="filterEvents('${f.key}')">${f.label}</button>`
+    ).join("");
   }
+  function renderEventsFull(){
+    const evFull=document.getElementById('eventsFull');
+    if(!evFull) return;
+    renderEventChips();
+    const list=liveEvents.filter(e=>eventMatchesFilter(e, activeEventCat));
+    const countEl=document.getElementById('eventCount');
+    if(countEl){
+      if(!liveEvents.length) countEl.textContent="";
+      else if(activeEventCat==="alla") countEl.textContent=list.length+" evenemang";
+      else countEl.textContent=list.length+" av "+liveEvents.length;
+    }
+    if(!liveEvents.length){
+      evFull.innerHTML=`<div class="ev-empty">Inga inplanerade evenemang just nu — kika in snart igen.</div>`;
+      return;
+    }
+    if(!list.length){
+      evFull.innerHTML=`<div class="ev-empty">Inga evenemang i den här kategorin just nu. <button type="button" class="lnk" onclick="filterEvents('alla')">Visa alla</button></div>`;
+      return;
+    }
+    evFull.innerHTML=list.map(e=>eventCard(e,true)).join('');
+  }
+  function filterEvents(key){
+    activeEventCat=EVENT_FILTERS.some(f=>f.key===key)?key:"alla";
+    renderEventsFull();
+    trackEvent('event-filter', activeEventCat);
+  }
+  renderEventsFull();
 
 
   // ============================================================
@@ -2803,15 +2832,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     if(i>=0){setTimeout(()=>{map.flyTo([places[i].lat,places[i].lng],16,{duration:.7});setTimeout(()=>markers[i].openPopup(),720);},120);}
   }
 
-  // Fill events page once showView helpers exist (map listeners are above)
-  try{
-    const evFullLate=document.getElementById('eventsFull');
-    if(evFullLate && !evFullLate.children.length){
-      evFullLate.innerHTML=liveEvents.length
-        ? liveEvents.map(e=>eventCard(e,true)).join('')
-        : `<div class="ev-empty">Inga inplanerade evenemang just nu — kika in snart igen.</div>`;
-    }
-  }catch(e){}
+  try{ if(document.getElementById('eventsFull') && !document.getElementById('eventsFull').children.length) renderEventsFull(); }catch(e){}
   setTimeout(bootSmartPack, 0);
   setTimeout(()=>{ try{ applyLevererarHash(); }catch(e){} }, 20);
   setTimeout(bootPlaceDeepLink, 30);
@@ -2827,6 +2848,7 @@ Object.assign(window, {
   deleteList,
   favorites,
   filterAndMapFromCategory,
+  filterEvents,
   goBackFromPlats,
   goBackFromPortratt,
   heroTodayOpenEvent,
