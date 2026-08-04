@@ -853,15 +853,18 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
   S('seasonHeading',"I säsong just nu");
   S('footTag',"Tillsammans gör vi "+K+" levande.");S('omKommun',K);
   {const y=document.getElementById('footYear'); if(y) y.textContent=String(now.getFullYear());}
-  S('omLede',"Jag heter Juha. Jag är egentligen Sundsvallsbo, men har bott i södra Stockholm i snart femton år.");
+  S('omLede',"Jag heter Juha. Jag är ursprungligen Sundsvallsbo, men har bott i södra Stockholm i snart femton år.");
   const omBody=document.getElementById('omBody');
   if(omBody){omBody.innerHTML=`
-    <p>När vi började längta efter något annat blev det till slut ${K} — här finns något som påminner mig om hemma. Ett lugn, en närhet, en känsla av att bygden faktiskt är en bygd.</p>
-    <p>Jag minns dagen vi hade skrivit på för huset. Vi svängde förbi Ica i centrum, och på väg tillbaka till bilen stod en liten handskriven skylt:</p>
+    <p>När min fru och jag började längta efter något annat blev det till slut ${K} — här finns något som påminner mig om hemma. Ett lugn, en närhet, en känsla av att bygden faktiskt är en bygd.</p>
+    <p>Jag minns dagen vi hade skrivit på för huset. Vi svängde förbi Ica i centrum, och på väg tillbaka till bilen stod en liten handskriven skylt nära parkeringen:</p>
     <p class="om-quote">“Hönsfoder säljes, ring…”</p>
     <p>Något så enkelt — men både jag och min fru kände det direkt. Det var äkta. En påminnelse om något jordnära och mänskligt som sakta håller på att försvinna. Och som är värt att hålla fast vid.</p>
-    <p>Det är därför den här sidan finns. Google visar dig kedjorna och det du redan vet att du ska. Men bagaren som är uppe klockan fyra för surdegen, gårdsbutiken där du betalar i en burk på förtroende, runstenarna vid sjön som stått där i tusen år — och skylten om hönsfodret — det hittar du inte där.</p>
-    <p>Upptäck ${K} är min lilla insats: en handplockad karta över det lokala, det äkta, det värda att stötta. Ingen katalog, inga annonser — bara ställen jag själv tycker om, beskrivna med omsorg. Den är och förblir gratis, för både dig och verksamheterna. Mitt enda syfte är att lyfta det som gör ${K} till ${K}.</p>
+    <p>Det är därför den här sidan finns. Google visar dig kedjorna och det du redan känner till. Men bagaren som är uppe klockan fyra för surdegen, gårdsbutiken där du betalar i en burk på förtroende, runstenarna vid sjön som stått där i tusen år — och skylten om hönsfodret — det hittar du inte där.</p>
+    <p>Upptäck ${K} är min lilla insats: en handplockad guide till bygden — ställena, människorna bakom dem och det som händer här. Ingen katalog, inga annonser — bara sådant jag själv tycker om, beskrivet med omsorg.</p>
+    <p>Jag är själv småföretagare precis som de flesta här på sidan, och driver en liten designbyrå här i ${K} — <a href="https://www.fvno.se/" target="_blank" rel="noopener">Formverket Norrort</a>. Den här sidan är ingen annons för den. Allt du ser här har jag valt själv, för att jag tycker om det. Sidan är gratis att använda, för både besökare och verksamheter. Att jag byggt den beror nog mest på att det här är vad jag kan, och det kändes som rätt sak att använda det till.</p>
+    <p>Jag tycker att de lokala verksamheterna är en av de pelare som gör en bygd levande, och stolt. Det är där en del av själen sitter.</p>
+    <p>Mitt enda syfte är att lyfta det som gör ${K} till ${K}.</p>
     <p>Så: välkommen. Ge dig ut, hälsa på grannen, upptäck något du inte visste fanns.</p>
     <p class="om-sign">— Juha</p>`;}
 
