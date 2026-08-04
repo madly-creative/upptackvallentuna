@@ -3,8 +3,8 @@
  * Body: { subject, ...fields }
  *
  * Delivers to CONTACT_EMAIL (default info@upptackvallentuna.se):
- * 1. Loopia SMTP when SMTP_PASS is set in Netlify env
- * 2. Else FormSubmit.co server-side (first send needs activation mail)
+ * 1. Loopia SMTP when SMTP_PASS is set (mailcluster.loopia.se)
+ * 2. Else / on SMTP failure → FormSubmit.co server-side
  */
 import nodemailer from "nodemailer";
 
@@ -26,15 +26,14 @@ function fieldLines(fields) {
     .join("\n");
 }
 
-async function sendViaSmtp(subject, fields) {
-  const user = process.env.SMTP_USER || CONTACT;
-  const pass = process.env.SMTP_PASS;
-  if (!pass) return null;
-
+async function trySmtpOnce({ host, port, secure, user, pass, subject, fields }) {
   const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST || "smtp.loopia.se",
-    port: Number(process.env.SMTP_PORT || 587),
-    secure: false,
+    host,
+    port,
+    secure,
+    connectionTimeout: 8000,
+    greetingTimeout: 8000,
+    socketTimeout: 10000,
     auth: { user, pass },
   });
 
@@ -46,7 +45,37 @@ async function sendViaSmtp(subject, fields) {
     subject: subject || "Tips från upptackvallentuna.se",
     text: fieldLines(fields) || "(tomt tips)",
   });
-  return { channel: "smtp" };
+  return { channel: "smtp", host, port };
+}
+
+async function sendViaSmtp(subject, fields) {
+  const user = process.env.SMTP_USER || CONTACT;
+  const pass = process.env.SMTP_PASS;
+  if (!pass) return null;
+
+  const host = process.env.SMTP_HOST || "mailcluster.loopia.se";
+  const preferPort = Number(process.env.SMTP_PORT || 465);
+  const attempts =
+    preferPort === 587
+      ? [
+          { host, port: 587, secure: false },
+          { host, port: 465, secure: true },
+        ]
+      : [
+          { host, port: 465, secure: true },
+          { host, port: 587, secure: false },
+        ];
+
+  let lastErr;
+  for (const a of attempts) {
+    try {
+      return await trySmtpOnce({ ...a, user, pass, subject, fields });
+    } catch (err) {
+      lastErr = err;
+      console.warn(`SMTP ${a.host}:${a.port} failed:`, err.message);
+    }
+  }
+  throw lastErr || new Error("SMTP failed");
 }
 
 async function sendViaFormSubmit(subject, fields) {
@@ -84,9 +113,13 @@ export async function handler(event) {
       return { statusCode: 400, headers: corsHeaders(), body: JSON.stringify({ error: "Tomt formulär" }) };
     }
 
-    const smtp = await sendViaSmtp(subject, fields);
-    if (smtp) {
-      return { statusCode: 200, headers: corsHeaders(), body: JSON.stringify({ ok: true, ...smtp }) };
+    if (process.env.SMTP_PASS) {
+      try {
+        const smtp = await sendViaSmtp(subject, fields);
+        return { statusCode: 200, headers: corsHeaders(), body: JSON.stringify({ ok: true, ...smtp }) };
+      } catch (smtpErr) {
+        console.warn("SMTP failed, trying FormSubmit:", smtpErr.message);
+      }
     }
 
     const fs = await sendViaFormSubmit(subject, fields);
