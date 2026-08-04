@@ -745,14 +745,32 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     else el.hidden=true;
   }
   function toggleFavorite(name){
-    if(favorites.has(name)) favorites.delete(name);
-    else {favorites.add(name);bumpInterest(name,"saves");}
+    const key=String(name||"").trim();
+    if(!key) return false;
+    if(favorites.has(key)) favorites.delete(key);
+    else {favorites.add(key);bumpInterest(key,"saves");}
     saveJSON(LS_FAV,[...favorites]);
     updateFavBadge();
-    trackEvent(favorites.has(name)?'fav-add':'fav-remove',name);
+    trackEvent(favorites.has(key)?'fav-add':'fav-remove',key);
     renderFavorites();
     refreshPulse();
-    return favorites.has(name);
+    return favorites.has(key);
+  }
+  function removeFavorite(name){
+    const key=String(name||"").trim();
+    if(!key||!favorites.has(key)) return;
+    favorites.delete(key);
+    saveJSON(LS_FAV,[...favorites]);
+    updateFavBadge();
+    trackEvent('fav-remove',key);
+    renderFavorites();
+    refreshPulse();
+    const platsName=document.getElementById('platsName')?.textContent;
+    const favBtn=document.getElementById('platsFavBtn');
+    if(favBtn&&platsName===key){
+      favBtn.classList.remove('on');
+      favBtn.textContent='♡ Spara som favorit';
+    }
   }
   function toggleFavFromPlats(){
     const name=document.getElementById('platsName')?.textContent;
@@ -945,6 +963,24 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     if(!hits.length) return null;
     return hits.sort((a,b)=>b.name.length-a.name.length)[0];
   }
+  /** Prefer a guide place name when an event host maps to one. */
+  function favoriteKeyFromHost(host){
+    return resolveHostPlace(host)?.name || String(host||"").trim();
+  }
+  /** Collapse event-host favorites onto place names so badge and list stay in sync. */
+  function normalizeFavorites(){
+    const next=[];
+    for(const n of favorites){
+      const key=places.find(p=>p.name===n)?.name || resolveHostPlace(n)?.name || String(n||"").trim();
+      if(key&&!next.includes(key)) next.push(key);
+    }
+    const same=next.length===favorites.size && next.every(n=>favorites.has(n));
+    if(same) return;
+    favorites.clear();
+    next.forEach(n=>favorites.add(n));
+    saveJSON(LS_FAV,next);
+    updateFavBadge();
+  }
   function eventHostActionHTML(e){
     const hostPlace=resolveHostPlace(e.host);
     if(hostPlace){
@@ -961,10 +997,11 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
   }
   function eventCard(e,withFav){
     const d=new Date(e.date+"T12:00:00");
-    const isFavHost=favorites.has(e.host);
-    const hostEsc=jsEsc(e.host);
+    const favKey=favoriteKeyFromHost(e.host);
+    const isFavHost=favorites.has(favKey);
+    const favKeyEsc=jsEsc(favKey);
     const keyAttr=eventKeyAttr(e);
-    const fav=withFav?`<button class="fav ${isFavHost?'on':''}" type="button" aria-label="Spara favorit" onclick="event.stopPropagation();toggleFavorite('${hostEsc}');this.classList.toggle('on',favorites.has('${hostEsc}'))"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 20s-7-4.35-7-9.2A3.8 3.8 0 0 1 12 7.1a3.8 3.8 0 0 1 7 3.7C19 15.65 12 20 12 20z" stroke="currentColor" stroke-width="1.7"/></svg></button>`:"";
+    const fav=withFav?`<button class="fav ${isFavHost?'on':''}" type="button" aria-label="${isFavHost?"Ta bort favorit":"Spara favorit"}" onclick="event.stopPropagation();const on=toggleFavorite('${favKeyEsc}');this.classList.toggle('on',on);this.setAttribute('aria-label',on?'Ta bort favorit':'Spara favorit')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 20s-7-4.35-7-9.2A3.8 3.8 0 0 1 12 7.1a3.8 3.8 0 0 1 7 3.7C19 15.65 12 20 12 20z" stroke="currentColor" stroke-width="1.7"/></svg></button>`:"";
     return `<article class="ev" role="button" tabindex="0" onclick="openEvent('${keyAttr}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openEvent('${keyAttr}')}">
       <div class="media">
         <div class="thumb" style="background-image:url('${e.img}')" role="img" aria-label="${e.title.replace(/"/g,"&quot;")}"></div>
@@ -1452,23 +1489,40 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     const grid=document.getElementById('favGrid');
     const lede=document.getElementById('favLede');
     if(!grid) return;
-    const items=[...favorites].map(n=>places.find(p=>p.name===n)).filter(Boolean);
-    const openN=items.filter(isOpen).length;
-    if(lede) lede.textContent=items.length
-      ? `${items.length} sparade · ${openN} öppna just nu`
+    normalizeFavorites();
+    const entries=[...favorites].map(n=>{
+      const p=places.find(x=>x.name===n);
+      return p?{kind:"place",name:n,p}:{kind:"orphan",name:n};
+    });
+    const placesN=entries.filter(e=>e.kind==="place").map(e=>e.p);
+    const openN=placesN.filter(isOpen).length;
+    if(lede) lede.textContent=entries.length
+      ? `${entries.length} sparade${placesN.length?` · ${openN} öppna just nu`:""}`
       : "Spara ställen du vill återvända till — vi visar vilka som är öppna just nu.";
-    if(!items.length){
+    if(!entries.length){
       grid.innerHTML=`<div class="ev-empty" style="grid-column:1/-1">Inga favoriter ännu. Tryck på hjärtat på ett evenemang eller spara från en platssida.</div>`;
       return;
     }
-    grid.innerHTML=items.map(p=>`
-      <article class="fav-card" onclick="openPlace('${jsEsc(p.name)}')">
+    grid.innerHTML=entries.map(e=>{
+      if(e.kind==="place"){
+        const p=e.p;
+        return `<article class="fav-card" onclick="openPlace('${jsEsc(p.name)}')">
         <div class="im" style="background-image:url('${p.img}')"></div>
         <div class="bd">
-          <h3>${p.name}</h3>
-          <div class="meta">${p.cat} · ${isOpen(p)?"Öppet nu":"Stängt"}${p._km!=null?" · "+fmtDist(p._km):""}</div>
+          <h3>${escHtml(p.name)}</h3>
+          <div class="meta">${escHtml(p.cat)} · ${isOpen(p)?"Öppet nu":"Stängt"}${p._km!=null?" · "+fmtDist(p._km):""}</div>
+          <button type="button" class="fav-remove" onclick="event.stopPropagation();removeFavorite('${jsEsc(p.name)}')">Ta bort</button>
         </div>
-      </article>`).join('');
+      </article>`;
+      }
+      return `<article class="fav-card fav-card-orphan">
+        <div class="bd" style="grid-column:1/-1">
+          <h3>${escHtml(e.name)}</h3>
+          <div class="meta">Sparad från evenemang · finns inte som plats i guiden</div>
+          <button type="button" class="fav-remove" onclick="removeFavorite('${jsEsc(e.name)}')">Ta bort</button>
+        </div>
+      </article>`;
+    }).join('');
   }
   try{ renderToday(); }catch(e){ console.warn('renderToday', e); }
   try{ renderFavorites(); }catch(e){ console.warn('renderFavorites', e); }
@@ -2095,6 +2149,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
 
   function bootSmartPack(){
     try{
+      normalizeFavorites();
       initSearchUI();
       runSearch();
       renderRoute();
@@ -2104,6 +2159,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
       renderLevererarHome();
       renderHappenHome();
       renderLists();
+      renderFavorites();
       renderPendingAdmin();
       importListFromHash();
       setTimeout(runNotifications,900);
@@ -2798,6 +2854,7 @@ Object.assign(window, {
   submitEventForm,
   submitReport,
   toggleFavorite,
+  removeFavorite,
   toggleFavFromPlats,
   toggleFavOnly,
   toggleMobileNav,

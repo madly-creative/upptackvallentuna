@@ -781,10 +781,16 @@
     border:1px solid var(--line-soft);border-radius:var(--radius);overflow:hidden;background:var(--card);
     cursor:pointer;display:grid;grid-template-columns:88px 1fr;min-height:96px;
   }
+  .fav-card-orphan{cursor:default;grid-template-columns:1fr}
   .fav-card .im{background-size:cover;background-position:center}
   .fav-card .bd{padding:12px 14px;display:flex;flex-direction:column;justify-content:center}
   .fav-card h3{font-family:var(--font-serif);font-size:18px;font-weight:500;color:var(--moss-deep)}
   .fav-card .meta{font-size:12px;color:var(--ink-soft);margin-top:4px}
+  .fav-remove{
+    margin-top:8px;align-self:flex-start;padding:0;border:0;background:none;
+    font-size:13px;font-weight:600;color:var(--rust);cursor:pointer;
+  }
+  .fav-remove:hover{color:var(--rust-deep);text-decoration:underline}
   .util-btn .fav-count{
     min-width:18px;height:18px;border-radius:999px;background:var(--rust);color:#fff;
     font-size:10px;font-weight:700;display:inline-grid;place-items:center;padding:0 5px;
