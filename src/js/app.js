@@ -2192,8 +2192,8 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
       const dir=`https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}`;
       const webLink=p.url?`<a class="weblink" href="${p.url}" target="_blank" rel="noopener" onclick="trackEvent('website','${jsEsc(p.name)}')">🌐 Besök hemsidan →</a>`:'';
       const hook=p.url
-        ?`<div class="hook">Vill du veta hur din hemsida presterar? <a onclick="trackEvent('hook-scout','${jsEsc(p.name)}')">Klicka här →</a></div>`
-        :`<div class="hook">Äger du den här verksamheten och saknar hemsida? <a onclick="trackEvent('hook-formverket','${jsEsc(p.name)}')">Synas bättre →</a></div>`;
+        ?""
+        :`<div class="hook">Äger du den här verksamheten och saknar hemsida? <a href="https://www.fvno.se/" target="_blank" rel="noopener" onclick="trackEvent('hook-formverket','${jsEsc(p.name)}')">Synas bättre →</a></div>`;
       const html=`<div class="card-img" style="background-image:url('${p.img}')"></div><div class="card-body"><div class="cat">${p.cat}</div><h3>${p.name}</h3><p>${p.blurb}</p>${tag}${evHtml}${webLink?`<div class="card-actions" style="margin-bottom:6px">${webLink}</div>`:""}<div class="card-actions"><a class="btn-dir" href="${dir}" target="_blank" rel="noopener" onclick="trackEvent('hitta-hit','${jsEsc(p.name)}')">📍 Hitta hit</a></div><button class="popup-more" onclick="openPlace('${jsEsc(p.name)}')">Läs mer →</button>${hook}</div>`;
       markers.push(L.marker([p.lat,p.lng],{icon:pinIcon(p.color,open?'':'closed')}).addTo(map).bindPopup(html,{closeButton:false,maxWidth:262}));
     });
@@ -2370,8 +2370,8 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     document.getElementById('platsEvent').innerHTML = evs.length
       ? `<div class="plats-ev"><div class="lbl">📅 Händer här</div><h4>${evs[0].title}</h4><div class="when">${evs[0].when}</div><p>${evs[0].note}</p><div class="remind-actions">${remindBtnHTML(evs[0])}</div></div>` : '';
     document.getElementById('platsHook').innerHTML = sourcesHTML(p) + (p.url
-      ? `<div style="margin-top:12px">Vill du veta hur din hemsida presterar? <a onclick="trackEvent('hook-scout','${jsEsc(p.name)}')">Klicka här →</a></div>`
-      : `<div style="margin-top:12px">Äger du den här verksamheten och saknar hemsida? <a onclick="trackEvent('hook-formverket','${jsEsc(p.name)}')">Synas bättre →</a></div>`);
+      ? ""
+      : `<div style="margin-top:12px">Äger du den här verksamheten och saknar hemsida? <a href="https://www.fvno.se/" target="_blank" rel="noopener" onclick="trackEvent('hook-formverket','${jsEsc(p.name)}')">Synas bättre →</a></div>`);
     showView('plats');
     try{
       const url=new URL(location.href);
