@@ -189,7 +189,7 @@ export const events = [
     time: "19:00 – 22:00",
     cat: "KULTUR",
     note: "Pub- och musikquizkväll i Orkesta Bygdegård kl. 19–22. Samla lag eller kom solo — följ bygdegårdens kanaler för bord/biljett.",
-    img: "/assets/hero/3.webp",
+    img: "/assets/evenemang/pub-musikquiz/cover.webp",
     source: "https://www.orkestahembygd.se/event",
   },
   {
@@ -200,7 +200,7 @@ export const events = [
     time: "11:00 – 15:00",
     cat: "MARKNAD",
     note: "Julmarknad i bygdegården med hantverk, lokala smaker, fika och (enligt arrangören) ponnyridning. Utställare bokar bord via julmarknad@orkestahembygd.se.",
-    img: FALLBACK_IMG,
+    img: "/assets/evenemang/julmarknad-lindholmen/cover.webp",
     source: "https://www.orkestahembygd.se/event",
   },
   {
@@ -211,7 +211,7 @@ export const events = [
     time: "11:00 – 15:00",
     cat: "MARKNAD",
     note: "Julmarknad i Vallentuna centrum — angivet i centrumets avvikande öppettider (11–15).",
-    img: FALLBACK_IMG,
+    img: "/assets/evenemang/julmarknad-centrum/cover.webp",
     source: "https://vallentunacentrum.se/",
   },
 ].map((e) => ({

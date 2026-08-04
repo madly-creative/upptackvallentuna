@@ -526,6 +526,7 @@ writeFileSync(
   <main class="seo-main">
     <h1>Evenemang i ${esc(SITE.kommun)}</h1>
     <p class="lede">Handplockade marknader, matdagar och kultur i bygden. Uppgifter är hämtade från arrangörerna — kolla alltid källan närmare datum.</p>
+    <p class="events-tip-cta">Vill du tipsa om ett evenemang? <a class="lnk" href="/#skicka">Hör av dig!</a></p>
     <div class="filter-row event-pills" id="eventFilters" role="navigation" aria-label="Evenemangskategorier">
 ${evFilterChips}
     </div>

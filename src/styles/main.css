@@ -607,7 +607,16 @@
     font-weight:500;letter-spacing:-.01em;margin-bottom:12px;color:var(--moss-deep);
   }
   .events-page h1 em{font-style:italic}
-  .events-page .lede{font-size:16px;color:var(--ink-soft);margin-bottom:18px;max-width:560px;line-height:1.55}
+  .events-page .lede{font-size:16px;color:var(--ink-soft);margin-bottom:10px;max-width:560px;line-height:1.55}
+  .events-page .events-tip-cta{
+    font-size:15px;color:var(--ink-soft);margin:0 0 20px;max-width:560px;line-height:1.5;
+  }
+  .events-page .events-tip-cta .lnk{
+    background:none;border:none;padding:0;font:inherit;font-weight:600;
+    color:var(--moss);cursor:pointer;text-decoration:underline;
+    text-underline-offset:2px;text-decoration-thickness:1px;
+  }
+  .events-page .events-tip-cta .lnk:hover{color:var(--moss-deep)}
   .events-page .event-pills{margin:0 0 10px;gap:8px}
   .events-page .event-pills .chip{background:var(--card)}
   .events-page .event-pills .chip.on{
