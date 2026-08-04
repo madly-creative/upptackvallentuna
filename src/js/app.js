@@ -604,6 +604,18 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     if(!(at instanceof Date)) at=now;
     return isOpenAt(p, metaOf(p), at);
   }
+  /** Platser med riktiga öppettider (inte alltid-öppna runstenar/natur). */
+  function isTimedVenue(p){
+    const m=metaOf(p);
+    if(!m.hours?.length) return false;
+    return m.hours.some(h=>h && h!==A);
+  }
+  function isOpenVenue(p,at){
+    return isTimedVenue(p) && isOpen(p,at);
+  }
+  function openVenueCount(){
+    return places.filter(p=>isOpenVenue(p)).length;
+  }
   function minutesUntilClose(p){
     if(isHolidayClosed(p)) return -1;
     if(!isOpen(p)) return -1;
@@ -819,8 +831,16 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     }
     if(isWeekend && ["natur","gard","loppis","fika"].includes(p.type)){s+=12;reasons.push("Helgläge");}
     if(!isWeekend && ["fika","butik"].includes(p.type) && daypart==="lunch"){s+=8;}
-    if(ctx.mood==="nice" && ["natur","gard","loppis"].includes(p.type)){s+=16;reasons.push("Vädret bjuder ut");}
-    if(ctx.mood==="rough" && ["fika","butik"].includes(p.type)){s+=16;reasons.push("Mysigt inomhus");}
+    if(ctx.mood==="nice" && ["natur","gard","loppis"].includes(p.type)){
+      s+=16;
+      const outdoor=["Soligt läge","Fin dag ute","Landskapet kallar","Bra utflyktsväder"];
+      reasons.push(outdoor[Math.abs([...p.name].reduce((a,c)=>a+c.charCodeAt(0),0))%outdoor.length]);
+    }
+    if(ctx.mood==="rough" && ["fika","butik"].includes(p.type)){
+      s+=16;
+      const indoor=["Mysigt inomhus","Tak över huvudet","Varm dryck väntar","Innekos"];
+      reasons.push(indoor[Math.abs([...p.name].reduce((a,c)=>a+c.charCodeAt(0),0))%indoor.length]);
+    }
     if(ctx.mood==="mild" && open){s+=4;}
     if(eventsByHost[p.name]?.some(e=>e.date===todayISO)){s+=22;reasons.push("Event idag");}
     if(isNewPlace(p)){s+=6;reasons.push("Nytt i guiden");}
@@ -869,13 +889,21 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     <p>Så: välkommen. Ge dig ut, hälsa på grannen, upptäck något du inte visste fanns.</p>
     <p class="om-sign">— Juha</p>`;}
 
-  let greet;
-  if(holidayToday){greet=holidayToday+" i "+K;}
-  else if(hour<10){greet="God morgon, "+K;}
-  else if(hour<14){greet=isWeekend?"Helglunch i bygden":"Lunchdags i bygden";}
-  else if(hour<18){greet=isWeekend?"Helgeftermiddag i "+K:"Eftermiddag i "+K;}
-  else {greet="God kväll, "+K;}
-  S('heroGreet',greet);
+  function refreshHeroGreet(){
+    let greet;
+    const sunsetH=ctx.sunset?Number(String(ctx.sunset).slice(0,2)):null;
+    const stillDaylight=sunsetH!=null?hour<sunsetH:(hour<20);
+    if(holidayToday){greet=holidayToday+" i "+K;}
+    else if(hour<10){greet="God morgon, "+K;}
+    else if(hour<14){greet=isWeekend?"Helglunch i bygden":"Lunchdags i bygden";}
+    else if(hour<18 || (stillDaylight && hour<20)){
+      greet=isWeekend?"Helgeftermiddag i "+K:"Eftermiddag i "+K;
+    }
+    else if(hour<21){greet="Kvällsljus i "+K;}
+    else {greet="God kväll, "+K;}
+    S('heroGreet',greet);
+  }
+  refreshHeroGreet();
   const heroTitleEl=document.getElementById('heroTitle');
   if(heroTitleEl) heroTitleEl.textContent="Vad vill du upptäcka idag?";
   S('heroTagline',"Smultronställen · Fika · Natur · Evenemang");
@@ -894,8 +922,17 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     const btn=document.getElementById('returnBtn');
     if(!banner||!text||!btn) return;
     const when=last.at?new Date(last.at):null;
-    const whenStr=when?when.toLocaleDateString("sv-SE",{weekday:"short",day:"numeric",month:"short"}):"";
-    text.innerHTML=`Senast tittade du på <strong>${p.name}</strong>${whenStr?" ("+whenStr+")":""} — ${open?"öppet nu":"stängt just nu"}${p.ch&&open?`, till ${String(p.ch).padStart(2,"0")}:00`:""}.`;
+    let whenBit="";
+    if(when && !Number.isNaN(when.getTime())){
+      const sameDay=
+        when.getFullYear()===now.getFullYear() &&
+        when.getMonth()===now.getMonth() &&
+        when.getDate()===now.getDate();
+      if(!sameDay){
+        whenBit=" ("+when.toLocaleDateString("sv-SE",{weekday:"short",day:"numeric",month:"short"})+")";
+      }
+    }
+    text.innerHTML=`Senast tittade du på <strong>${p.name}</strong>${whenBit} — ${open?"öppet nu":"stängt just nu"}${p.ch&&open&&isTimedVenue(p)?`, till ${String(p.ch).padStart(2,"0")}:00`:""}.`;
     btn.onclick=()=>openPlace(p.name);
     banner.hidden=false;
   })();
@@ -1324,11 +1361,11 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
   let heroEventKey=null;
   function refreshPulse(){ refreshHeroToday(); }
   function refreshHeroToday(){
-    const openN=places.filter(isOpen).length;
+    const openN=openVenueCount();
     const elOpen=document.getElementById('pulseOpen');
     const elMsg=document.getElementById('pulseMsg');
-    if(elOpen) elOpen.textContent=`${openN} platser öppna`;
-    if(elMsg) elMsg.textContent=openN?"just nu":"kolla öppettider";
+    if(elOpen) elOpen.textContent=openN?`${openN} ställen öppna`:"Få ställen öppna";
+    if(elMsg) elMsg.textContent=openN?"med öppettider just nu":"kolla öppettider";
 
     const ev=eventsToday[0]||liveEvents[0]||null;
     const evTitle=document.getElementById('heroEventTitle');
@@ -1426,13 +1463,14 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
   function weatherFitBundle(){
     const ranked=rankedPlaces();
     const wk=ctx.code!=null?weatherKind(ctx.code):null;
+    // Underrubrik = platsens egen text — inte samma väderfras som på korten.
     if(ctx.mood==="nice"){
       const hit=ranked.find(x=>["natur","gard","loppis"].includes(x.p.type))||ranked.find(x=>x.open);
       return {
         label: ctx.temp!=null?`${wk?.t||"Fint"} · ${ctx.temp}°`:"Fint väder",
         hint:"Passar uteliv",
         place:hit?.p||null,
-        why:hit?.reasons?.find(r=>!/^Öppet|^Stänger/.test(r))||"Ut och njut i bygden"
+        why:hit?.p?.short||hit?.p?.blurb||"Ut och njut i bygden"
       };
     }
     if(ctx.mood==="rough"){
@@ -1443,7 +1481,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
         label: ctx.temp!=null?`${wk?.t||"Mulet"} · ${ctx.temp}°`:"Inomhusväder",
         hint:"Mysigt inomhus",
         place:hit?.p||null,
-        why:hit?.reasons?.find(r=>!/^Öppet|^Stänger/.test(r))||"Varm dryck under tak"
+        why:hit?.p?.short||hit?.p?.blurb||"Varm dryck under tak"
       };
     }
     const hit=ranked.find(x=>x.open)||ranked[0];
@@ -1451,7 +1489,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
       label: ctx.temp!=null?`${wk?.t||"Lokalt"} · ${ctx.temp}°`:`Just nu i ${K}`,
       hint:"Passar läget",
       place:hit?.p||null,
-      why:hit?.reasons?.find(r=>!/^Öppet|^Stänger/.test(r))||hit?.p?.short||"Handplockat tips"
+      why:hit?.p?.short||hit?.p?.blurb||"Handplockat tips"
     };
   }
   function todayBriefItem(thumb, name, sub, onclick){
@@ -1474,15 +1512,15 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     if(eyeEl) eyeEl.textContent=weekend?"Helgen":"Just nu";
     if(titleEl) titleEl.textContent=weekend?`Helgen i ${K}`:`Idag i ${K}`;
 
-    const openRanked=rankedPlaces().filter(x=>x.open).slice(0,3);
-    const openN=places.filter(isOpen).length;
+    const openRanked=rankedPlaces().filter(x=>x.open && isTimedVenue(x.p)).slice(0,3);
+    const openN=openVenueCount();
     if(metaEl){
       const bits=[];
       if(ctx.temp!=null){
         const wk=ctx.code!=null?weatherKind(ctx.code):null;
         bits.push(`${ctx.temp}°${wk?.t?" · "+wk.t:""}`);
       }
-      bits.push(openN?`${openN} öppna`:"Kolla öppettider");
+      bits.push(openN?`${openN} ställen öppna`:"Kolla öppettider");
       if(eventsToday.length) bits.push(eventsToday.length===1?"1 event idag":`${eventsToday.length} event idag`);
       else if(weekend && liveEvents.length) bits.push("Se helgens program");
       metaEl.textContent=bits.join(" · ");
@@ -1511,7 +1549,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     if(openRanked.length){
       openBody=`<div class="tc-list">${openRanked.map(({p,reasons,mins})=>{
         const sub=mins!==Infinity&&mins<=75?`Stänger om ${mins} min`
-          :(reasons.find(r=>!/^Öppet/.test(r))||p.short||p.cat);
+          :(p.short||reasons.find(r=>!/^Öppet|väder|Soligt|ute|Landskapet|utflykt|inomhus|Tak över|Innekos|Varm dryck/i.test(r))||p.cat);
         return todayBriefItem(p.img, escHtml(p.name), escHtml(sub), `openPlace('${jsEsc(p.name)}')`);
       }).join("")}</div>`;
     } else {
@@ -1572,16 +1610,17 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
   }
   function renderPicks(){
     const grid=document.getElementById('picksGrid'); if(!grid) return;
-    const whyBits=[];
-    if(holidayToday) whyBits.push(holidayToday);
-    if(isWeekend) whyBits.push("Helgläge");
-    if(ctx.mood==="nice") whyBits.push("fint väder");
-    else if(ctx.mood==="rough") whyBits.push("inomhustips");
-    else whyBits.push(isWeekend?"helgens bästa":"handplockat för dagen");
-    if(daypart==="morgon") whyBits.push("morgonläge");
-    if(daypart==="lunch") whyBits.push("lunchläge");
-    if(userPos) whyBits.push("nära dig");
-    S('picksWhy', whyBits.join(" · "));
+    // En full mening — inte fragment som "fint väder · lunchläge"
+    let picksWhy;
+    if(ctx.mood==="nice") picksWhy="Fint väder idag — här är ställena som passar.";
+    else if(ctx.mood==="rough") picksWhy="Lite gråare väder — här är mysiga stopp under tak.";
+    else if(holidayToday) picksWhy=holidayToday+" — handplockat för dagen.";
+    else if(isWeekend) picksWhy="Helgläge — handplockat för en fin sväng i bygden.";
+    else if(daypart==="morgon") picksWhy="Morgonläge — öppna ställen som passar nu.";
+    else if(daypart==="lunch") picksWhy="Lunchdags — några bra stopp mitt i dagen.";
+    else picksWhy="Handplockat just nu — lokala favoriter nära dig.";
+    if(userPos && ctx.mood!=="nice" && ctx.mood!=="rough") picksWhy=picksWhy.replace(/\.$/, "")+" · nära dig.";
+    S('picksWhy', picksWhy);
 
     const pool=selectDiversePicks(3);
     const feature=pool[0];
@@ -1595,28 +1634,43 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     }
     homeShownNames=new Set(pool.map(x=>x.p.name));
 
-    // Prefer contextual reasons over open/close status (pill already shows that)
+    // Skippa status + undvik att upprepa väderfrasen som redan står i sektionsrubriken
     const nonStatus=r=>r && !/^(Öppet|Stänger|Planera kvällen|Kvällsläge)/.test(r);
-    const featWhy=feature.reasons.find(nonStatus)||feature.p.short||"Tips just nu";
-    const featSub=feature.reasons.filter(nonStatus).find(r=>r!==featWhy)||feature.p.short||feature.p.blurb||feature.p.cat;
+    const weatherish=r=>/väder|Soligt|ute|Landskapet|utflykt|inomhus|Tak över|Innekos|Varm dryck|Helgläge|Passar morgonen|Bra till lunch|Passar eftermiddagen/i.test(r||"");
+    const pickEyebrow=(scored)=>{
+      // Stängning visas i status-pill / badge — undvik dubblett i eyebrow
+      if(scored.open) return typeLabel[scored.p.type]||scored.p.cat||"Öppet nu";
+      const r=scored.reasons.find(x=>nonStatus(x) && !weatherish(x));
+      return r||scored.p.short||"Tips just nu";
+    };
+    const pickSub=(scored)=>{
+      // Alltid platsens egen text i bröd — inte samma automatfras som på andra kort
+      return scored.p.short||scored.p.blurb||scored.p.cat;
+    };
+    const featWhy=pickEyebrow(feature)+(feature.p._km!=null?" · "+fmtDist(feature.p._km):"");
+    const featSub=pickSub(feature);
     const featHTML=`
       <article class="pick-feature" onclick="openPlace('${jsEsc(feature.p.name)}')" role="button" tabindex="0"
         onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openPlace('${jsEsc(feature.p.name)}')}">
         <div class="im" style="background-image:url('${feature.p.img}')" role="img" aria-label="${feature.p.name}"></div>
         <div class="shade"></div>
+        <div class="pick-status">${statusPill(feature.p)}</div>
         <div class="bd">
-          <div class="why">${featWhy}${feature.p._km!=null?" · "+fmtDist(feature.p._km):""}</div>
+          <div class="why">${featWhy}</div>
           <h3>${feature.p.name}</h3>
           <p>${featSub}</p>
-          ${statusPill(feature.p)}
         </div>
       </article>`;
 
-    const sideHTML=side.map(({p,reasons})=>{
+    const sideHTML=side.map((scored)=>{
+      const {p}=scored;
       const badges=[`<span class="badge">${typeLabel[p.type]||p.cat}</span>`];
       if(isNewPlace(p)) badges.push(`<span class="badge new">Nytt</span>`);
       if(p._km!=null && p._km<5) badges.push(`<span class="badge near">${fmtDist(p._km)}</span>`);
-      const why=reasons.find(nonStatus)||p.short||p.blurb;
+      if(scored.soon && scored.mins>0 && scored.mins<=75){
+        badges.push(`<span class="badge soon">Stänger om ${scored.mins} min</span>`);
+      }
+      const why=pickSub(scored);
       return `
       <article class="tcard" onclick="openPlace('${jsEsc(p.name)}')">
         <div class="im" style="background-image:url('${p.img}')"></div>
@@ -1625,7 +1679,6 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
         <div class="bd">
           <h3>${p.name}</h3>
           <p>${why}</p>
-          ${statusPill(p)}
         </div>
       </article>`;
     }).join("");
@@ -2384,12 +2437,14 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
       document.getElementById('wPlace').textContent=K;
       document.getElementById('wText').textContent=wk.t;
       document.getElementById('wSub').textContent=`känns som ${feels}°`;
+      try{ refreshHeroGreet(); }catch(e){ console.warn('refreshHeroGreet', e); }
       try{ refreshHeroToday(); }catch(e){ console.warn('refreshHeroToday', e); }
       try{ renderTodayBrief(); }catch(e){ console.warn('renderTodayBrief after weather', e); }
       try{ renderPicks(); }catch(e){ console.warn('renderPicks after weather', e); }
       try{ renderRoute(); }catch(e){ console.warn('renderRoute after weather', e); }
     }catch(e){
       paintHeroWeatherFallback();
+      try{ refreshHeroGreet(); }catch(err){}
       try{ refreshHeroToday(); }catch(err){}
       try{ renderTodayBrief(); }catch(err){}
     }
@@ -2448,7 +2503,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
   }
   function placeMatchesFilters(p){
     if(active!=="alla"&&p.type!==active) return false;
-    if(openNowOnly&&!isOpen(p)) return false;
+    if(openNowOnly&&!isOpenVenue(p)) return false;
     if(favOnly&&!favorites.has(p.name)) return false;
     return true;
   }

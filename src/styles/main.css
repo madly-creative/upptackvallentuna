@@ -255,9 +255,17 @@
     position:absolute;inset:0;
     background:linear-gradient(105deg,rgba(20,28,18,.72) 0%,rgba(20,28,18,.35) 45%,rgba(20,28,18,.12) 100%);
   }
+  .pick-feature .pick-status{
+    position:absolute;top:20px;left:20px;z-index:3;pointer-events:none;
+  }
+  .pick-feature .pick-status .status-pill{
+    margin-top:0;box-shadow:0 4px 14px rgba(20,28,18,.18);
+    background:rgba(251,248,242,.96);
+  }
   .pick-feature .bd{
     position:relative;z-index:2;max-width:520px;padding:clamp(28px,5vw,48px);
     color:#fff;display:flex;flex-direction:column;justify-content:flex-end;min-height:min(52vh,440px);
+    gap:0;
   }
   .pick-feature .why{
     font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
@@ -268,8 +276,7 @@
     font-weight:500;line-height:1.05;letter-spacing:-.02em;margin-bottom:10px;
     text-shadow:0 2px 24px rgba(0,0,0,.25);
   }
-  .pick-feature p{font-size:16px;line-height:1.45;color:rgba(255,255,255,.9);max-width:36ch}
-  .pick-feature .status-pill{align-self:flex-start;margin-top:16px}
+  .pick-feature p{font-size:16px;line-height:1.45;color:rgba(255,255,255,.9);max-width:36ch;margin:0}
 
   .picks-row{
     display:grid;grid-template-columns:1.1fr 1.1fr .95fr;gap:14px;align-items:stretch;
@@ -786,6 +793,7 @@
   .tcard .badge-row{position:absolute;top:14px;left:14px;z-index:2;display:flex;flex-wrap:wrap;gap:6px;right:14px}
   .tcard .badge.new{background:var(--rust);color:#fff}
   .tcard .badge.near{background:rgba(251,248,242,.95);color:var(--moss-deep)}
+  .tcard .badge.soon{background:rgba(251,248,242,.96);color:var(--rust-deep)}
   .score-row{
     display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:4px;
   }
