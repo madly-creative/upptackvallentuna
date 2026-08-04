@@ -821,10 +821,15 @@
   .route-card p{font-size:13px;color:var(--ink-soft);margin-top:4px}
   .route-arrow{display:flex;align-items:center;justify-content:center;color:var(--rust);font-size:22px}
   .cat-page{max-width:var(--max);margin:0 auto;padding:36px 28px 64px}
-  .cat-page .cat-head{max-width:640px;margin-bottom:28px}
+  .cat-page .cat-head{max-width:640px;margin-bottom:18px}
   .cat-page .cat-head .eyebrow{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--rust);margin-bottom:10px}
   .cat-page .cat-head h1{font-family:var(--font-serif);font-size:clamp(32px,4vw,44px);font-weight:500;color:var(--moss-deep);margin-bottom:10px}
   .cat-page .cat-head .lede{font-size:16px;line-height:1.55;color:var(--ink-soft)}
+  .cat-page .cat-pills{margin:0 0 16px;gap:8px}
+  .cat-page .cat-pills .chip{background:var(--card)}
+  .cat-page .cat-pills .chip.on{
+    background:var(--moss-deep);border-color:var(--moss-deep);color:var(--paper);
+  }
   .cat-page .cat-tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:22px}
   .cat-page .cat-tools .count{font-size:13px;color:var(--ink-soft);margin-right:auto}
   .cat-page .cat-tools .chip{cursor:pointer}

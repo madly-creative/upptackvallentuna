@@ -1,12 +1,18 @@
 [build]
   command = "npm run build"
   publish = "dist"
+  functions = "netlify/functions"
 
 [build.environment]
   NODE_VERSION = "22"
 
-# Formspree + contact — set in Netlify UI:
-# VITE_CONTACT_EMAIL, VITE_FORMSPREE_EVENT, VITE_FORMSPREE_REPORT
+# Mail to Loopia info@upptackvallentuna.se — set in Netlify → Site settings → Environment variables:
+#   CONTACT_EMAIL=info@upptackvallentuna.se
+#   SMTP_USER=info@upptackvallentuna.se
+#   SMTP_PASS=<Loopia-lösenord för info@>
+#   SMTP_HOST=smtp.loopia.se   (default)
+#   SMTP_PORT=587              (default)
+# Without SMTP_PASS the function falls back to FormSubmit → same inbox (activate once via email).
 
 # Service worker must revalidate so clients pick up new shell caches
 [[headers]]

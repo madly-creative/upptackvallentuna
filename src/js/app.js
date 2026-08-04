@@ -1,6 +1,6 @@
 import { events as EVENTS_SEED, EVENT_CONTENT } from "../data/events.js";
 import { SITE } from "../data/site.js";
-import { deliverForm } from "../lib/forms.js";
+import { deliverForm, buildMailtoUrl } from "../lib/forms.js";
 import {
   swedishHoliday,
   daySlot as libDaySlot,
@@ -121,10 +121,12 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     "Café Valkyria":{
       address:"Lingsbergsvägen 49, Vallentuna",
       facts:["Helgfik","Hembakat","Barnvänligt","Hundvänligt"],
+      localPhotos:true,
       images:[
-        {url:U("photo-1554118811-1e0d58224f24"),alt:"Mysigt caféinteriör"},
-        {url:U("photo-1495474472287-4d71bcdd2085"),alt:"Kaffe latte"},
-        {url:U("photo-1517248135467-4c7edcad34c4"),alt:"Cafébord och samtal"}
+        {url:"/assets/upplev/cafe-valkyria/cover.webp",alt:"Välkommen till Café Valkyria — uteplatsen vid den röda ladan"},
+        {url:"/assets/upplev/cafe-valkyria/uteplats.webp",alt:"Uteplatsen med Öppet-skylt och cafébord"},
+        {url:"/assets/upplev/cafe-valkyria/interior.webp",alt:"Disken med bakverk och kylskåp"},
+        {url:"/assets/upplev/cafe-valkyria/personalen.webp",alt:"Personal bakom disken på Café Valkyria"}
       ],
       body:`<p>Familjedrivet helgfik en bit utanför centrum, öppnat av Monica, Alexandra och Andrea Brink-Sehlberg. Namnet Valkyria nickar åt Vallentunas runstenar och nordisk mytologi — fokus på gemenskap snarare än snabb fika.</p>
       <p>Hembakat, caffè latte, lekhörna, hundvänligt och loppis intill. Öppet främst helger året runt (ägarnas heltidsjobb styr). Ingen egen webb — kolla Facebook/Instagram för aktuella tider innan du åker ut på Lingsbergsvägen.</p>`
@@ -171,10 +173,12 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     "Gårdsbutiken Gamla Mjölkrummet":{
       address:"Skålhamravägen 112, 186 92 Vallentuna",
       facts:["Ägg & ost","Nära centrum","Närproducerat"],
+      localPhotos:true,
       images:[
-        {url:U("photo-1595855759920-86582396756c"),alt:"Gårdsbutikshylla"},
-        {url:U("photo-1464226184884-fa280b87c399"),alt:"Lokala mejeriprodukter"},
-        {url:U("photo-1560493676-04071c5f467b"),alt:"Färska råvaror"}
+        {url:"/assets/upplev/gardsbutiken-gamla-mjolkrummet/cover.webp",alt:"Entrén till Gamla Mjölkrummet på Kragsta"},
+        {url:"/assets/upplev/gardsbutiken-gamla-mjolkrummet/butik.webp",alt:"Hylla med potatis och gula ärter i gårdsbutiken"},
+        {url:"/assets/upplev/gardsbutiken-gamla-mjolkrummet/kor.webp",alt:"Kor i hagen vid gården"},
+        {url:"/assets/upplev/gardsbutiken-gamla-mjolkrummet/falt.webp",alt:"Traktor och potatissättning på åkern"}
       ],
       body:`<p>En liten gårdsbutik på Skålhamravägen för den som vill handla lokalt utan lång bilresa. Här hittar du ägg, potatis, kött och den där osten folk återvänder för — enkelt och ärligt i mjölkrummets anda.</p>
       <p>Ingen egen webbplats hittad; utbud och tider skiftar med säsong. Ta med egen kasse och fråga gärna om veckans favoriter.</p>`
@@ -251,10 +255,10 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     "Lilla Valentina":{
       address:"Tuna Torg 3, Vallentuna centrum",
       facts:["Pizza","Kvarterskrog","Generösa portioner"],
+      localPhotos:true,
       images:[
-        {url:U("photo-1513104890138-7c749659a591"),alt:"Pizza från ugnen"},
-        {url:U("photo-1571407970349-bc81e7e96d47"),alt:"Italiensk mat"},
-        {url:U("photo-1555396273-367ea4eb4db5"),alt:"Restaurangkänsla"}
+        {url:"/assets/upplev/lilla-valentina/cover.webp",alt:"Uteserveringen vid Tuna Torg"},
+        {url:"/assets/upplev/lilla-valentina/personalen.webp",alt:"Personal utanför Lilla Valentina"}
       ],
       body:`<p>Folkkär kvarterspizzeria vid Tuna Torg — generösa portioner, vänlig personal och priser som inte skrämmer. En måltid att dela; fina råvaror och mycket kärlek i rätterna, enligt restaurangens egen meny.</p>
       <p>Telefon 08-511 737 04. Meny: <a href="https://lillavalentina.se/" target="_blank" rel="noopener">lillavalentina.se</a>.</p>`
@@ -294,10 +298,11 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     "Ljuvliga Bakverk":{
       address:"Söderbydal 8, 186 94 Vallentuna",
       facts:["Hembakat","Glutenfritt","Bakgårdscafé"],
+      localPhotos:true,
       images:[
-        {url:U("photo-1486427944299-d1955d23e34d"),alt:"Hembakta bakverk"},
-        {url:U("photo-1509440159596-0249088772ff"),alt:"Surdeg och bröd"},
-        {url:U("photo-1555507036-ab1f4038808a"),alt:"Bullar på fat"}
+        {url:"/assets/upplev/ljuvliga-bakverk/cover.webp",alt:"Susanne i dörren till bakgårdscaféet i Söderbydal"},
+        {url:"/assets/upplev/ljuvliga-bakverk/kanelbullar.webp",alt:"Laktosfria kanelbullar på fat"},
+        {url:"/assets/upplev/ljuvliga-bakverk/jordgubbstarta.webp",alt:"Jordgubbstårta med vispad grädde"}
       ],
       body:`<p>Susannes bakgårdscafé i Söderbydal — litet, personligt och känt för hembakat inklusive ett starkt glutenfritt utbud. Allt bakas på plats av Susanne Olsen / Susannes Ljuvliga Bakverk AB.</p>
       <p>Öppettider kan vara begränsade (ofta helger i säsong). Hör av dig på 073-633 16 85 eller <a href="mailto:susanne@ljuvligabakverk.se">susanne@ljuvligabakverk.se</a> innan du åker, särskilt om du vill säkra glutenfritt bröd.</p>`
@@ -305,10 +310,10 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     "Össby Handelsträdgård":{
       address:"Forsenberg / Brottby, nära Össeby-Garns kyrka",
       facts:["Självplock","Plantor","Honung & ägg","Swish"],
+      localPhotos:true,
       images:[
-        {url:U("photo-1416879595882-3373a0480b5b"),alt:"Handelsträdgård och blommor"},
-        {url:U("photo-1464226184884-fa280b87c399"),alt:"Odling och skörd"},
-        {url:U("photo-1500382017468-9049fed747ef"),alt:"Lantlig trädgård"}
+        {url:"/assets/upplev/ossby-handelstradgard/cover.webp",alt:"Plantor och perenner ute på Össby Handelsträdgård"},
+        {url:"/assets/upplev/ossby-handelstradgard/pensier.webp",alt:"Lila penséer i bricka"}
       ],
       body:`<p>Ösby (Össby) handelsträdgård i Brottby — avslappnad plantskola där Björn Furugren Beselin driver upp merparten av växterna på plats sedan 2007. Självplock av blommor och grönt, plus ägg, honung, saft och mer i bodarna. Betalning med Swish eller kontanter.</p>
       <p>Öppet året om i praktiken (vintertid mer ägg/sylt/honung än plantor). Potatisplock styrs ofta till tider när personal finns. Aktuellt i Facebook-gruppen. Tel 070-718 81 79.</p>`
@@ -375,10 +380,9 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     "Rookie Café & Restaurang":{
       address:"Parkvägen 2 / Vallentuna ishall",
       facts:["Lunch","Husman","Ishallen"],
+      localPhotos:true,
       images:[
-        {url:U("photo-1414235077428-338989a2e8c0"),alt:"Lunchrätt på tallrik"},
-        {url:U("photo-1559339352-11d035aa65de"),alt:"Restaurangkök"},
-        {url:U("photo-1554118811-1e0d58224f24"),alt:"Cafémiljö"}
+        {url:"/assets/upplev/rookie-cafe-och-restaurang/cover.webp",alt:"Rookie Bar — disken i Vallentuna ishall"}
       ],
       body:`<p>Oväntat god lunch i Vallentuna ishall — lagat från grunden, prisvärt. En dold pärla för den som redan är i trakten till träning eller match.</p>
       <p>Öppettider följer ofta lunchtider på vardagar. Tel 08-30 06 80. Aktuellt: <a href="https://www.facebook.com/rookiecaferestaurang/" target="_blank" rel="noopener">Facebook</a>.</p>`
@@ -386,10 +390,10 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     "Kristorante":{
       address:"Bällstabergsvägen 2, Vallentuna",
       facts:["Pizza","Uteservering","Kvarterskrog"],
+      localPhotos:true,
       images:[
-        {url:U("photo-1571407970349-bc81e7e96d47"),alt:"Pizza och restaurangmat"},
-        {url:U("photo-1555396273-367ea4eb4db5"),alt:"Trivsam krog"},
-        {url:U("photo-1517248135467-4c7edcad34c4"),alt:"Uteservering"}
+        {url:"/assets/upplev/kristorante/cover.webp",alt:"Kristorante utifrån med uteservering"},
+        {url:"/assets/upplev/kristorante/pizza.webp",alt:"Pizza från Kristorante"}
       ],
       body:`<p>Trivsam kvarterskrog i Bällstaberg med uteservering, italiensk pizza, burgare och husmansidéer. Vällagat och omtyckt av många i bygden.</p>
       <p>Enligt kristorante.se: måndag 10–14 (lunch), tisdag–fredag 10–21, lördag–söndag 11–21. Tel 08-511 772 20. Webb: <a href="https://kristorante.se/" target="_blank" rel="noopener">kristorante.se</a>.</p>`
@@ -427,6 +431,28 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
       ],
       body:`<p>Antikaffär i Lindholmen, strax bakom Lindholmens gård — glas, porslin, möbler, lampor och fynd i lantlig miljö. Öppet maj–september (perfekt söndagsutflykt); kan även öppna utanför säsong.</p>
       <p>Mer: <a href="https://rodamagasinet.se/" target="_blank" rel="noopener">rodamagasinet.se</a>.</p>`
+    },
+    "Novaretro":{
+      address:"Stora Karby Gård, 186 70 Brottby",
+      facts:["Antik & retro","Designmöbler","Helgöppet","Värdering"],
+      localPhotos:true,
+      images:[
+        {url:"/assets/upplev/novaretro/cover.webp",alt:"Retrofynd och vinyl i butiken"},
+        {url:"/assets/upplev/novaretro/skrivmaskin.webp",alt:"Underwood-skrivmaskin bland antikviteter"},
+        {url:"/assets/upplev/novaretro/konst.webp",alt:"Vas, skulptur och keramik — design och konst"}
+      ],
+      body:`<p>Antik-, design- och retrobutik på <strong>Stora Karby Gård</strong> i Brottby — möbler, porslin, samlarobjekt och fynd med tyngdpunkt på 1930–70-tal. Ambitionen är humana priser; sortimentet fylls på varje vecka.</p>
+      <p>Öppet lördag–söndag kl. 10–15 under säsong (vinterstängt). Från E18: avfart Brottby, Gamla Norrtäljevägen — sväng in mellan de vita pelarna efter ICA Brottby. Tel 08-51 51 05 06 · <a href="https://www.novaretro.se/" target="_blank" rel="noopener">novaretro.se</a>.</p>`
+    },
+    "Röda Korset Second Hand":{
+      address:"Tellusvägen 7, 186 36 Vallentuna",
+      facts:["Volontärer","Kläder & husgeråd","Välgörenhet","Tors & lör"],
+      localPhotos:true,
+      images:[
+        {url:"/assets/upplev/roda-korset-second-hand/cover.webp",alt:"Hyllor med burkar och husgeråd i second hand-butiken"}
+      ],
+      body:`<p>Röda Korsets second hand-butik (Kupan) på Tellusvägen — kläder, husgeråd, leksaker, böcker, glas och prylar. Driven av volontärer; överskottet går till Röda Korsets hjälpverksamhet.</p>
+      <p>Öppet <strong>torsdag 11–18</strong> och <strong>lördag 12–15</strong>. Skänk gärna under öppettiderna (hela och rena saker). Mer: <a href="https://www.rodakorset.se/ort/stockholm/vallentuna-kommun/second-hand/roda-korset-second-hand-vallentuna/" target="_blank" rel="noopener">rodakorset.se</a>.</p>`
     },
     "Vallentuna kyrka":{
       address:"Kyrkvägen / Vallentuna centrum",
@@ -483,7 +509,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     },
   };
 
-    const cats=[{key:"alla",label:"Allt"},{key:"fika",label:"Fika & Mat"},{key:"gard",label:"Gård & Handelsträdgård"},{key:"natur",label:"Natur & Historia"},{key:"butik",label:"Butik & Kultur"},{key:"loppis",label:"Loppis & Antikt"}];
+    const cats=[{key:"alla",label:"Allt"},{key:"fika",label:"Fika & Mat"},{key:"gard",label:"Gård & Handelsträdgård"},{key:"natur",label:"Natur & Historia"},{key:"butik",label:"Butik & Kultur"},{key:"loppis",label:"Loppis"}];
 
   const DOW=["SÖN","MÅN","TIS","ONS","TOR","FRE","LÖR"];
   const MON=["JAN","FEB","MAR","APR","MAJ","JUN","JUL","AUG","SEP","OKT","NOV","DEC"];
@@ -493,7 +519,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
   const CATEGORIES={
     attgora:{
       key:"attgora", nav:"Att göra", title:"Att göra i Vallentuna",
-      lede:"Handplockade upplevelser i bygden — fika, gårdar, natur och små upptäckter värda en omväg.",
+      lede:"Handplockade upplevelser i bygden — fika, gårdar, loppis, natur och små upptäckter värda en omväg.",
       types:null, mapKey:"alla"
     },
     fika:{
@@ -503,8 +529,13 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     },
     gard:{
       key:"gard", nav:"Handla lokalt", title:"Handla lokalt",
-      lede:"Gårdsbutiker, handelsträdgårdar, presentshoppar och fynd — stötta dem som får bygden att blomstra.",
-      types:["gard","butik","loppis"], mapKey:"gard"
+      lede:"Gårdsbutiker, handelsträdgårdar och presentshoppar — stötta dem som får bygden att blomstra.",
+      types:["gard","butik"], mapKey:"gard"
+    },
+    loppis:{
+      key:"loppis", nav:"Loppis", title:"Loppis & second hand",
+      lede:"Antiklador, retro, second hand och fynd — från Tellusvägen till Brottby och Angarns-Veda.",
+      types:["loppis"], mapKey:"loppis"
     },
     natur:{
       key:"natur", nav:"Natur & uteliv", title:"Natur & uteliv",
@@ -522,6 +553,8 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     "Antikladan":"2026-06-28",
     "Grävelsta Gård":"2026-08-02",
     "Röda Magasinet":"2026-08-02",
+    "Novaretro":"2026-08-04",
+    "Röda Korset Second Hand":"2026-08-04",
     "Vallentuna kyrka":"2026-08-02",
     "Gällsta":"2026-08-02",
     "Gustavs udde":"2026-08-02",
@@ -1597,6 +1630,12 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     const list=placesForCategory(cat.key);
     S('catTitle', cat.title);
     S('catLede', cat.lede);
+    const pills=document.getElementById('catPills');
+    if(pills){
+      pills.innerHTML=Object.values(CATEGORIES).map(c=>
+        `<button type="button" class="chip${c.key===cat.key?" on":""}" aria-pressed="${c.key===cat.key?"true":"false"}" onclick="openCategory('${c.key}')">${c.nav}</button>`
+      ).join('');
+    }
     const countEl=document.getElementById('catCount');
     if(countEl){
       const openN=list.filter(p=>isOpen(p)).length;
@@ -1977,14 +2016,20 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
           saveJSON(LS_PENDING,pending);
         }
       });
-      if(msg) msg.textContent=result.channel==="mailto"
-        ? "Öppnar din e-post — skicka utkastet så granskar vi tipset."
-        : "Tack! Skickat för granskning — syns inte publikt förrän det godkänts.";
+      const activate=/activat|confirm|check your email|bekräft/i.test(result.message||"");
+      if(msg) msg.textContent=activate
+        ? "Nästan klart — kolla info@upptackvallentuna.se (även skräppost) och bekräfta aktiveringsmejlet. Sedan fungerar tipsen."
+        : "Tack! Tipset är skickat till info@upptackvallentuna.se — syns inte publikt förrän det godkänts.";
       ["evTitle","evTime","evNote","evEmail"].forEach(id=>{const el=document.getElementById(id);if(el) el.value="";});
       renderPendingAdmin();
       trackEvent('event-submit',title);
     }catch(err){
-      if(msg) msg.textContent=err.message||"Kunde inte skicka. Försök igen eller mejla oss.";
+      const mailto=buildMailtoUrl(`Evenemangstips: ${title}`,{title,host,date,time,cat,note,email,source:location.href});
+      if(msg){
+        msg.innerHTML=err.code==="NOT_DEPLOYED"
+          ? `Lokalt läge — <a href="${mailto}">skicka tipset via e-post till info@</a> i stället.`
+          : `Kunde inte skicka automatiskt. <a href="${mailto}">Öppna e-post till info@upptackvallentuna.se</a> och skicka manuellt.`;
+      }
     }
   }
   function renderPendingAdmin(){
@@ -2045,7 +2090,10 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
       pushNotify("Tack för tipset","Vi tar med rapporten i nästa uppdatering.");
       trackEvent('report',type);
     }catch(err){
-      pushNotify("Kunde inte skicka", err.message||"Försök igen.");
+      pushNotify(
+        "Kunde inte skicka automatiskt",
+        "Mejla tipset till info@upptackvallentuna.se — eller testa igen på live-sajten efter deploy.",
+      );
     }
   }
 

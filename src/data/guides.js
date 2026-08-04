@@ -280,6 +280,40 @@ export const guides = [
     signature: "Vallentuna levererar.",
   },
   {
+    slug: "loppisrundan",
+    title: "Loppisrundan",
+    season: "sommar",
+    heroImg: "/assets/upplev/antikladan/cover.webp",
+    intro:
+      "Fem stopp för den som jagar fynd på riktigt — lador, retro, second hand. Bäst på helg (Röda Magasinet främst söndag; Röda Korset torsdag eller lördag).",
+    lead: "Det finns en skillnad mellan att shoppa och att jaga. Den här rundan är för jakten.",
+    stops: [
+      {
+        place: "Novaretro",
+        text: "Börja i Brottby om ni är ute tidigt — Novaretro på Stora Karby Gård öppnar ofta kl. 10. Retro, design och antik med tyngd på 30–70-tal. Ge hyllorna tid; nya grejer varje vecka.",
+      },
+      {
+        place: "Antikladan",
+        text: "Vidare till Angarns-Veda. Antikladan är den stora ladan — glas, möbler, kläder, instrument — och grannen Cedergren om ni är sugna på vintage. Lördag–söndag 11–16 (onsdag kväll också).",
+      },
+      {
+        place: "Röda Magasinet",
+        text: "Norrut till Lindholmen. Röda Magasinet: tre våningar kuriosa i röd lada, enkel fika. Klassisk söndagsutflykt maj–september — dubbelkolla FB om ni åker annan dag.",
+      },
+      {
+        place: "Lindra Second Hand",
+        text: "In mot byn: Lindra. Efter ladorna känns välsorterad second hand som ordning i kaoset — kläder, porslin, leksaker. Snabba beslut, bra priser.",
+      },
+      {
+        place: "Röda Korset Second Hand",
+        text: "Avsluta på Tellusvägen. Röda Korsets Kupan — volontärer, klimatsmart fynd, och pengarna gör nytta. Torsdag eller lördag; passa öppettiderna.",
+      },
+    ],
+    outro:
+      "Hem med påsar, dammiga fingrar och känslan av att bygden fortfarande har hemligheter mellan hyllorna.",
+    signature: "Vallentuna levererar.",
+  },
+  {
     slug: "centrum-pa-foten",
     title: "Centrum på foten",
     season: "sommar",

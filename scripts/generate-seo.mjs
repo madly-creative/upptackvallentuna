@@ -118,7 +118,7 @@ ${body}
     <span>·</span>
     <a href="/integritet.html">Integritet</a>
     <span>·</span>
-    <a href="mailto:tips@upptackvallentuna.se">Tips</a>
+    <a href="mailto:${esc(SITE.contactEmail)}">Tips</a>
   </footer>
   <p class="built-by"><a href="https://www.fvno.se/" target="_blank" rel="noopener">Byggd av Formverket Norrort</a></p>
 </body>
@@ -383,7 +383,7 @@ ${evArticles}
     <span>·</span>
     <a href="/integritet.html">Integritet</a>
     <span>·</span>
-    <a href="mailto:tips@upptackvallentuna.se">Tips</a>
+    <a href="mailto:${esc(SITE.contactEmail)}">Tips</a>
   </footer>
   <p class="built-by"><a href="https://www.fvno.se/" target="_blank" rel="noopener">Byggd av Formverket Norrort</a></p>
 </body>

@@ -43,14 +43,14 @@ site/
 | Blocker | Status |
 |--------|--------|
 | Inte en monolit-HTML | ✅ Vite + flera sidor |
-| Formulär | ✅ mailto / Formspree + synlig tips@ |
+| Formulär | ✅ Netlify function → Loopia SMTP (eller FormSubmit) |
 | Integritetspolicy | ✅ `integritet.html` |
 | SEO (meta/OG/sitemap/plats) | ✅ inkl. `/plats/*` + `/evenemang/*` |
 | Guider + Maps-rutt | ✅ |
 | Öppettider-disclaimer | ✅ |
 | Automatiska tester + CI | ✅ |
 | Deploy / domän | ⬜ hosta `dist/` + peka domän |
-| Formspree-nycklar | ⬜ sätt i `.env` / host |
+| Loopia SMTP i Netlify | ⬜ sätt SMTP_USER + SMTP_PASS |
 | Unsplash-covers (8 platser) | ⬜ byt till egna foton |
 | Assets-symlink | ✅ relativ `../../assets` |
 | PWA (hemskärm) | ✅ manifest + SW + ikoner (HTTPS krävs) |
@@ -70,6 +70,7 @@ Ingen push, ingen bakgrundssynk. Install kräver **HTTPS** (eller localhost).
 
 1. Build command: `npm run build` (se `netlify.toml`)
 2. Publish directory: `dist`
-3. Sätt env-vars för Formspree + kontaktmejl
+3. Formulär → Loopia: sätt i Netlify env `SMTP_USER` + `SMTP_PASS` för `info@upptackvallentuna.se`
+   (utan SMTP används FormSubmit till samma adress — bekräfta aktiveringsmejlet en gång)
 4. Bekräfta att `https://upptackvallentuna.se` matchar canonical
 5. Skicka in `https://upptackvallentuna.se/sitemap.xml` i Search Console

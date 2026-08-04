@@ -156,6 +156,16 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://upptackvallentuna.se/plats/novaretro.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/plats/roda-korset-second-hand.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://upptackvallentuna.se/plats/vallentuna-kyrka.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>

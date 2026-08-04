@@ -64,6 +64,7 @@
         <button type="button" role="menuitem" id="nav-cat-attgora" onclick="openCategory('attgora')">Att göra</button>
         <button type="button" role="menuitem" id="nav-cat-fika" onclick="openCategory('fika')">Äta &amp; fika</button>
         <button type="button" role="menuitem" id="nav-cat-gard" onclick="openCategory('gard')">Handla lokalt</button>
+        <button type="button" role="menuitem" id="nav-cat-loppis" onclick="openCategory('loppis')">Loppis</button>
         <button type="button" role="menuitem" id="nav-cat-natur" onclick="openCategory('natur')">Natur &amp; uteliv</button>
       </div>
     </div>
@@ -107,6 +108,7 @@
     <div class="mnav-sub">
       <button type="button" onclick="mobileGo(()=>openCategory('fika'))">Äta &amp; fika</button>
       <button type="button" onclick="mobileGo(()=>openCategory('gard'))">Handla lokalt</button>
+      <button type="button" onclick="mobileGo(()=>openCategory('loppis'))">Loppis</button>
       <button type="button" onclick="mobileGo(()=>openCategory('natur'))">Natur &amp; uteliv</button>
     </div>
     <button type="button" onclick="mobileGo(()=>showView('hander'))">Evenemang</button>
@@ -239,6 +241,7 @@
       <span class="qlabel">Utforska</span>
       <button type="button" class="qchip" onclick="openCategory('fika')">Äta &amp; fika</button>
       <button type="button" class="qchip" onclick="openCategory('gard')">Handla lokalt</button>
+      <button type="button" class="qchip" onclick="openCategory('loppis')">Loppis</button>
       <button type="button" class="qchip" onclick="openCategory('natur')">Natur &amp; uteliv</button>
       <button type="button" class="qchip" onclick="showView('hander')">Evenemang</button>
       <button type="button" class="qchip" onclick="showView('karta')">Karta</button>
@@ -330,10 +333,11 @@
 <section class="view" id="view-kategori">
   <div class="cat-page">
     <div class="cat-head">
-      <div class="eyebrow">Upptäck Vallentuna</div>
+      <div class="eyebrow">Upplev Vallentuna</div>
       <h1 id="catTitle">Kategori</h1>
       <p class="lede" id="catLede"></p>
     </div>
+    <div class="cat-pills filter-row" id="catPills" role="navigation" aria-label="Kategorier"></div>
     <div class="cat-tools">
       <span class="count" id="catCount"></span>
       <button type="button" class="chip" id="catMapBtn" onclick="filterAndMapFromCategory()">Visa på karta →</button>
@@ -500,7 +504,7 @@
 <section class="view" id="view-skicka">
   <div class="panel">
     <h1>Skicka in evenemang</h1>
-    <p class="lede">Äger du en verksamhet? Skicka in loppis, marknad eller konsert — vi granskar innan det syns publikt. Tips går till <a href="mailto:tips@upptackvallentuna.se">tips@upptackvallentuna.se</a> (eller Formspree när det är inkopplat).</p>
+    <p class="lede">Äger du en verksamhet? Skicka in loppis, marknad eller konsert — vi granskar innan det syns publikt. Tips går till <a href="mailto:info@upptackvallentuna.se">info@upptackvallentuna.se</a>.</p>
     <div class="form-card">
       <label>Titel</label>
       <input id="evTitle" placeholder="Smaka på Vallentuna" />
@@ -585,6 +589,7 @@
         <li><button type="button" onclick="showView('hander')">Evenemang</button></li>
         <li><button type="button" onclick="openCategory('fika')">Äta &amp; fika</button></li>
         <li><button type="button" onclick="openCategory('gard')">Handla lokalt</button></li>
+        <li><button type="button" onclick="openCategory('loppis')">Loppis</button></li>
         <li><button type="button" onclick="openCategory('natur')">Natur &amp; uteliv</button></li>
       </ul>
     </nav>
@@ -602,7 +607,7 @@
       <h2 class="foot-h">Delta</h2>
       <ul class="foot-list">
         <li><button type="button" onclick="showView('skicka')">Skicka evenemang</button></li>
-        <li><a href="mailto:tips@upptackvallentuna.se">tips@upptackvallentuna.se</a></li>
+        <li><a href="mailto:info@upptackvallentuna.se">info@upptackvallentuna.se</a></li>
         <li><a href="/evenemang.html">Evenemangskalender</a></li>
         <li><a href="/om.html">Om guidningen</a></li>
         <li><a href="/integritet.html">Integritet</a></li>

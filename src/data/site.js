@@ -7,9 +7,9 @@ export const SITE = {
   region: "Norrort",
   center: [59.5345, 18.077],
   zoom: 14,
-  /** Public contact for tips (shown on integritet / om). Override via env. */
-  contactEmail: (import.meta.env && import.meta.env.VITE_CONTACT_EMAIL) || "tips@upptackvallentuna.se",
-  /** Formspree form IDs (https://formspree.io) — empty = mailto fallback */
+  /** Public contact — tips & reports land in this inbox (Loopia). Override via env. */
+  contactEmail: (import.meta.env && import.meta.env.VITE_CONTACT_EMAIL) || "info@upptackvallentuna.se",
+  /** Optional Formspree IDs — empty = FormSubmit → contactEmail */
   forms: {
     event: (import.meta.env && import.meta.env.VITE_FORMSPREE_EVENT) || "",
     report: (import.meta.env && import.meta.env.VITE_FORMSPREE_REPORT) || "",

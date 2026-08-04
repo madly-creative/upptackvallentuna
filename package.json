@@ -21,5 +21,8 @@
     "jsdom": "^26.1.0",
     "vite": "^7.0.6",
     "vitest": "^3.2.4"
+  },
+  "dependencies": {
+    "nodemailer": "^6.10.1"
   }
 }
