@@ -8,12 +8,15 @@ import { fileURLToPath } from "node:url";
 import { places, placeSlug, schemaTypeFor } from "../src/data/places.js";
 import { PLACE_META } from "../src/data/placeMeta.js";
 import { events, eventSlug } from "../src/data/events.js";
+import { guides, seasonLabel } from "../src/data/guides.js";
 import { SITE } from "../src/data/site.js";
 
 const __dir = dirname(fileURLToPath(import.meta.url));
 const root = join(__dir, "..");
 const base = SITE.url.replace(/\/$/, "");
 const DOW = ["söndag", "måndag", "tisdag", "onsdag", "torsdag", "fredag", "lördag"];
+/** Index matches PLACE_META.hours (0 = Sunday). */
+const SCHEMA_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const umamiScript = SITE.umamiWebsiteId
   ? `<script defer src="https://cloud.umami.is/script.js" data-website-id="${SITE.umamiWebsiteId}"></script>`
   : "";
@@ -50,6 +53,46 @@ function absImg(img) {
   if (!img) return `${base}${SITE.defaultOgImage}`;
   if (img.startsWith("http")) return img;
   return `${base}${img.startsWith("/") ? "" : "/"}${img}`;
+}
+
+function pad2(n) {
+  return String(n).padStart(2, "0");
+}
+
+/** schema.org OpeningHoursSpecification from PLACE_META / place defaults. */
+function openingHoursSpecification(place) {
+  const meta = PLACE_META[place.name] || {};
+  let slots = meta.hours;
+  if (!slots) {
+    if (place.oh === 0 && place.ch === 24) {
+      slots = Array(7).fill("always");
+    } else if (typeof place.oh === "number" && typeof place.ch === "number") {
+      slots = Array(7).fill({ o: place.oh, c: place.ch });
+    } else {
+      return undefined;
+    }
+  }
+  const specs = [];
+  for (let i = 0; i < 7; i++) {
+    const slot = slots[i];
+    if (slot === "always") {
+      specs.push({
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: `https://schema.org/${SCHEMA_DAYS[i]}`,
+        opens: "00:00",
+        closes: "23:59",
+      });
+    } else if (slot && typeof slot === "object") {
+      const closesH = slot.c >= 24 ? slot.c - 24 : slot.c;
+      specs.push({
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: `https://schema.org/${SCHEMA_DAYS[i]}`,
+        opens: `${pad2(slot.o)}:00`,
+        closes: `${pad2(closesH)}:00`,
+      });
+    }
+  }
+  return specs.length ? specs : undefined;
 }
 
 function chrome({ title, description, canonical, ogImage, jsonLd, body, current }) {
@@ -141,6 +184,10 @@ const seoCss =
 .built-by a:hover{border-bottom-color:currentColor;opacity:1}
 .seo-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
 .seo-actions a{font-size:14px;font-weight:600;color:var(--rust,#a85a3a)}
+.seo-guide-stops{margin:16px 0 24px;padding-left:1.25em}
+.seo-guide-stops li{margin:0 0 18px}
+.seo-guide-stops h3{font-family:var(--font-serif,Georgia,serif);font-size:1.15rem;font-weight:600;margin:0 0 6px}
+.seo-guide-stops h3 a{color:var(--rust,#a85a3a)}
 `;
 writeFileSync(join(root, "public/css/seo.css"), seoCss, "utf8");
 
@@ -158,6 +205,7 @@ for (const p of places) {
   const ogImage = absImg(p.img);
   const schemaType = schemaTypeFor(p);
 
+  const hoursSpec = openingHoursSpecification(p);
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": schemaType,
@@ -175,6 +223,7 @@ for (const p of places) {
       addressCountry: "SE",
     },
     areaServed: SITE.kommun,
+    ...(hoursSpec ? { openingHoursSpecification: hoursSpec } : {}),
   };
 
   const links = [];
@@ -276,6 +325,74 @@ for (const e of events) {
   eventUrls.push({ loc: canonical, priority: "0.7" });
 }
 
+const guideDir = join(root, "public/guide");
+if (existsSync(guideDir)) rmSync(guideDir, { recursive: true });
+mkdirSync(guideDir, { recursive: true });
+const guideUrls = [];
+
+for (const g of guides) {
+  const path = `/guide/${g.slug}.html`;
+  const canonical = `${base}${path}`;
+  const ogImage = absImg(g.heroImg);
+  const desc = (g.intro || g.lead || g.title).slice(0, 160);
+  const stopList = g.stops
+    .map((s) => {
+      const place = places.find((p) => p.name === s.place);
+      const href = place ? `/plats/${placeSlug(place.name)}.html` : "/";
+      return `    <li>
+      <h3><a href="${esc(href)}">${esc(s.place)}</a></h3>
+      <p>${esc(s.text)}</p>
+    </li>`;
+    })
+    .join("\n");
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: g.title,
+    description: desc,
+    image: ogImage,
+    url: canonical,
+    inLanguage: "sv-SE",
+    about: { "@type": "Place", name: SITE.kommun },
+    isPartOf: { "@type": "WebSite", name: SITE.name, url: `${base}/` },
+  };
+
+  const body = `
+    <img class="seo-hero-img" src="${esc(g.heroImg)}" alt="${esc(g.title)}" width="1200" height="675" loading="eager">
+    <p class="seo-meta"><span>${esc(seasonLabel(g.season))}</span><span>Guide</span><span>${esc(SITE.kommun)}</span></p>
+    <h1>${esc(g.title)}</h1>
+    <p class="lede">${esc(g.lead || g.intro)}</p>
+    ${g.intro && g.lead && g.intro !== g.lead ? `<p>${esc(g.intro)}</p>` : ""}
+    <h2>Stoppen</h2>
+    <ol class="seo-guide-stops">
+${stopList}
+    </ol>
+    ${g.outro ? `<p>${esc(g.outro)}</p>` : ""}
+    ${g.signature ? `<p><em>${esc(g.signature)}</em></p>` : ""}
+    <div class="seo-actions">
+      <a href="/">Öppna i guiden</a>
+      <a href="/evenemang.html">Evenemang</a>
+    </div>
+    <p class="seo-cta" style="margin-top:36px"><a href="/">← Alla ställen i ${esc(SITE.kommun)}</a></p>
+  `;
+
+  writeFileSync(
+    join(guideDir, `${g.slug}.html`),
+    chrome({
+      title: `${g.title} — ${SITE.name}`,
+      description: desc,
+      canonical,
+      ogImage,
+      jsonLd,
+      body,
+      current: "start",
+    }),
+    "utf8"
+  );
+  guideUrls.push({ loc: canonical, priority: "0.75" });
+}
+
 const urls = [
   { loc: `${base}/`, priority: "1.0", changefreq: "daily" },
   { loc: `${base}/evenemang.html`, priority: "0.9", changefreq: "weekly" },
@@ -283,6 +400,7 @@ const urls = [
   { loc: `${base}/integritet.html`, priority: "0.3", changefreq: "yearly" },
   ...placeUrls.map((u) => ({ ...u, changefreq: "weekly" })),
   ...eventUrls.map((u) => ({ ...u, changefreq: "weekly" })),
+  ...guideUrls.map((u) => ({ ...u, changefreq: "monthly" })),
 ];
 
 writeFileSync(
@@ -392,6 +510,36 @@ ${evArticles}
   "utf8"
 );
 
+/** Inject crawlable place links into index.html (noscript — SPA JS never touches this). */
+const indexPath = join(root, "index.html");
+const placeListItems = places
+  .map((p) => `      <li><a href="/plats/${placeSlug(p.name)}.html">${esc(p.name)}</a></li>`)
+  .join("\n");
+const guideListItems = guides
+  .map((g) => `      <li><a href="/guide/${g.slug}.html">${esc(g.title)}</a></li>`)
+  .join("\n");
+const seoPlacesBlock = `<!--seo-places-->
+<noscript>
+  <nav class="seo-crawl-places" aria-label="Alla platser i ${esc(SITE.kommun)}">
+    <h2>Platser i guiden</h2>
+    <ul>
+${placeListItems}
+    </ul>
+    <h2>Guider</h2>
+    <ul>
+${guideListItems}
+    </ul>
+  </nav>
+</noscript>
+<!--/seo-places-->`;
+
+let indexHtml = readFileSync(indexPath, "utf8");
+if (!/<!--seo-places-->[\s\S]*?<!--\/seo-places-->/.test(indexHtml)) {
+  throw new Error("index.html saknar <!--seo-places-->…<!--/seo-places-->-markörer");
+}
+indexHtml = indexHtml.replace(/<!--seo-places-->[\s\S]*?<!--\/seo-places-->/, seoPlacesBlock);
+writeFileSync(indexPath, indexHtml, "utf8");
+
 console.log(
-  `SEO generate: ${places.length} plats-sidor, ${events.length} event-sidor, evenemang.html synkad, sitemap ${urls.length} URL:er`
+  `SEO generate: ${places.length} plats-sidor, ${events.length} event-sidor, ${guides.length} guide-sidor, index.html platslista, evenemang.html synkad, sitemap ${urls.length} URL:er`
 );
