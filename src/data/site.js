@@ -14,7 +14,11 @@ export const SITE = {
     event: (import.meta.env && import.meta.env.VITE_FORMSPREE_EVENT) || "",
     report: (import.meta.env && import.meta.env.VITE_FORMSPREE_REPORT) || "",
   },
-  defaultOgImage: "/assets/hero/1.webp",
+  /** JPG for Facebook/LinkedIn — do not convert to WebP in build. */
+  defaultOgImage: "/assets/og.jpg",
+  defaultOgImageAlt: "Vallentuna kvarn i kvällsljus vid Vallentunasjön",
+  defaultOgImageWidth: 1200,
+  defaultOgImageHeight: 630,
   /** Umami Cloud analytics (cookieless). Empty string disables the script in SEO pages. */
   umamiWebsiteId: "f52ab92f-5136-450c-b9b7-cef84fe73c02",
 };

@@ -56,6 +56,28 @@ function absImg(img) {
   return `${base}${img.startsWith("/") ? "" : "/"}${img}`;
 }
 
+/** Hero-fallbacks → site OG JPG; egna covers behålls. */
+function isGenericHeroImg(img) {
+  return !img || /\/assets\/hero\//.test(img);
+}
+function ogImgFor(img) {
+  if (isGenericHeroImg(img)) return `${base}${SITE.defaultOgImage}`;
+  return absImg(img);
+}
+function isDefaultOg(ogImage) {
+  return !ogImage || ogImage === `${base}${SITE.defaultOgImage}` || /\/assets\/og\.jpg$/.test(ogImage);
+}
+function ogImageExtraTags(ogImage) {
+  if (!isDefaultOg(ogImage)) return "";
+  const alt = SITE.defaultOgImageAlt || "Upptäck Vallentuna";
+  const w = SITE.defaultOgImageWidth || 1200;
+  const h = SITE.defaultOgImageHeight || 630;
+  return `
+  <meta property="og:image:width" content="${w}">
+  <meta property="og:image:height" content="${h}">
+  <meta property="og:image:alt" content="${esc(alt)}">`;
+}
+
 function pad2(n) {
   return String(n).padStart(2, "0");
 }
@@ -123,7 +145,7 @@ function chrome({ title, description, canonical, ogImage, jsonLd, body, current 
   <meta property="og:title" content="${esc(title)}">
   <meta property="og:description" content="${esc(description)}">
   <meta property="og:url" content="${esc(canonical)}">
-  <meta property="og:image" content="${esc(ogImage)}">
+  <meta property="og:image" content="${esc(ogImage)}">${ogImageExtraTags(ogImage)}
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${esc(title)}">
   <meta name="twitter:description" content="${esc(description)}">
@@ -273,7 +295,7 @@ for (const e of events) {
   const slug = eventSlug(e);
   const path = `/evenemang/${slug}.html`;
   const canonical = `${base}${path}`;
-  const ogImage = absImg(e.img);
+  const ogImage = ogImgFor(e.img);
   const desc = (e.note || e.title).slice(0, 160);
   const jsonLd = {
     "@context": "https://schema.org",
@@ -334,7 +356,7 @@ const guideUrls = [];
 for (const g of guides) {
   const path = `/guide/${g.slug}.html`;
   const canonical = `${base}${path}`;
-  const ogImage = absImg(g.heroImg);
+  const ogImage = ogImgFor(g.heroImg);
   const desc = (g.intro || g.lead || g.title).slice(0, 160);
   const stopList = g.stops
     .map((s) => {
@@ -491,12 +513,17 @@ writeFileSync(
   <title>Evenemang i ${esc(SITE.kommun)} 2026 — ${esc(SITE.name)}</title>
   <meta name="description" content="Marknader, matdagar, kultur och julmarknader i ${esc(SITE.kommun)}. Handplockad evenemangskalender för bygden.">
   <link rel="canonical" href="${base}/evenemang.html">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="sv_SE">
   <meta property="og:title" content="Evenemang i ${esc(SITE.kommun)} 2026">
   <meta property="og:description" content="Marknader, matdagar och kultur i ${esc(SITE.kommun)} — handplockad kalender.">
   <meta property="og:url" content="${base}/evenemang.html">
   <meta property="og:image" content="${base}${SITE.defaultOgImage}">
-  <meta property="og:type" content="website">
-  <meta property="og:locale" content="sv_SE">
+  <meta property="og:image:width" content="${SITE.defaultOgImageWidth || 1200}">
+  <meta property="og:image:height" content="${SITE.defaultOgImageHeight || 630}">
+  <meta property="og:image:alt" content="${esc(SITE.defaultOgImageAlt || SITE.name)}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="${base}${SITE.defaultOgImage}">
   <meta name="theme-color" content="#37472f">
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
