@@ -616,6 +616,11 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
   function openVenueCount(){
     return places.filter(p=>isOpenVenue(p)).length;
   }
+  /** Kort status för listor — skiljer på verksamhet vs alltid-öppen plats. */
+  function openLabelShort(p){
+    if(!isTimedVenue(p)) return isOpen(p)?"Alltid tillgänglig":"Stängt";
+    return isOpen(p)?"Öppet nu":"Stängt";
+  }
   function minutesUntilClose(p){
     if(isHolidayClosed(p)) return -1;
     if(!isOpen(p)) return -1;
@@ -814,9 +819,15 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     let s=0;
     const reasons=[];
     const open=isOpen(p);
+    const timed=isTimedVenue(p);
     const soon=isClosingSoon(p);
     const mins=minutesUntilClose(p);
-    if(open){s+=40;reasons.push("Öppet nu");}
+    // "Öppet nu" = verksamheter med öppettider — inte runstenar/kyrkor som alltid är "öppna"
+    if(timed && open){s+=40;reasons.push("Öppet nu");}
+    else if(!timed && open){
+      // Alltid tillgängliga utomhusplatser: lätt boost dagtid, inte nattfavoriter
+      s+=(hour>=8 && hour<21)?10:-8;
+    }
     else {s-=25;}
     if(soon){s+=8;reasons.push("Stänger snart");}
     if(daypartTypes().includes(p.type)){
@@ -932,7 +943,10 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
         whenBit=" ("+when.toLocaleDateString("sv-SE",{weekday:"short",day:"numeric",month:"short"})+")";
       }
     }
-    text.innerHTML=`Senast tittade du på <strong>${p.name}</strong>${whenBit} — ${open?"öppet nu":"stängt just nu"}${p.ch&&open&&isTimedVenue(p)?`, till ${String(p.ch).padStart(2,"0")}:00`:""}.`;
+    const openBit=!isTimedVenue(p)
+      ?(open?"alltid tillgänglig":"kolla innan du åker")
+      :(open?"öppet nu":"stängt just nu");
+    text.innerHTML=`Senast tittade du på <strong>${p.name}</strong>${whenBit} — ${openBit}${p.ch&&open&&isTimedVenue(p)?`, till ${String(p.ch).padStart(2,"0")}:00`:""}.`;
     btn.onclick=()=>openPlace(p.name);
     banner.hidden=false;
   })();
@@ -1328,6 +1342,11 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     return "mild";
   }
   function statusPill(p){
+    // Alltid-öppna utomhusplatser (kyrka, runsten, natur) är inte "öppet nu" som en butik
+    if(!isTimedVenue(p)){
+      if(isOpen(p)) return `<span class="status-pill open">Alltid tillgänglig</span>`;
+      return "";
+    }
     if(isOpen(p)){
       const m=minutesUntilClose(p);
       if(m!==Infinity && m<=75) return `<span class="status-pill soon">Stänger om ${m} min</span>`;
@@ -1587,7 +1606,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
   /** Prefer different types so Handplockat doesn't stack three fik. */
   function selectDiversePicks(count=3){
     const ranked=rankedPlaces();
-    const openFirst=ranked.filter(x=>x.open);
+    const openFirst=ranked.filter(x=>x.open && isTimedVenue(x.p));
     const pool=openFirst.length?openFirst:ranked;
     if(!pool.length) return [];
     const picked=[pool[0]];
@@ -1639,9 +1658,9 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     const weatherish=r=>/väder|Soligt|ute|Landskapet|utflykt|inomhus|Tak över|Innekos|Varm dryck|Helgläge|Passar morgonen|Bra till lunch|Passar eftermiddagen/i.test(r||"");
     const pickEyebrow=(scored)=>{
       // Stängning visas i status-pill / badge — undvik dubblett i eyebrow
-      if(scored.open) return typeLabel[scored.p.type]||scored.p.cat||"Öppet nu";
+      if(scored.open && isTimedVenue(scored.p)) return typeLabel[scored.p.type]||scored.p.cat||"Öppet nu";
       const r=scored.reasons.find(x=>nonStatus(x) && !weatherish(x));
-      return r||scored.p.short||"Tips just nu";
+      return r||typeLabel[scored.p.type]||scored.p.cat||scored.p.short||"Tips just nu";
     };
     const pickSub=(scored)=>{
       // Alltid platsens egen text i bröd — inte samma automatfras som på andra kort
@@ -1724,7 +1743,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
         <div class="im" style="background-image:url('${p.img}')"></div>
         <div class="bd">
           <h3>${escHtml(p.name)}</h3>
-          <div class="meta">${escHtml(p.cat)} · ${isOpen(p)?"Öppet nu":"Stängt"}${p._km!=null?" · "+fmtDist(p._km):""}</div>
+          <div class="meta">${escHtml(p.cat)} · ${openLabelShort(p)}${p._km!=null?" · "+fmtDist(p._km):""}</div>
           <button type="button" class="fav-remove" onclick="event.stopPropagation();removeFavorite('${jsEsc(p.name)}')">Ta bort</button>
         </div>
       </article>`;
@@ -1784,7 +1803,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
         <div class="im" style="background-image:url('${p.img}')"></div>
         <div>
           <h3>${p.name}</h3>
-          <div class="meta">${p.cat}${metaOf(p).district?" · "+metaOf(p).district:""} · ${isOpen(p)?"Öppet nu":"Stängt"}</div>
+          <div class="meta">${p.cat}${metaOf(p).district?" · "+metaOf(p).district:""} · ${openLabelShort(p)}</div>
           <div class="tags">${tags}</div>
         </div>
         <div class="travel">${fmtDist(t.km)}<br>Bil ${t.car} min<br>Cykel ${t.bike} min<br>SL ${t.sl} min</div>
@@ -1817,7 +1836,9 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
   function placeRouteCardHTML(p,stepLabel){
     const step=stepLabel || typeLabel[p.type] || p.cat;
     const open=isOpen(p);
-    const status=open?(isClosingSoon(p)?"Stänger snart":"Öppet nu"):"Stängt";
+    const status=!isTimedVenue(p)
+      ?(open?"Alltid tillgänglig":"Stängt")
+      :(open?(isClosingSoon(p)?"Stänger snart":"Öppet nu"):"Stängt");
     return `<article class="route-card" onclick="openPlace('${jsEsc(p.name)}')">
       <div class="step">${step}</div>
       <div class="im" style="background-image:url('${p.img}')"></div>
@@ -1830,7 +1851,9 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
   }
   function journeyStepHTML(p, n, kind){
     const open=isOpen(p);
-    const status=open?(isClosingSoon(p)?"Stänger snart":"Öppet nu"):"Stängt";
+    const status=!isTimedVenue(p)
+      ?(open?"Alltid tillgänglig":"Stängt")
+      :(open?(isClosingSoon(p)?"Stänger snart":"Öppet nu"):"Stängt");
     return `<article class="journey-step" onclick="openPlace('${jsEsc(p.name)}')">
       <span class="n" aria-hidden="true">${n}</span>
       <div class="im" style="background-image:url('${p.img}')" role="img" aria-hidden="true"></div>
@@ -2008,7 +2031,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
       ${routeBtn}
       ${items.length?items.map(p=>`<article class="s-item" onclick="openPlace('${jsEsc(p.name)}')">
         <div class="im" style="background-image:url('${p.img}')"></div>
-        <div><h3>${p.name}</h3><div class="meta">${p.cat} · ${isOpen(p)?"Öppet":"Stängt"}</div></div>
+        <div><h3>${p.name}</h3><div class="meta">${p.cat} · ${!isTimedVenue(p)?(isOpen(p)?"Alltid tillgänglig":"Stängt"):(isOpen(p)?"Öppet":"Stängt")}</div></div>
         <div class="travel"><button type="button" class="chip" onclick="event.stopPropagation();removeFromList('${L.id}','${jsEsc(p.name)}')">Ta bort</button></div>
       </article>`).join(""):`<div class="ev-empty">Tom lista — öppna en plats och tryck “Lägg i lista”.</div>`}`;
   }
@@ -2462,7 +2485,9 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap, © CARTO',subdomains:'abcd',maxZoom:20}).addTo(map);
     places.forEach((p,i)=>{
       const open=isOpen(p);
-      const tag=open?`<span class="card-tag open">● Öppet nu</span>`:`<span class="card-tag closed">○ Stängt</span>`;
+      const tag=!isTimedVenue(p)
+        ?`<span class="card-tag open">● Alltid tillgänglig</span>`
+        :(open?`<span class="card-tag open">● Öppet nu</span>`:`<span class="card-tag closed">○ Stängt</span>`);
       const evs=eventsByHost[p.name]||[];
       const evHtml=evs.length?`<div class="ev-badge">📅 ${evs[0].title} · ${evs[0].when}</div>`:'';
       const dir=`https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}`;
@@ -2492,8 +2517,9 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
       el.dataset.type=p.type;
       el.dataset.name=p.name;
       let sub="";
-      if(open&&soon) sub=`<div class="submeta soon">Stänger om ${mins} min</div>`;
-      else if(open) sub=`<div class="submeta open">Öppet nu${p._km!=null?" · "+fmtDist(p._km):""}</div>`;
+      if(isTimedVenue(p) && open&&soon) sub=`<div class="submeta soon">Stänger om ${mins} min</div>`;
+      else if(isTimedVenue(p) && open) sub=`<div class="submeta open">Öppet nu${p._km!=null?" · "+fmtDist(p._km):""}</div>`;
+      else if(!isTimedVenue(p) && open) sub=`<div class="submeta open">Alltid tillgänglig${p._km!=null?" · "+fmtDist(p._km):""}</div>`;
       else if(p._km!=null) sub=`<div class="submeta">${fmtDist(p._km)}</div>`;
       if(isNewPlace(p)) sub+=`<div class="submeta">Nytt i guiden</div>`;
       el.innerHTML=`<div class="thumb" style="background-image:url('${p.img}')"></div><div><h3><span class="dot ${open?'open':'closed'}"></span>${p.name}${favorites.has(p.name)?" ♥":""}</h3><div class="cat">${p.cat}</div>${sub}</div>`;
@@ -2651,7 +2677,9 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     if(scored.reasons.length) body += `<div class="sun-note">Varför just nu: ${scored.reasons.join(" · ")}</div>`;
     document.getElementById('platsBody').innerHTML = body;
     const todayHrs=fmtHoursSlot(daySlot(p));
-    let statusTxt=open?(soon?`Öppet — stänger om ${mins} min`:'Öppet nu'):'Stängt just nu';
+    let statusTxt;
+    if(!isTimedVenue(p)) statusTxt=open?"Alltid tillgänglig":"Ej tillgänglig just nu";
+    else statusTxt=open?(soon?`Öppet — stänger om ${mins} min`:"Öppet nu"):"Stängt just nu";
     if(holidayToday&&isHolidayClosed(p)) statusTxt=`Stängt (${holidayToday})`;
     const tags=placeTags(p).map(t=>TAG_LABEL[t]||t);
     let info = `<div class="irow"><span class="k">Kategori</span><span class="v">${p.cat}${isNewPlace(p)?" · Nytt":""}</span></div>`;
