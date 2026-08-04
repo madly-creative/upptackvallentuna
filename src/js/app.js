@@ -1990,27 +1990,22 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     saveJSON(LS_NOTIFY,[...seen].slice(-40));
   }
 
-  function fillEventHosts(){
-    const sel=document.getElementById('evHost'); if(!sel) return;
-    sel.innerHTML=places.map(p=>`<option value="${p.name.replace(/"/g,"&quot;")}">${p.name}</option>`).join("");
-  }
   async function submitEventForm(){
     const title=document.getElementById('evTitle')?.value.trim();
-    const host=document.getElementById('evHost')?.value;
+    const host=document.getElementById('evHost')?.value.trim();
     const date=document.getElementById('evDate')?.value;
     const time=document.getElementById('evTime')?.value.trim();
-    const cat=document.getElementById('evCat')?.value;
     const note=document.getElementById('evNote')?.value.trim();
     const email=document.getElementById('evEmail')?.value.trim();
     const msg=document.getElementById('evFormMsg');
-    if(!title||!host||!date){if(msg) msg.textContent="Fyll i titel, värd och datum.";return;}
-    const payload={id:"pe_"+Date.now(),title,host,date,time,cat,note,email,status:"pending",at:new Date().toISOString()};
+    if(!title||!host||!date){if(msg) msg.textContent="Fyll i titel, plats och datum.";return;}
+    const payload={id:"pe_"+Date.now(),title,host,date,time,note,email,status:"pending",at:new Date().toISOString()};
     if(msg) msg.textContent="Skickar…";
     try{
       const result=await deliverForm({
         kind:"event",
         subject:`Evenemangstips: ${title}`,
-        fields:{title,host,date,time,cat,note,email,source:location.href},
+        fields:{title,host,date,time,note,email,source:location.href},
         persistLocal:(fields)=>{
           const pending=loadJSON(LS_PENDING,[]);
           pending.push(payload);
@@ -2021,11 +2016,11 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
       if(msg) msg.textContent=activate
         ? "Nästan klart — kolla info@upptackvallentuna.se (även skräppost) och bekräfta aktiveringsmejlet. Sedan fungerar tipsen."
         : "Tack! Tipset är skickat till info@upptackvallentuna.se — syns inte publikt förrän det godkänts.";
-      ["evTitle","evTime","evNote","evEmail"].forEach(id=>{const el=document.getElementById(id);if(el) el.value="";});
+      ["evTitle","evHost","evDate","evTime","evNote","evEmail"].forEach(id=>{const el=document.getElementById(id);if(el) el.value="";});
       renderPendingAdmin();
       trackEvent('event-submit',title);
     }catch(err){
-      const mailto=buildMailtoUrl(`Evenemangstips: ${title}`,{title,host,date,time,cat,note,email,source:location.href});
+      const mailto=buildMailtoUrl(`Evenemangstips: ${title}`,{title,host,date,time,note,email,source:location.href});
       if(msg){
         msg.innerHTML=err.code==="NOT_DEPLOYED"
           ? `Lokalt läge — <a href="${mailto}">skicka tipset via e-post till info@</a> i stället.`
@@ -2043,7 +2038,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
         <div class="im" style="background:#efe8dc"></div>
         <div>
           <h3>${e.title}</h3>
-          <div class="meta">${e.host} · ${e.date} · ${e.cat} · ${e.status}</div>
+          <div class="meta">${e.host} · ${e.date} · ${e.status}</div>
           <p style="font-size:13px;color:var(--ink-soft);margin-top:6px">${e.note||""}</p>
         </div>
         <div class="travel">
@@ -2057,7 +2052,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     e.status="approved";
     saveJSON(LS_PENDING,pending);
     // Surface as live event in-session
-    events.push({host:e.host,title:e.title,date:e.date,when:e.date+(e.time?" · "+e.time:""),time:e.time||"",cat:e.cat,note:e.note||"",img:places.find(p=>p.name===e.host)?.img||places[0].img});
+    events.push({host:e.host,title:e.title,date:e.date,when:e.date+(e.time?" · "+e.time:""),time:e.time||"",cat:"ÖVRIGT",note:e.note||"",img:places.find(p=>p.name===e.host)?.img||places[0].img});
     liveEvents.push(events[events.length-1]);
     liveEvents.sort((a,b)=>a.date.localeCompare(b.date));
     renderPendingAdmin();
@@ -2109,7 +2104,6 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
       renderLevererarHome();
       renderHappenHome();
       renderLists();
-      fillEventHosts();
       renderPendingAdmin();
       importListFromHash();
       setTimeout(runNotifications,900);
@@ -2721,7 +2715,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     if(v==='favoriter') renderFavorites();
     if(v==='sok'){runSearch();setTimeout(()=>document.getElementById('globalSearch')?.focus(),80);}
     if(v==='listor') renderLists();
-    if(v==='skicka'){fillEventHosts();renderPendingAdmin();}
+    if(v==='skicka') renderPendingAdmin();
     if(v==='kategori') renderCategory();
     if(v==='guider') renderGuidesGrid();
     if(v==='levererar') renderLevererarView();

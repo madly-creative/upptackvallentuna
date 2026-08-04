@@ -523,19 +523,17 @@
     <h1>Skicka in evenemang</h1>
     <p class="lede">Äger du en verksamhet? Skicka in loppis, marknad eller konsert — vi granskar innan det syns publikt. Tips går till <a href="mailto:info@upptackvallentuna.se">info@upptackvallentuna.se</a>.</p>
     <div class="form-card">
-      <label>Titel</label>
-      <input id="evTitle" placeholder="Smaka på Vallentuna" />
-      <label>Värd / plats</label>
-      <select id="evHost"></select>
-      <label>Datum</label>
+      <label for="evTitle">Titel</label>
+      <input id="evTitle" placeholder="Vad heter evenemanget?" autocomplete="off" />
+      <label for="evHost">Plats / adress</label>
+      <input id="evHost" placeholder="T.ex. Orkesta Bygdegård eller gatuadress" autocomplete="off" />
+      <label for="evDate">Datum</label>
       <input id="evDate" type="date" />
-      <label>Tid</label>
+      <label for="evTime">Tid</label>
       <input id="evTime" placeholder="10:00 – 15:00" />
-      <label>Kategori</label>
-      <select id="evCat"><option>MARKNAD</option><option>FIKA</option><option>KULTUR</option><option>LOPPIS</option><option>ÖVRIGT</option></select>
-      <label>Kort beskrivning</label>
+      <label for="evNote">Kort beskrivning</label>
       <textarea id="evNote" placeholder="Vad händer, för vem, entré?"></textarea>
-      <label>Din e-post (för uppföljning)</label>
+      <label for="evEmail">Din e-post (för uppföljning)</label>
       <input id="evEmail" type="email" placeholder="du@exempel.se" />
       <button type="button" class="submit" onclick="submitEventForm()">Skicka för granskning</button>
       <p id="evFormMsg" style="margin-top:12px;font-size:13px;color:var(--ink-soft)"></p>
