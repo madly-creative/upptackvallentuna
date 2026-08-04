@@ -35,7 +35,7 @@ export const events = [
     time: "18:00 – 21:00",
     cat: "KULTUR",
     note: "Gratis brädspelskväll i Orkesta Bygdegård (Lindholmsvägen 245). Brett urval för alla åldrar — ta med spel eller låna på plats.",
-    img: "/assets/hero/3.webp",
+    img: "/assets/evenemang/bradspelskvall/cover.webp",
     source: "https://www.orkestahembygd.se/event",
   },
   {
@@ -46,7 +46,7 @@ export const events = [
     time: "10:00 – 13:00",
     cat: "KULTUR",
     note: "Prova-på linedance utan partner i Orkesta hembygdsgård. Inga förkunskaper krävs — instruktör Linda Blumenthal. Se bygdegårdens kalender för pris/anmälan.",
-    img: "/assets/hero/1.webp",
+    img: "/assets/evenemang/linedance-en-dagskurs/cover.webp",
     source: "https://www.orkestahembygd.se/event",
   },
   {
@@ -57,7 +57,7 @@ export const events = [
     time: "19:00 – 21:00",
     cat: "KULTUR",
     note: "Blues och rock på Caféscenen i Vallentuna Kulturhus. Insläpp från 18:30. Biljetter från 150 kr via Nortic (även biblioteket).",
-    img: "/assets/upplev/vallentuna-kulturhus/cover.webp",
+    img: "/assets/evenemang/scenfredag-axman-band/cover.webp",
     source: "https://www.nortic.se/ticket/show/353467",
   },
   {
@@ -101,7 +101,7 @@ export const events = [
     time: "11:00 – 15:00",
     cat: "MARKNAD",
     note: "Skördefest vid Orkesta Bygdegård (Lindholmsvägen 245) med lokala producenter och hantverk. Arrangören hoppas erbjuda foodtrucks, café, ponnyridning och workshops.",
-    img: "/assets/evenemang/skordefest/cover.webp",
+    img: "/assets/evenemang/skordefest-lindholmen/cover.webp",
     source: "https://www.orkestahembygd.se/event",
   },
   {
@@ -134,7 +134,7 @@ export const events = [
     time: "Vecka",
     cat: "KULTUR",
     note: "Kommunens beredskapsvecka (tema: du är en del av Sveriges totalförsvar). Öppna punkter bl.a. medborgardialoger och Tryggare Vallentuna-dagen — se programmet.",
-    img: FALLBACK_IMG,
+    img: "/assets/evenemang/beredskapsveckan/cover.webp",
     source: "https://www.vallentuna.se/evenemang-och-upplevelser/beredskapsveckan/",
   },
   {
