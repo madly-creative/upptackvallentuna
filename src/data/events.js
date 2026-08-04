@@ -14,18 +14,18 @@ export const events = [
     cat: "FESTIVAL",
     note: "Experimentell musik- och konstfestival i Svista, Brottby. Biljett krävs; arrangören anger att medlemskap i kulturföreningen gäller.",
     img: "/assets/evenemang/gravroset/cover.webp",
-    source: "https://billet.to/1859379-web",
+    source: "https://billetto.se/e/gravroset-festival-2026-biljetter-1859379",
   },
   {
     host: "Orkesta Bygdegård Lindholmen",
     title: "Brädspelskväll",
     date: "2026-08-19",
-    when: "Ons 19 aug · från 18:00",
-    time: "18:00",
+    when: "Ons 19 aug · 18–21",
+    time: "18:00 – 21:00",
     cat: "KULTUR",
-    note: "Brädspelskväll i bygdegården (Lindholmsvägen 245, Orkesta). Ta med spel eller låna på plats — kolla arrangörens kanaler för eventuella ändringar.",
+    note: "Gratis brädspelskväll i Orkesta Bygdegård (Lindholmsvägen 245). Brett urval för alla åldrar — ta med spel eller låna på plats.",
     img: "/assets/hero/3.webp",
-    source: "https://allevents.in/vallentuna/skordefest/200030473299609",
+    source: "https://www.orkestahembygd.se/event",
   },
   {
     host: "Langhard Lantbruk",
@@ -47,7 +47,7 @@ export const events = [
     cat: "MARKNAD",
     note: "Skördefest vid Orkesta Bygdegård (Lindholmsvägen 245) med lokala producenter och hantverk. Arrangören hoppas erbjuda foodtrucks, café, ponnyridning och workshops.",
     img: "/assets/evenemang/skordefest/cover.webp",
-    source: "https://allevents.in/vallentuna/skordefest/200030473299609",
+    source: "https://www.orkestahembygd.se/event",
   },
   {
     host: "Vallentuna Centrum",
@@ -122,7 +122,7 @@ export const events = [
     when: "Sön 4 okt",
     time: "Kolla öppettider",
     cat: "FIKA",
-    note: "Nationell kanelbullensdag (4 okt). Stenugnsbageriet i centrum är ofta fullt denna dag — exakt erbjudande/öppettider bekräftas närmare datum via bageriet.",
+    note: "Nationell Kanelbullens dag (4 okt). Stenugnsbageriet är ett naturligt stopp — bekräfta öppettider/erbjudande närmare dagen hos bageriet (ingen separat eventannons publicerad ännu).",
     img: "/assets/evenemang/kanelbullens-dag/cover.webp",
     source: "https://kanelbullensdag.se/",
   },
@@ -133,9 +133,9 @@ export const events = [
     when: "Lör 17 okt · från 19:00",
     time: "19:00",
     cat: "KULTUR",
-    note: "Pub- och musikquizkväll i Orkesta Bygdegård. Bord/biljett kan krävas — följ bygdegårdens kanaler.",
+    note: "Pub- och musikquizkväll i Orkesta Bygdegård kl. 19–22. Samla lag eller kom solo — följ bygdegårdens kanaler för bord/biljett.",
     img: "/assets/hero/3.webp",
-    source: "https://allevents.in/vallentuna/skordefest/200030473299609",
+    source: "https://www.orkestahembygd.se/event",
   },
   {
     host: "Orkesta Bygdegård Lindholmen",
@@ -144,9 +144,9 @@ export const events = [
     when: "Sön 6 dec · 11–15",
     time: "11:00 – 15:00",
     cat: "MARKNAD",
-    note: "Julmarknad i bygdegården med hantverk, lokala smaker, fika och (enligt arrangören) ponnyridning. Utställare bokar bord via bygdegården.",
+    note: "Julmarknad i bygdegården med hantverk, lokala smaker, fika och (enligt arrangören) ponnyridning. Utställare bokar bord via julmarknad@orkestahembygd.se.",
     img: FALLBACK_IMG,
-    source: "https://allevents.in/vallentuna/julmarknad/200030473300718",
+    source: "https://www.orkestahembygd.se/event",
   },
   {
     host: "Vallentuna Centrum",
@@ -204,10 +204,10 @@ export const EVENT_CONTENT = {
     body: `<p>Lördag 26 september kl. 11–15 på Tuna Torg — aktiviteter för hela familjen med lokala organisationer, polis och brandförsvar.</p>`,
   },
   "Brädspelskväll": {
-    body: `<p>Onsdag 19 augusti från kl. 18 i Orkesta Bygdegård Lindholmen. Öppen spelkväll — ta med vänner eller kom solo.</p>`,
+    body: `<p>Onsdag 19 augusti kl. 18–21 i Orkesta Bygdegård Lindholmen. Gratis spelkväll för alla åldrar — se <a href="https://www.orkestahembygd.se/event" target="_blank" rel="noopener">orkestahembygd.se/event</a>.</p>`,
   },
   "Pub & musikquiz": {
-    body: `<p>Lördag 17 oktober från kl. 19 i Orkesta Bygdegård. Kolla bygdegårdens kanaler för bord/biljett.</p>`,
+    body: `<p>Lördag 17 oktober kl. 19–22 i Orkesta Bygdegård. Pub- och musikquiz — se <a href="https://www.orkestahembygd.se/event" target="_blank" rel="noopener">orkestahembygd.se/event</a>.</p>`,
   },
 };
 
