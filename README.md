@@ -2,6 +2,10 @@
 
 Vite-baserad guide — inte längre en enda HTML-fil.
 
+**Handoff / full kontext:** [`docs/SESSION-HANDOFF.md`](docs/SESSION-HANDOFF.md) — vad, varför, hur, live-workflow, evenemangstips, gotchas. Läs den vid ny session.
+
+Live: https://upptackvallentuna.se · GitHub: https://github.com/madly-creative/upptackvallentuna
+
 ## Kom igång
 
 ```bash
