@@ -79,7 +79,8 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     }
   ];
 
-  // Vallentuna levererar — one chronological stream (published = sort only, never shown as date)
+  // Vallentuna levererar — chronological stream.
+  // datePublished = ISO YYYY-MM-DD (source of truth for sort, display, future JSON-LD/arkiv)
   // Deep link: #levererar=<id>  → opens stream and scrolls to that moment
   const moments = [
     {
@@ -92,14 +93,14 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
         "/assets/levererar/sigrids-sjalvplock-markim/falt.webp"
       ],
       body: "Frugan såg en blänkare på Facebook om Sigrids självplock av solrosor i Markim. Sagt och gjort — vi satte oss i bilen och tog kringelkrokvägarna bort mot Snåttsta gård.\n\nJag älskar initiativ som det här. Alla intäkter går oavkortat till Blågula Bilen och Ukraina. Man plockar sina egna solrosor och swishar enligt skylten vid vägen.\n\nVi gick därifrån med en famn full av solrosor och en fin känsla i kroppen. Det enkla, det lokala, det som görs av hjärtat — det finns här, om man bara vet var man ska titta.",
-      published: "2026-08-02"
+      datePublished: "2026-08-02"
     },
     {
       id: "biltraff-ur-tomma-intet",
       title: "En bilträff ur tomma intet",
       img: "/assets/levererar/biltraff-ur-tomma-intet/cover.webp",
       body: "På väg mot Arninge för lite ärenden idag får vi plötsligt syn på en enorm bilträff på Vallentuna flygfält. Jag har varit på bilträffar förr, men detta var nog den största hittills. Så otroligt många häftiga bilar — veteranare i alla former, men också nyare modeller. Vi hade ingen aning om att den skulle vara där.\n\nVi stannade till. Och blev kvar i flera timmar.\n\nJag har alltid dragits till formerna, hantverket och designen på bilar från förr — det fanns en själ i dem, ett uttryck. Mycket av det känns förlorat idag. Att få stå mitt i en hel äng av det, helt oväntat, var något extra.\n\nEn riktigt fin överraskning på vad som skulle ha blivit en helt vanlig mathandling.",
-      published: "2026-08-01"
+      datePublished: "2026-08-01"
     }
   ];
 
@@ -2927,8 +2928,24 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
   //  VALLENTUNA LEVERERAR — one chronological stream + id anchors
   // ============================================================
   const MOMENT_FALLBACK="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1400&q=75";
+  function momentDateISO(m){
+    return String(m?.datePublished || m?.published || "").trim();
+  }
+  /** Display label from datePublished — never store a display string in data. */
+  function formatMomentDate(iso){
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(iso||"")) return "";
+    const d=new Date(iso+"T12:00:00");
+    if(Number.isNaN(d.getTime())) return "";
+    return d.toLocaleDateString("sv-SE",{day:"numeric",month:"long",year:"numeric"});
+  }
+  function momentDateHTML(m){
+    const iso=momentDateISO(m);
+    const label=formatMomentDate(iso);
+    if(!iso||!label) return "";
+    return `<time class="moment-date" datetime="${escHtml(iso)}">${escHtml(label)}</time>`;
+  }
   function sortedMoments(){
-    return [...moments].sort((a,b)=>(b.published||"").localeCompare(a.published||""));
+    return [...moments].sort((a,b)=>momentDateISO(b).localeCompare(momentDateISO(a)));
   }
   function momentId(m){
     return (m&&m.id) ? String(m.id) : "";
@@ -2994,7 +3011,9 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     const id=momentId(m);
     const anchor=id?` id="moment-${escHtml(id)}"`:"";
     const hero=momentImg(m);
+    const dateBit=momentDateHTML(m);
     return `<article class="moment"${anchor}>
+      ${dateBit}
       <h2>${escHtml(m.title)}</h2>
       <button type="button" class="moment-hero" onclick="openLightbox('${escHtml(hero)}')" aria-label="Visa större bild">
         <img src="${escHtml(hero)}" alt="" loading="lazy" />
@@ -3042,12 +3061,13 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     sec.hidden=false;
     const m=list[0];
     const id=momentId(m);
+    const dateBit=momentDateHTML(m);
     host.innerHTML=`
       <article class="levererar-latest" onclick="openLevererarMoment('${escHtml(id)}')" role="button" tabindex="0"
         onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLevererarMoment('${escHtml(id)}')}">
         <div class="ll-img" style="background-image:url('${escHtml(momentImg(m))}')" role="img" aria-hidden="true"></div>
         <div class="ll-body">
-          <div class="eyebrow">Senaste inlägget</div>
+          <div class="eyebrow">Senaste inlägget${dateBit?` · ${dateBit}`:""}</div>
           <h3>${escHtml(m.title)}</h3>
           <p>${escHtml(momentExcerpt(m.body,200))}</p>
           <span class="more-link">Läs mer →</span>

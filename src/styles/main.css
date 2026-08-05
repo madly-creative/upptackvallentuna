@@ -1303,6 +1303,14 @@
     scroll-margin-top:96px;
   }
   .moment:first-child{border-top:none;padding-top:4px}
+  .moment .moment-date,
+  .levererar-latest .moment-date{
+    display:inline;font-size:12px;font-weight:600;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--ink-soft);font-family:var(--font-sans);
+  }
+  .moment > .moment-date{
+    display:block;margin:0 0 8px;letter-spacing:.12em;
+  }
   .moment h2{
     font-family:var(--font-serif);font-size:clamp(24px,2.8vw,30px);
     font-weight:500;color:var(--moss-deep);line-height:1.2;margin:0 0 12px;
