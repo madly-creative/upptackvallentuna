@@ -2756,12 +2756,16 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     },80);
     trackEvent('view-place',p.name);
   }
-  function goBackFromPlats(){
+  function clearPlatsParam(){
     try{
       const url=new URL(location.href);
+      if(!url.searchParams.has("plats")) return;
       url.searchParams.delete("plats");
       history.replaceState(null,"",url.pathname+url.search+url.hash);
     }catch(e){}
+  }
+  function goBackFromPlats(){
+    clearPlatsParam();
     showView(lastViewBeforePlats||'start');
   }
   function bootPlaceDeepLink(){
@@ -3068,6 +3072,8 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     const viewEl=document.getElementById('view-'+v);
     if(!viewEl) return;
     viewEl.classList.add('on');
+    // Leaving a place must drop ?plats= — otherwise reload re-opens the place
+    if(v!=='plats') clearPlatsParam();
     if(v!=='kategori') closeUpplevMenu();
     document.querySelectorAll('.nav button[id^="nav-"]').forEach(b=>b.classList.remove('on'));
     const navBtn=document.getElementById('nav-'+v);
