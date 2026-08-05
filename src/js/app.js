@@ -511,6 +511,34 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
       body:`<p>Kök och bar vid Tuna Torg — mat och dryck mitt i centrum, med lokal kvarterskänsla. Lunch mån–fre 09–14, helg 12–15; köket stänger 21:00. Fre–lör nattklubb till 01:00.</p>
       <p>Öppet mån–tors 09–22, fre 09–01, lör 12–01, sön 12–22 enligt gastiskokochbar.se. Tel 08-511 793 40. Webb: <a href="https://gastiskokochbar.se/" target="_blank" rel="noopener">gastiskokochbar.se</a>.</p>`
     },
+    "Langhard Lantbruk":{
+      address:"Lena 50, 186 93 Vallentuna",
+      facts:["Vaktel & höns","Lamm","Odling","Helgöppet"],
+      localPhotos:true,
+      images:[
+        {url:"/assets/upplev/langhard-lantbruk/cover.webp",alt:"Livet på Langhard Lantbruk"},
+        {url:"/assets/upplev/langhard-lantbruk/vaktlar.webp",alt:"Japanska jumbovaktlar på gården"},
+        {url:"/assets/upplev/langhard-lantbruk/hons.webp",alt:"Hedemorahöns på Langhard"},
+        {url:"/assets/upplev/langhard-lantbruk/far.webp",alt:"Får i hagen vid Langhard"},
+        {url:"/assets/upplev/langhard-lantbruk/odling.webp",alt:"Odling och skörd på Langhard Lantbruk"}
+      ],
+      body:`<p>Småskaligt lantbruk i Markim — japanska jumbovaktlar, Hedemorahöns, Dorper- och Gotlandsfår samt grönsaksodling med fokus på levande landsbygd. Gårdsbutiken säljer lamm, ägg, grönsaker och mer när den håller öppet.</p>
+      <p>Gårdsbutik <strong>lördag–söndag 14–16</strong>; övriga tider enligt överenskommelse. Helena 070-771 03 67 · Joakim 070-441 54 85 · <a href="mailto:info@langhard.se">info@langhard.se</a>. Webb: <a href="https://www.langhardlantbruk.se/" target="_blank" rel="noopener">langhardlantbruk.se</a>.</p>`
+    },
+    "Folkantik och Vintage":{
+      address:"Trädgårdsvägen 1, 186 94 Vallentuna",
+      facts:["Antik & vintage","Allmoge","Folkkonst","Lindholmen"],
+      localPhotos:true,
+      photoCredit:"Foto: Jonas Månsson / Mitt i.",
+      images:[
+        {url:"/assets/upplev/folkantik-och-vintage/cover.webp",alt:"Andreas och Elin i Folkantik i Lindholmen"},
+        {url:"/assets/upplev/folkantik-och-vintage/interior.webp",alt:"Interiör i Folkantik — antikviteter i handelsboden"},
+        {url:"/assets/upplev/folkantik-och-vintage/detalj.webp",alt:"Detaljer och föremål hos Folkantik"},
+        {url:"/assets/upplev/folkantik-och-vintage/butik.webp",alt:"Butiksmiljö hos Folkantik och Vintage"}
+      ],
+      body:`<p>Antikhandeln <strong>Folkantik</strong> intill Lindholmens station — Elin Strid och Andreas Scoufias fyller en klassisk handelsbod med allmoge, asiatiskt och äldre hantverk. Visionen är folklig antik och folkkonst; det billigaste ligger runt 20 kronor, så det finns något för de flesta.</p>
+      <p>Öppet främst på <strong>söndagar</strong> (paret driver butiken parallellt med andra jobb). Aktuella tider: <a href="https://www.instagram.com/folkantikochvintage/" target="_blank" rel="noopener">Instagram @folkantikochvintage</a>.</p>`
+    },
   };
 
     const cats=[{key:"alla",label:"Allt"},{key:"fika",label:"Fika & Mat"},{key:"gard",label:"Gård & Handelsträdgård"},{key:"natur",label:"Natur & Historia"},{key:"butik",label:"Butik & Kultur"},{key:"loppis",label:"Loppis"}];
@@ -563,7 +591,9 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     "Gällsta":"2026-08-02",
     "Gustavs udde":"2026-08-02",
     "Vallboden":"2026-08-02",
-    "Gästis Kök & Bar":"2026-08-02"
+    "Gästis Kök & Bar":"2026-08-02",
+    "Langhard Lantbruk":"2026-08-05",
+    "Folkantik och Vintage":"2026-08-05"
   };
 
   const now=new Date();
