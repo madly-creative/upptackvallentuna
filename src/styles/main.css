@@ -42,7 +42,7 @@
   }
   .brand:hover{opacity:.88}
   .brand .logo{
-    display:block;height:50px;width:auto;max-width:min(250px,48vw);
+    display:block;height:50px;width:auto;max-width:min(230px,48vw);
   }
 
   .nav{display:flex;align-items:center;gap:2px;flex-wrap:wrap;justify-content:center}
