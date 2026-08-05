@@ -42,7 +42,7 @@ export const guides = [
     slug: "en-dag-med-barnen",
     title: "En dag med barnen i Vallentuna",
     season: "sommar",
-    heroImg: "",
+    heroImg: "/assets/upplev/cafe-valkyria/cover.webp",
     intro:
       "Fem stopp för en familjedag som faktiskt håller hela vägen — fika, gård, bad, fyndjakt och pizza. Inget schema som knäcker er. Bara saker barnen orkar, och ni också.",
     stops: [
@@ -75,7 +75,7 @@ export const guides = [
     slug: "lugnet-och-det-lokala",
     title: "Lugnet & det lokala",
     season: "sommar",
-    heroImg: "",
+    heroImg: "/assets/upplev/gravelsta-gard/cover.webp",
     intro:
       "En långsam dag för två — eller för dig som vill ha bygden utan brus. Gård, stilla bad, hantverk och en kväll där ni äter ordentligt. Fem stopp, gott om luft emellan.",
     stops: [
@@ -108,7 +108,7 @@ export const guides = [
     slug: "vikingasparet",
     title: "Vikingaspåret",
     season: "sommar",
-    heroImg: "",
+    heroImg: "/assets/upplev/arkils-tingstad/cover.webp",
     intro:
       "Sex stopp genom Runriket — stenar, ting och landskap som burit berättelser i tusen år. En dag där historien ligger i vägen, bokstavligen, och där ni avslutar med mat nära sista hällen.",
     stops: [

@@ -145,7 +145,7 @@ export const events = [
     time: "15:00 – 17:00",
     cat: "KULTUR",
     note: "Medborgardialog om beredskap med kommunens medarbetare på Kårsta bibliotek (under Beredskapsveckan).",
-    img: FALLBACK_IMG,
+    img: "/assets/evenemang/beredskapsveckan/cover.webp",
     source: "https://www.vallentuna.se/evenemang-och-upplevelser/beredskapsveckan/",
   },
   {
@@ -156,7 +156,7 @@ export const events = [
     time: "15:00 – 17:00",
     cat: "KULTUR",
     note: "Medborgardialog om beredskap med kommunens medarbetare på Karby bibliotek (under Beredskapsveckan).",
-    img: FALLBACK_IMG,
+    img: "/assets/evenemang/beredskapsveckan/cover.webp",
     source: "https://www.vallentuna.se/evenemang-och-upplevelser/beredskapsveckan/",
   },
   {
@@ -167,19 +167,8 @@ export const events = [
     time: "11:00 – 15:00",
     cat: "KULTUR",
     note: "Familjedag på Tuna Torg med lokala organisationer, polis och brandförsvar — avslutning på Beredskapsveckan.",
-    img: "/assets/upplev/vallentuna-kulturhus/cover.webp",
+    img: "/assets/evenemang/beredskapsveckan/cover.webp",
     source: "https://www.vallentuna.se/evenemang-och-upplevelser/beredskapsveckan/",
-  },
-  {
-    host: "Vallentuna Stenugnsbageri",
-    title: "Kanelbullens dag",
-    date: "2026-10-04",
-    when: "Sön 4 okt",
-    time: "Kolla öppettider",
-    cat: "FIKA",
-    note: "Nationell Kanelbullens dag (4 okt). Stenugnsbageriet är ett naturligt stopp — bekräfta öppettider/erbjudande närmare dagen hos bageriet (ingen separat eventannons publicerad ännu).",
-    img: "/assets/evenemang/kanelbullens-dag/cover.webp",
-    source: "https://kanelbullensdag.se/",
   },
   {
     host: "Orkesta Bygdegård Lindholmen",
@@ -256,9 +245,6 @@ export const EVENT_CONTENT = {
   },
   "SkördeFEST — familjefest": {
     body: `<p>Lördag 13 september kl. 10–15 på Tuna Torg: torgmarknad, barnaktiviteter, karusell, livemusik med Linda Rapp &amp; Livat, käpphästrace m.m. Programmet uppdateras löpande.</p>`,
-  },
-  "Kanelbullens dag": {
-    body: `<p>4 oktober är den nationella Kanelbullens dag. Vallentuna Stenugnsbageri i centrum brukar vara ett självklart stopp — bekräfta öppettider och eventuella erbjudanden närmare dagen.</p>`,
   },
   "Julmarknad i Lindholmen": {
     body: `<p>Julmarknad i Orkesta Bygdegård 6 december kl. 11–15 med hantverk, lokala smaker och fika.</p>`,

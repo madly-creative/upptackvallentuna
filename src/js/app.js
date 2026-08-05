@@ -292,7 +292,8 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
       facts:["Smycken","Klockor","Rozaro Jewelry"],
       localPhotos:true,
       images:[
-        {url:"/assets/upplev/silver-och-sant/cover.webp",alt:"Smycken hos Silver & Sånt"}
+        {url:"/assets/upplev/silver-och-sant/cover.webp",alt:"Entrén till Silver & Sånt i Vallentuna centrum"},
+        {url:"/assets/upplev/silver-och-sant/ringar.webp",alt:"Silverringar hos Silver & Sånt"}
       ],
       body:`<p>Noga utvalt sortiment av smycken och klockor i silver, guld och stål. Eget varumärke <strong>Rozaro Jewelry</strong> plus märken som Snö of Sweden. Det rätta smycket för varje tillfälle — du är i centrum.</p>
       <p>Öppet mån–fre 10–18, lör 10–15 enligt Vallentuna Centrum. Tel 08-511 737 97. Mer: <a href="https://vallentunacentrum.se/butik/silver-sant/" target="_blank" rel="noopener">vallentunacentrum.se</a>.</p>`

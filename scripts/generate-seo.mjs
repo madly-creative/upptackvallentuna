@@ -381,8 +381,10 @@ for (const g of guides) {
     isPartOf: { "@type": "WebSite", name: SITE.name, url: `${base}/` },
   };
 
+  // Prefer guide hero; fall back to site OG so we never emit src=""
+  const heroSrc = g.heroImg || SITE.defaultOgImage;
   const body = `
-    <img class="seo-hero-img" src="${esc(g.heroImg)}" alt="${esc(g.title)}" width="1200" height="675" loading="eager">
+    <img class="seo-hero-img" src="${esc(heroSrc)}" alt="${esc(g.title)}" width="1200" height="675" loading="eager">
     <p class="seo-meta"><span>${esc(seasonLabel(g.season))}</span><span>Guide</span><span>${esc(SITE.kommun)}</span></p>
     <h1>${esc(g.title)}</h1>
     <p class="lede">${esc(g.lead || g.intro)}</p>
