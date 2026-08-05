@@ -61,6 +61,17 @@ export const events = [
     source: "https://www.nortic.se/ticket/show/353467",
   },
   {
+    host: "Orkesta Granby Gård",
+    title: "Viskväll med Lindar och Liljor",
+    date: "2026-08-28",
+    when: "Fre 28 aug · 19–21",
+    time: "19:00 – 21:00",
+    cat: "KULTUR",
+    note: "Visor och folkmusik på Hökeriet, Orkesta Granby Gård — duon Lindar och Liljor med Dan Andersson, vallmusik och egna visor. Ca 2 timmar. Biljetter från 495 kr/person via Hökeriets bokning.",
+    img: "/assets/evenemang/viskvall-lindar-och-liljor/cover.webp",
+    source: "https://hokeriet.understory.io/sv/experience/b49ea0ae822f1cd02f8b2755242700d2",
+  },
+  {
     host: "Vallentuna kommun",
     title: "Naturen och idrottens dag",
     date: "2026-08-29",
@@ -228,6 +239,10 @@ export const EVENT_CONTENT = {
   "Scenfredag – Axman Band": {
     body: `<p>Fredag 28 augusti kl. 19 på Caféscenen i Vallentuna Kulturhus — blues och rock med Axman Band. Insläpp från 18:30. Biljetter från 150 kr.</p>
       <p>Boka: <a href="https://www.nortic.se/ticket/show/353467" target="_blank" rel="noopener">Nortic</a>.</p>`,
+  },
+  "Viskväll med Lindar och Liljor": {
+    body: `<p>Fredag 28 augusti kl. 19–21 på <strong>Hökeriet</strong>, Orkesta Granby Gård (Granby, Vallentuna). Musikaliska duon Lindar och Liljor bjuder på visor och folkmusik — tolkningar av Dan Andersson, vallmusik och egna visor. Cirka två timmar.</p>
+      <p>Biljetter från 495 kr/person. Boka: <a href="https://hokeriet.understory.io/sv/experience/b49ea0ae822f1cd02f8b2755242700d2" target="_blank" rel="noopener">Hökeriet / Understory</a>.</p>`,
   },
   "Linedance en-dagskurs": {
     body: `<p>Lördag 22 augusti kl. 10–13 i Orkesta hembygdsgård. Linedance utan partner — enkla danser, inga förkunskaper. Instruktör Linda Blumenthal.</p>
