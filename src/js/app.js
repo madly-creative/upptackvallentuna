@@ -1240,7 +1240,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     closeEventModal();
   });
 
-  // Hero image carousel — images only; copy/CTA untouched
+  // Hero image carousel — first slide is in HTML + preload; rest after idle
   const HERO_FALLBACK="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1800&q=80";
   const heroImages=[
     "/assets/hero/1.webp",
@@ -1251,18 +1251,33 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
   function bootHeroCarousel(){
     const host=document.getElementById('heroSlides'); if(!host) return;
     const urls=heroImages.map(u=>(u&&String(u).trim())?u:HERO_FALLBACK);
-    host.innerHTML=urls.map((u,i)=>`<div class="hero-slide${i===0?" on":""}" style="background-image:url('${u}')"></div>`).join("");
+    // Ensure LCP slide exists without wiping a server-rendered first frame
+    if(!host.querySelector('.hero-slide')){
+      host.innerHTML=`<div class="hero-slide on" style="background-image:url('${urls[0]}')"></div>`;
+    }
     const reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const allSame=urls.every(u=>u===urls[0]);
     if(reduce||allSame||urls.length<2) return;
-    let i=0;
-    setInterval(()=>{
-      const slides=host.querySelectorAll(".hero-slide");
-      if(!slides.length) return;
-      slides[i].classList.remove("on");
-      i=(i+1)%slides.length;
-      slides[i].classList.add("on");
-    },5600);
+    const startRotate=()=>{
+      if(host.querySelectorAll('.hero-slide').length<2){
+        urls.slice(1).forEach(u=>{
+          const d=document.createElement('div');
+          d.className='hero-slide';
+          d.style.backgroundImage=`url('${u}')`;
+          host.appendChild(d);
+        });
+      }
+      let i=0;
+      setInterval(()=>{
+        const slides=host.querySelectorAll(".hero-slide");
+        if(!slides.length) return;
+        slides[i].classList.remove("on");
+        i=(i+1)%slides.length;
+        slides[i].classList.add("on");
+      },5600);
+    };
+    if('requestIdleCallback' in window) requestIdleCallback(startRotate,{timeout:2500});
+    else setTimeout(startRotate,1800);
   }
   bootHeroCarousel();
 
@@ -1322,7 +1337,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
   }
   renderHappenHome();
 
-  const manifestoArt=`<img class="botanical" src="/assets/shared/botanical-sprig.png" alt="" width="200" height="300" decoding="async" aria-hidden="true" />`;
+  const manifestoArt=`<img class="botanical" src="/assets/shared/botanical-sprig.webp" alt="" width="200" height="300" decoding="async" loading="lazy" aria-hidden="true" />`;
 
   const WEATHER_ICONS={sun:"☀️",cloud:"☁️",part:"⛅",rain:"🌧️",snow:"❄️",fog:"🌫️",storm:"⛈️"};
   function weatherKind(code){
@@ -2480,8 +2495,28 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
   // ============================================================
   //  KARTA
   // ============================================================
-  function initMap(){
+  /** Load Leaflet CSS+JS only when a map is actually opened (homepage LCP win). */
+  let leafletPromise=null;
+  function ensureLeaflet(){
+    if(typeof window.L!=="undefined") return Promise.resolve(window.L);
+    if(leafletPromise) return leafletPromise;
+    leafletPromise=new Promise((resolve,reject)=>{
+      const css=document.createElement("link");
+      css.rel="stylesheet";
+      css.href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+      document.head.appendChild(css);
+      const s=document.createElement("script");
+      s.src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
+      s.async=true;
+      s.onload=()=>resolve(window.L);
+      s.onerror=()=>reject(new Error("Leaflet failed to load"));
+      document.body.appendChild(s);
+    });
+    return leafletPromise;
+  }
+  async function initMap(){
     if(map)return;
+    try{ await ensureLeaflet(); }catch(e){ console.warn(e); return; }
     map=L.map('map',{zoomControl:true,scrollWheelZoom:true}).setView(CONFIG.center,CONFIG.zoom);
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap, © CARTO',subdomains:'abcd',maxZoom:20}).addTo(map);
     places.forEach((p,i)=>{
@@ -2710,7 +2745,8 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
       url.searchParams.set("plats", placeSlug(p.name));
       history.replaceState(null,"",url.pathname+url.search+url.hash);
     }catch(e){}
-    setTimeout(()=>{
+    setTimeout(async ()=>{
+      try{ await ensureLeaflet(); }catch(e){ console.warn(e); return; }
       if(!miniMap){
         miniMap=L.map('miniMap',{zoomControl:false,scrollWheelZoom:false,dragging:true,attributionControl:false}).setView([p.lat,p.lng],15);
         L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{subdomains:'abcd',maxZoom:20}).addTo(miniMap);
