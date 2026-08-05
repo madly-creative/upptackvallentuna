@@ -91,7 +91,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
         "/assets/levererar/sigrids-sjalvplock-markim/skylt.webp",
         "/assets/levererar/sigrids-sjalvplock-markim/falt.webp"
       ],
-      body: "Frugan såg en blänkare på Facebook om Sigrids självplock av solrosor i Markim. Sagt och gjort — vi satte oss i bilen och tog kringelkrokvägarna bort mot Snåttsta gård.\n\nJag älskar initiativ som det här. Alla intäkter går oavkortat till Blågula Bilen och Ukraina. Man plockar sina egna solrosor och swishar till ett nummer som stod handmålat på en skylt vid vägen.\n\nVi gick därifrån med en famn full av solrosor och en fin känsla i kroppen. Det enkla, det lokala, det som görs av hjärtat — det finns här, om man bara vet var man ska titta.",
+      body: "Frugan såg en blänkare på Facebook om Sigrids självplock av solrosor i Markim. Sagt och gjort — vi satte oss i bilen och tog kringelkrokvägarna bort mot Snåttsta gård.\n\nJag älskar initiativ som det här. Alla intäkter går oavkortat till Blågula Bilen och Ukraina. Man plockar sina egna solrosor och swishar enligt skylten vid vägen.\n\nVi gick därifrån med en famn full av solrosor och en fin känsla i kroppen. Det enkla, det lokala, det som görs av hjärtat — det finns här, om man bara vet var man ska titta.",
       published: "2026-08-02"
     },
     {
