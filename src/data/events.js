@@ -39,6 +39,17 @@ export const events = [
     source: "https://www.orkestahembygd.se/event",
   },
   {
+    host: "Orkesta Granby Gård / Hökeriet",
+    title: "Sommarbuffé på Hökeriet",
+    date: "2026-08-21",
+    when: "Fre 21 aug · 19–21",
+    time: "19:00 – 21:00",
+    cat: "MAT",
+    note: "Sensommarbuffé med långbord i växthuset och sång av Maria — den årliga traditionen är tillbaka. Från 495 kr/person via Hökeriets bokning.",
+    img: "/assets/evenemang/hokeriet-sommarbuffe/cover.webp",
+    source: "https://hokeriet.understory.io/sv/experience/b84495386fe4ab5e3eeed34adb116d9d",
+  },
+  {
     host: "Orkesta Bygdegård Lindholmen",
     title: "Linedance en-dagskurs",
     date: "2026-08-22",
@@ -92,6 +103,17 @@ export const events = [
     note: "Lokal matdag på Langhard Lantbruk, Lena 50 i Markim. Matmakare, föreläsning och smakprover (anmälan krävs för att smaka, enligt arrangören).",
     img: "/assets/evenemang/smaka-pa-vallentuna/cover.webp",
     source: "https://upplandsbygd.se/save-the-date-smaka-pa-vallentuna/",
+  },
+  {
+    host: "Orkesta Granby Gård / Hökeriet",
+    title: "Granby Vikingagård — guidad visning",
+    date: "2026-08-30",
+    when: "Sön 30 aug · 14–15",
+    time: "14:00 – 15:00",
+    cat: "NATUR",
+    note: "Personlig guidning till vikingagården vid Granbyhällen — hallbyggnad, gravar och gårdsliv under yngre järnåldern. Samling vid Hökeriet. Från 200 kr/person.",
+    img: "/assets/evenemang/hokeriet-granby-vikingagard/cover.webp",
+    source: "https://hokeriet.understory.io/sv/experience/9ec9190d8fe8512ca0d843c783c85ec7",
   },
   {
     host: "Vallentuna Hockey",
@@ -306,9 +328,17 @@ export const EVENT_CONTENT = {
     body: `<p>Fredag 28 augusti kl. 19 på Caféscenen i Vallentuna Kulturhus — blues och rock med Axman Band. Insläpp från 18:30. Biljetter från 150 kr.</p>
       <p>Boka: <a href="https://www.nortic.se/ticket/show/353467" target="_blank" rel="noopener">Nortic</a>.</p>`,
   },
+  "Sommarbuffé på Hökeriet": {
+    body: `<p>Fredag 21 augusti kl. 19–21 på <strong>Hökeriet</strong>, Orkesta Granby Gård — sensommarbuffé med långbord i växthuset och sång av Maria. Den årliga traditionen är tillbaka.</p>
+      <p>Från 495 kr/person. Boka: <a href="https://hokeriet.understory.io/sv/experience/b84495386fe4ab5e3eeed34adb116d9d" target="_blank" rel="noopener">Hökeriet / Understory</a>.</p>`,
+  },
+  "Granby Vikingagård — guidad visning": {
+    body: `<p>Söndag 30 augusti kl. 14–15 — personlig guidning till vikingagården vid Granbyhällen. Hallbyggnad, gravar och gårdsliv under yngre järnåldern; samling vid Hökeriet på Orkesta Granby Gård.</p>
+      <p>Från 200 kr/person. Boka: <a href="https://hokeriet.understory.io/sv/experience/9ec9190d8fe8512ca0d843c783c85ec7" target="_blank" rel="noopener">Hökeriet / Understory</a>.</p>`,
+  },
   "Viskväll med Lindar och Liljor": {
     body: `<p>Fredag 28 augusti kl. 19–21 på <strong>Hökeriet</strong>, Orkesta Granby Gård (Granby, Vallentuna). Musikaliska duon Lindar och Liljor bjuder på visor och folkmusik — tolkningar av Dan Andersson, vallmusik och egna visor. Cirka två timmar.</p>
-      <p>Biljetter från 495 kr/person. Boka: <a href="https://hokeriet.understory.io/sv/experience/b49ea0ae822f1cd02f8b2755242700d2" target="_blank" rel="noopener">Hökeriet / Understory</a>.</p>`,
+      <p>Biljetter från 495 kr/person. Boka: <a href="https://hokeriet.understory.io/sv/experience/b49ea0ae822f1cd02f8b2755242700d2" target="_blank" rel="noopener">Hökeriet / Understory</a> · fler bokningar: <a href="https://hokeriet.se/bokningar/" target="_blank" rel="noopener">hokeriet.se/bokningar</a>.</p>`,
   },
   "Linedance en-dagskurs": {
     body: `<p>Lördag 22 augusti kl. 10–13 i Orkesta hembygdsgård. Linedance utan partner — enkla danser, inga förkunskaper. Instruktör Linda Blumenthal.</p>
