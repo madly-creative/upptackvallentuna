@@ -30,7 +30,8 @@ describe("events calendar", () => {
 
   it("has EVENT_CONTENT for flagship events", () => {
     expect(EVENT_CONTENT["Smaka på Vallentuna"]).toBeTruthy();
-    expect(EVENT_CONTENT["Skördefest i Lindholmen"]).toBeTruthy();
+    expect(EVENT_CONTENT["Höstfest / Skördefest i Lindholmen"]).toBeTruthy();
+    expect(EVENT_CONTENT["Jano — Sylvia Vrethammar"]).toBeTruthy();
   });
 
   it("eventSlug is url-safe", () => {

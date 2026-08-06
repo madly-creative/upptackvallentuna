@@ -105,15 +105,81 @@ export const events = [
     source: "https://hockeyweek.se/",
   },
   {
-    host: "Orkesta Bygdegård Lindholmen",
-    title: "Skördefest i Lindholmen",
+    host: "Orkesta hembygdsförening",
+    title: "Höstfest / Skördefest i Lindholmen",
     date: "2026-09-06",
     when: "Sön 6 sep · 11–15",
     time: "11:00 – 15:00",
     cat: "MARKNAD",
-    note: "Skördefest vid Orkesta Bygdegård (Lindholmsvägen 245) med lokala producenter och hantverk. Arrangören hoppas erbjuda foodtrucks, café, ponnyridning och workshops.",
+    note: "Fri entré till höstfest/skördefest i Lindholmen och Orkesta hembygdsgård: utställare, foodtruck Super Burger, café med Ljuvliga bakverk, ponnyridning, pilkastning, fiskdamm, lyckohjul och korta föredrag inne i hembygdsgården.",
     img: "/assets/evenemang/skordefest-lindholmen/cover.webp",
     source: "https://www.orkestahembygd.se/event",
+  },
+  {
+    host: "Jano / Vallentuna Teater",
+    title: "Jano — Sylvia Vrethammar",
+    date: "2026-09-20",
+    when: "Sön 20 sep · 18:30",
+    time: "18:30",
+    cat: "KULTUR",
+    note: "Jazzklubben Jano på Vallentuna Teater (Gymnasievägen 4B). Café från 17:30, konsert 18:30. Biljetter via Nortic eller Vallentuna bibliotek.",
+    img: "/assets/evenemang/jano-sylvia-vrethammar/cover.webp",
+    source: "https://www.nortic.se/ticket/show/344818",
+  },
+  {
+    host: "Jano / Vallentuna Teater",
+    title: "Jano — Hans Backenroth Quartet",
+    date: "2026-10-04",
+    when: "Sön 4 okt · 18:30",
+    time: "18:30",
+    cat: "KULTUR",
+    note: "Jazzkväll med Hans Backenroth Quartet på Vallentuna Teater. Café från 17:30. Biljetter via Nortic eller biblioteket.",
+    img: "/assets/evenemang/jano-hans-backenroth/cover.webp",
+    source: "https://www.nortic.se/ticket/show/344820",
+  },
+  {
+    host: "Jano / Vallentuna Teater",
+    title: "Jano — Carin Lundin / Ronnie Gardiner",
+    date: "2026-10-18",
+    when: "Sön 18 okt · 18:30",
+    time: "18:30",
+    cat: "KULTUR",
+    note: "Carin Lundin och Ronnie Gardiner Quartet hos Jano på Vallentuna Teater. Café från 17:30. Biljetter via Nortic eller biblioteket.",
+    img: "/assets/evenemang/jano-carin-lundin-ronnie-gardiner/cover.webp",
+    source: "https://www.nortic.se/ticket/show/344861",
+  },
+  {
+    host: "Jano / Vallentuna Teater",
+    title: "Jano — Johan Stengård Big Band",
+    date: "2026-11-01",
+    when: "Sön 1 nov · 18:30",
+    time: "18:30",
+    cat: "KULTUR",
+    note: "Johan Stengård Big Band på Vallentuna Teater — Jano-konsert. Café från 17:30. Biljetter via Nortic eller biblioteket.",
+    img: "/assets/evenemang/jano-johan-stengard/cover.webp",
+    source: "https://www.nortic.se/ticket/show/344862",
+  },
+  {
+    host: "Jano / Vallentuna Teater",
+    title: "Jano — Miriam Aida",
+    date: "2026-11-15",
+    when: "Sön 15 nov · 18:30",
+    time: "18:30",
+    cat: "KULTUR",
+    note: "Miriam Aida — Loving the Hero — hos Jano på Vallentuna Teater. Café från 17:30. Biljetter via Nortic eller biblioteket.",
+    img: "/assets/evenemang/jano-miriam-aida/cover.webp",
+    source: "https://www.nortic.se/ticket/show/344915",
+  },
+  {
+    host: "Jano / Vallentuna Teater",
+    title: "Jano — Vivian Buczek",
+    date: "2026-11-29",
+    when: "Sön 29 nov · 18:30",
+    time: "18:30",
+    cat: "KULTUR",
+    note: "Vivian Buczek — Le Grand Michel — hos Jano på Vallentuna Teater. Café från 17:30. Biljetter via Nortic eller biblioteket.",
+    img: "/assets/evenemang/jano-vivian-buczek/cover.webp",
+    source: "https://www.nortic.se/ticket/show/344918",
   },
   {
     host: "Vallentuna Centrum",
@@ -252,8 +318,41 @@ export const EVENT_CONTENT = {
     body: `<p>4–12 september i Vallentuna Ishall (Parkvägen 3). Matcher bl.a. Vallentuna–Huddinge (4/9), AIK–BIK Karlskoga (9/9) och Hammarby-dubbel (12/9). Grill, öl och musik utomhus.</p>
       <p>Program och biljetter: <a href="https://hockeyweek.se/" target="_blank" rel="noopener">hockeyweek.se</a>.</p>`,
   },
-  "Skördefest i Lindholmen": {
-    body: `<p>Skördefest söndag 6 september kl. 11–15 vid Orkesta Bygdegård Lindholmen (Lindholmsvägen 245). Lokala producenter och hantverk; foodtrucks, café, ponnyridning och workshops kan tillkomma.</p>`,
+  "Höstfest / Skördefest i Lindholmen": {
+    body: `<p>Söndag 6 september kl. 11–15 — <strong>Höstfest / Skördefest</strong> i Lindholmen och Orkesta hembygdsgård (arrangör Orkesta hembygdsförening). <strong>Fri entré.</strong></p>
+      <p>På plats: olika utställare, foodtruck Super Burger, café med Ljuvliga bakverk, ponnyridning, pilkastning, fiskdamm, lyckohjul — och korta föredrag inne i hembygdsgården (föredrag och café håller till inomhus).</p>
+      <ul>
+        <li>11:30 Linda — fönstertomater</li>
+        <li>12:15 Andreas — invasiva växtarter</li>
+        <li>13:00 Anna från Mosters goda — mjölksyrade grönsaker</li>
+        <li>13:45 Erik från Bällsta trädgård — äpplen och mustning</li>
+        <li>14:30 Maija från Blomsterprakten Roslagen — beskärning av fruktträd</li>
+      </ul>
+      <p>Kalender: <a href="https://www.orkestahembygd.se/event" target="_blank" rel="noopener">orkestahembygd.se/event</a>.</p>`,
+  },
+  "Jano — Sylvia Vrethammar": {
+    body: `<p>Söndag 20 september kl. 18:30 på <strong>Vallentuna Teater</strong> (Gymnasievägen 4B) — Sylvia Vrethammar med Jano. Café från 17:30 (servering via Triften).</p>
+      <p>Biljetter: <a href="https://www.nortic.se/ticket/show/344818" target="_blank" rel="noopener">Nortic</a> · mer: <a href="https://jano.nu/" target="_blank" rel="noopener">jano.nu</a>.</p>`,
+  },
+  "Jano — Hans Backenroth Quartet": {
+    body: `<p>Söndag 4 oktober kl. 18:30 på Vallentuna Teater — Hans Backenroth Quartet. Café från 17:30.</p>
+      <p>Biljetter: <a href="https://www.nortic.se/ticket/show/344820" target="_blank" rel="noopener">Nortic</a> · <a href="https://jano.nu/" target="_blank" rel="noopener">jano.nu</a>.</p>`,
+  },
+  "Jano — Carin Lundin / Ronnie Gardiner": {
+    body: `<p>Söndag 18 oktober kl. 18:30 — Carin Lundin / Ronnie Gardiner Quartet hos Jano på Vallentuna Teater. Café från 17:30.</p>
+      <p>Biljetter: <a href="https://www.nortic.se/ticket/show/344861" target="_blank" rel="noopener">Nortic</a> · <a href="https://jano.nu/" target="_blank" rel="noopener">jano.nu</a>.</p>`,
+  },
+  "Jano — Johan Stengård Big Band": {
+    body: `<p>Söndag 1 november kl. 18:30 — Johan Stengård Big Band på Vallentuna Teater. Café från 17:30.</p>
+      <p>Biljetter: <a href="https://www.nortic.se/ticket/show/344862" target="_blank" rel="noopener">Nortic</a> · <a href="https://jano.nu/" target="_blank" rel="noopener">jano.nu</a>.</p>`,
+  },
+  "Jano — Miriam Aida": {
+    body: `<p>Söndag 15 november kl. 18:30 — Miriam Aida (<em>Loving the Hero</em>) hos Jano. Café från 17:30.</p>
+      <p>Biljetter: <a href="https://www.nortic.se/ticket/show/344915" target="_blank" rel="noopener">Nortic</a> · <a href="https://jano.nu/" target="_blank" rel="noopener">jano.nu</a>.</p>`,
+  },
+  "Jano — Vivian Buczek": {
+    body: `<p>Söndag 29 november kl. 18:30 — Vivian Buczek (<em>Le Grand Michel</em>) hos Jano. Café från 17:30.</p>
+      <p>Biljetter: <a href="https://www.nortic.se/ticket/show/344918" target="_blank" rel="noopener">Nortic</a> · <a href="https://jano.nu/" target="_blank" rel="noopener">jano.nu</a>.</p>`,
   },
   "SkördeFEST — AW & musik": {
     body: `<p>Fredag 12 september: musik och AW hos restaurangerna i Vallentuna centrum — upptakt till lördagens familjefest. Se <a href="https://vallentunacentrum.se/skordefest/" target="_blank" rel="noopener">vallentunacentrum.se/skordefest</a>.</p>`,

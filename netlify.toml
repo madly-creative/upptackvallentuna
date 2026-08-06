@@ -14,6 +14,11 @@
 #   SMTP_PORT=465                     (default SSL; 587 also tried as fallback)
 # Without SMTP_PASS (or if SMTP times out) → FormSubmit to same inbox.
 
+[[redirects]]
+  from = "/evenemang/skordefest-i-lindholmen-2026-09-06.html"
+  to = "/evenemang/hostfest-skordefest-i-lindholmen-2026-09-06.html"
+  status = 301
+
 # Service worker must revalidate so clients pick up new shell caches
 [[headers]]
   for = "/sw.js"

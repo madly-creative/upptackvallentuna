@@ -201,6 +201,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://upptackvallentuna.se/plats/jano.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://upptackvallentuna.se/evenemang/utomhusbio-grannfejden-2026-08-09.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -246,7 +251,37 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://upptackvallentuna.se/evenemang/skordefest-i-lindholmen-2026-09-06.html</loc>
+    <loc>https://upptackvallentuna.se/evenemang/hostfest-skordefest-i-lindholmen-2026-09-06.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/evenemang/jano-sylvia-vrethammar-2026-09-20.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/evenemang/jano-hans-backenroth-quartet-2026-10-04.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/evenemang/jano-carin-lundin-ronnie-gardiner-2026-10-18.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/evenemang/jano-johan-stengard-big-band-2026-11-01.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/evenemang/jano-miriam-aida-2026-11-15.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/evenemang/jano-vivian-buczek-2026-11-29.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>

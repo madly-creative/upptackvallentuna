@@ -539,6 +539,18 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
       body:`<p>Antikhandeln <strong>Folkantik</strong> intill Lindholmens station — Elin Strid och Andreas Scoufias fyller en klassisk handelsbod med allmoge, asiatiskt och äldre hantverk. Visionen är folklig antik och folkkonst; det billigaste ligger runt 20 kronor, så det finns något för de flesta.</p>
       <p>Öppet främst på <strong>söndagar</strong> (paret driver butiken parallellt med andra jobb). Aktuella tider: <a href="https://www.instagram.com/folkantikochvintage/" target="_blank" rel="noopener">Instagram @folkantikochvintage</a>.</p>`
     },
+    "Jano":{
+      address:"Vallentuna Teater, Gymnasievägen 4B",
+      facts:["Jazz","Teater","Café","Biljett"],
+      localPhotos:true,
+      images:[
+        {url:"/assets/upplev/jano/cover.webp",alt:"Jano-konsert — Carin Lundin och Ronnie Gardiner"},
+        {url:"/assets/upplev/jano/konsert.webp",alt:"Artistporträtt från Jano"},
+        {url:"/assets/upplev/jano/servering.webp",alt:"Stina Wallster — servering via Triften på Janos jazzkvällar"}
+      ],
+      body:`<p><strong>Jazzklubb Nordost (Jano)</strong> arrangerar jazzkonserter på Vallentuna Teater i centrum — ca 100 m från stationen, 320 sittplatser, hörslinga och rullstolsanpassat. Caféet öppnar kl. 17:30; musiken startar kl. 18:30 (om inte annat anges). Servering sköts av Triften.</p>
+      <p>Biljetter via <a href="https://jano.nu/biljetter-29542633" target="_blank" rel="noopener">Nortic</a> eller över disk på Vallentuna bibliotek. Medlemskap 200 kr / VIP 800 kr (halvår) via Plusgiro 19 25 83-3 eller Swish 123 494 71 72. Program och mer: <a href="https://jano.nu/" target="_blank" rel="noopener">jano.nu</a>.</p>`
+    },
   };
 
     const cats=[{key:"alla",label:"Allt"},{key:"fika",label:"Fika & Mat"},{key:"gard",label:"Gård & Handelsträdgård"},{key:"natur",label:"Natur & Historia"},{key:"butik",label:"Butik & Kultur"},{key:"loppis",label:"Loppis"}];
@@ -593,7 +605,8 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     "Vallboden":"2026-08-02",
     "Gästis Kök & Bar":"2026-08-02",
     "Langhard Lantbruk":"2026-08-05",
-    "Folkantik och Vintage":"2026-08-05"
+    "Folkantik och Vintage":"2026-08-05",
+    "Jano":"2026-08-06"
   };
 
   const now=new Date();
