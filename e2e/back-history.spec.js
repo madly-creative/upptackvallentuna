@@ -63,6 +63,44 @@ test("in-app ← from place→place returns to category in one tap", async ({ pa
   await expect(page).not.toHaveURL(/plats=/);
 });
 
+test("browser back from guide card returns to start", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("#guidesHomeSec")).toBeVisible();
+  await page.locator("#guidesHomeTeaser .guide-home-card").first().click();
+  await expect(page.locator("#view-guide")).toHaveClass(/on/);
+  await page.goBack();
+  await expect(page.locator("#view-guide")).not.toHaveClass(/on/);
+  await expect(page.locator("#view-start")).toHaveClass(/on/);
+});
+
+test("browser back from levererar moment returns to start", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("#levererarTeaser .levererar-latest").click();
+  await expect(page.locator("#view-levererar")).toHaveClass(/on/);
+  await expect(page).toHaveURL(/#levererar=/);
+  await page.goBack();
+  await expect(page.locator("#view-levererar")).not.toHaveClass(/on/);
+  await expect(page.locator("#view-start")).toHaveClass(/on/);
+});
+
+test("browser back from top-nav Evenemang returns to start", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "Evenemang", exact: true }).first().click();
+  await expect(page.locator("#view-hander")).toHaveClass(/on/);
+  await page.goBack();
+  await expect(page.locator("#view-hander")).not.toHaveClass(/on/);
+  await expect(page.locator("#view-start")).toHaveClass(/on/);
+});
+
+test("browser back from Guider nav returns to start", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("#nav-guider").click({ force: true });
+  await expect(page.locator("#view-guider")).toHaveClass(/on/);
+  await page.goBack();
+  await expect(page.locator("#view-guider")).not.toHaveClass(/on/);
+  await expect(page.locator("#view-start")).toHaveClass(/on/);
+});
+
 test("browser back place→place restores previous place then category", async ({ page }) => {
   await page.goto("/");
   await page.locator(".quick-paths").getByRole("button", { name: "Handla lokalt" }).click();

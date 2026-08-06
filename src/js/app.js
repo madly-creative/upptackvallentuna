@@ -1974,7 +1974,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     currentCategory=CATEGORIES[key]?key:"attgora";
     closeUpplevMenu();
     renderCategory();
-    showView('kategori');
+    showView('kategori',{category:currentCategory});
     trackEvent('view-category', currentCategory);
   }
   function renderCategory(){
@@ -2171,7 +2171,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
       </button>`;
     }).join("");
   }
-  function openGuide(slug){
+  function openGuide(slug, opts={}){
     const g=guideBySlug(slug, guides); if(!g) return;
     currentGuideSlug=slug;
     const stops=guideResolvedStops(g);
@@ -2207,7 +2207,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     if(outroEl){
       outroEl.innerHTML=`${g.outro||""}${g.signature?`<span class="sig">${g.signature}</span>`:""}`;
     }
-    showView('guide');
+    showView('guide',{historyMode:opts.historyMode,guide:slug,fromPopstate:opts.historyMode==="none"});
     trackEvent('view-guide', slug);
   }
   function saveGuideAsList(slug){
@@ -2697,6 +2697,10 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
   let platsClosePending=null;
   /** Skip clearPlatsParam while optimistically leaving a pushed place (URL still has ?plats=). */
   let skipClearPlatsParam=false;
+  /** Guard hashchange while popstate is restoring a view. */
+  let handlingPopstate=false;
+  /** Don't push SPA history during initial boot / deep-link restore. */
+  let viewHistoryReady=false;
 
   function resolvePlaceFromQuery(q){
     if(!q) return null;
@@ -2850,12 +2854,19 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     },80);
     trackEvent('view-place',p.name);
   }
+  function currentViewId(){
+    return document.querySelector('.view.on')?.id?.replace(/^view-/,"")||"start";
+  }
   function clearPlatsParam(){
     try{
       const url=new URL(location.href);
       if(!url.searchParams.has("plats")) return;
       url.searchParams.delete("plats");
-      history.replaceState(history.state && history.state.uv==="plats" ? {uv:"app"} : (history.state||null),"",url.pathname+url.search+url.hash);
+      const view=currentViewId();
+      const next=history.state && history.state.uv==="plats"
+        ? {uv:"view",view}
+        : (history.state && history.state.uv ? history.state : {uv:"view",view});
+      history.replaceState(next,"",url.pathname+url.search+url.hash);
       canHistoryBackFromPlats=false;
       platsStackDepth=0;
     }catch(e){}
@@ -2874,47 +2885,82 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
       platsStackDepth=0;
       // Optimistic UI — don't clearPlatsParam yet (that would ghost the history entry)
       skipClearPlatsParam=true;
-      try{ showView(target); }finally{ skipClearPlatsParam=false; }
+      try{ showView(target,{fromPopstate:true}); }finally{ skipClearPlatsParam=false; }
       if(depthAtLeave>1) history.go(-depthAtLeave);
       else history.back();
       return;
     }
     clearPlatsParam();
-    showView(target);
+    showView(target,{fromPopstate:true});
   }
   function goBackFromPlats(){
     leavePlats(lastViewBeforePlats||'start');
   }
-  function onPlatsPopState(){
-    // Nav / in-app ← asked us to unwind place history to a specific view
-    if(platsClosePending!==null){
-      const v=platsClosePending;
-      platsClosePending=null;
-      canHistoryBackFromPlats=false;
-      platsStackDepth=0;
-      if(getPlatsSlugFromLocation()) clearPlatsParam();
-      if(!document.getElementById('view-'+v)?.classList.contains('on')){
-        skipClearPlatsParam=true;
-        try{ showView(v); }finally{ skipClearPlatsParam=false; }
-      }
+  /** Restore SPA view from history.state / URL (guides, nav, levererar, …). */
+  function restoreViewFromHistory(st, fallback){
+    const lev=parseLevererarHash();
+    if(lev){
+      showView('levererar',{fromPopstate:true});
+      if(lev.id) setTimeout(()=>scrollToLevererarMoment(lev.id),80);
       return;
     }
-    const q=getPlatsSlugFromLocation();
-    if(q){
-      const p=resolvePlaceFromQuery(q);
-      if(p){
-        openPlace(p.name,{historyMode:"none"});
+    if(st?.uv==="view" && st.view){
+      if(st.view==="guide" && st.guide){
+        openGuide(st.guide,{historyMode:"none"});
         return;
       }
+      if(st.view==="portratt" && st.portrait){
+        openPortrait(st.portrait,{historyMode:"none"});
+        return;
+      }
+      if(st.view==="kategori" && st.category){
+        currentCategory=CATEGORIES[st.category]?st.category:currentCategory;
+      }
+      showView(st.view,{fromPopstate:true});
+      return;
     }
-    if(isPlatsViewOn()){
-      canHistoryBackFromPlats=false;
-      platsStackDepth=0;
-      skipClearPlatsParam=true;
-      try{ showView(lastViewBeforePlats||'start'); }finally{ skipClearPlatsParam=false; }
+    showView(fallback||'start',{fromPopstate:true});
+  }
+  function onAppPopState(){
+    handlingPopstate=true;
+    try{
+      // Nav / in-app ← asked us to unwind place history to a specific view
+      if(platsClosePending!==null){
+        const v=platsClosePending;
+        platsClosePending=null;
+        canHistoryBackFromPlats=false;
+        platsStackDepth=0;
+        if(getPlatsSlugFromLocation()) clearPlatsParam();
+        if(!document.getElementById('view-'+v)?.classList.contains('on')){
+          skipClearPlatsParam=true;
+          try{ showView(v,{fromPopstate:true}); }finally{ skipClearPlatsParam=false; }
+        }
+        return;
+      }
+      const q=getPlatsSlugFromLocation();
+      if(q){
+        const p=resolvePlaceFromQuery(q);
+        if(p){
+          openPlace(p.name,{historyMode:"none"});
+          return;
+        }
+      }
+      if(isPlatsViewOn()){
+        canHistoryBackFromPlats=false;
+        platsStackDepth=0;
+        skipClearPlatsParam=true;
+        try{
+          restoreViewFromHistory(history.state, lastViewBeforePlats||'start');
+        }finally{ skipClearPlatsParam=false; }
+        return;
+      }
+      // Guide / nav / levererar / category etc.
+      restoreViewFromHistory(history.state, 'start');
+    }finally{
+      handlingPopstate=false;
     }
   }
-  window.addEventListener("popstate", onPlatsPopState);
+  window.addEventListener("popstate", onAppPopState);
   function bootPlaceDeepLink(){
     try{
       const q=new URLSearchParams(location.search).get("plats");
@@ -3012,7 +3058,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     if(!list.length){ showView('roester'); return; }
     openPortrait(list[0].slug);
   }
-  function openPortrait(slug){
+  function openPortrait(slug, opts={}){
     const list=sortedPortraits();
     const pr=list.find(x=>x.slug===slug)||list[0];
     if(!pr) return;
@@ -3064,10 +3110,16 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
         ).join("");
       } else also.hidden=true;
     }
-    showView('portratt');
+    showView('portratt',{historyMode:opts.historyMode,portrait:pr.slug,fromPopstate:opts.historyMode==="none"});
     trackEvent('view-portrait', pr.slug);
   }
-  function goBackFromPortratt(){ showView(lastViewBeforePortratt||'start'); }
+  function goBackFromPortratt(){
+    if(history.state?.uv==="view" && history.state?.view==="portratt"){
+      history.back();
+      return;
+    }
+    showView(lastViewBeforePortratt||'start');
+  }
 
   // ============================================================
   //  VALLENTUNA LEVERERAR — one chronological stream + id anchors
@@ -3170,10 +3222,8 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
   }
   function openLevererarMoment(id){
     const slug=id||"";
-    if(slug) location.hash="levererar="+encodeURIComponent(slug);
-    else location.hash="levererar";
-    showView('levererar');
-    // showView scrolls to top — scroll to moment after paint
+    // pushState via showView (not location.hash=) so we get one history entry, not two
+    showView('levererar',{moment:slug,setLevererarHash:true});
     setTimeout(()=>scrollToLevererarMoment(slug),60);
   }
   function scrollToLevererarMoment(id){
@@ -3193,7 +3243,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
   function applyLevererarHash(){
     const parsed=parseLevererarHash();
     if(!parsed) return false;
-    showView('levererar');
+    showView('levererar',{fromPopstate:true});
     if(parsed.id) setTimeout(()=>scrollToLevererarMoment(parsed.id),80);
     return true;
   }
@@ -3229,17 +3279,56 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     }
     stream.innerHTML=list.map(momentCardHTML).join("");
   }
-  window.addEventListener('hashchange',()=>{ applyLevererarHash(); });
+  window.addEventListener('hashchange',()=>{
+    if(handlingPopstate) return;
+    const parsed=parseLevererarHash();
+    if(!parsed){
+      // Hash cleared (often via back) — leave levererar if still showing it
+      if(document.getElementById('view-levererar')?.classList.contains('on')){
+        showView('start',{fromPopstate:true});
+      }
+      return;
+    }
+    applyLevererarHash();
+  });
 
+  /** Sync SPA view into history so browser back/swipe restores it (not only plats). */
+  function syncViewHistory(v, mode, meta={}){
+    try{
+      const url=new URL(location.href);
+      url.searchParams.delete("plats");
+      if(v==="levererar" && (meta.setLevererarHash || meta.moment!=null)){
+        url.hash=meta.moment ? `levererar=${encodeURIComponent(meta.moment)}` : "levererar";
+      }else if(v!=="levererar"){
+        const h=url.hash||"";
+        if(h==="#levererar" || h.startsWith("#levererar=") || h.startsWith("#moment-")){
+          url.hash="";
+        }
+      }
+      const state={uv:"view",view:v};
+      if(meta.guide) state.guide=meta.guide;
+      else if(v==="guide" && currentGuideSlug) state.guide=currentGuideSlug;
+      if(meta.category) state.category=meta.category;
+      else if(v==="kategori") state.category=currentCategory;
+      if(meta.portrait) state.portrait=meta.portrait;
+      else if(v==="portratt" && currentPortraitSlug) state.portrait=currentPortraitSlug;
+      if(meta.moment) state.moment=meta.moment;
+      const path=url.pathname+url.search+url.hash;
+      if(mode==="push") history.pushState(state,"",path);
+      else history.replaceState(state,"",path);
+    }catch(e){}
+  }
 
-  function showView(v){
+  function showView(v, opts={}){
+    opts=opts||{};
     // Leaving plats via nav/logo must pop pushState entries — not replaceState-strip
     // (that leaves a ghost history entry where swipe/back appears to do nothing).
-    if(v!=='plats' && !skipClearPlatsParam && !platsClosePending && isPlatsViewOn() &&
+    if(v!=='plats' && !skipClearPlatsParam && !platsClosePending && !opts.fromPopstate && isPlatsViewOn() &&
        (canHistoryBackFromPlats || platsStackDepth>0 || !!getPlatsSlugFromLocation())){
       leavePlats(v);
       return;
     }
+    const prev=currentViewId();
     document.querySelectorAll('.view').forEach(x=>x.classList.remove('on'));
     const viewEl=document.getElementById('view-'+v);
     if(!viewEl) return;
@@ -3278,6 +3367,15 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     // Keep scroll position when deep-linking into a moment; otherwise go to top
     const levHash=parseLevererarHash();
     if(!(v==='levererar' && levHash && levHash.id)) window.scrollTo(0,0);
+
+    // SPA history for non-place views (guides, nav, levererar, …)
+    const silent=opts.fromPopstate || opts.historyMode==="none" || skipClearPlatsParam || !!platsClosePending || !viewHistoryReady;
+    if(!silent && v!=='plats'){
+      const mode=opts.historyMode || (prev===v ? "replace" : "push");
+      if(prev!==v || mode==="replace"){
+        syncViewHistory(v, mode, opts);
+      }
+    }
   }
   function filterAndMap(type){
     active=type||'alla';
@@ -3291,6 +3389,13 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
   }
 
   try{ if(document.getElementById('eventsFull') && !document.getElementById('eventsFull').children.length) renderEventsFull(); }catch(e){}
+  // Seed SPA history before any user tap so nav/guides/levererar can pushState
+  try{
+    if(!history.state || history.state.uv==null){
+      history.replaceState({uv:"view",view:currentViewId()},"",location.pathname+location.search+location.hash);
+    }
+  }catch(e){}
+  viewHistoryReady=true;
   setTimeout(bootSmartPack, 0);
   setTimeout(()=>{ try{ applyLevererarHash(); }catch(e){} }, 20);
   setTimeout(bootPlaceDeepLink, 30);
