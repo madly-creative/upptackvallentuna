@@ -943,7 +943,8 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     <p>Jag tycker att de lokala verksamheterna är en av de pelare som gör en bygd levande, och stolt. Det är där en del av själen sitter.</p>
     <p>Mitt enda syfte är att lyfta det som gör ${K} till ${K}.</p>
     <p>Så: välkommen. Ge dig ut, hälsa på grannen, upptäck något du inte visste fanns.</p>
-    <p class="om-sign">— Juha</p>`;}
+    <p class="om-sign">— Juha</p>
+    <p class="om-pwa" data-pwa-install-entry><button type="button" class="lnk" onclick="promptPwaInstall()">Lägg till på hemskärmen</button> — snabbare öppning, utan appbutik.</p>`;}
 
   function refreshHeroGreet(){
     let greet;

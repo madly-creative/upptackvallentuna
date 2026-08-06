@@ -101,6 +101,24 @@ test("browser back from Guider nav returns to start", async ({ page }) => {
   await expect(page.locator("#view-start")).toHaveClass(/on/);
 });
 
+test("PWA install entry is in footer and Om", async ({ page }) => {
+  await page.goto("/");
+  const foot = page.locator(".sitefooter [data-pwa-install-entry] button");
+  await expect(foot).toBeVisible();
+  await foot.click();
+  // Explain modal first — not Chrome’s native dialog
+  await expect(page.locator("#pwa-explain")).toBeVisible();
+  await expect(page.locator("#pwa-explain-title")).toHaveText("Lägg till på hemskärmen");
+  await page.locator("#pwa-explain .pwa-explain-continue").click();
+  await expect(page.locator("#pwa-install")).toBeVisible();
+  await expect(page.locator("#pwa-install")).toContainText(/hemskärmen|Installera|Dela/i);
+  await page.locator("#pwa-install .pwa-install-ok").click();
+
+  await page.getByRole("button", { name: "Om Upptäck Vallentuna" }).first().click();
+  await expect(page.locator("#view-om")).toHaveClass(/on/);
+  await expect(page.locator("#omBody [data-pwa-install-entry]")).toBeVisible();
+});
+
 test("browser back place→place restores previous place then category", async ({ page }) => {
   await page.goto("/");
   await page.locator(".quick-paths").getByRole("button", { name: "Handla lokalt" }).click();

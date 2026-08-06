@@ -1619,5 +1619,36 @@
     background:transparent;color:var(--ink-soft,#5a6356);
   }
   .pwa-install-no:hover{color:var(--moss-deep,#2f3d2e)}
+  .om-pwa{margin-top:28px;font-size:14px;color:var(--ink-soft,#5a6356)}
+  .om-pwa .lnk{font:inherit;font-size:inherit;font-weight:600;color:var(--moss-deep,#2f3d2e);background:none;border:none;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+  .om-pwa .lnk:hover{color:var(--rust,#a85a3a)}
+
+  /* PWA explain modal (before native install / iOS tip) */
+  .pwa-explain-bg{
+    position:fixed;inset:0;z-index:1290;background:rgba(28,36,26,.42);
+    opacity:0;pointer-events:none;transition:opacity .22s ease;
+  }
+  .pwa-explain-bg.show{opacity:1;pointer-events:auto}
+  .pwa-explain{
+    position:fixed;left:50%;top:50%;z-index:1300;
+    width:min(400px,calc(100vw - 32px));
+    transform:translate(-50%,-46%);
+    padding:22px 22px 18px;border-radius:14px;
+    background:var(--card,#fbf8f2);border:1px solid var(--line,#ddd4c4);
+    box-shadow:0 20px 48px rgba(28,36,26,.22);
+    opacity:0;pointer-events:none;transition:opacity .22s ease,transform .22s ease;
+  }
+  .pwa-explain.show{opacity:1;pointer-events:auto;transform:translate(-50%,-50%)}
+  .pwa-explain h2{
+    margin:0 0 10px;font-family:var(--font-serif,Georgia,serif);
+    font-size:22px;font-weight:500;color:var(--moss-deep,#2f3d2e);line-height:1.2;
+  }
+  .pwa-explain p{
+    margin:0 0 10px;font-size:14px;line-height:1.5;color:var(--ink,#3a4036);
+  }
+  .pwa-explain-note{color:var(--ink-soft,#5a6356)!important;font-size:13px!important}
+  .pwa-explain-actions{
+    display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:16px;
+  }
 
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
