@@ -135,4 +135,9 @@ export const PLACE_META = {
       hours:[H(11,16),C,C,C,C,C,C],
       sources:[{label:"Instagram",url:"https://www.instagram.com/folkantikochvintage/"},{label:"Mitt i Vallentuna"}],
       hoursVerified:"2026-08-05"},
+    "Jano":{tags:["rullstol","inomhus"],district:"Centrum",updated:"2026-08-06",holidayClosed:false,
+      seasonNote:"Konsertkvällar enligt jano.nu (oftast söndagar) — café från 17:30, musik 18:30",
+      hours:[H(17,21),C,C,C,C,C,C],
+      sources:[{label:"jano.nu",url:"https://jano.nu/"},{label:"Vallentuna Teater",url:"https://jano.nu/vallentuna-teater"}],
+      hoursVerified:"2026-08-06"},
 };
