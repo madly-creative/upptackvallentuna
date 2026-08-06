@@ -1,5 +1,5 @@
 /* Upptäck Vallentuna — minimal shell cache. No push, no background sync. */
-const CACHE = "uv-shell-v4";
+const CACHE = "uv-shell-v6";
 
 const PRECACHE = [
   "/",
