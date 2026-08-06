@@ -280,6 +280,7 @@
       <button type="button" class="qchip" onclick="openCategory('gard')">Handla lokalt</button>
       <button type="button" class="qchip" onclick="openCategory('loppis')">Loppis</button>
       <button type="button" class="qchip" onclick="openCategory('natur')">Natur &amp; uteliv</button>
+      <button type="button" class="qchip" onclick="openCategory('producent')">Producenter</button>
       <button type="button" class="qchip" onclick="showView('hander')">Evenemang</button>
       <button type="button" class="qchip" onclick="showView('karta')">Karta</button>
     </div>
@@ -618,9 +619,35 @@
     <h1>Händer i <em id="handerKommun">Vallentuna</em></h1>
     <p class="lede">Marknader, loppisar, konserter och små lokala händelser — allt som gör bygden levande. Passerade datum försvinner av sig själva.</p>
     <p class="events-tip-cta">Vill du tipsa om ett evenemang? <button type="button" class="lnk" onclick="showView('skicka')">Hör av dig!</button></p>
+    <div id="recurringSection" class="recurring-sec" hidden>
+      <h2 class="recurring-h">Varje vecka i bygden</h2>
+      <p class="lede" style="margin-top:0">Återkommande aktiviteter — en post per aktivitet, inte per tillfälle.</p>
+      <div class="events-grid" id="recurringGrid"></div>
+    </div>
     <div class="filter-row event-pills" id="eventFilters" role="navigation" aria-label="Evenemangskategorier"></div>
     <p class="event-count" id="eventCount" aria-live="polite"></p>
     <div class="events-grid" id="eventsFull"></div>
+  </div>
+</section>
+
+<!-- ===================== VERKSAMHET (producent utan adress) ===================== -->
+<section class="view" id="view-verksamhet">
+  <div class="plats-hero" id="verkHero">
+    <button type="button" class="back" onclick="openCategory('producent')">← Producenter</button>
+    <div class="ov"></div>
+    <div class="htext"><span class="hcat" id="verkCat"></span><h1 id="verkName"></h1></div>
+  </div>
+  <div class="plats-wrap">
+    <div class="plats-main">
+      <p class="lead" id="verkLead"></p>
+      <div class="body-rich" id="verkBody"></div>
+    </div>
+    <aside class="plats-side">
+      <div class="infobox">
+        <div class="info" id="verkInfo"></div>
+        <div class="hook">Ingen egen besöksadress — produkterna finns hos återförsäljare i bygden.</div>
+      </div>
+    </aside>
   </div>
 </section>
 </main>
@@ -646,6 +673,7 @@
         <li><button type="button" onclick="openCategory('gard')">Handla lokalt</button></li>
         <li><button type="button" onclick="openCategory('loppis')">Loppis</button></li>
         <li><button type="button" onclick="openCategory('natur')">Natur &amp; uteliv</button></li>
+        <li><button type="button" onclick="openCategory('producent')">Producenter</button></li>
       </ul>
     </nav>
 

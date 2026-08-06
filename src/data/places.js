@@ -1,5 +1,5 @@
 /** Places catalog — source of truth for SPA + SEO pages */
-export const places = [
+const PLACES_RAW = [
     {name:"Vallentuna Stenugnsbageri",cat:"Bageri & Fika",type:"fika",lat:59.5344263,lng:18.0772938,color:"#c8912f",oh:8,ch:19,web:true,url:"https://www.vsbageri.se/",phone:"+46 8 511 705 70",blurb:"Kanelbullar med en nästan seg, mochig lyster — av många kallade de bästa i landet. Surdegsbröd, semlor och pizza ur ugnen, gott om plats både inne och ute, och filtar när det nyper.",short:"Kanelbullar i särklass och surdeg ur stenugnen.",img:"/assets/upplev/vallentuna-stenugnsbageri/cover.webp"},
     {name:"Café Valkyria",cat:"Café & Fika",type:"fika",lat:59.5455361,lng:18.128901,color:"#a85a3a",oh:11,ch:16,web:false,url:"",blurb:"Ett mysigt lantkafé utanför Vallentuna med hembakat, god caffè latte och ett vänligt välkomnande. Barn och hundar trivs, det finns spel att låna och en loppis intill — värt turen ut på landet.",short:"Hembakat lantkafé på landet, med loppis intill.",img:"/assets/upplev/cafe-valkyria/cover.webp"},
     {name:"Orkesta Granby Gård",cat:"Gårdskafé",type:"fika",lat:59.5946698,lng:18.0976369,color:"#a85a3a",oh:12,ch:16,web:true,url:"https://hokeriet.se/",phone:"+46 76 945 90 10",blurb:"Hökeriet på Orkesta Granby Gård — butik, servering och mötesplats på ett modernt lantbruk mitt i vikingalandskapet. Gårdens Charolais-kött, växthusodlat och Sveriges största runhäll i betet.",short:"Gårdskafé, butik och Granbyhällen i Orkesta.",img:"/assets/upplev/orkesta-granby-gard/cover.webp"},
@@ -61,9 +61,39 @@ export function placeSlug(name) {
     .replace(/^-|-$/g, "");
 }
 
+/** Canonical place records — every place has a stable `slug` key. */
+export const places = PLACES_RAW.map((p) => ({
+  ...p,
+  slug: p.slug || placeSlug(p.name),
+}));
+
 export function placeBySlug(slug, list = places) {
   const key = SLUG_ALIASES[slug] || slug;
-  return list.find((p) => placeSlug(p.name) === key) || null;
+  return list.find((p) => p.slug === key || placeSlug(p.name) === key) || null;
+}
+
+/**
+ * Resolve a place by canonical slug or exact display name.
+ * Guides/events keep name strings in source data; call this at build/runtime.
+ */
+export function resolvePlaceRef(ref, list = places) {
+  if (ref == null || ref === "") return null;
+  const t = String(ref).trim();
+  if (!t) return null;
+  const bySlug = placeBySlug(t, list);
+  if (bySlug) return bySlug;
+  return list.find((p) => p.name === t) || null;
+}
+
+/** True when a place may appear on the map (requires coordinates). */
+export function isMappablePlace(p) {
+  return (
+    p &&
+    typeof p.lat === "number" &&
+    typeof p.lng === "number" &&
+    Number.isFinite(p.lat) &&
+    Number.isFinite(p.lng)
+  );
 }
 
 export function schemaTypeFor(place) {

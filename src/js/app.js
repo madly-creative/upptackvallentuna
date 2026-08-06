@@ -7,18 +7,30 @@ import {
   daySlot as libDaySlot,
   isOpenAt,
 } from "../lib/hours.js";
-import { places as PLACES_SEED, placeSlug, placeBySlug } from "../data/places.js";
+import { places as PLACES_SEED, placeSlug, placeBySlug, resolvePlaceRef, isMappablePlace } from "../data/places.js";
 import { PLACE_META, A } from "../data/placeMeta.js";
 import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "../data/guides.js";
+import { producers as PRODUCERS_SEED, producerBySlug, producersAtPlaceSlug, producerSlug } from "../data/producers.js";
+import { recurring as RECURRING_SEED, recurringSlug, recurringToday, recurringWhenLine } from "../data/recurring.js";
+import {
+  formatWeekday,
+  stockholmWeekday,
+  stockholmTodayISO,
+  stockholmHourMinute,
+  stockholmMonth,
+} from "../data/stockholm.js";
 
   const CONFIG = { kommun: SITE.kommun, region: SITE.region, center: SITE.center, zoom: SITE.zoom };
   const K = CONFIG.kommun;
 
   const places = PLACES_SEED;
   const guides = GUIDES_SEED;
+  const producers = PRODUCERS_SEED;
+  const recurring = RECURRING_SEED;
 
   let events = EVENTS_SEED.map(e => ({ ...e }));
   let currentGuideSlug = null;
+  let currentProducerSlug = null;
 
   // Bygdens röster — editorial portraits (published = sort only, never shown)
   const portraits=[
@@ -585,6 +597,11 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
       key:"natur", nav:"Natur & uteliv", title:"Natur & uteliv",
       lede:"Spänger, bad, runstenar och öppna landskap — utflykter nära dig när du vill andas ut.",
       types:["natur"], mapKey:"natur"
+    },
+    producent:{
+      key:"producent", nav:"Producenter", title:"Lokala producenter",
+      lede:"Hantverk och gårdsprodukter utan egen butik — hitta dem där de säljs i bygden. Ingen egen adress på kartan.",
+      types:null, mapKey:null, isProducer:true
     }
   };
   let currentCategory="attgora";
@@ -610,16 +627,16 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
   };
 
   const now=new Date();
-  const hour=now.getHours();
-  const minute=now.getMinutes();
-  const month=now.getMonth();
-  const day=now.getDay(); // 0=Sun
-  const todayISO=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}`;
+  const {hour, minute}=stockholmHourMinute(now);
+  const month=stockholmMonth(now);
+  const day=stockholmWeekday(now); // 0=Sun, Europe/Stockholm
+  const todayISO=stockholmTodayISO(now);
   const isWeekend=day===0||day===6;
   const daypart=hour<10?"morgon":hour<14?"lunch":hour<18?"eftermiddag":"kvall";
+  const recurringTodayList=recurringToday(day, recurring);
 
   const holidayToday=swedishHoliday(now);
-  const DOW_FULL=["söndag","måndag","tisdag","onsdag","torsdag","fredag","lördag"];
+  const DOW_FULL=[0,1,2,3,4,5,6].map(n=>formatWeekday(n));
   const TAG_LABEL={barn:"Barnvänligt",hund:"Hund",rullstol:"Rullstol",ute:"Uteservering",gratis:"Gratis",inomhus:"Inomhus"};
   const SEARCH_FILTERS=[
     {key:"open",label:"Öppet nu"},
@@ -1058,7 +1075,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
   function resolveHostPlace(host){
     const h=String(host||"").trim();
     if(!h) return null;
-    const exact=places.find(p=>p.name===h);
+    const exact=resolvePlaceRef(h, places);
     if(exact) return exact;
     const hits=places.filter(p=>h.includes(p.name)||p.name.includes(h));
     if(!hits.length) return null;
@@ -1602,6 +1619,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
       }
       bits.push(openN?`${openN} ställen öppna`:"Kolla öppettider");
       if(eventsToday.length) bits.push(eventsToday.length===1?"1 event idag":`${eventsToday.length} event idag`);
+      else if(recurringTodayList.length) bits.push(recurringTodayList.length===1?"1 återkommande idag":`${recurringTodayList.length} återkommande idag`);
       else if(weekend && liveEvents.length) bits.push("Se helgens program");
       metaEl.textContent=bits.join(" · ");
     }
@@ -1612,12 +1630,17 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
       evBody=`<div class="tc-list">${evBundle.list.map(e=>todayBriefItem(
         e.img, escHtml(e.title), escHtml(eventWhenShort(e)), `openEvent('${eventKeyAttr(e)}')`
       )).join("")}</div>`;
+    } else if(recurringTodayList.length){
+      evBody=`<div class="tc-list">${recurringTodayList.map(r=>todayBriefItem(
+        r.img, escHtml(r.title), escHtml(recurringWhenLine(r)), `showView('hander')`
+      )).join("")}</div>`;
     } else {
       evBody=`<p class="tc-empty">Inga inplanerade evenemang just nu — kika in snart igen.</p>`;
     }
     const evLabel=evBundle.mode==="today"?"Händer idag"
       :evBundle.mode==="weekend"?"Händer i helgen"
       :evBundle.mode==="soon"?"Nästa evenemang"
+      :recurringTodayList.length?"Varje vecka · idag"
       :"Evenemang";
     const evCard=`<article class="today-card">
       <p class="tc-label">${evLabel}</p>
@@ -1941,12 +1964,39 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
 
   function placesForCategory(key){
     const cat=CATEGORIES[key]||CATEGORIES.attgora;
+    if(cat.isProducer) return [];
     let list=places.slice();
     if(cat.types) list=list.filter(p=>cat.types.includes(p.type));
     return list
       .map(p=>({p,s:scorePlace(p).score+(isOpen(p)?6:0)}))
       .sort((a,b)=>b.s-a.s)
       .map(x=>x.p);
+  }
+  function producerCardHTML(pr){
+    return `<article class="route-card" onclick="openProducer('${jsEsc(producerSlug(pr))}')">
+      <div class="step">PRODUCENT</div>
+      <div class="im" style="background-image:url('${pr.img}')"></div>
+      <div class="bd">
+        <h3>${escHtml(pr.name)}</h3>
+        <p>${escHtml(pr.short||pr.blurb)}</p>
+        <div class="meta" style="margin-top:8px;font-size:12px;color:var(--ink-soft)">Finns hos återförsäljare · ingen egen adress</div>
+      </div>
+    </article>`;
+  }
+  function soldAtHTML(soldAt){
+    if(!soldAt?.length) return "";
+    const items=soldAt.map(s=>{
+      if(s.placeSlug){
+        const place=resolvePlaceRef(s.placeSlug, places);
+        if(place){
+          return `<li><button type="button" class="lnk" onclick="openPlace('${jsEsc(place.name)}')">${escHtml(place.name)}</button></li>`;
+        }
+        return `<li>${escHtml(s.placeSlug)}</li>`;
+      }
+      if(s.name) return `<li>${escHtml(s.name)}</li>`;
+      return "";
+    }).filter(Boolean).join("");
+    return items?`<div class="plats-soldat"><h3>Finns hos</h3><ul>${items}</ul></div>`:"";
   }
   function closeUpplevMenu(){
     const dd=document.getElementById('navUpplev');
@@ -1980,7 +2030,6 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
   }
   function renderCategory(){
     const cat=CATEGORIES[currentCategory]||CATEGORIES.attgora;
-    const list=placesForCategory(cat.key);
     S('catTitle', cat.title);
     S('catLede', cat.lede);
     const pills=document.getElementById('catPills');
@@ -1989,16 +2038,29 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
         `<button type="button" class="chip${c.key===cat.key?" on":""}" aria-pressed="${c.key===cat.key?"true":"false"}" onclick="openCategory('${c.key}')">${c.nav}</button>`
       ).join('');
     }
+    const mapBtn=document.getElementById('catMapBtn');
+    if(mapBtn) mapBtn.hidden=!!cat.isProducer || cat.mapKey==null;
     const countEl=document.getElementById('catCount');
-    if(countEl){
-      const openN=list.filter(p=>isOpen(p)).length;
-      countEl.textContent=`${list.length} ställen · ${openN} öppna just nu`;
-    }
     const grid=document.getElementById('catGrid');
-    if(grid){
-      grid.innerHTML=list.length
-        ? list.map(p=>placeRouteCardHTML(p)).join('')
-        : `<div class="ev-empty" style="grid-column:1/-1">Inga platser i den här kategorin just nu.</div>`;
+    if(cat.isProducer){
+      const list=producers.slice();
+      if(countEl) countEl.textContent=`${list.length} verksamheter · ingen kartnål`;
+      if(grid){
+        grid.innerHTML=list.length
+          ? list.map(pr=>producerCardHTML(pr)).join('')
+          : `<div class="ev-empty" style="grid-column:1/-1">Inga producenter just nu.</div>`;
+      }
+    } else {
+      const list=placesForCategory(cat.key);
+      if(countEl){
+        const openN=list.filter(p=>isOpen(p)).length;
+        countEl.textContent=`${list.length} ställen · ${openN} öppna just nu`;
+      }
+      if(grid){
+        grid.innerHTML=list.length
+          ? list.map(p=>placeRouteCardHTML(p)).join('')
+          : `<div class="ev-empty" style="grid-column:1/-1">Inga platser i den här kategorin just nu.</div>`;
+      }
     }
     document.querySelectorAll('.nav button[id^="nav-cat-"]').forEach(b=>b.classList.remove('on'));
     document.getElementById('nav-cat-'+cat.key)?.classList.add('on');
@@ -2006,6 +2068,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
   }
   function filterAndMapFromCategory(){
     const cat=CATEGORIES[currentCategory]||CATEGORIES.attgora;
+    if(cat.isProducer || cat.mapKey==null) return;
     filterAndMap(cat.mapKey||'alla');
   }
 
@@ -2564,7 +2627,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     try{ await ensureLeaflet(); }catch(e){ console.warn(e); return; }
     map=L.map('map',{zoomControl:true,scrollWheelZoom:true}).setView(CONFIG.center,CONFIG.zoom);
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap, © CARTO',subdomains:'abcd',maxZoom:20}).addTo(map);
-    places.forEach((p,i)=>{
+    places.filter(isMappablePlace).forEach((p)=>{
       const open=isOpen(p);
       const tag=!isTimedVenue(p)
         ?`<span class="card-tag open">● Alltid tillgänglig</span>`
@@ -2587,11 +2650,13 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
   function buildFilters(){const bar=document.getElementById('filters');bar.innerHTML='';cats.forEach(c=>{const b=document.createElement('div');b.className='chip'+(c.key==="alla"?' on':'');b.textContent=c.label;b.dataset.key=c.key;b.onclick=()=>{active=c.key;document.getElementById('search').value='';renderFilter();};bar.appendChild(b);});}
   function buildList(){
     const list=document.getElementById('mlist');list.innerHTML='';
-    // Sort by score (and distance if available)
-    const order=rankedPlaces();
-    const indexByName=Object.fromEntries(places.map((p,i)=>[p.name,i]));
+    // Sort by score — only mappable places get pins (markers[] index matches mappable order)
+    const mappable=places.filter(isMappablePlace);
+    const indexByName=Object.fromEntries(mappable.map((p,i)=>[p.name,i]));
+    const order=rankedPlaces().filter(({p})=>isMappablePlace(p));
     order.forEach(({p,soon,mins})=>{
       const i=indexByName[p.name];
+      if(i==null) return;
       const open=isOpen(p);
       const el=document.createElement('div');
       el.className='item';
@@ -2617,13 +2682,15 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
   function renderFilter(){
     document.querySelectorAll('#filters .chip').forEach(c=>c.classList.toggle('on',c.dataset.key===active));
     let shown=0;
+    const mappable=places.filter(isMappablePlace);
     const items=[...document.querySelectorAll('#mlist .item')];
     items.forEach(el=>{
       const p=places.find(x=>x.name===el.dataset.name);
-      if(!p){el.classList.add('hidden');return;}
+      if(!p||!isMappablePlace(p)){el.classList.add('hidden');return;}
       const m=placeMatchesFilters(p);
       el.classList.toggle('hidden',!m);
-      const i=places.indexOf(p);
+      const i=mappable.indexOf(p);
+      if(i<0) return;
       if(m){markers[i].addTo(map);shown++;}else{markers[i].remove();}
     });
     let label=shown+' platser i '+K;
@@ -2637,12 +2704,14 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     const q=this.value.trim().toLowerCase();document.getElementById('searchClr')?.classList.toggle('show',q.length>0);
     if(!q){renderFilter();return;}
     let shown=0;
+    const mappable=places.filter(isMappablePlace);
     document.querySelectorAll('#mlist .item').forEach(el=>{
       const p=places.find(x=>x.name===el.dataset.name); if(!p) return;
-      const i=places.indexOf(p);
+      const i=mappable.indexOf(p);
       const hay=(p.name+' '+p.cat+' '+p.blurb+' '+p.type).toLowerCase();
       const m=hay.includes(q)&&placeMatchesFilters(p);
       el.classList.toggle('hidden',!m);
+      if(i<0) return;
       if(m){markers[i]?.addTo(map);shown++;}else{markers[i]?.remove();}
     });
     document.querySelectorAll('#filters .chip').forEach(c=>c.classList.toggle('on',c.dataset.key==='alla'));active='alla';
@@ -2658,10 +2727,41 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
       `<button type="button" class="chip${f.key===activeEventCat?" on":""}" data-key="${f.key}" aria-pressed="${f.key===activeEventCat?"true":"false"}" onclick="filterEvents('${f.key}')">${f.label}</button>`
     ).join("");
   }
+  function recurringCardHTML(r){
+    const when=recurringWhenLine(r);
+    const place=resolvePlaceRef(r.place, places);
+    const isToday=Number(r.weekday)===day;
+    const slug=recurringSlug(r);
+    return `<article class="ev recurring-card" data-recurring="${escHtml(slug)}">
+      <div class="media">
+        <div class="thumb" style="background-image:url('${r.img||""}')" role="img" aria-label="${escHtml(r.title)}"></div>
+        <div class="date"><span class="dow">${escHtml(formatWeekday(r.weekday,{capitalize:true}).slice(0,3).toUpperCase())}</span><span class="d">↻</span><span class="m">VECKA</span></div>
+      </div>
+      <div class="bd">
+        <h3>${escHtml(r.title)}</h3>
+        <div class="meta">
+          <span>${escHtml(place?.name||r.place||"")}</span>
+          <span>${escHtml(when)}</span>
+        </div>
+        <div class="tag">${isToday?"IDAG · ":""}Varje vecka</div>
+        <p class="note" style="margin-top:8px;font-size:13px;color:var(--ink-soft)">${escHtml(r.note||"")}</p>
+        ${place?`<button type="button" class="lnk" style="margin-top:8px" onclick="openPlace('${jsEsc(place.name)}')">Om platsen →</button>`:""}
+      </div>
+    </article>`;
+  }
+  function renderRecurringSection(){
+    const wrap=document.getElementById('recurringSection');
+    const grid=document.getElementById('recurringGrid');
+    if(!wrap||!grid) return;
+    if(!recurring.length){ wrap.hidden=true; grid.innerHTML=""; return; }
+    wrap.hidden=false;
+    grid.innerHTML=recurring.map(r=>recurringCardHTML(r)).join("");
+  }
   function renderEventsFull(){
     const evFull=document.getElementById('eventsFull');
     if(!evFull) return;
     renderEventChips();
+    renderRecurringSection();
     const list=liveEvents.filter(e=>eventMatchesFilter(e, activeEventCat));
     const countEl=document.getElementById('eventCount');
     if(countEl){
@@ -2807,6 +2907,12 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
       body += `<div class="sun-note">Solnedgång idag ca <strong>${ctx.sunset}</strong>${ctx.sunrise?" · soluppgång "+ctx.sunrise:""}. Fint ljus sista timmarna innan skymning.</div>`;
     }
     if(scored.reasons.length) body += `<div class="sun-note">Varför just nu: ${scored.reasons.join(" · ")}</div>`;
+    const atHere=producersAtPlaceSlug(p.slug||placeSlug(p.name));
+    if(atHere.length){
+      body += `<div class="plats-soldat"><h3>Lokala producenter här</h3><ul>${atHere.map(pr=>
+        `<li><button type="button" class="lnk" onclick="openProducer('${jsEsc(producerSlug(pr))}')">${escHtml(pr.name)}</button></li>`
+      ).join("")}</ul></div>`;
+    }
     document.getElementById('platsBody').innerHTML = body;
     const todayHrs=fmtHoursSlot(daySlot(p));
     let statusTxt;
@@ -2876,7 +2982,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
    * Leave the place view. If we pushState'd here, pop those entries (so swipe/back
    * isn't left with a stripped ghost URL). Never replaceState-strip a pushed entry.
    */
-  function leavePlats(nextView){
+  function leavePlats(nextView, passOpts={}){
     const target=nextView||lastViewBeforePlats||'start';
     const steps=Math.max(platsStackDepth, canHistoryBackFromPlats ? 1 : 0);
     if(steps>0){
@@ -2886,13 +2992,13 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
       platsStackDepth=0;
       // Optimistic UI — don't clearPlatsParam yet (that would ghost the history entry)
       skipClearPlatsParam=true;
-      try{ showView(target,{fromPopstate:true}); }finally{ skipClearPlatsParam=false; }
+      try{ showView(target,{fromPopstate:true,...passOpts}); }finally{ skipClearPlatsParam=false; }
       if(depthAtLeave>1) history.go(-depthAtLeave);
       else history.back();
       return;
     }
     clearPlatsParam();
-    showView(target,{fromPopstate:true});
+    showView(target,{fromPopstate:true,...passOpts});
   }
   function goBackFromPlats(){
     leavePlats(lastViewBeforePlats||'start');
@@ -2912,6 +3018,10 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
       }
       if(st.view==="portratt" && st.portrait){
         openPortrait(st.portrait,{historyMode:"none"});
+        return;
+      }
+      if(st.view==="verksamhet" && st.verksamhet){
+        openProducer(st.verksamhet,{historyMode:"none",fromPopstate:true});
         return;
       }
       if(st.view==="kategori" && st.category){
@@ -3298,6 +3408,13 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     try{
       const url=new URL(location.href);
       url.searchParams.delete("plats");
+      if(v==="verksamhet"){
+        const slug=meta.verksamhet || currentProducerSlug;
+        if(slug) url.searchParams.set("verksamhet", slug);
+        else url.searchParams.delete("verksamhet");
+      } else {
+        url.searchParams.delete("verksamhet");
+      }
       if(v==="levererar" && (meta.setLevererarHash || meta.moment!=null)){
         url.hash=meta.moment ? `levererar=${encodeURIComponent(meta.moment)}` : "levererar";
       }else if(v!=="levererar"){
@@ -3313,6 +3430,8 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
       else if(v==="kategori") state.category=currentCategory;
       if(meta.portrait) state.portrait=meta.portrait;
       else if(v==="portratt" && currentPortraitSlug) state.portrait=currentPortraitSlug;
+      if(meta.verksamhet) state.verksamhet=meta.verksamhet;
+      else if(v==="verksamhet" && currentProducerSlug) state.verksamhet=currentProducerSlug;
       if(meta.moment) state.moment=meta.moment;
       const path=url.pathname+url.search+url.hash;
       if(mode==="push") history.pushState(state,"",path);
@@ -3326,7 +3445,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     // (that leaves a ghost history entry where swipe/back appears to do nothing).
     if(v!=='plats' && !skipClearPlatsParam && !platsClosePending && !opts.fromPopstate && isPlatsViewOn() &&
        (canHistoryBackFromPlats || platsStackDepth>0 || !!getPlatsSlugFromLocation())){
-      leavePlats(v);
+      leavePlats(v, opts);
       return;
     }
     const prev=currentViewId();
@@ -3336,6 +3455,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     viewEl.classList.add('on');
     // Leaving a place must drop ?plats= — otherwise reload re-opens the place
     if(v!=='plats' && !skipClearPlatsParam) clearPlatsParam();
+    if(v!=='verksamhet') clearVerksamhetParam();
     if(v!=='kategori') closeUpplevMenu();
     document.querySelectorAll('.nav button[id^="nav-"]').forEach(b=>b.classList.remove('on'));
     const navBtn=document.getElementById('nav-'+v);
@@ -3369,13 +3489,15 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
     const levHash=parseLevererarHash();
     if(!(v==='levererar' && levHash && levHash.id)) window.scrollTo(0,0);
 
-    // SPA history for non-place views (guides, nav, levererar, …)
+    // SPA history for non-place views (guides, nav, levererar, verksamhet, …)
     const silent=opts.fromPopstate || opts.historyMode==="none" || skipClearPlatsParam || !!platsClosePending || !viewHistoryReady;
     if(!silent && v!=='plats'){
       const mode=opts.historyMode || (prev===v ? "replace" : "push");
-      if(prev!==v || mode==="replace"){
+      if(prev!==v || mode==="replace" || v==='verksamhet'){
         syncViewHistory(v, mode, opts);
       }
+    } else if(v==='verksamhet' && (opts.historyMode==="none" || opts.fromPopstate)){
+      syncViewHistory(v, "replace", opts);
     }
   }
   function filterAndMap(type){
@@ -3385,8 +3507,55 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
   }
   function openOnMap(name){
     showView('karta');
-    const i=places.findIndex(p=>p.name===name);
-    if(i>=0){setTimeout(()=>{map.flyTo([places[i].lat,places[i].lng],16,{duration:.7});setTimeout(()=>markers[i].openPopup(),720);},120);}
+    const mappable=places.filter(isMappablePlace);
+    const i=mappable.findIndex(p=>p.name===name);
+    if(i>=0){setTimeout(()=>{map.flyTo([mappable[i].lat,mappable[i].lng],16,{duration:.7});setTimeout(()=>markers[i].openPopup(),720);},120);}
+  }
+
+  function openProducer(slugOrName, opts={}){
+    const pr=producerBySlug(slugOrName) || producers.find(x=>x.name===slugOrName);
+    if(!pr) return;
+    const slug=producerSlug(pr);
+    currentProducerSlug=slug;
+    const onV=!!document.getElementById('view-verksamhet')?.classList.contains('on');
+    if(!onV) lastViewBeforePlats = document.querySelector('.view.on')?.id.replace('view-','')||'start';
+    const hero=document.getElementById('verkHero');
+    if(hero) hero.style.backgroundImage=`url('${pr.img}')`;
+    S('verkCat', pr.cat||"Producent");
+    S('verkName', pr.name);
+    S('verkLead', pr.blurb);
+    const bodyEl=document.getElementById('verkBody');
+    if(bodyEl){
+      let body = pr.short && pr.short!==pr.blurb ? `<p>${escHtml(pr.short)}</p>` : "";
+      body += soldAtHTML(pr.soldAt);
+      bodyEl.innerHTML=body;
+    }
+    const info=document.getElementById('verkInfo');
+    if(info){
+      info.innerHTML=`
+        <div class="irow"><span class="k">Kategori</span><span class="v">${escHtml(pr.cat||"Producent")}</span></div>
+        <div class="irow"><span class="k">Besök</span><span class="v">Ingen egen adress — se återförsäljare</span></div>
+        ${pr.url?`<div class="irow"><span class="k">Hemsida</span><span class="v"><a href="${escHtml(pr.url)}" target="_blank" rel="noopener">Besök hemsidan →</a></span></div>`:""}`;
+    }
+    const histMode=opts.historyMode || (opts.fromPopstate ? "none" : "push");
+    showView('verksamhet',{historyMode:histMode,verksamhet:slug,fromPopstate:opts.fromPopstate});
+    trackEvent('view-producer', pr.name);
+  }
+  function clearVerksamhetParam(){
+    try{
+      const url=new URL(location.href);
+      if(!url.searchParams.has("verksamhet")) return;
+      url.searchParams.delete("verksamhet");
+      history.replaceState(history.state && history.state.uv ? history.state : {uv:"view",view:currentViewId()},"",url.pathname+url.search+url.hash);
+    }catch(e){}
+  }
+  function bootProducerDeepLink(){
+    try{
+      const q=new URLSearchParams(location.search).get("verksamhet");
+      if(!q) return;
+      const pr=producerBySlug(q);
+      if(pr) setTimeout(()=>openProducer(producerSlug(pr),{historyMode:"none",fromPopstate:true}), 50);
+    }catch(e){}
   }
 
   try{ if(document.getElementById('eventsFull') && !document.getElementById('eventsFull').children.length) renderEventsFull(); }catch(e){}
@@ -3400,6 +3569,7 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
   setTimeout(bootSmartPack, 0);
   setTimeout(()=>{ try{ applyLevererarHash(); }catch(e){} }, 20);
   setTimeout(bootPlaceDeepLink, 30);
+  setTimeout(bootProducerDeepLink, 35);
 
 // --- window exports (HTML onclick / SPA nav) ---
 Object.assign(window, {
@@ -3427,6 +3597,7 @@ Object.assign(window, {
   openLightbox,
   openList,
   openPlace,
+  openProducer,
   openPortrait,
   openRemindChooser,
   openReport,
