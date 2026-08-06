@@ -2796,6 +2796,8 @@ import {
   let canHistoryBackFromPlats=false;
   /** When leaving plats via nav/←, pop history then show this view (avoids ghost entries). */
   let platsClosePending=null;
+  /** Opts carried through leavePlats → popstate (e.g. verksamhet slug). */
+  let platsClosePendingMeta=null;
   /** Skip clearPlatsParam while optimistically leaving a pushed place (URL still has ?plats=). */
   let skipClearPlatsParam=false;
   /** Guard hashchange while popstate is restoring a view. */
@@ -2985,20 +2987,24 @@ import {
   function leavePlats(nextView, passOpts={}){
     const target=nextView||lastViewBeforePlats||'start';
     const steps=Math.max(platsStackDepth, canHistoryBackFromPlats ? 1 : 0);
+    // fromPopstate must win over passOpts — callers may pass fromPopstate:undefined
+    const nextOpts={...passOpts, fromPopstate:true};
     if(steps>0){
       platsClosePending=target;
+      platsClosePendingMeta=passOpts;
       canHistoryBackFromPlats=false;
       const depthAtLeave=platsStackDepth;
       platsStackDepth=0;
       // Optimistic UI — don't clearPlatsParam yet (that would ghost the history entry)
       skipClearPlatsParam=true;
-      try{ showView(target,{fromPopstate:true,...passOpts}); }finally{ skipClearPlatsParam=false; }
+      try{ showView(target, nextOpts); }finally{ skipClearPlatsParam=false; }
       if(depthAtLeave>1) history.go(-depthAtLeave);
       else history.back();
       return;
     }
+    platsClosePendingMeta=null;
     clearPlatsParam();
-    showView(target,{fromPopstate:true,...passOpts});
+    showView(target, nextOpts);
   }
   function goBackFromPlats(){
     leavePlats(lastViewBeforePlats||'start');
@@ -3038,13 +3044,26 @@ import {
       // Nav / in-app ← asked us to unwind place history to a specific view
       if(platsClosePending!==null){
         const v=platsClosePending;
+        const meta=platsClosePendingMeta||{};
         platsClosePending=null;
+        platsClosePendingMeta=null;
         canHistoryBackFromPlats=false;
         platsStackDepth=0;
         if(getPlatsSlugFromLocation()) clearPlatsParam();
         if(!document.getElementById('view-'+v)?.classList.contains('on')){
           skipClearPlatsParam=true;
-          try{ showView(v,{fromPopstate:true}); }finally{ skipClearPlatsParam=false; }
+          try{ showView(v,{...meta, fromPopstate:true}); }finally{ skipClearPlatsParam=false; }
+        }
+        // Place entry is popped — push/replace verksamhet so reload + back work
+        if(v==="verksamhet"){
+          const slug=meta.verksamhet||currentProducerSlug;
+          if(slug){
+            syncViewHistory(
+              "verksamhet",
+              meta.historyMode==="none"?"replace":"push",
+              {verksamhet:slug}
+            );
+          }
         }
         return;
       }
@@ -3490,14 +3509,17 @@ import {
     if(!(v==='levererar' && levHash && levHash.id)) window.scrollTo(0,0);
 
     // SPA history for non-place views (guides, nav, levererar, verksamhet, …)
+    // leavePlats→verksamhet syncs after history.back() in onAppPopState (not here —
+    // replaceState on the place entry would be discarded by the pop).
+    const leavingPlatsToVerksamhet=v==='verksamhet' && (!!platsClosePending || skipClearPlatsParam);
     const silent=opts.fromPopstate || opts.historyMode==="none" || skipClearPlatsParam || !!platsClosePending || !viewHistoryReady;
-    if(!silent && v!=='plats'){
+    if(!silent && v!=='plats' && !leavingPlatsToVerksamhet){
       const mode=opts.historyMode || (prev===v ? "replace" : "push");
       if(prev!==v || mode==="replace" || v==='verksamhet'){
         syncViewHistory(v, mode, opts);
       }
-    } else if(v==='verksamhet' && (opts.historyMode==="none" || opts.fromPopstate)){
-      syncViewHistory(v, "replace", opts);
+    } else if(v==='verksamhet' && !leavingPlatsToVerksamhet && (opts.historyMode==="none" || opts.fromPopstate) && (opts.verksamhet||currentProducerSlug)){
+      syncViewHistory(v, "replace", {verksamhet:opts.verksamhet||currentProducerSlug});
     }
   }
   function filterAndMap(type){
