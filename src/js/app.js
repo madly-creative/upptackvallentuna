@@ -2689,13 +2689,25 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
   // ============================================================
   //  PLATS — detaljsida
   // ============================================================
+  /** How many pushState place entries sit above the pre-place view. */
+  let platsStackDepth=0;
   /** True when the current place entry was pushState'd — in-app ← can history.back(). */
   let canHistoryBackFromPlats=false;
+  /** When leaving plats via nav/←, pop history then show this view (avoids ghost entries). */
+  let platsClosePending=null;
+  /** Skip clearPlatsParam while optimistically leaving a pushed place (URL still has ?plats=). */
+  let skipClearPlatsParam=false;
 
   function resolvePlaceFromQuery(q){
     if(!q) return null;
     const decoded=decodeURIComponent(q);
     return places.find(x=>x.name===decoded) || placeBySlug(decoded) || places.find(x=>placeSlug(x.name)===decoded) || null;
+  }
+  function getPlatsSlugFromLocation(){
+    try{ return new URLSearchParams(location.search).get("plats"); }catch(e){ return null; }
+  }
+  function isPlatsViewOn(){
+    return !!document.getElementById('view-plats')?.classList.contains('on');
   }
 
   function syncPlatsUrl(slug, mode){
@@ -2705,14 +2717,19 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
       const path=url.pathname+url.search+url.hash;
       const prev=history.state || {};
       if(mode==="push"){
-        history.pushState({uv:"plats",slug,pushed:true},"",path);
+        const depth=platsStackDepth+1;
+        history.pushState({uv:"plats",slug,pushed:true,depth},"",path);
+        platsStackDepth=depth;
         canHistoryBackFromPlats=true;
       }else if(mode==="replace"){
-        history.replaceState({uv:"plats",slug,pushed:!!prev.pushed},"",path);
+        history.replaceState({uv:"plats",slug,pushed:!!prev.pushed,depth:platsStackDepth},"",path);
       }else{
-        // "none" — deep-link / popstate: keep entry, preserve pushed flag from this history entry
-        history.replaceState({uv:"plats",slug,pushed:!!prev.pushed},"",path);
-        canHistoryBackFromPlats=!!prev.pushed;
+        // "none" — deep-link / popstate: keep entry, restore depth/pushed from this history entry
+        const pushed=!!prev.pushed;
+        const depth=typeof prev.depth==="number" ? prev.depth : (pushed ? Math.max(platsStackDepth,1) : 0);
+        history.replaceState({uv:"plats",slug,pushed,depth},"",path);
+        canHistoryBackFromPlats=pushed;
+        platsStackDepth=depth;
       }
     }catch(e){}
   }
@@ -2840,18 +2857,49 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
       url.searchParams.delete("plats");
       history.replaceState(history.state && history.state.uv==="plats" ? {uv:"app"} : (history.state||null),"",url.pathname+url.search+url.hash);
       canHistoryBackFromPlats=false;
+      platsStackDepth=0;
     }catch(e){}
   }
-  function goBackFromPlats(){
-    if(canHistoryBackFromPlats){
-      history.back();
+  /**
+   * Leave the place view. If we pushState'd here, pop those entries (so swipe/back
+   * isn't left with a stripped ghost URL). Never replaceState-strip a pushed entry.
+   */
+  function leavePlats(nextView){
+    const target=nextView||lastViewBeforePlats||'start';
+    const steps=Math.max(platsStackDepth, canHistoryBackFromPlats ? 1 : 0);
+    if(steps>0){
+      platsClosePending=target;
+      canHistoryBackFromPlats=false;
+      const depthAtLeave=platsStackDepth;
+      platsStackDepth=0;
+      // Optimistic UI — don't clearPlatsParam yet (that would ghost the history entry)
+      skipClearPlatsParam=true;
+      try{ showView(target); }finally{ skipClearPlatsParam=false; }
+      if(depthAtLeave>1) history.go(-depthAtLeave);
+      else history.back();
       return;
     }
     clearPlatsParam();
-    showView(lastViewBeforePlats||'start');
+    showView(target);
+  }
+  function goBackFromPlats(){
+    leavePlats(lastViewBeforePlats||'start');
   }
   function onPlatsPopState(){
-    const q=new URLSearchParams(location.search).get("plats");
+    // Nav / in-app ← asked us to unwind place history to a specific view
+    if(platsClosePending!==null){
+      const v=platsClosePending;
+      platsClosePending=null;
+      canHistoryBackFromPlats=false;
+      platsStackDepth=0;
+      if(getPlatsSlugFromLocation()) clearPlatsParam();
+      if(!document.getElementById('view-'+v)?.classList.contains('on')){
+        skipClearPlatsParam=true;
+        try{ showView(v); }finally{ skipClearPlatsParam=false; }
+      }
+      return;
+    }
+    const q=getPlatsSlugFromLocation();
     if(q){
       const p=resolvePlaceFromQuery(q);
       if(p){
@@ -2859,10 +2907,11 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
         return;
       }
     }
-    const onPlats=!!document.getElementById('view-plats')?.classList.contains('on');
-    if(onPlats){
+    if(isPlatsViewOn()){
       canHistoryBackFromPlats=false;
-      showView(lastViewBeforePlats||'start');
+      platsStackDepth=0;
+      skipClearPlatsParam=true;
+      try{ showView(lastViewBeforePlats||'start'); }finally{ skipClearPlatsParam=false; }
     }
   }
   window.addEventListener("popstate", onPlatsPopState);
@@ -3184,12 +3233,19 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
 
 
   function showView(v){
+    // Leaving plats via nav/logo must pop pushState entries — not replaceState-strip
+    // (that leaves a ghost history entry where swipe/back appears to do nothing).
+    if(v!=='plats' && !skipClearPlatsParam && !platsClosePending && isPlatsViewOn() &&
+       (canHistoryBackFromPlats || platsStackDepth>0 || !!getPlatsSlugFromLocation())){
+      leavePlats(v);
+      return;
+    }
     document.querySelectorAll('.view').forEach(x=>x.classList.remove('on'));
     const viewEl=document.getElementById('view-'+v);
     if(!viewEl) return;
     viewEl.classList.add('on');
     // Leaving a place must drop ?plats= — otherwise reload re-opens the place
-    if(v!=='plats') clearPlatsParam();
+    if(v!=='plats' && !skipClearPlatsParam) clearPlatsParam();
     if(v!=='kategori') closeUpplevMenu();
     document.querySelectorAll('.nav button[id^="nav-"]').forEach(b=>b.classList.remove('on'));
     const navBtn=document.getElementById('nav-'+v);
