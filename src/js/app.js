@@ -2689,9 +2689,39 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
   // ============================================================
   //  PLATS — detaljsida
   // ============================================================
-  function openPlace(name){
+  /** True when the current place entry was pushState'd — in-app ← can history.back(). */
+  let canHistoryBackFromPlats=false;
+
+  function resolvePlaceFromQuery(q){
+    if(!q) return null;
+    const decoded=decodeURIComponent(q);
+    return places.find(x=>x.name===decoded) || placeBySlug(decoded) || places.find(x=>placeSlug(x.name)===decoded) || null;
+  }
+
+  function syncPlatsUrl(slug, mode){
+    try{
+      const url=new URL(location.href);
+      url.searchParams.set("plats", slug);
+      const path=url.pathname+url.search+url.hash;
+      const prev=history.state || {};
+      if(mode==="push"){
+        history.pushState({uv:"plats",slug,pushed:true},"",path);
+        canHistoryBackFromPlats=true;
+      }else if(mode==="replace"){
+        history.replaceState({uv:"plats",slug,pushed:!!prev.pushed},"",path);
+      }else{
+        // "none" — deep-link / popstate: keep entry, preserve pushed flag from this history entry
+        history.replaceState({uv:"plats",slug,pushed:!!prev.pushed},"",path);
+        canHistoryBackFromPlats=!!prev.pushed;
+      }
+    }catch(e){}
+  }
+
+  function openPlace(name, opts={}){
     const p=places.find(x=>x.name===name); if(!p)return;
-    lastViewBeforePlats = document.querySelector('.view.on')?.id.replace('view-','')||'start';
+    const onPlats=!!document.getElementById('view-plats')?.classList.contains('on');
+    // Keep prior "where we came from" when switching place→place or restoring via popstate
+    if(!onPlats) lastViewBeforePlats = document.querySelector('.view.on')?.id.replace('view-','')||'start';
     const open=isOpen(p);
     const soon=isClosingSoon(p);
     const mins=minutesUntilClose(p);
@@ -2784,11 +2814,14 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
       ? ""
       : `<div style="margin-top:12px">Äger du den här verksamheten och saknar hemsida? <a href="https://www.fvno.se/" target="_blank" rel="noopener" onclick="trackEvent('hook-formverket','${jsEsc(p.name)}')">Synas bättre →</a></div>`);
     showView('plats');
-    try{
-      const url=new URL(location.href);
-      url.searchParams.set("plats", placeSlug(p.name));
-      history.replaceState(null,"",url.pathname+url.search+url.hash);
-    }catch(e){}
+    const slug=placeSlug(p.name);
+    let mode=opts.historyMode;
+    if(!mode){
+      const cur=new URLSearchParams(location.search).get("plats");
+      // Same slug already in URL → replace; otherwise push (incl. place→place so back returns to previous place)
+      mode=(cur===slug)?"replace":"push";
+    }
+    syncPlatsUrl(slug, mode);
     setTimeout(async ()=>{
       try{ await ensureLeaflet(); }catch(e){ console.warn(e); return; }
       if(!miniMap){
@@ -2805,20 +2838,40 @@ import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "
       const url=new URL(location.href);
       if(!url.searchParams.has("plats")) return;
       url.searchParams.delete("plats");
-      history.replaceState(null,"",url.pathname+url.search+url.hash);
+      history.replaceState(history.state && history.state.uv==="plats" ? {uv:"app"} : (history.state||null),"",url.pathname+url.search+url.hash);
+      canHistoryBackFromPlats=false;
     }catch(e){}
   }
   function goBackFromPlats(){
+    if(canHistoryBackFromPlats){
+      history.back();
+      return;
+    }
     clearPlatsParam();
     showView(lastViewBeforePlats||'start');
   }
+  function onPlatsPopState(){
+    const q=new URLSearchParams(location.search).get("plats");
+    if(q){
+      const p=resolvePlaceFromQuery(q);
+      if(p){
+        openPlace(p.name,{historyMode:"none"});
+        return;
+      }
+    }
+    const onPlats=!!document.getElementById('view-plats')?.classList.contains('on');
+    if(onPlats){
+      canHistoryBackFromPlats=false;
+      showView(lastViewBeforePlats||'start');
+    }
+  }
+  window.addEventListener("popstate", onPlatsPopState);
   function bootPlaceDeepLink(){
     try{
       const q=new URLSearchParams(location.search).get("plats");
       if(!q) return;
-      const decoded=decodeURIComponent(q);
-      const p=places.find(x=>x.name===decoded) || placeBySlug(decoded) || places.find(x=>placeSlug(x.name)===decoded);
-      if(p) setTimeout(()=>openPlace(p.name), 40);
+      const p=resolvePlaceFromQuery(q);
+      if(p) setTimeout(()=>openPlace(p.name,{historyMode:"none"}), 40);
     }catch(e){}
   }
 

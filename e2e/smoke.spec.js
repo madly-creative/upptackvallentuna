@@ -65,3 +65,30 @@ test("event remind pop and place name with apostrophe", async ({ page }) => {
   await expect(page.locator("#view-plats")).toHaveClass(/on/);
   await expect(page.locator("#platsName")).toHaveText("Ellen's Corner");
 });
+
+test("browser back closes place without leaving to integritet", async ({ page }) => {
+  await page.goto("/integritet.html");
+  await expect(page.locator("h1")).toHaveText("Integritet");
+  await page.goto("/");
+  await page.locator(".quick-paths").getByRole("button", { name: "Handla lokalt" }).click();
+  await page.getByText("Jano", { exact: true }).first().click();
+  await expect(page.locator("#view-plats")).toHaveClass(/on/);
+  await expect(page).toHaveURL(/[?&]plats=jano/);
+  await page.goBack();
+  await expect(page.locator("#view-plats")).not.toHaveClass(/on/);
+  await expect(page).not.toHaveURL(/integritet/);
+  await expect(page).toHaveURL(/\/($|\?)/);
+});
+
+test("place to place then back restores previous place", async ({ page }) => {
+  await page.goto("/");
+  await page.locator(".quick-paths").getByRole("button", { name: "Handla lokalt" }).click();
+  await page.getByText("Jano", { exact: true }).first().click();
+  await expect(page.locator("#platsName")).toHaveText("Jano");
+  await page.evaluate(() => window.openPlace("Langhard Lantbruk"));
+  await expect(page.locator("#platsName")).toHaveText("Langhard Lantbruk");
+  await expect(page).toHaveURL(/plats=langhard-lantbruk/);
+  await page.goBack();
+  await expect(page.locator("#view-plats")).toHaveClass(/on/);
+  await expect(page.locator("#platsName")).toHaveText("Jano");
+});
