@@ -629,6 +629,14 @@
   .events-page .event-pills .chip.on{
     background:var(--moss-deep);border-color:var(--moss-deep);color:var(--paper);
   }
+  .recurring-sec{margin:0 0 36px;padding-bottom:28px;border-bottom:1px solid var(--line-soft)}
+  .recurring-h{
+    font-family:var(--font-serif,Georgia,serif);font-size:1.45rem;font-weight:600;margin:8px 0 6px;color:var(--ink)
+  }
+  .plats-soldat{margin:22px 0 8px}
+  .plats-soldat h3{font-family:var(--font-serif,Georgia,serif);font-size:1.15rem;margin:0 0 10px}
+  .plats-soldat ul{margin:0;padding-left:1.15em}
+  .plats-soldat li{margin:0 0 6px}
   .events-page .event-count{
     font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
     color:var(--ink-soft);margin:0 0 16px;min-height:1.2em;

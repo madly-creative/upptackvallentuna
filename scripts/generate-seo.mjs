@@ -5,22 +5,28 @@
 import { writeFileSync, mkdirSync, rmSync, existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { places, placeSlug, schemaTypeFor } from "../src/data/places.js";
+import { places, placeSlug, schemaTypeFor, resolvePlaceRef } from "../src/data/places.js";
 import { PLACE_META } from "../src/data/placeMeta.js";
 import { events, eventSlug } from "../src/data/events.js";
 import { EVENT_FILTERS, eventCatLabel, filterKeyForCat } from "../src/data/eventCategories.js";
 import { guides, seasonLabel } from "../src/data/guides.js";
 import { SITE } from "../src/data/site.js";
+import { producers, producersAtPlaceSlug, producerSlug } from "../src/data/producers.js";
+import { recurring, recurringSlug, recurringWhenLine } from "../src/data/recurring.js";
+import { formatWeekday, schemaWeekday } from "../src/data/stockholm.js";
+import { printUnmatchedLinks } from "./report-unmatched-links.mjs";
 
 const __dir = dirname(fileURLToPath(import.meta.url));
 const root = join(__dir, "..");
 const base = SITE.url.replace(/\/$/, "");
-const DOW = ["söndag", "måndag", "tisdag", "onsdag", "torsdag", "fredag", "lördag"];
+const DOW = [0, 1, 2, 3, 4, 5, 6].map((n) => formatWeekday(n));
 /** Index matches PLACE_META.hours (0 = Sunday). */
 const SCHEMA_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const umamiScript = SITE.umamiWebsiteId
   ? `<script defer src="https://cloud.umami.is/script.js" data-website-id="${SITE.umamiWebsiteId}"></script>`
   : "";
+
+printUnmatchedLinks();
 
 function esc(s) {
   return String(s || "")
@@ -219,15 +225,38 @@ const platsDir = join(root, "public/plats");
 if (existsSync(platsDir)) rmSync(platsDir, { recursive: true });
 mkdirSync(platsDir, { recursive: true });
 
+function soldAtSeoList(soldAt) {
+  if (!soldAt?.length) return "";
+  const items = soldAt
+    .map((s) => {
+      if (s.placeSlug) {
+        const place = resolvePlaceRef(s.placeSlug, places);
+        const label = place?.name || s.placeSlug;
+        const href = place ? `/plats/${place.slug || placeSlug(place.name)}.html` : null;
+        return href
+          ? `<li><a href="${esc(href)}">${esc(label)}</a></li>`
+          : `<li>${esc(label)}</li>`;
+      }
+      if (s.name) return `<li>${esc(s.name)}</li>`;
+      return "";
+    })
+    .filter(Boolean)
+    .join("\n");
+  return items
+    ? `<h2>Finns hos</h2>\n    <ul class="seo-soldat">\n${items}\n    </ul>`
+    : "";
+}
+
 const placeUrls = [];
 for (const p of places) {
-  const slug = placeSlug(p.name);
+  const slug = p.slug || placeSlug(p.name);
   const meta = PLACE_META[p.name] || {};
   const path = `/plats/${slug}.html`;
   const canonical = `${base}${path}`;
   const desc = (p.short || p.blurb || "").slice(0, 160);
   const ogImage = absImg(p.img);
   const schemaType = schemaTypeFor(p);
+  const atPlace = producersAtPlaceSlug(slug);
 
   const hoursSpec = openingHoursSpecification(p);
   const jsonLd = {
@@ -257,6 +286,18 @@ for (const p of places) {
     `<a href="https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}" target="_blank" rel="noopener">Hitta hit</a>`
   );
 
+  const producersBlock = atPlace.length
+    ? `<h2>Lokala producenter här</h2>
+    <ul class="seo-soldat">
+${atPlace
+  .map(
+    (pr) =>
+      `      <li><a href="/verksamhet/${esc(producerSlug(pr))}.html">${esc(pr.name)}</a></li>`
+  )
+  .join("\n")}
+    </ul>`
+    : "";
+
   const body = `
     <img class="seo-hero-img" src="${esc(p.img)}" alt="${esc(p.name)}" width="1200" height="675" loading="eager">
     <p class="seo-meta"><span>${esc(p.cat)}</span>${meta.district ? `<span>${esc(meta.district)}</span>` : ""}<span>${esc(SITE.kommun)}</span></p>
@@ -267,6 +308,7 @@ for (const p of places) {
     <table class="hours-table"><tbody>${hoursRows(p)}</tbody></table>
     <p class="seo-meta">Öppettider kan ändras — dubbelkolla med stället innan du åker.</p>
     ${meta.seasonNote ? `<p><em>${esc(meta.seasonNote)}</em></p>` : ""}
+    ${producersBlock}
     <div class="seo-actions">${links.join("")}</div>
     <p class="seo-cta" style="margin-top:36px"><a href="/">← Alla ställen i ${esc(SITE.kommun)}</a></p>
   `;
@@ -285,6 +327,132 @@ for (const p of places) {
     "utf8"
   );
   placeUrls.push({ loc: canonical, priority: "0.8" });
+}
+
+/** Producers — no address, no geo, no map links. */
+const verksamhetDir = join(root, "public/verksamhet");
+if (existsSync(verksamhetDir)) rmSync(verksamhetDir, { recursive: true });
+mkdirSync(verksamhetDir, { recursive: true });
+const producerUrls = [];
+for (const pr of producers) {
+  const slug = producerSlug(pr);
+  const path = `/verksamhet/${slug}.html`;
+  const canonical = `${base}${path}`;
+  const desc = (pr.short || pr.blurb || "").slice(0, 160);
+  const ogImage = ogImgFor(pr.img);
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: pr.name,
+    description: pr.blurb,
+    image: ogImage,
+    url: canonical,
+    areaServed: SITE.kommun,
+    ...(pr.url ? { sameAs: [pr.url] } : {}),
+  };
+  const body = `
+    <img class="seo-hero-img" src="${esc(pr.img || SITE.defaultOgImage)}" alt="${esc(pr.name)}" width="1200" height="675" loading="eager">
+    <p class="seo-meta"><span>${esc(pr.cat || "Verksamhet")}</span><span>${esc(SITE.kommun)}</span></p>
+    <h1>${esc(pr.name)}</h1>
+    <p class="lede">${esc(pr.blurb)}</p>
+    ${pr.short && pr.short !== pr.blurb ? `<p>${esc(pr.short)}</p>` : ""}
+    ${soldAtSeoList(pr.soldAt)}
+    <div class="seo-actions">
+      <a href="/?verksamhet=${encodeURIComponent(slug)}">Öppna i guiden</a>
+      ${pr.url ? `<a href="${esc(pr.url)}" target="_blank" rel="noopener">Webbplats</a>` : ""}
+    </div>
+    <p class="seo-cta" style="margin-top:36px"><a href="/">← Alla ställen i ${esc(SITE.kommun)}</a></p>
+  `;
+  writeFileSync(
+    join(verksamhetDir, `${slug}.html`),
+    chrome({
+      title: `${pr.name} — ${SITE.name}`,
+      description: desc,
+      canonical,
+      ogImage,
+      jsonLd,
+      body,
+      current: "start",
+    }),
+    "utf8"
+  );
+  producerUrls.push({ loc: canonical, priority: "0.7" });
+}
+
+/** Recurring activities — one page per activity (not per occurrence). */
+const aktivitetDir = join(root, "public/aktivitet");
+if (existsSync(aktivitetDir)) rmSync(aktivitetDir, { recursive: true });
+mkdirSync(aktivitetDir, { recursive: true });
+const activityUrls = [];
+for (const r of recurring) {
+  const slug = recurringSlug(r);
+  const path = `/aktivitet/${slug}.html`;
+  const canonical = `${base}${path}`;
+  const when = recurringWhenLine(r);
+  const desc = (r.note || when || r.title).slice(0, 160);
+  const ogImage = ogImgFor(r.img);
+  const place = resolvePlaceRef(r.place, places);
+  const daySchema = schemaWeekday(r.weekday);
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    name: r.title,
+    description: r.note,
+    eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+    eventStatus: "https://schema.org/EventScheduled",
+    image: ogImage,
+    url: canonical,
+    ...(daySchema
+      ? {
+          eventSchedule: {
+            "@type": "Schedule",
+            byDay: daySchema,
+            ...(r.start ? { startTime: r.start } : {}),
+            ...(r.end ? { endTime: r.end } : {}),
+            scheduleTimezone: "Europe/Stockholm",
+          },
+        }
+      : {}),
+    location: {
+      "@type": "Place",
+      name: place?.name || r.place || SITE.kommun,
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: SITE.kommun,
+        addressCountry: "SE",
+      },
+    },
+    ...(r.host ? { organizer: { "@type": "Organization", name: r.host } } : {}),
+  };
+  const placeLink = place
+    ? `<a href="/plats/${esc(place.slug || placeSlug(place.name))}.html">${esc(place.name)}</a>`
+    : esc(r.place || "");
+  const body = `
+    <img class="seo-hero-img" src="${esc(r.img || SITE.defaultOgImage)}" alt="${esc(r.title)}" width="1200" height="675" loading="eager">
+    <p class="seo-meta"><span>Varje vecka</span><span>${esc(when)}</span><span>${esc(SITE.kommun)}</span></p>
+    <h1>${esc(r.title)}</h1>
+    <p class="lede">${esc(r.note || when)}</p>
+    <p class="seo-meta"><span>Plats: ${placeLink}</span>${r.host ? `<span>Arrangör: ${esc(r.host)}</span>` : ""}</p>
+    <div class="seo-actions">
+      <a href="/#hander">Öppna i guiden</a>
+      ${r.source ? `<a href="${esc(r.source)}" target="_blank" rel="noopener">Mer info</a>` : ""}
+    </div>
+    <p class="seo-cta" style="margin-top:36px"><a href="/evenemang.html">← Evenemang i ${esc(SITE.kommun)}</a></p>
+  `;
+  writeFileSync(
+    join(aktivitetDir, `${slug}.html`),
+    chrome({
+      title: `${r.title} — ${SITE.name}`,
+      description: desc,
+      canonical,
+      ogImage,
+      jsonLd,
+      body,
+      current: "evenemang",
+    }),
+    "utf8"
+  );
+  activityUrls.push({ loc: canonical, priority: "0.7" });
 }
 
 const evDir = join(root, "public/evenemang");
@@ -361,10 +529,13 @@ for (const g of guides) {
   const desc = (g.intro || g.lead || g.title).slice(0, 160);
   const stopList = g.stops
     .map((s) => {
-      const place = places.find((p) => p.name === s.place);
-      const href = place ? `/plats/${placeSlug(place.name)}.html` : "/";
+      const place = resolvePlaceRef(s.place, places);
+      const href = place ? `/plats/${place.slug || placeSlug(place.name)}.html` : null;
+      const title = place
+        ? `<a href="${esc(href)}">${esc(place.name)}</a>`
+        : esc(s.place);
       return `    <li>
-      <h3><a href="${esc(href)}">${esc(s.place)}</a></h3>
+      <h3>${title}</h3>
       <p>${esc(s.text)}</p>
     </li>`;
     })
@@ -427,6 +598,8 @@ const urls = [
   ...placeUrls.map((u) => ({ ...u, changefreq: "weekly" })),
   ...eventUrls.map((u) => ({ ...u, changefreq: "weekly" })),
   ...guideUrls.map((u) => ({ ...u, changefreq: "monthly" })),
+  ...producerUrls.map((u) => ({ ...u, changefreq: "monthly" })),
+  ...activityUrls.map((u) => ({ ...u, changefreq: "monthly" })),
 ];
 
 writeFileSync(
@@ -616,5 +789,5 @@ indexHtml = indexHtml.replace(/<!--seo-places-->[\s\S]*?<!--\/seo-places-->/, se
 writeFileSync(indexPath, indexHtml, "utf8");
 
 console.log(
-  `SEO generate: ${places.length} plats-sidor, ${events.length} event-sidor, ${guides.length} guide-sidor, index.html platslista, evenemang.html synkad, sitemap ${urls.length} URL:er`
+  `SEO generate: ${places.length} plats, ${events.length} event, ${guides.length} guide, ${producers.length} verksamhet, ${recurring.length} aktivitet, sitemap ${urls.length} URL:er`
 );

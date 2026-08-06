@@ -23,6 +23,33 @@ test("browser back from place restores category not start blank", async ({ page 
   await expect(page.locator("#view-kategori")).toHaveClass(/on/);
 });
 
+test("place → producer sets ?verksamhet= and survives reload", async ({ page }) => {
+  await page.goto("/");
+  await page.locator(".quick-paths").getByRole("button", { name: "Handla lokalt" }).click();
+  await page.getByText("Markims Bergby", { exact: true }).first().click();
+  await expect(page.locator("#view-plats")).toHaveClass(/on/);
+  await expect(page).toHaveURL(/plats=markims-bergby/);
+  await page.locator("#platsBody").getByRole("button", { name: "Markims honung" }).click();
+  await expect(page.locator("#view-verksamhet")).toHaveClass(/on/);
+  await expect(page.locator("#verkName")).toHaveText("Markims honung");
+  await expect(page).toHaveURL(/verksamhet=markims-honung/);
+  await expect(page).not.toHaveURL(/plats=/);
+  await page.reload();
+  await expect(page.locator("#view-verksamhet")).toHaveClass(/on/);
+  await expect(page.locator("#verkName")).toHaveText("Markims honung");
+  await expect(page).toHaveURL(/verksamhet=markims-honung/);
+});
+
+test("category → producer sets ?verksamhet=", async ({ page }) => {
+  await page.goto("/");
+  await page.locator(".quick-paths").getByRole("button", { name: "Producenter" }).click();
+  await expect(page.locator("#view-kategori")).toHaveClass(/on/);
+  await expect(page.locator("#catMapBtn")).toBeHidden();
+  await page.getByText("Markims honung", { exact: true }).first().click();
+  await expect(page.locator("#view-verksamhet")).toHaveClass(/on/);
+  await expect(page).toHaveURL(/verksamhet=markims-honung/);
+});
+
 test("history length: open place adds one entry", async ({ page }) => {
   await page.goto("/");
   const before = await page.evaluate(() => history.length);
