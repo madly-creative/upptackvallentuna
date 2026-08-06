@@ -63,6 +63,7 @@ Sajten är installerbar som app på hemskärmen (Android/Chrome + iOS Safari “
 - `public/sw.js` — cachar bara skalet; Open-Meteo och CARTO-tiles hämtas alltid live
 - `public/icons/` — kvarnmärke (192 / 512 / maskable / apple-touch). Regenerera: `npm run generate:icons`
 - Diskret “Lägg till”-hint via `beforeinstallprompt` (återkommande besök, Android)
+- Evergreen länk i footer (Delta) + Om — kvar efter “Inte nu” (chip snoozas 14 dagar)
 
 Ingen push, ingen bakgrundssynk. Install kräver **HTTPS** (eller localhost).
 
