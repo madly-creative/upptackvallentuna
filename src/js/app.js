@@ -20,6 +20,12 @@ import {
   stockholmMonth,
 } from "../data/stockholm.js";
 import { picksRotationSeed, selectRotatedDiversePicks } from "../lib/picksRotate.js";
+import {
+  textMatchesQuery,
+  eventSearchHay,
+  recurringSearchHay,
+  placeSearchHay,
+} from "../lib/searchMatch.js";
 
   const CONFIG = { kommun: SITE.kommun, region: SITE.region, center: SITE.center, zoom: SITE.zoom };
   const K = CONFIG.kommun;
@@ -1888,42 +1894,106 @@ import { picksRotationSeed, selectRotatedDiversePicks } from "../lib/picksRotate
     row.innerHTML=SEARCH_FILTERS.map(f=>`
       <button type="button" class="chip ${searchFilters.has(f.key)?'on':''}" data-key="${f.key}" onclick="toggleSearchFilter('${f.key}')">${f.label}</button>`).join('');
   }
+  function searchQuery(){
+    return (document.getElementById('globalSearch')?.value||"").trim();
+  }
   function placeMatchesSearch(p){
     for(const f of searchFilters){
       if(f==="open" && !isOpen(p)) return false;
       if(f!=="open" && !hasTag(p,f)) return false;
     }
-    const q=(document.getElementById('globalSearch')?.value||"").trim().toLowerCase();
+    const q=searchQuery();
     if(!q) return true;
     const m=metaOf(p);
-    const hay=[p.name,p.cat,p.blurb,p.short,p.type,m.district,(m.tags||[]).join(" "),CONTENT[p.name]?.address||""].join(" ").toLowerCase();
-    return q.split(/\s+/).every(w=>hay.includes(w));
+    const hay=placeSearchHay(p,{
+      district:m.district,
+      tags:(m.tags||[]).join(" "),
+      address:CONTENT[p.name]?.address||"",
+    });
+    return textMatchesQuery(hay, q);
+  }
+  function eventMatchesSearch(e){
+    const q=searchQuery();
+    if(!q) return false; // evenemang bara vid fritext — annars drunknar listan
+    return textMatchesQuery(eventSearchHay(e), q);
+  }
+  function recurringMatchesSearch(r){
+    const q=searchQuery();
+    if(!q) return false;
+    return textMatchesQuery(recurringSearchHay(r), q);
+  }
+  function searchEventRowHTML(e){
+    const d=new Date(e.date+"T12:00:00");
+    const whenShort=`${d.getDate()} ${MON[d.getMonth()]}`;
+    return `<article class="s-item" onclick="openEvent('${eventKeyAttr(e)}')">
+      <div class="im" style="background-image:url('${e.img||""}')"></div>
+      <div>
+        <h3>${escHtml(e.title)}</h3>
+        <div class="meta">${escHtml(e.host)} · ${escHtml(e.when||e.time||"")}</div>
+        <div class="tags"><span class="tag">Evenemang</span><span class="tag">${escHtml(eventCatLabel(e.cat))}</span></div>
+      </div>
+      <div class="travel">${escHtml(whenShort)}<br>${escHtml(DOW[d.getDay()])}</div>
+    </article>`;
+  }
+  function searchRecurringRowHTML(r){
+    const place=resolvePlaceRef(r.place, places);
+    const when=recurringWhenLine(r);
+    const go=place
+      ? `openPlace('${jsEsc(place.name)}')`
+      : `showView('hander')`;
+    return `<article class="s-item" onclick="${go}">
+      <div class="im" style="background-image:url('${r.img||""}')"></div>
+      <div>
+        <h3>${escHtml(r.title)}</h3>
+        <div class="meta">${escHtml(place?.name||r.place||r.host||"")} · ${escHtml(when)}</div>
+        <div class="tags"><span class="tag">Varje vecka</span></div>
+      </div>
+      <div class="travel">↻</div>
+    </article>`;
+  }
+  function searchPlaceRowHTML(p){
+    const tags=placeTags(p).slice(0,4).map(t=>`<span class="tag">${TAG_LABEL[t]||t}</span>`).join("");
+    const t=travelEstimate(p);
+    return `<article class="s-item" onclick="openPlace('${jsEsc(p.name)}')">
+      <div class="im" style="background-image:url('${p.img}')"></div>
+      <div>
+        <h3>${escHtml(p.name)}</h3>
+        <div class="meta">${escHtml(p.cat)}${metaOf(p).district?" · "+escHtml(metaOf(p).district):""} · ${openLabelShort(p)}</div>
+        <div class="tags"><span class="tag">Plats</span>${tags}</div>
+      </div>
+      <div class="travel">${fmtDist(t.km)}<br>Bil ${t.car} min<br>Cykel ${t.bike} min<br>SL ${t.sl} min</div>
+    </article>`;
   }
   function runSearch(){
     initSearchUI();
     const box=document.getElementById('searchResults'); if(!box) return;
-    const hits=places.filter(placeMatchesSearch).map(p=>{
+    const q=searchQuery();
+    const placeHits=places.filter(placeMatchesSearch).map(p=>{
       const t=travelEstimate(p);
       p._km=t.km;
       return p;
     }).sort((a,b)=>(a._km||99)-(b._km||99));
-    if(!hits.length){
+    // Place-only filters (öppet nu, barn…) apply to places; events match fritext only.
+    const eventHits=q ? liveEvents.filter(eventMatchesSearch) : [];
+    const recurringHits=q ? recurring.filter(recurringMatchesSearch) : [];
+    if(!placeHits.length && !eventHits.length && !recurringHits.length){
       box.innerHTML=`<div class="ev-empty">Inga träffar — prova ett annat ord eller färre filter.</div>`;
       return;
     }
-    box.innerHTML=hits.map(p=>{
-      const tags=placeTags(p).slice(0,4).map(t=>`<span class="tag">${TAG_LABEL[t]||t}</span>`).join("");
-      const t=travelEstimate(p);
-      return `<article class="s-item" onclick="openPlace('${jsEsc(p.name)}')">
-        <div class="im" style="background-image:url('${p.img}')"></div>
-        <div>
-          <h3>${p.name}</h3>
-          <div class="meta">${p.cat}${metaOf(p).district?" · "+metaOf(p).district:""} · ${openLabelShort(p)}</div>
-          <div class="tags">${tags}</div>
-        </div>
-        <div class="travel">${fmtDist(t.km)}<br>Bil ${t.car} min<br>Cykel ${t.bike} min<br>SL ${t.sl} min</div>
-      </article>`;
-    }).join('');
+    const parts=[];
+    if(eventHits.length){
+      parts.push(`<p class="search-group">Evenemang <span>${eventHits.length}</span></p>`);
+      parts.push(...eventHits.map(searchEventRowHTML));
+    }
+    if(recurringHits.length){
+      parts.push(`<p class="search-group">Återkommande <span>${recurringHits.length}</span></p>`);
+      parts.push(...recurringHits.map(searchRecurringRowHTML));
+    }
+    if(placeHits.length){
+      if(q) parts.push(`<p class="search-group">Platser <span>${placeHits.length}</span></p>`);
+      parts.push(...placeHits.map(searchPlaceRowHTML));
+    }
+    box.innerHTML=parts.join("");
   }
 
   function pickBest(type,except=new Set()){
@@ -2776,7 +2846,7 @@ import { picksRotationSeed, selectRotatedDiversePicks } from "../lib/picksRotate
         </div>
         <div class="tag">${isToday?"IDAG · ":""}Varje vecka</div>
         <p class="note" style="margin-top:8px;font-size:13px;color:var(--ink-soft)">${escHtml(r.note||"")}</p>
-        ${place?`<button type="button" class="lnk" style="margin-top:8px" onclick="openPlace('${jsEsc(place.name)}')">Om platsen →</button>`:""}
+        ${place?`<button type="button" class="place-btn" onclick="event.stopPropagation();openPlace('${jsEsc(place.name)}')">Om platsen →</button>`:""}
       </div>
     </article>`;
   }

@@ -67,9 +67,20 @@ export const events = [
     when: "Lör 22 aug · 10–13",
     time: "10:00 – 13:00",
     cat: "KULTUR",
-    note: "Prova-på linedance utan partner i Orkesta hembygdsgård. Inga förkunskaper krävs — instruktör Linda Blumenthal. Se bygdegårdens kalender för pris/anmälan.",
+    note: "Prova-på linedance utan partner i Orkesta hembygdsgård. Inga förkunskaper krävs — instruktör Linda Blumenthal (Bara man Vill). Se bygdegårdens kalender för pris/anmälan.",
     img: "/assets/evenemang/linedance-en-dagskurs/cover.webp",
     source: "https://www.orkestahembygd.se/event",
+  },
+  {
+    host: "Bara man Vill",
+    title: "Linedance — Kickoff & gratis prova på",
+    date: "2026-08-23",
+    when: "Sön 23 aug · 17–20:30",
+    time: "17:00 – 20:30",
+    cat: "KULTUR",
+    note: "Gratis kickoff inför höstens linedance-terminer: prova på 17–18 (ingen föranmälan), gemensam dans ca 18–20:30. Rosendalsskolan Södras matsal, Teknikvägen 25.",
+    img: "/assets/evenemang/bara-man-vill-kickoff/cover.webp",
+    source: "https://baramanvill.se/2026/07/24/kickoff-och-gratis-prova-pa-23-8/",
   },
   {
     host: "Vallentuna Kulturhus",
@@ -136,6 +147,17 @@ export const events = [
     note: "Hockeyfest i Vallentuna Ishall (Parkvägen 3): bl.a. VHF–Huddinge 4/9, AIK–BIK Karlskoga 9/9 och Hammarby-dubbel 12/9. Grill, öl och musik utomhus — biljetter via hockeyweek.se.",
     img: "/assets/upplev/rookie-cafe-och-restaurang/cover.webp",
     source: "https://hockeyweek.se/",
+  },
+  {
+    host: "Frösunda Hembygdsförening / Sunda Frön",
+    title: "Frösunda skördemarknad",
+    date: "2026-09-05",
+    when: "Lör 5 sep · 11–14",
+    time: "11:00 – 14:00",
+    cat: "MARKNAD",
+    note: "Liten skördemarknad vid Frösunda station — grönsaker, hantverk, perenner, äppelsortbestämning, korvgrillning, loppis och hembygdsföreningens fika. Välkommen som besökare eller försäljare (Swish).",
+    img: "/assets/evenemang/frosunda-skordemarknad/cover.webp",
+    source: "https://www.hembygd.se/frosunda/activities/56301",
   },
   {
     host: "Orkesta hembygdsförening",
@@ -356,8 +378,21 @@ export const EVENT_CONTENT = {
       <p>Biljetter från 495 kr/person. Boka: <a href="https://hokeriet.understory.io/sv/experience/b49ea0ae822f1cd02f8b2755242700d2" target="_blank" rel="noopener">Hökeriet / Understory</a> · fler bokningar: <a href="https://hokeriet.se/bokningar/" target="_blank" rel="noopener">hokeriet.se/bokningar</a>.</p>`,
   },
   "Linedance en-dagskurs": {
-    body: `<p>Lördag 22 augusti kl. 10–13 i Orkesta hembygdsgård. Linedance utan partner — enkla danser, inga förkunskaper. Instruktör Linda Blumenthal.</p>
-      <p>Se <a href="https://www.orkestahembygd.se/event" target="_blank" rel="noopener">orkestahembygd.se/event</a> för pris och anmälan.</p>`,
+    body: `<p>Lördag 22 augusti kl. 10–13 i Orkesta hembygdsgård. Linedance utan partner — enkla danser, inga förkunskaper. Instruktör Linda Blumenthal (<a href="https://baramanvill.se/" target="_blank" rel="noopener">Bara man Vill</a>).</p>
+      <p>Se <a href="https://www.orkestahembygd.se/event" target="_blank" rel="noopener">orkestahembygd.se/event</a> för pris och anmälan. Dagen efter: gratis <em>Kickoff &amp; prova på</em> hos Bara man Vill (23 aug).</p>`,
+  },
+  "Linedance — Kickoff & gratis prova på": {
+    body: `<p>Söndag 23 augusti i <strong>Rosendalsskolan Södras matsal</strong>, Teknikvägen 25 i Vallentuna — gratis kickoff inför höstens linedance-terminer med <a href="https://baramanvill.se/" target="_blank" rel="noopener">Bara man Vill</a>.</p>
+      <ul>
+        <li><strong>17:00–18:00</strong> — gratis prova på (ingen föranmälan)</li>
+        <li><strong>ca 18:00–20:30</strong> — gemensam dans (blandade nivåer; häng på även utan förkunskaper)</li>
+      </ul>
+      <p>Fika finns; ta gärna med något att bjuda på. Mer: <a href="https://baramanvill.se/2026/07/24/kickoff-och-gratis-prova-pa-23-8/" target="_blank" rel="noopener">baramanvill.se</a>.</p>`,
+  },
+  "Frösunda skördemarknad": {
+    body: `<p>Lördag 5 september kl. 11–14 vid <strong>Frösunda station</strong> — skördemarknad arrangerad av Frösunda Hembygdsförening och odlingsgruppen Sunda Frön. Liten, genuin skala: av grannar, för grannar.</p>
+      <p>På plats bl.a. äppelsortbestämning (ta med 5 äpplen), korvgrillning med Frösunda SK, grönsaker, honung, sticklingar/perenner, stickat &amp; virkat, bakverk, loppis och hembygdsföreningens fika.</p>
+      <p>Vill du sälja? Meddela gärna innan eller kom spontant — Swish och prisskyltade varor krävs. Bord i mån av plats. Info: <a href="https://www.hembygd.se/frosunda/activities/56301" target="_blank" rel="noopener">hembygd.se / Frösunda</a>.</p>`,
   },
   "Vallentuna Hockey Week": {
     body: `<p>4–12 september i Vallentuna Ishall (Parkvägen 3). Matcher bl.a. Vallentuna–Huddinge (4/9), AIK–BIK Karlskoga (9/9) och Hammarby-dubbel (12/9). Grill, öl och musik utomhus.</p>
