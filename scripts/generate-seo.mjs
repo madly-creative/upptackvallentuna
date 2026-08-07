@@ -231,7 +231,7 @@ function soldAtSeoList(soldAt) {
     .map((s) => {
       if (s.placeSlug) {
         const place = resolvePlaceRef(s.placeSlug, places);
-        const label = place?.name || s.placeSlug;
+        const label = s.label || place?.name || s.placeSlug;
         const href = place ? `/plats/${place.slug || placeSlug(place.name)}.html` : null;
         return href
           ? `<li><a href="${esc(href)}">${esc(label)}</a></li>`

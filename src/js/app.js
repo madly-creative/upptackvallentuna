@@ -2089,15 +2089,23 @@ import {
     const items=soldAt.map(s=>{
       if(s.placeSlug){
         const place=resolvePlaceRef(s.placeSlug, places);
+        const label=s.label || place?.name || s.placeSlug;
         if(place){
-          return `<li><button type="button" class="lnk" onclick="openPlace('${jsEsc(place.name)}')">${escHtml(place.name)}</button></li>`;
+          return `<button type="button" class="place-btn" onclick="openPlace('${jsEsc(place.name)}')">${escHtml(label)}</button>`;
         }
-        return `<li>${escHtml(s.placeSlug)}</li>`;
+        return `<span class="place-btn place-btn-static">${escHtml(label)}</span>`;
       }
-      if(s.name) return `<li>${escHtml(s.name)}</li>`;
+      if(s.name) return `<span class="place-btn place-btn-static">${escHtml(s.name)}</span>`;
       return "";
     }).filter(Boolean).join("");
-    return items?`<div class="plats-soldat"><h3>Finns hos</h3><ul>${items}</ul></div>`:"";
+    return items?`<div class="plats-soldat"><h3>Finns hos</h3><div class="plats-soldat-actions">${items}</div></div>`:"";
+  }
+  function producerGalleryHTML(pr){
+    const imgs=(pr.gallery||[]).filter(g=>g?.url);
+    if(imgs.length<2) return "";
+    return `<div class="plats-gallery verk-gallery">${imgs.map((g,i)=>
+      `<button type="button" class="g-thumb" style="background-image:url('${g.url}')" aria-label="${escHtml(g.alt||pr.name)}" onclick="openLightbox('${jsEsc(g.url)}')"></button>`
+    ).join("")}</div>`;
   }
   function closeUpplevMenu(){
     const dd=document.getElementById('navUpplev');
@@ -3012,9 +3020,9 @@ import {
     if(scored.reasons.length) body += `<div class="sun-note">Varför just nu: ${scored.reasons.join(" · ")}</div>`;
     const atHere=producersAtPlaceSlug(p.slug||placeSlug(p.name));
     if(atHere.length){
-      body += `<div class="plats-soldat"><h3>Lokala producenter här</h3><ul>${atHere.map(pr=>
-        `<li><button type="button" class="lnk" onclick="openProducer('${jsEsc(producerSlug(pr))}')">${escHtml(pr.name)}</button></li>`
-      ).join("")}</ul></div>`;
+      body += `<div class="plats-soldat"><h3>Lokala producenter här</h3><div class="plats-soldat-actions">${atHere.map(pr=>
+        `<button type="button" class="place-btn" onclick="openProducer('${jsEsc(producerSlug(pr))}')">${escHtml(pr.name)}</button>`
+      ).join("")}</div></div>`;
     }
     document.getElementById('platsBody').innerHTML = body;
     const todayHrs=fmtHoursSlot(daySlot(p));
@@ -3650,14 +3658,18 @@ import {
     const bodyEl=document.getElementById('verkBody');
     if(bodyEl){
       let body = pr.short && pr.short!==pr.blurb ? `<p>${escHtml(pr.short)}</p>` : "";
+      body += `<p class="verk-no-address">Ingen egen butiksadress — se beskrivningen och återförsäljarna nedan. Förbeställning enligt överenskommelse (ingen hemleverans).</p>`;
       body += soldAtHTML(pr.soldAt);
+      body += producerGalleryHTML(pr);
       bodyEl.innerHTML=body;
     }
     const info=document.getElementById('verkInfo');
     if(info){
       info.innerHTML=`
         <div class="irow"><span class="k">Kategori</span><span class="v">${escHtml(pr.cat||"Producent")}</span></div>
-        <div class="irow"><span class="k">Besök</span><span class="v">Ingen egen adress — se återförsäljare</span></div>
+        <div class="irow"><span class="k">Besök</span><span class="v">Adress saknas — se beskrivning &amp; återförsäljare</span></div>
+        ${pr.email?`<div class="irow"><span class="k">E-post</span><span class="v"><a href="mailto:${escHtml(pr.email)}">${escHtml(pr.email)}</a></span></div>`:""}
+        ${pr.phone?`<div class="irow"><span class="k">Telefon</span><span class="v"><a href="tel:${escHtml(String(pr.phone).replace(/\s+/g,""))}">${escHtml(pr.phone)}</a></span></div>`:""}
         ${pr.url?`<div class="irow"><span class="k">Hemsida</span><span class="v"><a href="${escHtml(pr.url)}" target="_blank" rel="noopener">Besök hemsidan →</a></span></div>`:""}`;
     }
     const histMode=opts.historyMode || (opts.fromPopstate ? "none" : "push");

@@ -404,7 +404,7 @@ export const EVENT_CONTENT = {
       <ul>
         <li>11:30 Linda — fönstertomater</li>
         <li>12:15 Andreas — invasiva växtarter</li>
-        <li>13:00 Anna från Mosters goda — mjölksyrade grönsaker</li>
+        <li>13:00 Anna från <a href="/?verksamhet=mosters-goda">Mosters Goda</a> — mjölksyrade grönsaker</li>
         <li>13:45 Erik från Bällsta trädgård — äpplen och mustning</li>
         <li>14:30 Maija från Blomsterprakten Roslagen — beskärning av fruktträd</li>
       </ul>
