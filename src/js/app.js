@@ -150,14 +150,16 @@ import {
       address:"Orkesta-Granby, 186 94 Vallentuna",
       facts:["Hökeriet","Granbyhällen","Charolais","Växthus"],
       localPhotos:true,
+      photoCredit:"Foto: Orkesta Granby Gård (granbygard.com).",
       images:[
+        {url:"/assets/upplev/orkesta-granby-gard/cover-garden.webp",alt:"Grusväg genom Orkesta Granby Gård"},
         {url:"/assets/upplev/orkesta-granby-gard/cover.webp",alt:"Vy mot Hökeriet på Orkesta Granby Gård"},
         {url:"/assets/upplev/orkesta-granby-gard/kor.webp",alt:"Kor i solnedgång på Granby"},
         {url:"/assets/upplev/orkesta-granby-gard/runsten.webp",alt:"Granbyhällen — vikingatida runhäll"}
       ],
-      body:`<p>Välkommen till Orkesta Granby Gård — ett modernt livsmedelsproducerande lantbruk mitt i ett historiskt kulturlandskap. På gården ligger <strong>Hökeriet</strong>: butik, servering och mötesplats med gårdens Charolais-kött, potatis, honung och fika. Växthus ger gurka, tomat och örter till köket.</p>
+      body:`<p><strong>Orkesta Granby Gård</strong> är det moderna livsmedelsproducerande lantbruket mitt i vikingalandskapet. För dig som besökare är det <strong>Hökeriet</strong> på gården som är mötesplatsen — butik, servering och event med gårdens Charolais-kött, potatis, honung och fika. Växthus ger gurka, tomat och örter till köket.</p>
       <p>Mitt i betesmarken ligger <strong>Granbyhällen</strong>, en av Sveriges till ytan största vikingatida runhällar. Boka gärna guidad visning av Granby Vikingagård eller hantverkstorpet Granbylund.</p>
-      <p>Sommaröppet med servering lördag–söndag 12–16 (enligt hokeriet.se). Frågor och event: <a href="mailto:info@hokeriet.se">info@hokeriet.se</a> · tel 08-612 30 05 / 076-945 90 10. Mer på <a href="https://hokeriet.se/" target="_blank" rel="noopener">hokeriet.se</a>.</p>`
+      <p>Sommaröppet med servering lördag–söndag 12–16 (enligt hokeriet.se). Frågor och event: <a href="mailto:info@hokeriet.se">info@hokeriet.se</a> · tel 08-612 30 05 / 076-945 90 10. Besöksdelen: <a href="https://hokeriet.se/" target="_blank" rel="noopener">hokeriet.se</a> · gården: <a href="https://granbygard.com/" target="_blank" rel="noopener">granbygard.com</a>.</p>`
     },
     "Tarby Gårdsbutik":{
       address:"Tarbyvägen / Tarby gård, Frösunda",
@@ -494,14 +496,36 @@ import {
     },
     "Gustavs udde":{
       address:"Wirséns väg 19, Bällsta",
-      facts:["Kommunalt bad","Brygga","Gräsytor","Bergsjön"],
+      facts:["Kommunalt bad","Sandstrand","Brygga","Rullstolsramp"],
       localPhotos:true,
       photoCredit:"Foto: Naturkartan.",
       images:[
         {url:"/assets/upplev/gustavs-udde/cover.webp",alt:"Badplatsen Gustavs udde"}
       ],
-      body:`<p>En av kommunens skötta badplatser — vid Bergsjön i Bällsta, med brygga och gräsytor. Lugnare alternativ till Kvarnbadets bassänger när du vill ha sjöbad.</p>
+      body:`<p>En av kommunens skötta badplatser — ca 500 m från Bällsta station, med sandstrand, brygga, rullstolsramp och picknickbord. Lugnare alternativ till Kvarnbadets bassänger när du vill ha sjöbad.</p>
       <p>Vattenkvalitet publiceras via Havs- och vattenmyndigheten. Mer: <a href="https://www.vallentuna.se/fritid-och-kultur/friluftsliv-och-natur/badplatser-och-sjoar/" target="_blank" rel="noopener">vallentuna.se / badplatser</a>.</p>`
+    },
+    "Bergsjöns badplats":{
+      address:"Kårsta (parkering vid Kårstaskolan)",
+      facts:["Kommunalt bad","Brygga","Grillplats","Omklädning","Kårsta"],
+      localPhotos:true,
+      photoCredit:"Foto: Naturkartan / Vallentuna kommun.",
+      images:[
+        {url:"/assets/upplev/bergsjons-badplats/cover.webp",alt:"Bergsjöns badplats i Kårsta"}
+      ],
+      body:`<p>Kommunalt skogsbad i <strong>Kårsta</strong> — en mindre, ganska grund sjö med liten strand, brygga och omklädningsrum. På varma sommardagar blir vattnet snabbt skönt; det finns också grillplats (ta med egen ved).</p>
+      <p>Parkera vid Kårstaskolan och följ stigen till badet. Hund är välkommen kopplad. Vattenkvalitet: sök Bergsjön på Havs- och vattenmyndighetens badplatsinfo. Mer: <a href="https://www.vallentuna.se/fritid-och-kultur/friluftsliv-och-natur/badplatser-och-sjoar/" target="_blank" rel="noopener">vallentuna.se / badplatser</a>.</p>`
+    },
+    "AutoMat Kårsta":{
+      address:"Röbytorpsvägen 1A / Kårsta torg, 186 60 Kårsta",
+      facts:["Obemannad","Bank-ID","Öppet 05–23","Kårsta torg"],
+      localPhotos:true,
+      photoCredit:"Foto: Never Closed / AutoMat.",
+      images:[
+        {url:"/assets/upplev/automat-karsta/cover.webp",alt:"AutoMat Kårsta — obemannad matbutik"}
+      ],
+      body:`<p>Liten, välsorterad lanthandel mitt på <strong>Kårsta torg</strong> — obemannad butik i Never Closed-konceptet. Skanna QR-koden vid dörren, identifiera dig med Bank-ID, gå in och handla i egen takt. Öppet <strong>05–23</strong> alla dagar.</p>
+      <p>Basvaror, närproducerat när det finns, kort/Swish i självskanning. Tipset kom från en lokalbo som lyfter den mysiga, välkomnande atmosfären. Webb: <a href="https://www.neverclosed.se/butiker/automat-karsta/" target="_blank" rel="noopener">neverclosed.se / AutoMat Kårsta</a>.</p>`
     },
     "Vallboden":{
       address:"Centralvägen 6, Vallentuna centrum",
@@ -623,7 +647,9 @@ import {
     "Gästis Kök & Bar":"2026-08-02",
     "Langhard Lantbruk":"2026-08-05",
     "Folkantik och Vintage":"2026-08-05",
-    "Jano":"2026-08-06"
+    "Jano":"2026-08-06",
+    "Bergsjöns badplats":"2026-08-07",
+    "AutoMat Kårsta":"2026-08-07"
   };
 
   const now=new Date();
