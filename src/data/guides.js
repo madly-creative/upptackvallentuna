@@ -85,7 +85,7 @@ export const guides = [
       },
       {
         place: "Gustavs udde",
-        text: "När korgen är klar: styr mot Gustavs udde vid Bergsjön. Brygga, gräs och ett bad som är stillare än centrums bassänger. Ta med en handduk och låt förmiddagen bli vatten och tystnad — inget mer.",
+        text: "När korgen är klar: styr mot Gustavs udde i Bällsta. Brygga, sandstrand och ett bad som är stillare än centrums bassänger. Ta med en handduk och låt förmiddagen bli vatten och tystnad — inget mer.",
       },
       {
         place: "Vallboden",
@@ -374,7 +374,7 @@ export const guides = [
       },
       {
         place: "Gustavs udde",
-        text: "Svalka vid Bergsjön. Gustavs udde är stillare än Kvarnbadets liv — brygga, gräs, ett bad utan kö. Packa handduk. Augustivattnet är ofta det finaste.",
+        text: "Svalka i Bällsta. Gustavs udde är stillare än Kvarnbadets liv — brygga, sandstrand, ett bad utan kö. Packa handduk. Augustivattnet är ofta det finaste.",
       },
       {
         place: "Presto Grillen",

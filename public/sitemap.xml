@@ -181,6 +181,16 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://upptackvallentuna.se/plats/bergsjons-badplats.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/plats/automat-karsta.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://upptackvallentuna.se/plats/vallboden.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
