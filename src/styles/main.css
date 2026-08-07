@@ -474,13 +474,13 @@
     box-shadow:0 4px 12px rgba(28,36,26,.12);
   }
   .ev .fav:hover,.ev .fav.on{color:var(--rust)}
-  .ev .remind-btn,.plats-ev .remind-btn{
+  .ev .remind-btn,.plats-ev .remind-btn,.ev .place-btn{
     display:inline-flex;align-items:center;justify-content:center;gap:6px;margin-top:12px;align-self:flex-start;
     font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:.04em;
     color:var(--moss-deep);background:var(--paper-2);border:1px solid var(--line);
     border-radius:999px;padding:8px 14px;cursor:pointer;transition:background .15s,border-color .15s,color .15s;
   }
-  .ev .remind-btn:hover,.plats-ev .remind-btn:hover{background:#fff;border-color:var(--moss);color:var(--rust)}
+  .ev .remind-btn:hover,.plats-ev .remind-btn:hover,.ev .place-btn:hover{background:#fff;border-color:var(--moss);color:var(--rust)}
   .plats-ev .remind-btn{margin-top:14px}
   .remind-pop{
     position:fixed;z-index:1500;min-width:220px;padding:10px;

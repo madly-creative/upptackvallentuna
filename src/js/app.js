@@ -2776,7 +2776,7 @@ import { picksRotationSeed, selectRotatedDiversePicks } from "../lib/picksRotate
         </div>
         <div class="tag">${isToday?"IDAG · ":""}Varje vecka</div>
         <p class="note" style="margin-top:8px;font-size:13px;color:var(--ink-soft)">${escHtml(r.note||"")}</p>
-        ${place?`<button type="button" class="lnk" style="margin-top:8px" onclick="openPlace('${jsEsc(place.name)}')">Om platsen →</button>`:""}
+        ${place?`<button type="button" class="place-btn" onclick="event.stopPropagation();openPlace('${jsEsc(place.name)}')">Om platsen →</button>`:""}
       </div>
     </article>`;
   }
