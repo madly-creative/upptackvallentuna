@@ -2,8 +2,42 @@
  * Verksamheter utan egen besöksadress (eller med koppling till andras platser).
  * — Aldrig lat/lng/address här.
  * — soldAt: { placeSlug } (länkas) eller { name } (visas utan länk).
+ * — label (optional) on placeSlug entries overrides the place name in the UI.
  */
 export const producers = [
+  {
+    slug: "mosters-goda",
+    name: "Mosters Goda",
+    cat: "Mathantverk",
+    blurb:
+      "Anna Oliw skapar marmelader, mjölksyrade och picklade grönsaker samt saft i sitt kök i Vallentuna — lokala råvaror, hantverksmässiga metoder. Ingen egen butik att besöka; produkterna finns hos återförsäljare i bygden, på marknader och via förbeställning.",
+    short:
+      "Sylt, surkål och saft från Mosters kök — finns hos Hökeriet, Langhard och Café Valkyria.",
+    img: "/assets/verksamhet/mosters-goda/cover.webp",
+    gallery: [
+      {
+        url: "/assets/verksamhet/mosters-goda/sommarsylt.webp",
+        alt: "Sommarsylt rabarber & jordgubbar från Mosters Goda",
+      },
+      {
+        url: "/assets/verksamhet/mosters-goda/flader-citron.webp",
+        alt: "Fläder-citron saft från Mosters Goda",
+      },
+      {
+        url: "/assets/verksamhet/mosters-goda/cover.webp",
+        alt: "Enbär från bygden — lokala råvaror",
+      },
+    ],
+    url: "https://www.mostersgoda.se/",
+    email: "kontakt@mostersgoda.se",
+    phone: "073-776 73 96",
+    soldAt: [
+      { placeSlug: "orkesta-granby-gard", label: "Hökeriet (Orkesta Granby Gård)" },
+      { placeSlug: "langhard-lantbruk" },
+      { placeSlug: "cafe-valkyria" },
+      { name: "Marknader i bygden" },
+    ],
+  },
   {
     slug: "markims-honung",
     name: "Markims honung",

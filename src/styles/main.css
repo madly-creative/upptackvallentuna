@@ -637,6 +637,19 @@
   .plats-soldat h3{font-family:var(--font-serif,Georgia,serif);font-size:1.15rem;margin:0 0 10px}
   .plats-soldat ul{margin:0;padding-left:1.15em}
   .plats-soldat li{margin:0 0 6px}
+  .verk-no-address{
+    font-size:14px;line-height:1.5;color:var(--ink-soft);font-style:italic;
+    margin:0 0 16px;padding:12px 14px;border-radius:12px;background:var(--paper-2);border:1px solid var(--line-soft);
+  }
+  .verk-gallery{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:22px 0 8px;
+  }
+  .verk-gallery .g-thumb{
+    aspect-ratio:1;border-radius:12px;border:1px solid var(--line-soft);
+    background-size:cover;background-position:center;cursor:pointer;padding:0;
+  }
+  .verk-gallery .g-thumb:hover{outline:2px solid var(--moss);outline-offset:2px}
+  @media (max-width:720px){.verk-gallery{grid-template-columns:1fr 1fr}}
   .events-page .event-count{
     font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
     color:var(--ink-soft);margin:0 0 16px;min-height:1.2em;
