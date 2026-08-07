@@ -861,6 +861,15 @@
   .filter-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
   .filter-row .chip.on{background:var(--moss-deep);border-color:var(--moss-deep);color:var(--paper)}
   .search-results{display:grid;gap:10px}
+  .search-group{
+    margin:14px 0 2px;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ink-soft);display:flex;align-items:center;gap:8px;
+  }
+  .search-group:first-child{margin-top:0}
+  .search-group span{
+    font-size:11px;letter-spacing:0;font-weight:700;text-transform:none;
+    color:var(--moss);background:var(--paper-2);border-radius:999px;padding:2px 8px;
+  }
   .s-item{display:grid;grid-template-columns:72px 1fr auto;gap:14px;align-items:center;padding:12px;border:1px solid var(--line-soft);border-radius:12px;background:var(--card);cursor:pointer;transition:transform .15s,box-shadow .15s}
   .s-item:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
   .s-item .im{width:72px;height:72px;border-radius:10px;background-size:cover;background-position:center}
