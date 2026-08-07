@@ -1,7 +1,10 @@
 /**
  * Deterministic daily rotation for Handplockat picks.
- * Keeps score buckets so "öppet nu" / weather still dominate;
- * within a bucket, order rotates by seed (date + daypart + mood).
+ *
+ * Score only decides who is eligible (top band / top N).
+ * Within that pool, order is driven by seed (Stockholm calendar day +
+ * daypart + weather) — so a chronically high scorer like Gästis is not
+ * locked as feature every day.
  */
 
 /** FNV-1a 32-bit — stable across JS engines. */
@@ -15,23 +18,21 @@ export function hashStr(s) {
   return h >>> 0;
 }
 
-/** Seed that changes by calendar day (Stockholm ISO), daypart and weather mood. */
+/**
+ * Seed that changes by Stockholm calendar day (YYYY-MM-DD in Europe/Stockholm),
+ * daypart and weather mood — not UTC midnight.
+ */
 export function picksRotationSeed({ todayISO, daypart, mood, weatherCode }) {
   return `${todayISO || ""}|${daypart || ""}|${mood || "mild"}|${weatherCode ?? ""}`;
 }
 
 /**
- * Reorder scored candidates: higher score buckets first, then daily hash within bucket.
- * @param {{ p: { name: string }, score: number }[]} candidates
+ * Reorder a pool by daily hash only (score already used for eligibility).
+ * @param {{ p: { name: string }, score?: number }[]} candidates
  * @param {string} seed
- * @param {number} [bucketSize=10]
  */
-export function rotateScoredCandidates(candidates, seed, bucketSize = 10) {
-  const size = Math.max(1, bucketSize);
+export function rotatePoolOrder(candidates, seed) {
   return [...candidates].sort((a, b) => {
-    const ba = Math.floor((a.score || 0) / size);
-    const bb = Math.floor((b.score || 0) / size);
-    if (ba !== bb) return bb - ba;
     const ha = hashStr(`${a.p?.name || ""}|${seed}`);
     const hb = hashStr(`${b.p?.name || ""}|${seed}`);
     if (ha !== hb) return ha - hb;
@@ -39,16 +40,22 @@ export function rotateScoredCandidates(candidates, seed, bucketSize = 10) {
   });
 }
 
+/** @deprecated Prefer rotatePoolOrder — kept for older call sites/tests. */
+export function rotateScoredCandidates(candidates, seed, _bucketSize) {
+  return rotatePoolOrder(candidates, seed);
+}
+
 /**
- * Build a candidate pool from ranked list, then rotate within a score band.
+ * Build a candidate pool from ranked list (score = eligibility), then
+ * rotate the whole pool by seed before diversifying types.
  * @param {{ p: { name: string, type: string }, score: number, open?: boolean }[]} ranked
  * @param {{ seed: string, count?: number, band?: number, minPool?: number, maxPool?: number, preferOpenTimed?: (x)=>boolean }} opts
  */
 export function selectRotatedDiversePicks(ranked, opts = {}) {
   const count = opts.count ?? 3;
-  const band = opts.band ?? 30;
+  const band = opts.band ?? 45;
   const minPool = opts.minPool ?? 8;
-  const maxPool = opts.maxPool ?? 12;
+  const maxPool = opts.maxPool ?? 14;
   const seed = opts.seed || "";
   if (!ranked?.length) return [];
 
@@ -66,7 +73,7 @@ export function selectRotatedDiversePicks(ranked, opts = {}) {
     candidates = candidates.slice(0, maxPool);
   }
 
-  const rotated = rotateScoredCandidates(candidates, seed);
+  const rotated = rotatePoolOrder(candidates, seed);
 
   const picked = [rotated[0]];
   const types = new Set([rotated[0].p.type]);

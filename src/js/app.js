@@ -1719,7 +1719,7 @@ import { picksRotationSeed, selectRotatedDiversePicks } from "../lib/picksRotate
     document.getElementById('chipOpenNow')?.classList.add('on');
     filterAndMap('alla');
   }
-  /** Prefer different types; rotate among near-tied candidates by Stockholm day + weather. */
+  /** Prefer different types; score = eligibility pool, order rotates by Stockholm day + weather. */
   function selectDiversePicks(count=3){
     const seed=picksRotationSeed({
       todayISO,
