@@ -2091,14 +2091,14 @@ import {
         const place=resolvePlaceRef(s.placeSlug, places);
         const label=s.label || place?.name || s.placeSlug;
         if(place){
-          return `<li><button type="button" class="lnk" onclick="openPlace('${jsEsc(place.name)}')">${escHtml(label)}</button></li>`;
+          return `<button type="button" class="place-btn" onclick="openPlace('${jsEsc(place.name)}')">${escHtml(label)}</button>`;
         }
-        return `<li>${escHtml(label)}</li>`;
+        return `<span class="place-btn place-btn-static">${escHtml(label)}</span>`;
       }
-      if(s.name) return `<li>${escHtml(s.name)}</li>`;
+      if(s.name) return `<span class="place-btn place-btn-static">${escHtml(s.name)}</span>`;
       return "";
     }).filter(Boolean).join("");
-    return items?`<div class="plats-soldat"><h3>Finns hos</h3><ul>${items}</ul></div>`:"";
+    return items?`<div class="plats-soldat"><h3>Finns hos</h3><div class="plats-soldat-actions">${items}</div></div>`:"";
   }
   function producerGalleryHTML(pr){
     const imgs=(pr.gallery||[]).filter(g=>g?.url);
@@ -3020,9 +3020,9 @@ import {
     if(scored.reasons.length) body += `<div class="sun-note">Varför just nu: ${scored.reasons.join(" · ")}</div>`;
     const atHere=producersAtPlaceSlug(p.slug||placeSlug(p.name));
     if(atHere.length){
-      body += `<div class="plats-soldat"><h3>Lokala producenter här</h3><ul>${atHere.map(pr=>
-        `<li><button type="button" class="lnk" onclick="openProducer('${jsEsc(producerSlug(pr))}')">${escHtml(pr.name)}</button></li>`
-      ).join("")}</ul></div>`;
+      body += `<div class="plats-soldat"><h3>Lokala producenter här</h3><div class="plats-soldat-actions">${atHere.map(pr=>
+        `<button type="button" class="place-btn" onclick="openProducer('${jsEsc(producerSlug(pr))}')">${escHtml(pr.name)}</button>`
+      ).join("")}</div></div>`;
     }
     document.getElementById('platsBody').innerHTML = body;
     const todayHrs=fmtHoursSlot(daySlot(p));
