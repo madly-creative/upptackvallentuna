@@ -6,6 +6,17 @@ const FALLBACK_IMG = "/assets/hero/2.webp";
 
 export const events = [
   {
+    host: "Orkesta Granby Gård / Hökeriet",
+    title: "Sommarkväll med Live-Jazz",
+    date: "2026-08-07",
+    when: "Fre 7 aug · 19–21",
+    time: "19:00 – 21:00",
+    cat: "KULTUR",
+    note: "Mat och livejazz på Hökeriet, Orkesta Granby Gård — Jan Levander med trion Jazz Latitude 59° (barytonsax, gitarr, kontrabas). Från 495 kr/person via Hökeriets bokning.",
+    img: "/assets/evenemang/hokeriet-live-jazz/cover.webp",
+    source: "https://hokeriet.understory.io/sv/experience/e5f1d480e8599f924086394b90a1fbab",
+  },
+  {
     host: "Orkesta Bygdegård Lindholmen",
     title: "Utomhusbio – Grannfejden",
     date: "2026-08-09",
@@ -327,6 +338,10 @@ export const EVENT_CONTENT = {
   "Scenfredag – Axman Band": {
     body: `<p>Fredag 28 augusti kl. 19 på Caféscenen i Vallentuna Kulturhus — blues och rock med Axman Band. Insläpp från 18:30. Biljetter från 150 kr.</p>
       <p>Boka: <a href="https://www.nortic.se/ticket/show/353467" target="_blank" rel="noopener">Nortic</a>.</p>`,
+  },
+  "Sommarkväll med Live-Jazz": {
+    body: `<p>Fredag 7 augusti kl. 19–21 på <strong>Hökeriet</strong>, Orkesta Granby Gård — sommarkväll med mat och livejazz. Jan Levander med trion <em>Jazz Latitude 59°</em>: Jan Levander (barytonsax), Mats Larsson (gitarr) och Filip Augustsson (kontrabas).</p>
+      <p>Från 495 kr/person. Boka: <a href="https://hokeriet.understory.io/sv/experience/e5f1d480e8599f924086394b90a1fbab" target="_blank" rel="noopener">Hökeriet / Understory</a> · <a href="https://hokeriet.se/bokningar/" target="_blank" rel="noopener">hokeriet.se/bokningar</a>.</p>`,
   },
   "Sommarbuffé på Hökeriet": {
     body: `<p>Fredag 21 augusti kl. 19–21 på <strong>Hökeriet</strong>, Orkesta Granby Gård — sensommarbuffé med långbord i växthuset och sång av Maria. Den årliga traditionen är tillbaka.</p>

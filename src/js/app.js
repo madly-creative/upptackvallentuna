@@ -150,14 +150,16 @@ import {
       address:"Orkesta-Granby, 186 94 Vallentuna",
       facts:["Hökeriet","Granbyhällen","Charolais","Växthus"],
       localPhotos:true,
+      photoCredit:"Foto: Orkesta Granby Gård (granbygard.com).",
       images:[
+        {url:"/assets/upplev/orkesta-granby-gard/cover-garden.webp",alt:"Grusväg genom Orkesta Granby Gård"},
         {url:"/assets/upplev/orkesta-granby-gard/cover.webp",alt:"Vy mot Hökeriet på Orkesta Granby Gård"},
         {url:"/assets/upplev/orkesta-granby-gard/kor.webp",alt:"Kor i solnedgång på Granby"},
         {url:"/assets/upplev/orkesta-granby-gard/runsten.webp",alt:"Granbyhällen — vikingatida runhäll"}
       ],
-      body:`<p>Välkommen till Orkesta Granby Gård — ett modernt livsmedelsproducerande lantbruk mitt i ett historiskt kulturlandskap. På gården ligger <strong>Hökeriet</strong>: butik, servering och mötesplats med gårdens Charolais-kött, potatis, honung och fika. Växthus ger gurka, tomat och örter till köket.</p>
+      body:`<p><strong>Orkesta Granby Gård</strong> är det moderna livsmedelsproducerande lantbruket mitt i vikingalandskapet. För dig som besökare är det <strong>Hökeriet</strong> på gården som är mötesplatsen — butik, servering och event med gårdens Charolais-kött, potatis, honung och fika. Växthus ger gurka, tomat och örter till köket.</p>
       <p>Mitt i betesmarken ligger <strong>Granbyhällen</strong>, en av Sveriges till ytan största vikingatida runhällar. Boka gärna guidad visning av Granby Vikingagård eller hantverkstorpet Granbylund.</p>
-      <p>Sommaröppet med servering lördag–söndag 12–16 (enligt hokeriet.se). Frågor och event: <a href="mailto:info@hokeriet.se">info@hokeriet.se</a> · tel 08-612 30 05 / 076-945 90 10. Mer på <a href="https://hokeriet.se/" target="_blank" rel="noopener">hokeriet.se</a>.</p>`
+      <p>Sommaröppet med servering lördag–söndag 12–16 (enligt hokeriet.se). Frågor och event: <a href="mailto:info@hokeriet.se">info@hokeriet.se</a> · tel 08-612 30 05 / 076-945 90 10. Besöksdelen: <a href="https://hokeriet.se/" target="_blank" rel="noopener">hokeriet.se</a> · gården: <a href="https://granbygard.com/" target="_blank" rel="noopener">granbygard.com</a>.</p>`
     },
     "Tarby Gårdsbutik":{
       address:"Tarbyvägen / Tarby gård, Frösunda",
