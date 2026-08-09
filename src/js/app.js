@@ -1744,7 +1744,9 @@ import { facts as FACTS_SEED, currentFact, isSagen } from "../data/facts.js";
   function renderWeeklyFact(){
     const card=document.getElementById('weeklyFactCard');
     if(!card) return;
-    const fact=currentFact(todayISO, facts);
+    // Deploy Preview: show #7 so new art can be QA'd in the homepage card.
+    const previewFactId=/deploy-preview/i.test(location.hostname)?7:null;
+    const fact=(previewFactId&&facts.find(f=>f.id===previewFactId))||currentFact(todayISO, facts);
     if(!fact){ card.innerHTML=""; return; }
     const sagen=isSagen(fact);
     const source=fact.source
