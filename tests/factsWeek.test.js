@@ -13,7 +13,12 @@ describe("factsWeek", () => {
   it("has 31 facts from JSON", () => {
     expect(facts).toHaveLength(31);
     expect(facts[0].title).toBe("Mannen som ägde hela Täby");
-    expect(facts[0].image).toBeNull();
+  });
+
+  it("wired facts expose per-post image paths", () => {
+    expect(facts[0].image).toBe("/assets/veckans-fakta/mannen-som-agde-hela-taby.webp");
+    expect(facts[5].image).toContain("natten-blixten-brande-kyrktornet");
+    expect(facts[6].image).toBeNull();
   });
 
   it("epoch week is 0", () => {

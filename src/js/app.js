@@ -1750,6 +1750,9 @@ import { facts as FACTS_SEED, currentFact, isSagen } from "../data/facts.js";
     const source=fact.source
       ?`<p class="weekly-fact-source">Källa: ${escHtml(fact.source)}</p>`
       :"";
+    const media=fact.image
+      ?`<img class="weekly-fact-art" src="${escHtml(fact.image)}" alt="" width="1024" height="682" decoding="async" loading="lazy" />`
+      :`<div class="weekly-fact-ph">${sagen?"✦":"?"}</div>`;
     card.innerHTML=`
       <div class="weekly-fact-copy">
         <div class="eyebrow">${sagen?"Enligt sägnen…":"Veckans Visste du att"}</div>
@@ -1758,9 +1761,7 @@ import { facts as FACTS_SEED, currentFact, isSagen } from "../data/facts.js";
         <p>${escHtml(fact.longFact)}</p>
         ${source}
       </div>
-      <div class="weekly-fact-media" aria-hidden="true">
-        <div class="weekly-fact-ph">${sagen?"✦":"?"}</div>
-      </div>`;
+      <div class="weekly-fact-media" aria-hidden="true">${media}</div>`;
   }
   function renderPicks(){
     const grid=document.getElementById('picksGrid'); if(!grid) return;

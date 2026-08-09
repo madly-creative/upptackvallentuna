@@ -486,8 +486,11 @@ for (const fact of facts) {
   const sagenBlock = sagen
     ? `<p class="seo-sagen-label"><em>Enligt sägnen…</em> Folktro — inte fastslagen historia.</p>`
     : "";
+  const art = fact.image
+    ? `<img class="seo-fact-art" src="${esc(fact.image)}" alt="" width="1024" height="682" decoding="async" loading="lazy" />`
+    : `<div class="seo-fact-ph" aria-hidden="true">${sagen ? "✦" : "?"}</div>`;
   const body = `
-    <div class="seo-fact-ph" aria-hidden="true">${sagen ? "✦" : "?"}</div>
+    ${art}
     <p class="seo-meta"><span>${sagen ? "Sägen" : "Veckans Visste du att"}</span><span>${esc(SITE.kommun)}</span></p>
     <h1>${esc(fact.title)}</h1>
     ${sagenBlock}
@@ -504,7 +507,7 @@ for (const fact of facts) {
       title: `${fact.title} — Veckans Visste du att · ${SITE.name}`,
       description: desc,
       canonical,
-      ogImage: ogImgFor(SITE.defaultOgImage),
+      ogImage: ogImgFor(fact.image || SITE.defaultOgImage),
       jsonLd,
       body,
       current: "start",
