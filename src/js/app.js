@@ -26,6 +26,7 @@ import {
   recurringSearchHay,
   placeSearchHay,
 } from "../lib/searchMatch.js";
+import { facts as FACTS_SEED, currentFact, factSlug, isSagen } from "../data/facts.js";
 
   const CONFIG = { kommun: SITE.kommun, region: SITE.region, center: SITE.center, zoom: SITE.zoom };
   const K = CONFIG.kommun;
@@ -33,6 +34,7 @@ import {
   const places = PLACES_SEED;
   const guides = GUIDES_SEED;
   const producers = PRODUCERS_SEED;
+  const facts = FACTS_SEED;
   const recurring = RECURRING_SEED;
 
   let events = EVENTS_SEED.map(e => ({ ...e }));
@@ -1739,6 +1741,25 @@ import {
       preferOpenTimed:(x)=>x.open && isTimedVenue(x.p),
     });
   }
+  function renderWeeklyFact(){
+    const card=document.getElementById('weeklyFactCard');
+    if(!card) return;
+    const fact=currentFact(todayISO, facts);
+    if(!fact){ card.innerHTML=""; return; }
+    const slug=factSlug(fact);
+    const sagen=isSagen(fact);
+    card.innerHTML=`
+      <div class="weekly-fact-media" aria-hidden="true">
+        <div class="weekly-fact-ph">${sagen?"✦":"?"}</div>
+      </div>
+      <div class="weekly-fact-body">
+        <p class="weekly-fact-eyebrow">${sagen?"Enligt sägnen…":"Veckans Visste du att"}</p>
+        <h3>${escHtml(fact.title)}</h3>
+        ${sagen?`<p class="weekly-fact-sagen">Folktro — inte fastslagen historia</p>`:""}
+        <p class="weekly-fact-short">${escHtml(fact.shortFact)}</p>
+        <a class="weekly-fact-more" href="/veckans-fakta/${encodeURIComponent(slug)}.html">Läs mer →</a>
+      </div>`;
+  }
   function renderPicks(){
     const grid=document.getElementById('picksGrid'); if(!grid) return;
     // En full mening — inte fragment som "fint väder · lunchläge"
@@ -1838,7 +1859,7 @@ import {
     refreshPulse();
     try{ renderTodayBrief(); }catch(e){}
   }
-  function renderToday(){ renderPicks(); }
+  function renderToday(){ renderPicks(); renderWeeklyFact(); }
   function renderFavorites(){
     const grid=document.getElementById('favGrid');
     const lede=document.getElementById('favLede');

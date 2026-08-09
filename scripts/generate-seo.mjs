@@ -14,6 +14,7 @@ import { SITE } from "../src/data/site.js";
 import { producers, producersAtPlaceSlug, producerSlug } from "../src/data/producers.js";
 import { recurring, recurringSlug, recurringWhenLine } from "../src/data/recurring.js";
 import { formatWeekday, schemaWeekday } from "../src/data/stockholm.js";
+import { factSlug, isSagen } from "../src/lib/factsWeek.js";
 import { printUnmatchedLinks } from "./report-unmatched-links.mjs";
 
 const __dir = dirname(fileURLToPath(import.meta.url));
@@ -25,6 +26,11 @@ const SCHEMA_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Fr
 const umamiScript = SITE.umamiWebsiteId
   ? `<script defer src="https://cloud.umami.is/script.js" data-website-id="${SITE.umamiWebsiteId}"></script>`
   : "";
+
+/** facts.json — read from disk so Node doesn't need JSON import attributes. */
+const facts = JSON.parse(
+  readFileSync(join(root, "src/data/facts.json"), "utf8")
+);
 
 printUnmatchedLinks();
 
@@ -455,6 +461,67 @@ for (const r of recurring) {
   activityUrls.push({ loc: canonical, priority: "0.7" });
 }
 
+/** Veckans Visste du att — one static page per fact. */
+const faktaDir = join(root, "public/veckans-fakta");
+if (existsSync(faktaDir)) rmSync(faktaDir, { recursive: true });
+mkdirSync(faktaDir, { recursive: true });
+const factUrls = [];
+for (const fact of facts) {
+  const slug = factSlug(fact);
+  const path = `/veckans-fakta/${slug}.html`;
+  const canonical = `${base}${path}`;
+  const desc = (fact.shortFact || fact.title || "").slice(0, 160);
+  const sagen = isSagen(fact);
+  const place = fact.relatedPlace
+    ? resolvePlaceRef(fact.relatedPlace, places)
+    : null;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: fact.title,
+    description: fact.shortFact,
+    articleBody: fact.longFact,
+    url: canonical,
+    inLanguage: "sv-SE",
+    isPartOf: { "@type": "WebSite", name: SITE.name, url: `${base}/` },
+    ...(fact.source ? { citation: fact.source } : {}),
+  };
+  const placeRow =
+    place
+      ? `<p class="seo-place-link"><a href="/plats/${esc(place.slug || placeSlug(place.name))}.html">Se ${esc(place.name)} på kartan →</a></p>`
+      : "";
+  const sagenBlock = sagen
+    ? `<p class="seo-sagen-label"><em>Enligt sägnen…</em> Folktro — inte fastslagen historia.</p>`
+    : "";
+  const body = `
+    <div class="seo-fact-ph" aria-hidden="true">${sagen ? "✦" : "?"}</div>
+    <p class="seo-meta"><span>${sagen ? "Sägen" : "Veckans Visste du att"}</span><span>${esc(SITE.kommun)}</span></p>
+    <h1>${esc(fact.title)}</h1>
+    ${sagenBlock}
+    <p class="lede">${esc(fact.shortFact)}</p>
+    <p>${esc(fact.longFact)}</p>
+    ${fact.source ? `<p class="seo-source"><strong>Källa:</strong> ${esc(fact.source)}</p>` : ""}
+    ${placeRow}
+    <div class="seo-actions">
+      <a href="/">← Tillbaka till ${esc(SITE.kommun)}</a>
+    </div>
+  `;
+  writeFileSync(
+    join(faktaDir, `${slug}.html`),
+    chrome({
+      title: `${fact.title} — Veckans Visste du att · ${SITE.name}`,
+      description: desc,
+      canonical,
+      ogImage: ogImgFor(SITE.defaultOgImage),
+      jsonLd,
+      body,
+      current: "start",
+    }),
+    "utf8"
+  );
+  factUrls.push({ loc: canonical, priority: "0.65" });
+}
+
 const evDir = join(root, "public/evenemang");
 if (existsSync(evDir)) rmSync(evDir, { recursive: true });
 mkdirSync(evDir, { recursive: true });
@@ -600,6 +667,7 @@ const urls = [
   ...guideUrls.map((u) => ({ ...u, changefreq: "monthly" })),
   ...producerUrls.map((u) => ({ ...u, changefreq: "monthly" })),
   ...activityUrls.map((u) => ({ ...u, changefreq: "monthly" })),
+  ...factUrls.map((u) => ({ ...u, changefreq: "weekly" })),
 ];
 
 writeFileSync(
@@ -789,5 +857,5 @@ indexHtml = indexHtml.replace(/<!--seo-places-->[\s\S]*?<!--\/seo-places-->/, se
 writeFileSync(indexPath, indexHtml, "utf8");
 
 console.log(
-  `SEO generate: ${places.length} plats, ${events.length} event, ${guides.length} guide, ${producers.length} verksamhet, ${recurring.length} aktivitet, sitemap ${urls.length} URL:er`
+  `SEO generate: ${places.length} plats, ${events.length} event, ${guides.length} guide, ${producers.length} verksamhet, ${recurring.length} aktivitet, ${facts.length} fakta, sitemap ${urls.length} URL:er`
 );
