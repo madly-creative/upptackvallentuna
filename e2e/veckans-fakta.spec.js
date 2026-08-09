@@ -75,26 +75,16 @@ test.describe("veckans-fakta built HTML", () => {
     expect(html).not.toMatch(/Enligt sägnen/i);
   });
 
-  test("post without relatedPlace has no map link", () => {
-    const orphan = facts.find((f) => f.id === 4);
-    expect(orphan.relatedPlace).toBeNull();
-    const html = readFileSync(
-      join(root, "dist/veckans-fakta", `${factSlug(orphan)}.html`),
-      "utf8"
-    );
-    expect(html).not.toContain("på kartan");
-    expect(html).not.toContain("seo-place-link");
-  });
-
-  test("post with relatedPlace links to the place page", () => {
-    const withPlace = facts.find((f) => f.id === 1);
-    expect(withPlace.relatedPlace).toBe("vallentuna-kyrka");
-    const html = readFileSync(
-      join(root, "dist/veckans-fakta", `${factSlug(withPlace)}.html`),
-      "utf8"
-    );
-    expect(html).toContain("på kartan");
-    expect(html).toContain("/plats/vallentuna-kyrka.html");
+  test("fact pages have no place/map onward links", () => {
+    for (const fact of facts) {
+      const html = readFileSync(
+        join(root, "dist/veckans-fakta", `${factSlug(fact)}.html`),
+        "utf8"
+      );
+      expect(html).not.toContain("på kartan");
+      expect(html).not.toContain("seo-place-link");
+      expect(html).not.toMatch(/href="\/plats\//);
+    }
   });
 
   test("sitemap lists all fact pages", () => {

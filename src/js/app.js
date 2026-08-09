@@ -1747,10 +1747,6 @@ import { facts as FACTS_SEED, currentFact, isSagen } from "../data/facts.js";
     const fact=currentFact(todayISO, facts);
     if(!fact){ card.innerHTML=""; return; }
     const sagen=isSagen(fact);
-    const placeSlug=fact.relatedPlace?String(fact.relatedPlace):"";
-    const placeLink=placeSlug
-      ?`<a class="lnk" href="/plats/${encodeURIComponent(placeSlug)}.html">Se platsen på kartan →</a>`
-      :"";
     const source=fact.source
       ?`<p class="weekly-fact-source">Källa: ${escHtml(fact.source)}</p>`
       :"";
@@ -1761,7 +1757,6 @@ import { facts as FACTS_SEED, currentFact, isSagen } from "../data/facts.js";
         ${sagen?`<p class="weekly-fact-sagen">Folktro — inte fastslagen historia.</p>`:""}
         <p>${escHtml(fact.longFact)}</p>
         ${source}
-        ${placeLink}
       </div>
       <div class="weekly-fact-media" aria-hidden="true">
         <div class="weekly-fact-ph">${sagen?"✦":"?"}</div>

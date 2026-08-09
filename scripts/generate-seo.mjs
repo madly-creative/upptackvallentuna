@@ -472,9 +472,6 @@ for (const fact of facts) {
   const canonical = `${base}${path}`;
   const desc = (fact.shortFact || fact.title || "").slice(0, 160);
   const sagen = isSagen(fact);
-  const place = fact.relatedPlace
-    ? resolvePlaceRef(fact.relatedPlace, places)
-    : null;
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -486,10 +483,6 @@ for (const fact of facts) {
     isPartOf: { "@type": "WebSite", name: SITE.name, url: `${base}/` },
     ...(fact.source ? { citation: fact.source } : {}),
   };
-  const placeRow =
-    place
-      ? `<p class="seo-place-link"><a href="/plats/${esc(place.slug || placeSlug(place.name))}.html">Se ${esc(place.name)} på kartan →</a></p>`
-      : "";
   const sagenBlock = sagen
     ? `<p class="seo-sagen-label"><em>Enligt sägnen…</em> Folktro — inte fastslagen historia.</p>`
     : "";
@@ -501,7 +494,6 @@ for (const fact of facts) {
     <p class="lede">${esc(fact.shortFact)}</p>
     <p>${esc(fact.longFact)}</p>
     ${fact.source ? `<p class="seo-source"><strong>Källa:</strong> ${esc(fact.source)}</p>` : ""}
-    ${placeRow}
     <div class="seo-actions">
       <a href="/">← Tillbaka till ${esc(SITE.kommun)}</a>
     </div>

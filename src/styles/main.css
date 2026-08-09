@@ -662,12 +662,6 @@
   .weekly-fact-card .weekly-fact-source{
     font-size:12px;line-height:1.45;color:rgba(247,243,235,.55);margin:14px 0 0;
   }
-  .weekly-fact-card .lnk{
-    margin-top:auto;padding-top:22px;font-size:13px;color:#e8b4a0;font-weight:600;
-    cursor:pointer;align-self:flex-start;
-    text-decoration:none;background:none;border:none;font-family:inherit;padding-left:0;padding-right:0;padding-bottom:0;
-  }
-  .weekly-fact-card .lnk:hover{color:#fff}
   .weekly-fact-media{
     position:relative;min-height:100%;
     background:rgba(20,28,18,.22);
