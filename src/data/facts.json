@@ -272,7 +272,7 @@
     "relatedPlace": null,
     "type": "sägen",
     "verified": false,
-    "image": null
+    "image": "/assets/veckans-fakta/kungagravarna-med-skattsagner.webp"
   },
   {
     "id": 28,
@@ -292,7 +292,7 @@
     "relatedPlace": null,
     "type": "sägen",
     "verified": false,
-    "image": null
+    "image": "/assets/veckans-fakta/stenen-som-hjalpte-vilsna-hitta-hem.webp"
   },
   {
     "id": 30,
@@ -302,7 +302,7 @@
     "relatedPlace": null,
     "type": "sägen",
     "verified": false,
-    "image": null
+    "image": "/assets/veckans-fakta/kallan-som-aldrig-fros.webp"
   },
   {
     "id": 31,
@@ -312,6 +312,6 @@
     "relatedPlace": null,
     "type": "sägen",
     "verified": false,
-    "image": null
+    "image": "/assets/veckans-fakta/den-nergravda-kopparkitteln.webp"
   }
 ]
