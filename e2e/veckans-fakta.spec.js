@@ -24,7 +24,9 @@ function ensureDist() {
     existsSync(distIndex) &&
     existsSync(sample) &&
     existsSync(sitemap) &&
-    readFileSync(sitemap, "utf8").includes("/veckans-fakta/");
+    readFileSync(sitemap, "utf8").includes("/veckans-fakta/") &&
+    // Stale dist from older SEO builds still had place-links — force rebuild.
+    !readFileSync(sample, "utf8").includes("seo-place-link");
   if (!ready) {
     execSync("npm run build", { cwd: root, stdio: "inherit" });
   }
