@@ -1755,15 +1755,17 @@ import { facts as FACTS_SEED, currentFact, isSagen } from "../data/facts.js";
       ?`<p class="weekly-fact-source">Källa: ${escHtml(fact.source)}</p>`
       :"";
     card.innerHTML=`
-      <div>
+      <div class="weekly-fact-copy">
         <div class="eyebrow">${sagen?"Enligt sägnen…":"Veckans Visste du att"}</div>
         <blockquote>${escHtml(fact.title)}</blockquote>
         ${sagen?`<p class="weekly-fact-sagen">Folktro — inte fastslagen historia.</p>`:""}
         <p>${escHtml(fact.longFact)}</p>
         ${source}
+        ${placeLink}
       </div>
-      ${placeLink}
-      ${manifestoArt}`;
+      <div class="weekly-fact-media" aria-hidden="true">
+        <div class="weekly-fact-ph">${sagen?"✦":"?"}</div>
+      </div>`;
   }
   function renderPicks(){
     const grid=document.getElementById('picksGrid'); if(!grid) return;
