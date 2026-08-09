@@ -1749,23 +1749,21 @@ import { facts as FACTS_SEED, currentFact, isSagen } from "../data/facts.js";
     const sagen=isSagen(fact);
     const placeSlug=fact.relatedPlace?String(fact.relatedPlace):"";
     const placeLink=placeSlug
-      ?`<a class="weekly-fact-more" href="/plats/${encodeURIComponent(placeSlug)}.html">Se platsen på kartan →</a>`
+      ?`<a class="lnk" href="/plats/${encodeURIComponent(placeSlug)}.html">Se platsen på kartan →</a>`
       :"";
     const source=fact.source
       ?`<p class="weekly-fact-source">Källa: ${escHtml(fact.source)}</p>`
       :"";
     card.innerHTML=`
-      <div class="weekly-fact-media" aria-hidden="true">
-        <div class="weekly-fact-ph">${sagen?"✦":"?"}</div>
-      </div>
-      <div class="weekly-fact-body">
-        <p class="weekly-fact-eyebrow">${sagen?"Enligt sägnen…":"Veckans Visste du att"}</p>
-        <h3>${escHtml(fact.title)}</h3>
-        ${sagen?`<p class="weekly-fact-sagen">Folktro — inte fastslagen historia</p>`:""}
-        <p class="weekly-fact-short">${escHtml(fact.longFact)}</p>
+      <div>
+        <div class="eyebrow">${sagen?"Enligt sägnen…":"Veckans Visste du att"}</div>
+        <blockquote>${escHtml(fact.title)}</blockquote>
+        ${sagen?`<p class="weekly-fact-sagen">Folktro — inte fastslagen historia.</p>`:""}
+        <p>${escHtml(fact.longFact)}</p>
         ${source}
-        ${placeLink}
-      </div>`;
+      </div>
+      ${placeLink}
+      ${manifestoArt}`;
   }
   function renderPicks(){
     const grid=document.getElementById('picksGrid'); if(!grid) return;
