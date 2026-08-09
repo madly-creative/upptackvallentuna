@@ -306,16 +306,18 @@
     <div class="picks-grid" id="picksGrid"></div>
   </div>
 
-  <!-- Veckans Visste du att -->
-  <div class="sec weekly-fact-sec">
-    <div class="sec-head">
-      <div>
-        <h2>Veckans Visste du att</h2>
-        <div class="wtip" style="margin-top:6px">Ett faktum om Vallentuna — nytt varje vecka</div>
+  <!-- Veckans Visste du att — redaktionellt band, skiljt från övriga kort -->
+  <section class="weekly-fact-sec" aria-labelledby="weeklyFactHeading">
+    <div class="weekly-fact-inner">
+      <div class="sec-head">
+        <div>
+          <h2 id="weeklyFactHeading">Veckans Visste du att</h2>
+          <div class="wtip" style="margin-top:6px">Ett faktum om Vallentuna — nytt varje vecka</div>
+        </div>
       </div>
+      <article class="weekly-fact-card" id="weeklyFactCard"></article>
     </div>
-    <article class="weekly-fact-card" id="weeklyFactCard"></article>
-  </div>
+  </section>
 
   <!-- Guider — egna dagsrundor, tre kort i rad -->
   <div class="sec guides-sec" id="guidesHomeSec" hidden>

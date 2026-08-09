@@ -26,7 +26,7 @@ import {
   recurringSearchHay,
   placeSearchHay,
 } from "../lib/searchMatch.js";
-import { facts as FACTS_SEED, currentFact, factSlug, isSagen } from "../data/facts.js";
+import { facts as FACTS_SEED, currentFact, isSagen } from "../data/facts.js";
 
   const CONFIG = { kommun: SITE.kommun, region: SITE.region, center: SITE.center, zoom: SITE.zoom };
   const K = CONFIG.kommun;
@@ -1746,18 +1746,25 @@ import { facts as FACTS_SEED, currentFact, factSlug, isSagen } from "../data/fac
     if(!card) return;
     const fact=currentFact(todayISO, facts);
     if(!fact){ card.innerHTML=""; return; }
-    const slug=factSlug(fact);
     const sagen=isSagen(fact);
+    const placeSlug=fact.relatedPlace?String(fact.relatedPlace):"";
+    const placeLink=placeSlug
+      ?`<a class="weekly-fact-place" href="/plats/${encodeURIComponent(placeSlug)}.html">Se platsen på kartan →</a>`
+      :"";
+    const source=fact.source
+      ?`<p class="weekly-fact-source"><span>Källa</span> ${escHtml(fact.source)}</p>`
+      :"";
     card.innerHTML=`
-      <div class="weekly-fact-media" aria-hidden="true">
-        <div class="weekly-fact-ph">${sagen?"✦":"?"}</div>
-      </div>
+      <div class="weekly-fact-mark" aria-hidden="true">${sagen?"✦":"?"}</div>
       <div class="weekly-fact-body">
-        <p class="weekly-fact-eyebrow">${sagen?"Enligt sägnen…":"Veckans Visste du att"}</p>
+        <p class="weekly-fact-eyebrow">${sagen?"Enligt sägnen…":"Lokalt faktum"}</p>
         <h3>${escHtml(fact.title)}</h3>
         ${sagen?`<p class="weekly-fact-sagen">Folktro — inte fastslagen historia</p>`:""}
-        <p class="weekly-fact-short">${escHtml(fact.shortFact)}</p>
-        <a class="weekly-fact-more" href="/veckans-fakta/${encodeURIComponent(slug)}.html">Läs mer →</a>
+        <p class="weekly-fact-text">${escHtml(fact.longFact)}</p>
+        <div class="weekly-fact-foot">
+          ${source}
+          ${placeLink}
+        </div>
       </div>`;
   }
   function renderPicks(){
