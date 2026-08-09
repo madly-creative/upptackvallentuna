@@ -44,6 +44,12 @@ describe("factsWeek", () => {
     expect(currentFact("2027-03-16")?.id).toBe(1);
   });
 
+  it("currentFact stays on first fact before epoch (no wrap into sägen-tail)", () => {
+    expect(weekIndex("2026-08-09")).toBeLessThan(0);
+    expect(currentFact("2026-08-09")?.id).toBe(1);
+    expect(currentFact("2026-08-10")?.id).toBe(1);
+  });
+
   it("isSagen marks folktro posts", () => {
     const sagen = facts.find((f) => f.id === 27);
     const verified = facts.find((f) => f.id === 1);

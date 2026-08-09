@@ -49,7 +49,8 @@ export function isSagen(fact) {
 
 export function currentFact(todayISO, list) {
   if (!list?.length) return null;
-  const idx = factIndexForWeek(weekIndex(todayISO), list.length);
+  // Before epoch, stay on the first fact (avoid wrapping into the sägen-tail).
+  const idx = factIndexForWeek(Math.max(0, weekIndex(todayISO)), list.length);
   return list[idx] || null;
 }
 

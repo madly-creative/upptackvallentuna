@@ -639,10 +639,10 @@
   .weekly-fact-sec{padding-top:28px}
   .weekly-fact-card{
     border-radius:var(--radius);background:var(--moss-deep);color:var(--paper);
-    padding:0;display:grid;grid-template-columns:1fr minmax(160px,280px);
+    padding:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(140px,240px);
     overflow:hidden;min-height:240px;align-items:stretch;
   }
-  .weekly-fact-copy{padding:32px 34px 28px;display:flex;flex-direction:column;min-width:0}
+  .weekly-fact-copy{padding:32px 22px 28px 34px;display:flex;flex-direction:column;min-width:0}
   .weekly-fact-card .eyebrow{
     font-size:11px;letter-spacing:.14em;text-transform:uppercase;
     color:#e8b4a0;font-weight:700;margin-bottom:14px;
@@ -650,17 +650,17 @@
   .weekly-fact-card blockquote{
     font-family:var(--font-serif);font-size:clamp(24px,2.8vw,34px);font-weight:500;
     font-style:italic;line-height:1.22;margin:0 0 16px;
-    max-width:22ch;text-wrap:balance;color:var(--paper);
+    max-width:none;text-wrap:balance;color:var(--paper);
   }
   .weekly-fact-copy > p{
     font-size:15px;line-height:1.65;color:rgba(247,243,235,.84);
-    max-width:46ch;margin:0;
+    max-width:none;margin:0;
   }
   .weekly-fact-card .weekly-fact-sagen{
-    font-size:13px;font-style:italic;color:rgba(232,180,160,.9);margin:0 0 10px;max-width:40ch;
+    font-size:13px;font-style:italic;color:rgba(232,180,160,.9);margin:0 0 10px;
   }
   .weekly-fact-card .weekly-fact-source{
-    font-size:12px;line-height:1.45;color:rgba(247,243,235,.55);margin:14px 0 0;max-width:46ch;
+    font-size:12px;line-height:1.45;color:rgba(247,243,235,.55);margin:14px 0 0;
   }
   .weekly-fact-card .lnk{
     margin-top:auto;padding-top:22px;font-size:13px;color:#e8b4a0;font-weight:600;
