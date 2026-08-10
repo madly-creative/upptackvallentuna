@@ -682,6 +682,21 @@
         rgba(247,243,235,.03) 10px,rgba(247,243,235,.03) 11px
       );
   }
+  .weekly-fact-nav{
+    display:flex;align-items:center;justify-content:center;gap:14px;
+    margin-top:14px;
+  }
+  .weekly-fact-arrow{
+    width:36px;height:36px;border-radius:999px;cursor:pointer;
+    border:1px solid var(--line);background:var(--card);color:var(--moss-deep);
+    font-size:18px;line-height:1;display:grid;place-items:center;
+    transition:background .15s,border-color .15s,color .15s;
+  }
+  .weekly-fact-arrow:hover{background:var(--moss-deep);border-color:var(--moss-deep);color:var(--paper)}
+  .weekly-fact-pos{
+    font-size:12px;font-weight:600;letter-spacing:.06em;color:var(--ink-soft);
+    min-width:4.5em;text-align:center;font-variant-numeric:tabular-nums;
+  }
   @media (max-width:720px){
     .weekly-fact-card{grid-template-columns:1fr}
     .weekly-fact-copy{padding:26px 22px 22px}
