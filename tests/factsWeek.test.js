@@ -19,7 +19,7 @@ describe("factsWeek", () => {
     expect(facts[0].image).toBe("/assets/veckans-fakta/mannen-som-agde-hela-taby.webp");
     expect(facts[5].image).toContain("natten-blixten-brande-kyrktornet");
     expect(facts[6].image).toContain("kyrktuppen-som-blev-en-roman");
-    expect(facts.find((f) => f.id === 23)?.image).toBeNull();
+    expect(facts.every((f) => typeof f.image === "string" && f.image.length > 0)).toBe(true);
   });
 
   it("epoch week is 0", () => {
