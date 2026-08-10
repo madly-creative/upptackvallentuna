@@ -221,7 +221,17 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://upptackvallentuna.se/evenemang/lovbio-vaiana-2026-08-13.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://upptackvallentuna.se/evenemang/gravroset-festival-2026-08-14.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/evenemang/drop-in-vasby-kvarn-2026-08-15.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -241,7 +251,17 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://upptackvallentuna.se/evenemang/drop-in-vasby-kvarn-2026-08-22.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://upptackvallentuna.se/evenemang/linedance-kickoff-gratis-prova-pa-2026-08-23.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/evenemang/bio-halvatta-the-invite-2026-08-27.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -281,6 +301,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://upptackvallentuna.se/evenemang/kvarnens-dag-2026-09-05.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://upptackvallentuna.se/evenemang/hostfest-skordefest-i-lindholmen-2026-09-06.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -291,12 +316,32 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://upptackvallentuna.se/evenemang/b-b-the-blues-shacks-2026-10-02.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://upptackvallentuna.se/evenemang/jano-hans-backenroth-quartet-2026-10-04.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://upptackvallentuna.se/evenemang/riksteatern-den-enfaldige-mordaren-2026-10-08.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/evenemang/pub-musikquiz-2026-10-17.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://upptackvallentuna.se/evenemang/jano-carin-lundin-ronnie-gardiner-2026-10-18.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/evenemang/scenfredag-mr-bob-s-machinery-2026-10-23.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -321,7 +366,22 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://upptackvallentuna.se/evenemang/konstrundan-oppna-ateljeer-2026-09-12.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://upptackvallentuna.se/evenemang/skordefest-familjefest-2026-09-13.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/evenemang/bio-halvatta-2026-09-17.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/evenemang/musik-i-handlingstider-2026-09-19.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -342,11 +402,6 @@
   </url>
   <url>
     <loc>https://upptackvallentuna.se/evenemang/tryggare-vallentuna-dagen-2026-09-26.html</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://upptackvallentuna.se/evenemang/pub-musikquiz-2026-10-17.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
