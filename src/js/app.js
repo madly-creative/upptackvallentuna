@@ -404,16 +404,6 @@ import { facts as FACTS_SEED, currentFact, isSagen } from "../data/facts.js";
       body:`<p><strong>Björkby-Kyrkvikens naturreservat</strong> ligger vid Vallentunasjön — öppet odlingslandskap, vassrik Kyrkvik och betesmarker med torrbacksflora. Ett välfrekventerat friluftsområde för boende i tätorten, med Vallentuna kyrka och Kvarnbadet i närheten.</p>
       <p>Rik fågelfauna: flyttfåglar på åkrarna om våren, sjöfågel i vassarna. Fornlämningar finns i området. Mer: <a href="https://www.lansstyrelsen.se/stockholm/besoksmal/naturreservat/bjorkby-kyrkviken.html" target="_blank" rel="noopener">Länsstyrelsen / Björkby-Kyrkviken</a>.</p>`
     },
-    "Rookie Café & Restaurang":{
-      address:"Parkvägen 2 / Vallentuna ishall",
-      facts:["Lunch","Husman","Ishallen"],
-      localPhotos:true,
-      images:[
-        {url:"/assets/upplev/rookie-cafe-och-restaurang/cover.webp",alt:"Rookie Bar — disken i Vallentuna ishall"}
-      ],
-      body:`<p>Oväntat god lunch i Vallentuna ishall — lagat från grunden, prisvärt. En dold pärla för den som redan är i trakten till träning eller match.</p>
-      <p>Öppettider följer ofta lunchtider på vardagar. Tel 08-30 06 80. Aktuellt: <a href="https://www.facebook.com/rookiecaferestaurang/" target="_blank" rel="noopener">Facebook</a>.</p>`
-    },
     "Kristorante":{
       address:"Bällstabergsvägen 2, Vallentuna",
       facts:["Pizza","Uteservering","Kvarterskrog"],
@@ -643,7 +633,6 @@ import { facts as FACTS_SEED, currentFact, isSagen } from "../data/facts.js";
   const NEW_SINCE={
     "Ljuvliga Bakverk":"2026-07-10",
     "Ellen's Corner":"2026-07-18",
-    "Rookie Café & Restaurang":"2026-07-22",
     "Antikladan":"2026-06-28",
     "Grävelsta Gård":"2026-08-02",
     "Röda Magasinet":"2026-08-02",
@@ -2206,7 +2195,7 @@ import { facts as FACTS_SEED, currentFact, isSagen } from "../data/facts.js";
   }
 
   function indoorCandidates(){
-    return places.filter(p=>hasTag(p,"inomhus")||p.type==="butik"||p.type==="loppis"||p.name.includes("Kulturhus")||p.name.includes("Rookie")||p.name.includes("Stenugns"))
+    return places.filter(p=>hasTag(p,"inomhus")||p.type==="butik"||p.type==="loppis"||p.name.includes("Kulturhus")||p.name.includes("Stenugns"))
       .filter(p=>p.type!=="natur")
       .sort((a,b)=>scorePlace(b).score-scorePlace(a).score);
   }

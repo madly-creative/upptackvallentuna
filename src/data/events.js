@@ -145,7 +145,7 @@ export const events = [
     time: "Matcher kväll/helg",
     cat: "SPORT",
     note: "Hockeyfest i Vallentuna Ishall (Parkvägen 3): bl.a. VHF–Huddinge 4/9, AIK–BIK Karlskoga 9/9 och Hammarby-dubbel 12/9. Grill, öl och musik utomhus — biljetter via hockeyweek.se.",
-    img: "/assets/upplev/rookie-cafe-och-restaurang/cover.webp",
+    img: "/assets/og.jpg",
     source: "https://hockeyweek.se/",
   },
   {
