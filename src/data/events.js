@@ -28,6 +28,17 @@ export const events = [
     source: "https://www.orkestahembygd.se/event",
   },
   {
+    host: "Tuna Bio / Kultur Vallentuna",
+    title: "Lovbio: Vaiana",
+    date: "2026-08-13",
+    when: "Tor 13 aug · 14:00",
+    time: "14:00 – 15:30",
+    cat: "KULTUR",
+    note: "Lovbio på Vallentuna Teater — Disneys Vaiana i live action. Biljetter 90 kr via Nortic.",
+    img: "/assets/evenemang/lovbio-vaiana/cover.webp",
+    source: "https://nortic.se/ticket/event/82660",
+  },
+  {
     host: "Gravröset Festival / Svista",
     title: "Gravröset Festival",
     date: "2026-08-14",
@@ -37,6 +48,17 @@ export const events = [
     note: "Experimentell musik- och konstfestival i Svista, Brottby. Biljett krävs; arrangören anger att medlemskap i kulturföreningen gäller.",
     img: "/assets/evenemang/gravroset/cover.webp",
     source: "https://billetto.se/e/gravroset-festival-2026-biljetter-1859379",
+  },
+  {
+    host: "Väsby kvarnförening / Kultur Vallentuna",
+    title: "Drop-in Väsby kvarn",
+    date: "2026-08-15",
+    when: "Lör 15 aug · 12–14",
+    time: "12:00 – 14:00",
+    cat: "KULTUR",
+    note: "Lördagsöppet i Väsby kvarn vid Kvarnbadet — bemannad kvarn, utställning om historien och funktionen. Packa gärna picknick. Fri entré.",
+    img: "/assets/evenemang/drop-in-vasby-kvarn/cover.webp",
+    source: "https://www.vallentuna.se/evenemang-och-upplevelser/evenemangskalender/2026/08/drop-in-vasby-kvarn2/",
   },
   {
     host: "Orkesta Bygdegård Lindholmen",
@@ -72,6 +94,17 @@ export const events = [
     source: "https://www.orkestahembygd.se/event",
   },
   {
+    host: "Väsby kvarnförening / Kultur Vallentuna",
+    title: "Drop-in Väsby kvarn",
+    date: "2026-08-22",
+    when: "Lör 22 aug · 12–14",
+    time: "12:00 – 14:00",
+    cat: "KULTUR",
+    note: "Lördagsöppet i Väsby kvarn vid Kvarnbadet — bemannad kvarn och utställning. Packa gärna picknick. Fri entré. Kvarnens dag (större fest) är 5 september.",
+    img: "/assets/evenemang/drop-in-vasby-kvarn/cover.webp",
+    source: "https://www.vallentuna.se/evenemang-och-upplevelser/evenemangskalender/2026/08/drop-in-vasby-kvarn3/",
+  },
+  {
     host: "Bara man Vill",
     title: "Linedance — Kickoff & gratis prova på",
     date: "2026-08-23",
@@ -81,6 +114,17 @@ export const events = [
     note: "Gratis kickoff inför höstens linedance-terminer: prova på 17–18 (ingen föranmälan), gemensam dans ca 18–20:30. Rosendalsskolan Södras matsal, Teknikvägen 25.",
     img: "/assets/evenemang/bara-man-vill-kickoff/cover.webp",
     source: "https://baramanvill.se/2026/07/24/kickoff-och-gratis-prova-pa-23-8/",
+  },
+  {
+    host: "Tuna Bio / Kultur Vallentuna",
+    title: "Bio Halvåtta: The Invite",
+    date: "2026-08-27",
+    when: "Tor 27 aug · 19:30",
+    time: "19:30 – 21:30",
+    cat: "KULTUR",
+    note: "Bio på Vallentuna Teater — dramakomedi av Olivia Wilde med Seth Rogen, Penélope Cruz och Edward Norton. Biljetter 120 kr via Nortic.",
+    img: "/assets/evenemang/bio-halvatta-the-invite/cover.webp",
+    source: "https://nortic.se/ticket/event/85436",
   },
   {
     host: "Vallentuna Kulturhus",
@@ -160,6 +204,17 @@ export const events = [
     source: "https://www.hembygd.se/frosunda/activities/56301",
   },
   {
+    host: "Väsby kvarnförening / Kultur Vallentuna",
+    title: "Kvarnens dag",
+    date: "2026-09-05",
+    when: "Lör 5 sep · 12–15",
+    time: "12:00 – 15:00",
+    cat: "MARKNAD",
+    note: "Familjefest vid Väsby kvarn nära Kvarnbadet — sång, musik, ponnyridning (4H), pyssel, korvgrillning (scouterna) och utställning i kvarnen. Fri entré.",
+    img: "/assets/evenemang/kvarnens-dag/cover.webp",
+    source: "https://www.vallentuna.se/evenemang-och-upplevelser/evenemangskalender/2026/09/kvarnens-dag/",
+  },
+  {
     host: "Orkesta hembygdsförening",
     title: "Höstfest / Skördefest i Lindholmen",
     date: "2026-09-06",
@@ -182,6 +237,17 @@ export const events = [
     source: "https://www.nortic.se/ticket/show/344818",
   },
   {
+    host: "Vallentuna Bluesförening / Kultur Vallentuna",
+    title: "B.B. & The Blues Shacks",
+    date: "2026-10-02",
+    when: "Fre 2 okt · 19:00",
+    time: "19:00 – 21:00",
+    cat: "KULTUR",
+    note: "Tyska bluesbandet B.B. & The Blues Shacks på Vallentuna Teater. Insläpp från 18:30. Biljetter från 200 kr via Nortic.",
+    img: "/assets/evenemang/bb-and-the-blues-shacks/cover.webp",
+    source: "https://nortic.se/ticket/show/353486",
+  },
+  {
     host: "Jano / Vallentuna Teater",
     title: "Jano — Hans Backenroth Quartet",
     date: "2026-10-04",
@@ -193,6 +259,28 @@ export const events = [
     source: "https://www.nortic.se/ticket/show/344820",
   },
   {
+    host: "Kultur Vallentuna / Riksteatern",
+    title: "Riksteatern: Den enfaldige mördaren",
+    date: "2026-10-08",
+    when: "Tor 8 okt · 19:00",
+    time: "19:00 – 21:30",
+    cat: "KULTUR",
+    note: "Pjäs av Dennis Magnusson på Vallentuna Teater, inspirerad av Hans Alfredsons film. Ca 2,5 h inkl. paus. Biljetter 390 kr (ung t.o.m. 26 år 340 kr) via Nortic.",
+    img: "/assets/evenemang/riksteatern-den-enfaldige-mordaren/cover.webp",
+    source: "https://nortic.se/ticket/event/81913",
+  },
+  {
+    host: "Orkesta Bygdegård Lindholmen",
+    title: "Pub & musikquiz",
+    date: "2026-10-17",
+    when: "Lör 17 okt · 19–22",
+    time: "19:00 – 22:00",
+    cat: "KULTUR",
+    note: "Pub- och musikquizkväll i Orkesta Bygdegård kl. 19–22. Samla lag eller kom solo — följ bygdegårdens kanaler för bord/biljett.",
+    img: "/assets/evenemang/pub-musikquiz/cover.webp",
+    source: "https://www.orkestahembygd.se/event",
+  },
+  {
     host: "Jano / Vallentuna Teater",
     title: "Jano — Carin Lundin / Ronnie Gardiner",
     date: "2026-10-18",
@@ -202,6 +290,17 @@ export const events = [
     note: "Carin Lundin och Ronnie Gardiner Quartet hos Jano på Vallentuna Teater. Café från 17:30. Biljetter via Nortic eller biblioteket.",
     img: "/assets/evenemang/jano-carin-lundin-ronnie-gardiner/cover.webp",
     source: "https://www.nortic.se/ticket/show/344861",
+  },
+  {
+    host: "Vallentuna Bluesförening / Kultur Vallentuna",
+    title: "Scenfredag – Mr Bob’s Machinery",
+    date: "2026-10-23",
+    when: "Fre 23 okt · 19:00",
+    time: "19:00 – 21:00",
+    cat: "KULTUR",
+    note: "Releasegig på Caféscenen i Vallentuna Kulturhus med Mr Bob’s Machinery från södra Uppland. Servering via Café Triften. Biljetter från 150 kr via Nortic eller biblioteket.",
+    img: "/assets/evenemang/scenfredag-mr-bobs-machinery/cover.webp",
+    source: "https://nortic.se/ticket/show/353483",
   },
   {
     host: "Jano / Vallentuna Teater",
@@ -248,6 +347,17 @@ export const events = [
     source: "https://vallentunacentrum.se/skordefest/",
   },
   {
+    host: "Konstrundan Täby Vallentuna",
+    title: "Konstrundan — öppna ateljéer",
+    date: "2026-09-12",
+    when: "Lör–sön 12–13 sep",
+    time: "10:00 – 17:00",
+    cat: "KULTUR",
+    note: "Öppna ateljéer under Konstrundan Täby Vallentuna — se hela programmet och öppettider på konstrundans webb.",
+    img: "/assets/evenemang/konstrundan-opna-ateljeer/cover.webp",
+    source: "https://tabyvallentunakonstrunda.se/",
+  },
+  {
     host: "Vallentuna Centrum",
     title: "SkördeFEST — familjefest",
     date: "2026-09-13",
@@ -257,6 +367,28 @@ export const events = [
     note: "Finaldag på Tuna Torg: torgmarknad, barnaktiviteter (bl.a. i gamla Pressbyrån), karusell, livemusik och tävlingar. Program uppdateras på vallentunacentrum.se.",
     img: "/assets/evenemang/skordefest/cover.webp",
     source: "https://vallentunacentrum.se/skordefest/",
+  },
+  {
+    host: "Tuna Bio / Kultur Vallentuna",
+    title: "Bio Halvåtta",
+    date: "2026-09-17",
+    when: "Tor 17 sep · 19:30",
+    time: "19:30 – 21:30",
+    cat: "KULTUR",
+    note: "Bio på hemmaplan i Vallentuna Teater — ny biofilm var tredje torsdag. Biljetter 120 kr. Filmsättning publiceras när den är klar.",
+    img: "/assets/evenemang/bio-halvatta/cover.webp",
+    source: "https://www.vallentuna.se/evenemang-och-upplevelser/evenemangskalender/2026/09/bio-halvatta/",
+  },
+  {
+    host: "Vadom / Kultur Vallentuna",
+    title: "Musik i handlingstider",
+    date: "2026-09-19",
+    when: "Lör 19 sep · 13–14",
+    time: "13:00 – 14:00",
+    cat: "KULTUR",
+    note: "Folkmusik med Vadom på Caféscenen i Vallentuna Kulturhus — en paus i lördagshandeln. Arrangör: Vallentuna dans- och musikförening (Vadom).",
+    img: "/assets/evenemang/musik-i-handlingstider/cover.webp",
+    source: "https://www.vallentuna.se/evenemang-och-upplevelser/evenemangskalender/2026/09/musik-i-handlingstider/",
   },
   {
     host: "Vallentuna kommun",
@@ -301,17 +433,6 @@ export const events = [
     note: "Familjedag på Tuna Torg med lokala organisationer, polis och brandförsvar — avslutning på Beredskapsveckan.",
     img: "/assets/evenemang/beredskapsveckan/cover.webp",
     source: "https://www.vallentuna.se/evenemang-och-upplevelser/beredskapsveckan/",
-  },
-  {
-    host: "Orkesta Bygdegård Lindholmen",
-    title: "Pub & musikquiz",
-    date: "2026-10-17",
-    when: "Lör 17 okt · 19–22",
-    time: "19:00 – 22:00",
-    cat: "KULTUR",
-    note: "Pub- och musikquizkväll i Orkesta Bygdegård kl. 19–22. Samla lag eller kom solo — följ bygdegårdens kanaler för bord/biljett.",
-    img: "/assets/evenemang/pub-musikquiz/cover.webp",
-    source: "https://www.orkestahembygd.se/event",
   },
   {
     host: "Orkesta Bygdegård Lindholmen",
@@ -360,6 +481,46 @@ export const EVENT_CONTENT = {
   "Scenfredag – Axman Band": {
     body: `<p>Fredag 28 augusti kl. 19 på Caféscenen i Vallentuna Kulturhus — blues och rock med Axman Band. Insläpp från 18:30. Biljetter från 150 kr.</p>
       <p>Boka: <a href="https://www.nortic.se/ticket/show/353467" target="_blank" rel="noopener">Nortic</a>.</p>`,
+  },
+  "Lovbio: Vaiana": {
+    body: `<p>Torsdag 13 augusti kl. 14:00 på <strong>Vallentuna Teater</strong> (Gymnasievägen 4B) — lovbio med Disneys <em>Vaiana</em> i live action. Arrangör: Tuna Bio / Kultur Vallentuna.</p>
+      <p>Biljetter 90 kr: <a href="https://nortic.se/ticket/event/82660" target="_blank" rel="noopener">Nortic</a> · <a href="https://www.vallentuna.se/evenemang-och-upplevelser/evenemangskalender/2026/08/lovbio-vaiana--live-action/" target="_blank" rel="noopener">kommunens kalender</a>.</p>`,
+  },
+  "Drop-in Väsby kvarn": {
+    body: `<p>Lördagsöppet i <strong>Väsby kvarn</strong> vid Kvarnbadet — Väsby kvarnförening bemannar kvarnen och visar utställningen om historien och funktionen. Packa gärna picknickkorgen. Fri entré.</p>
+      <p>Öppet bl.a. 15 och 22 augusti kl. 12–14. Större fest: <em>Kvarnens dag</em> 5 september. Info: <a href="https://www.vallentuna.se/evenemang-och-upplevelser/evenemangskalender/2026/08/drop-in-vasby-kvarn2/" target="_blank" rel="noopener">vallentuna.se</a>.</p>`,
+  },
+  "Bio Halvåtta: The Invite": {
+    body: `<p>Torsdag 27 augusti kl. 19:30 på Vallentuna Teater — <em>The Invite</em>, dramakomedi av Olivia Wilde med Seth Rogen, Penélope Cruz och Edward Norton. Arrangör: Tuna Bio / Kultur Vallentuna.</p>
+      <p>Biljetter 120 kr: <a href="https://nortic.se/ticket/event/85436" target="_blank" rel="noopener">Nortic</a>.</p>`,
+  },
+  "Kvarnens dag": {
+    body: `<p>Lördag 5 september kl. 12–15 vid <strong>Väsby kvarn</strong> nära Kvarnbadet — familjefest med sång, musik, ponnyridning (4H), pyssel, korvgrillning (scouterna) och utställning i kvarnen. <strong>Fri entré.</strong></p>
+      <p>Arrangör: Väsby kvarnförening i samarbete med Kultur Vallentuna. Info: <a href="https://www.vallentuna.se/evenemang-och-upplevelser/evenemangskalender/2026/09/kvarnens-dag/" target="_blank" rel="noopener">vallentuna.se</a>.</p>`,
+  },
+  "Konstrundan — öppna ateljéer": {
+    body: `<p>12–13 september — öppna ateljéer under <strong>Konstrundan Täby Vallentuna</strong>. Se hela programmet och öppettider på konstrundans webb.</p>
+      <p><a href="https://tabyvallentunakonstrunda.se/" target="_blank" rel="noopener">tabyvallentunakonstrunda.se</a>.</p>`,
+  },
+  "Bio Halvåtta": {
+    body: `<p>Torsdag 17 september kl. 19:30 på Vallentuna Teater — bio på hemmaplan (ny biofilm var tredje torsdag). Biljetter 120 kr. Filmsättning publiceras när den är klar.</p>
+      <p>Info: <a href="https://www.vallentuna.se/evenemang-och-upplevelser/evenemangskalender/2026/09/bio-halvatta/" target="_blank" rel="noopener">vallentuna.se</a>.</p>`,
+  },
+  "Musik i handlingstider": {
+    body: `<p>Lördag 19 september kl. 13–14 på <strong>Caféscenen</strong> i Vallentuna Kulturhus — folkmusik med Vadom (Vallentuna dans- och musikförening) i samarbete med Kultur Vallentuna. Gör en paus i lördagshandeln.</p>
+      <p>Info: <a href="https://www.vallentuna.se/evenemang-och-upplevelser/evenemangskalender/2026/09/musik-i-handlingstider/" target="_blank" rel="noopener">vallentuna.se</a>.</p>`,
+  },
+  "B.B. & The Blues Shacks": {
+    body: `<p>Fredag 2 oktober kl. 19:00 på <strong>Vallentuna Teater</strong> — B.B. &amp; The Blues Shacks. Insläpp från 18:30. Arrangör: Vallentuna Bluesförening i samarbete med Kultur Vallentuna.</p>
+      <p>Biljetter från 200 kr: <a href="https://nortic.se/ticket/show/353486" target="_blank" rel="noopener">Nortic</a> · bandet: <a href="https://www.bluesshacks.de/en/" target="_blank" rel="noopener">bluesshacks.de</a>.</p>`,
+  },
+  "Riksteatern: Den enfaldige mördaren": {
+    body: `<p>Torsdag 8 oktober kl. 19:00 på Vallentuna Teater — pjäs av Dennis Magnusson, inspirerad av Hans Alfredsons film <em>Den enfaldige mördaren</em>. Cirka 2 tim 30 min inkl. paus. Servering från kl. 18.</p>
+      <p>Biljetter 390 kr (ung t.o.m. 26 år 340 kr): <a href="https://nortic.se/ticket/event/81913" target="_blank" rel="noopener">Nortic</a>.</p>`,
+  },
+  "Scenfredag – Mr Bob’s Machinery": {
+    body: `<p>Fredag 23 oktober kl. 19 på Caféscenen i Vallentuna Kulturhus — releasegig med Mr Bob’s Machinery från södra Uppland. Café Triften har servering med rättigheter. Arrangör: Vallentuna Bluesförening / Kultur Vallentuna.</p>
+      <p>Biljetter från 150 kr: <a href="https://nortic.se/ticket/show/353483" target="_blank" rel="noopener">Nortic</a> eller Vallentuna bibliotek.</p>`,
   },
   "Sommarkväll med Live-Jazz": {
     body: `<p>Fredag 7 augusti kl. 19–21 på <strong>Hökeriet</strong>, Orkesta Granby Gård — sommarkväll med mat och livejazz. Jan Levander med trion <em>Jazz Latitude 59°</em>: Jan Levander (barytonsax), Mats Larsson (gitarr) och Filip Augustsson (kontrabas).</p>
