@@ -40,10 +40,10 @@ test.describe("veckans-fakta built HTML", () => {
   });
 
   test("mocked date selects the expected weekly fact page on disk", () => {
-    const mockDate = "2026-08-18"; // weekIndex 1 → fact id 2
+    const mockDate = "2026-08-18"; // weekIndex 1 → ABBA (#14) in mixed order
     expect(weekIndex(mockDate)).toBe(1);
     const fact = currentFact(mockDate, facts);
-    expect(fact?.id).toBe(2);
+    expect(fact?.id).toBe(14);
     const slug = factSlug(fact);
     const path = join(root, "dist/veckans-fakta", `${slug}.html`);
     expect(existsSync(path)).toBe(true);

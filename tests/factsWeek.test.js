@@ -17,9 +17,14 @@ describe("factsWeek", () => {
 
   it("wired facts expose per-post image paths", () => {
     expect(facts[0].image).toBe("/assets/veckans-fakta/mannen-som-agde-hela-taby.webp");
-    expect(facts[5].image).toContain("natten-blixten-brande-kyrktornet");
-    expect(facts[6].image).toContain("kyrktuppen-som-blev-en-roman");
+    expect(facts[1].id).toBe(14); // popkultur after historia
+    expect(facts[1].image).toContain("popgruppen-som-bildades-i-ett-radhus");
     expect(facts.every((f) => typeof f.image === "string" && f.image.length > 0)).toBe(true);
+  });
+
+  it("rotation list interleaves historia and populärkultur early on", () => {
+    // First six weeks: H, P, H, P, H, P
+    expect(facts.slice(0, 6).map((f) => f.id)).toEqual([1, 14, 2, 15, 3, 16]);
   });
 
   it("epoch week is 0", () => {
@@ -43,7 +48,7 @@ describe("factsWeek", () => {
 
   it("currentFact wraps with positive modulo", () => {
     expect(currentFact("2026-08-11")?.id).toBe(1);
-    expect(currentFact("2026-08-18")?.id).toBe(2);
+    expect(currentFact("2026-08-18")?.id).toBe(14); // week 1 → ABBA in mixed order
     expect(factIndexForWeek(31, 31)).toBe(0);
     // epoch + 31 weeks
     expect(weekIndex("2027-03-16")).toBe(31);

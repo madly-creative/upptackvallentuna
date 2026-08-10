@@ -26,7 +26,7 @@ import {
   recurringSearchHay,
   placeSearchHay,
 } from "../lib/searchMatch.js";
-import { facts as FACTS_SEED, isSagen, weekIndex, factIndexForWeek } from "../data/facts.js";
+import { facts as FACTS_SEED, currentFact, isSagen } from "../data/facts.js";
 
   const CONFIG = { kommun: SITE.kommun, region: SITE.region, center: SITE.center, zoom: SITE.zoom };
   const K = CONFIG.kommun;
@@ -1741,23 +1741,10 @@ import { facts as FACTS_SEED, isSagen, weekIndex, factIndexForWeek } from "../da
       preferOpenTimed:(x)=>x.open && isTimedVenue(x.p),
     });
   }
-  /** Browse override for QA — null means “this week’s” fact. */
-  let weeklyFactBrowseIdx=null;
-  function weeklyFactActiveIndex(){
-    if(weeklyFactBrowseIdx!=null) return weeklyFactBrowseIdx;
-    return factIndexForWeek(Math.max(0, weekIndex(todayISO)), facts.length);
-  }
-  function stepWeeklyFact(dir){
-    const n=facts.length||1;
-    weeklyFactBrowseIdx=((weeklyFactActiveIndex()+dir)%n+n)%n;
-    renderWeeklyFact();
-  }
   function renderWeeklyFact(){
     const card=document.getElementById('weeklyFactCard');
     if(!card) return;
-    if(!facts.length){ card.innerHTML=""; return; }
-    const idx=weeklyFactActiveIndex();
-    const fact=facts[idx];
+    const fact=currentFact(todayISO, facts);
     if(!fact){ card.innerHTML=""; return; }
     const sagen=isSagen(fact);
     const source=fact.source
@@ -1775,8 +1762,6 @@ import { facts as FACTS_SEED, isSagen, weekIndex, factIndexForWeek } from "../da
         ${source}
       </div>
       <div class="weekly-fact-media" aria-hidden="true">${media}</div>`;
-    const pos=document.getElementById('weeklyFactPos');
-    if(pos) pos.textContent=`${idx+1} / ${facts.length}`;
   }
   function renderPicks(){
     const grid=document.getElementById('picksGrid'); if(!grid) return;
@@ -3786,7 +3771,6 @@ Object.assign(window, {
   shareList,
   shareWxCard,
   showView,
-  stepWeeklyFact,
   submitEventForm,
   submitReport,
   toggleFavorite,

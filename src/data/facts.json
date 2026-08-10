@@ -10,6 +10,16 @@
     "image": "/assets/veckans-fakta/mannen-som-agde-hela-taby.webp"
   },
   {
+    "id": 14,
+    "title": "Popgruppen som bildades i ett radhus",
+    "shortFact": "ABBA bildades i ett radhusområde i Vallentuna, där alla fyra medlemmarna bodde grannar.",
+    "longFact": "1972 flyttade Agnetha Fältskog och Björn Ulvaeus in på Rosengårdsvägen 87. Anni-Frid Lyngstad och Benny Andersson bodde på 115. De repeterade bland annat i Ekebyskolans matsal inför Eurovision-genombrottet. Tyska fans besöker fortfarande området varje år.",
+    "relatedPlace": null,
+    "source": "Vallentuna Nya, maklarringen.se",
+    "verified": true,
+    "image": "/assets/veckans-fakta/popgruppen-som-bildades-i-ett-radhus.webp"
+  },
+  {
     "id": 2,
     "title": "Sveriges äldsta rimmade dikt",
     "shortFact": "En runsten i Vallentuna kyrkas tornrum bär det äldsta kända exemplet på slutrim i svensk litteratur.",
@@ -20,6 +30,16 @@
     "image": "/assets/veckans-fakta/sveriges-aldsta-rimmade-dikt.webp"
   },
   {
+    "id": 15,
+    "title": "Där Loffe spelade in 'Någonstans i Sverige'",
+    "shortFact": "TV-dramat som gjorde Janne 'Loffe' Carlsson folkkär spelades delvis in i Vallentuna.",
+    "longFact": "1973 gjorde Janne 'Loffe' Carlsson sin mest ikoniska roll i TV-dramat 'Någonstans i Sverige'. Delar av inspelningen skedde på Ekskogens Bygdegård och vid Kårsta järnvägsstation.",
+    "relatedPlace": null,
+    "source": "Vallentuna Nya",
+    "verified": true,
+    "image": "/assets/veckans-fakta/dar-loffe-spelade-in-nagonstans-i-sverige.webp"
+  },
+  {
     "id": 3,
     "title": "Vikingakvinnan som var farmor till en stormann",
     "shortFact": "Ett gravfält vid Broby bro gav arkeologer skelettet efter en kvinna som var farmor till Jarlabanke själv.",
@@ -28,6 +48,16 @@
     "source": "Riksantikvarieämbetet, Vallentuna Nya",
     "verified": true,
     "image": "/assets/veckans-fakta/vikingakvinnan-som-var-farmor-till-en-stormann.webp"
+  },
+  {
+    "id": 16,
+    "title": "Pippi Långstrumps häst pensionerades i Angarn",
+    "shortFact": "Hästen som spelade Lilla Gubben i Pippi Långstrump-filmerna levde sina sista år i Vallentuna.",
+    "longFact": "Hästen Bunting blev känd som Lilla Gubben i filmerna om Pippi Långstrump. Efter filmkarriären flyttades han till Örsta ridskola i Angarn, där han levde till 24 års ålder.",
+    "relatedPlace": null,
+    "source": "Vallentuna Nya",
+    "verified": true,
+    "image": "/assets/veckans-fakta/pippi-langstrumps-hast-pensionerades-i-angarn.webp"
   },
   {
     "id": 4,
@@ -41,6 +71,16 @@
     "image": "/assets/veckans-fakta/silverskatten-i-bronsaldersgraven.webp"
   },
   {
+    "id": 17,
+    "title": "Soulkungen som växte upp i Vallentuna",
+    "shortFact": "En av Sveriges mest framgångsrika soulartister, med tre Grammis som Årets artist, växte upp i Vallentuna.",
+    "longFact": "Eric Gadd flyttade som nioåring till Vallentuna, där han tillbringade resten av uppväxten. Han blev en av Sveriges mest etablerade soulartister, belönad med Grammis 1991, 1993 och 1997.",
+    "relatedPlace": null,
+    "source": "Vallentuna Nya, Wikipedia",
+    "verified": true,
+    "image": "/assets/veckans-fakta/soulkungen-som-vaxte-upp-i-vallentuna.webp"
+  },
+  {
     "id": 5,
     "title": "Hövdingen som ligger begravd under centrum",
     "shortFact": "Mitt i dagens Vallentuna centrum grävde arkeologer på 1980-talet fram graven efter en vendeltida krigarhövding.",
@@ -50,6 +90,16 @@
     "source": "Lars Sjösvärd, 'HaukR, en rinker från Vallentuna'",
     "verified": true,
     "image": "/assets/veckans-fakta/hovdingen-som-ligger-begravd-under-centrum.webp"
+  },
+  {
+    "id": 18,
+    "title": "Natten UFO-vågen svepte över Vallentuna",
+    "shortFact": "1974 gjorde hundratals Vallentunabor observationer av oidentifierade flygande föremål — så allvarligt att militären genomförde en hemlig spaningsoperation.",
+    "longFact": "Under några veckor i mars 1974 rapporterade Vallentunabor i Markim, Orkesta och Lindholmen om enorma ljussken och ljudlösa flygande föremål. Försvarets forskningsanstalt undersökte platser i skyddskläder, och hemvärnet genomförde en spaningsoperation med omkring hundra man. 2024 gjorde UFO-Sverige en utställning om händelsen på Vallentuna Kulturhus, och TV4 en dokumentärserie.",
+    "relatedPlace": "vallentuna-kulturhus",
+    "source": "UFO-Sverige/AFU, Vallentuna Nya, Mitt i",
+    "verified": true,
+    "image": "/assets/veckans-fakta/natten-ufo-vagen-svepte-over-vallentuna.webp"
   },
   {
     "id": 6,
@@ -62,6 +112,16 @@
     "image": "/assets/veckans-fakta/natten-blixten-brande-kyrktornet.webp"
   },
   {
+    "id": 21,
+    "title": "Mentalisten som blev mångmiljonär på sin Vallentuna-uppväxt",
+    "shortFact": "Henrik Fexeus, en av världens mest kända mentalister, flyttade till Vallentuna som sexåring.",
+    "longFact": "Henrik Fexeus föddes i Örebro men växte upp i Vallentuna från sex års ålder till han var 28. Han blev en internationellt erkänd mentalist och författare — hans deckartrilogi med Camilla Läckberg har sålts till 60 länder. Fexeus har en egen teori om varför så många inom svensk media och kultur kommer från Vallentuna: kommunen satsade ovanligt hårt på ungdomskultur under hans uppväxt.",
+    "relatedPlace": null,
+    "source": "Wikipedia, Vallentuna Nya, Mitt i",
+    "verified": true,
+    "image": "/assets/veckans-fakta/mentalisten-som-blev-mangmiljonar-pa-sin-vallentuna-uppvaxt.webp"
+  },
+  {
     "id": 7,
     "title": "Kyrktuppen som blev en roman",
     "shortFact": "Vindflöjeln på Vallentuna kyrka inspirerade en av 1900-talets stora svenska författare.",
@@ -70,6 +130,16 @@
     "source": "vallentunabor.blogspot.com, Proletären",
     "verified": true,
     "image": "/assets/veckans-fakta/kyrktuppen-som-blev-en-roman.webp"
+  },
+  {
+    "id": 22,
+    "title": "Skateboardkompisarna som båda blev kända",
+    "shortFact": "Två internationellt kända svenska artister åkte skateboard tillsammans som barn i Vallentuna.",
+    "longFact": "Skådespelaren Gustaf Hammarsten, internationellt känd för sin roll i 'Brüno', växte upp i Vallentuna. Som barn åkte han skateboard med skolkamraten Eric Gadd — samma Eric Gadd som senare blev en av Sveriges mest framgångsrika soulartister.",
+    "relatedPlace": null,
+    "source": "Vallentunabloggen, Wikipedia",
+    "verified": true,
+    "image": "/assets/veckans-fakta/skateboardkompisarna-som-bada-blev-kanda.webp"
   },
   {
     "id": 8,
@@ -82,14 +152,34 @@
     "image": "/assets/veckans-fakta/sjon-som-skulle-bli-aker-och-blev-fagelparadis.webp"
   },
   {
-    "id": 9,
-    "title": "Från åtta tusen till trettiofem tusen",
-    "shortFact": "Sedan kommunen bildades 1971 har befolkningen nästan fyrdubblats.",
-    "longFact": "Fram till 2020 hade befolkningen ökat med nästan 300 procent sedan 1971. Idag bor drygt 35 000 personer i kommunen, med runt 500 nya invånare per år.",
+    "id": 25,
+    "title": "Där Eurovision-Sverige bor",
+    "shortFact": "Melodifestivalens Robin Bengtsson bor tillsammans med dansaren Sigrid Bernson i Bällsta.",
+    "longFact": "Robin Bengtsson, som representerade Sverige i Eurovision Song Contest 2017, bor i Bällsta med sin sambo, dansaren och sångerskan Sigrid Bernson. De sällar sig till en lång rad kända namn som bott i kommunen, bland dem Agnetha och Björn från ABBA.",
     "relatedPlace": null,
-    "source": "SCB / Vallentuna kommun",
+    "source": "Mitt i",
     "verified": true,
-    "image": "/assets/veckans-fakta/fran-atta-tusen-till-trettiofem-tusen.webp"
+    "image": "/assets/veckans-fakta/dar-eurovision-sverige-bor.webp"
+  },
+  {
+    "id": 12,
+    "title": "Kungamördaren föddes på en gård i Vallentuna",
+    "shortFact": "Mannen som sköt kung Gustav III på Operan 1792 föddes och växte upp på en herrgård i Vallentuna.",
+    "longFact": "Jacob Johan Anckarström föddes 1762 på Lindö gård i Vallentuna. 1792 sköt han kung Gustav III under en maskeradbal på Operahuset i Stockholm — en händelse som senare blev förlaga till Verdis opera 'Maskeradbalen'. Han greps, dömdes och avrättades samma år.",
+    "relatedPlace": null,
+    "source": "Svenskt Biografiskt Lexikon, Riksarkivet",
+    "verified": true,
+    "image": "/assets/veckans-fakta/kungamordaren-foddes-pa-en-gard-i-vallentuna.webp"
+  },
+  {
+    "id": 26,
+    "title": "Rösten som väckte Sverige i tretton år",
+    "shortFact": "Mannen bakom Morgonpasset i P3 växte upp i Vallentuna.",
+    "longFact": "Kodjo Akolor växte upp i Vallentuna och blev en av Sveriges mest folkkära radio- och TV-profiler. Han ledde Morgonpasset i P3 i över tretton år, fram till 2022, och var en av programledarna för Melodifestivalen 2019.",
+    "relatedPlace": null,
+    "source": "Wikipedia, mellopedia.svt.se",
+    "verified": true,
+    "image": "/assets/veckans-fakta/rosten-som-vackte-sverige-i-tretton-ar.webp"
   },
   {
     "id": 10,
@@ -100,6 +190,16 @@
     "source": "vallentunabor.blogspot.com",
     "verified": true,
     "image": "/assets/veckans-fakta/tjugo-handelstradgardar-i-en-enda-by.webp"
+  },
+  {
+    "id": 20,
+    "title": "Världens första riktiga simstjärna badade sina sista år i Kvarnbadet",
+    "shortFact": "En av 1920-talets mest berömda idrottare i världen tillbringade sina sista år med morgondopp i Vallentunasjön.",
+    "longFact": "Arne Borg var på 1920-talet så känd att han jämfördes med Greta Garbo i internationell berömmelse. Han satte 32 världsrekord, tog fem OS-medaljer och blev simsportens första riktiga världsstjärna. Han bodde sina sista år i Vallentuna, där han enligt grannar fortsatte ta sina morgondopp — i Kvarnbadet.",
+    "relatedPlace": "kvarnbadet",
+    "source": "Wikipedia, vallentunabor.blogspot.com",
+    "verified": true,
+    "image": "/assets/veckans-fakta/varldens-forsta-riktiga-simstjarna-badade-sina-sista-ar-i-kvarnbadet.webp"
   },
   {
     "id": 11,
@@ -113,14 +213,14 @@
     "image": "/assets/veckans-fakta/skolan-dar-tiden-stannade-1910.webp"
   },
   {
-    "id": 12,
-    "title": "Kungamördaren föddes på en gård i Vallentuna",
-    "shortFact": "Mannen som sköt kung Gustav III på Operan 1792 föddes och växte upp på en herrgård i Vallentuna.",
-    "longFact": "Jacob Johan Anckarström föddes 1762 på Lindö gård i Vallentuna. 1792 sköt han kung Gustav III under en maskeradbal på Operahuset i Stockholm — en händelse som senare blev förlaga till Verdis opera 'Maskeradbalen'. Han greps, dömdes och avrättades samma år.",
+    "id": 23,
+    "title": "Poeten från Vallentuna som fick välja Nobelpristagare",
+    "shortFact": "En kvinna som delvis växte upp i Vallentuna satt i arton år med och utsåg Nobelpristagaren i litteratur.",
+    "longFact": "Kristina Lugn växte delvis upp i Vallentuna innan hon blev en av Sveriges mest folkkära poeter och dramatiker. 2006 valdes hon in i Svenska Akademien, på stol nummer 14 — vilket innebar att hon under resten av sitt liv var med och utsåg mottagaren av Nobelpriset i litteratur.",
     "relatedPlace": null,
-    "source": "Svenskt Biografiskt Lexikon, Riksarkivet",
+    "source": "SVT, skbl.se, Wikipedia",
     "verified": true,
-    "image": "/assets/veckans-fakta/kungamordaren-foddes-pa-en-gard-i-vallentuna.webp"
+    "image": "/assets/veckans-fakta/poeten-fran-vallentuna-som-fick-valja-nobelpristagare.webp"
   },
   {
     "id": 13,
@@ -134,54 +234,24 @@
     "image": "/assets/veckans-fakta/sommarpsalmen-som-skrevs-pa-en-bat.webp"
   },
   {
-    "id": 14,
-    "title": "Popgruppen som bildades i ett radhus",
-    "shortFact": "ABBA bildades i ett radhusområde i Vallentuna, där alla fyra medlemmarna bodde grannar.",
-    "longFact": "1972 flyttade Agnetha Fältskog och Björn Ulvaeus in på Rosengårdsvägen 87. Anni-Frid Lyngstad och Benny Andersson bodde på 115. De repeterade bland annat i Ekebyskolans matsal inför Eurovision-genombrottet. Tyska fans besöker fortfarande området varje år.",
+    "id": 24,
+    "title": "Racerföraren från blomsteraffären",
+    "shortFact": "En pojke från familjens blomsterbutik i Vallentuna blev en av Sveriges mest framgångsrika racerförare.",
+    "longFact": "Rickard Rydell föddes i Vallentuna och tränade ursprungligen för att ta över familjens blomsterbutik. Racingen tog över istället — han vann brittiska touringcarmästerskapet 1998 och blev en av Sveriges mest namnkunniga förare inom internationell motorsport.",
     "relatedPlace": null,
-    "source": "Vallentuna Nya, maklarringen.se",
+    "source": "Wikipedia",
     "verified": true,
-    "image": "/assets/veckans-fakta/popgruppen-som-bildades-i-ett-radhus.webp"
+    "image": "/assets/veckans-fakta/racerforaren-fran-blomsteraffaren.webp"
   },
   {
-    "id": 15,
-    "title": "Där Loffe spelade in 'Någonstans i Sverige'",
-    "shortFact": "TV-dramat som gjorde Janne 'Loffe' Carlsson folkkär spelades delvis in i Vallentuna.",
-    "longFact": "1973 gjorde Janne 'Loffe' Carlsson sin mest ikoniska roll i TV-dramat 'Någonstans i Sverige'. Delar av inspelningen skedde på Ekskogens Bygdegård och vid Kårsta järnvägsstation.",
+    "id": 9,
+    "title": "Från åtta tusen till trettiofem tusen",
+    "shortFact": "Sedan kommunen bildades 1971 har befolkningen nästan fyrdubblats.",
+    "longFact": "Fram till 2020 hade befolkningen ökat med nästan 300 procent sedan 1971. Idag bor drygt 35 000 personer i kommunen, med runt 500 nya invånare per år.",
     "relatedPlace": null,
-    "source": "Vallentuna Nya",
+    "source": "SCB / Vallentuna kommun",
     "verified": true,
-    "image": "/assets/veckans-fakta/dar-loffe-spelade-in-nagonstans-i-sverige.webp"
-  },
-  {
-    "id": 16,
-    "title": "Pippi Långstrumps häst pensionerades i Angarn",
-    "shortFact": "Hästen som spelade Lilla Gubben i Pippi Långstrump-filmerna levde sina sista år i Vallentuna.",
-    "longFact": "Hästen Bunting blev känd som Lilla Gubben i filmerna om Pippi Långstrump. Efter filmkarriären flyttades han till Örsta ridskola i Angarn, där han levde till 24 års ålder.",
-    "relatedPlace": null,
-    "source": "Vallentuna Nya",
-    "verified": true,
-    "image": "/assets/veckans-fakta/pippi-langstrumps-hast-pensionerades-i-angarn.webp"
-  },
-  {
-    "id": 17,
-    "title": "Soulkungen som växte upp i Vallentuna",
-    "shortFact": "En av Sveriges mest framgångsrika soulartister, med tre Grammis som Årets artist, växte upp i Vallentuna.",
-    "longFact": "Eric Gadd flyttade som nioåring till Vallentuna, där han tillbringade resten av uppväxten. Han blev en av Sveriges mest etablerade soulartister, belönad med Grammis 1991, 1993 och 1997.",
-    "relatedPlace": null,
-    "source": "Vallentuna Nya, Wikipedia",
-    "verified": true,
-    "image": "/assets/veckans-fakta/soulkungen-som-vaxte-upp-i-vallentuna.webp"
-  },
-  {
-    "id": 18,
-    "title": "Natten UFO-vågen svepte över Vallentuna",
-    "shortFact": "1974 gjorde hundratals Vallentunabor observationer av oidentifierade flygande föremål — så allvarligt att militären genomförde en hemlig spaningsoperation.",
-    "longFact": "Under några veckor i mars 1974 rapporterade Vallentunabor i Markim, Orkesta och Lindholmen om enorma ljussken och ljudlösa flygande föremål. Försvarets forskningsanstalt undersökte platser i skyddskläder, och hemvärnet genomförde en spaningsoperation med omkring hundra man. 2024 gjorde UFO-Sverige en utställning om händelsen på Vallentuna Kulturhus, och TV4 en dokumentärserie.",
-    "relatedPlace": "vallentuna-kulturhus",
-    "source": "UFO-Sverige/AFU, Vallentuna Nya, Mitt i",
-    "verified": true,
-    "image": "/assets/veckans-fakta/natten-ufo-vagen-svepte-over-vallentuna.webp"
+    "image": "/assets/veckans-fakta/fran-atta-tusen-till-trettiofem-tusen.webp"
   },
   {
     "id": 19,
@@ -193,76 +263,6 @@
     "source": "vallentunabor.blogspot.com, Stockholm Direkt/Mitt i",
     "verified": true,
     "image": "/assets/veckans-fakta/sopakaren-som-gav-bort-sitt-arv-till-bygdens-barn.webp"
-  },
-  {
-    "id": 20,
-    "title": "Världens första riktiga simstjärna badade sina sista år i Kvarnbadet",
-    "shortFact": "En av 1920-talets mest berömda idrottare i världen tillbringade sina sista år med morgondopp i Vallentunasjön.",
-    "longFact": "Arne Borg var på 1920-talet så känd att han jämfördes med Greta Garbo i internationell berömmelse. Han satte 32 världsrekord, tog fem OS-medaljer och blev simsportens första riktiga världsstjärna. Han bodde sina sista år i Vallentuna, där han enligt grannar fortsatte ta sina morgondopp — i Kvarnbadet.",
-    "relatedPlace": "kvarnbadet",
-    "source": "Wikipedia, vallentunabor.blogspot.com",
-    "verified": true,
-    "image": "/assets/veckans-fakta/varldens-forsta-riktiga-simstjarna-badade-sina-sista-ar-i-kvarnbadet.webp"
-  },
-  {
-    "id": 21,
-    "title": "Mentalisten som blev mångmiljonär på sin Vallentuna-uppväxt",
-    "shortFact": "Henrik Fexeus, en av världens mest kända mentalister, flyttade till Vallentuna som sexåring.",
-    "longFact": "Henrik Fexeus föddes i Örebro men växte upp i Vallentuna från sex års ålder till han var 28. Han blev en internationellt erkänd mentalist och författare — hans deckartrilogi med Camilla Läckberg har sålts till 60 länder. Fexeus har en egen teori om varför så många inom svensk media och kultur kommer från Vallentuna: kommunen satsade ovanligt hårt på ungdomskultur under hans uppväxt.",
-    "relatedPlace": null,
-    "source": "Wikipedia, Vallentuna Nya, Mitt i",
-    "verified": true,
-    "image": "/assets/veckans-fakta/mentalisten-som-blev-mangmiljonar-pa-sin-vallentuna-uppvaxt.webp"
-  },
-  {
-    "id": 22,
-    "title": "Skateboardkompisarna som båda blev kända",
-    "shortFact": "Två internationellt kända svenska artister åkte skateboard tillsammans som barn i Vallentuna.",
-    "longFact": "Skådespelaren Gustaf Hammarsten, internationellt känd för sin roll i 'Brüno', växte upp i Vallentuna. Som barn åkte han skateboard med skolkamraten Eric Gadd — samma Eric Gadd som senare blev en av Sveriges mest framgångsrika soulartister.",
-    "relatedPlace": null,
-    "source": "Vallentunabloggen, Wikipedia",
-    "verified": true,
-    "image": "/assets/veckans-fakta/skateboardkompisarna-som-bada-blev-kanda.webp"
-  },
-  {
-    "id": 23,
-    "title": "Poeten från Vallentuna som fick välja Nobelpristagare",
-    "shortFact": "En kvinna som delvis växte upp i Vallentuna satt i arton år med och utsåg Nobelpristagaren i litteratur.",
-    "longFact": "Kristina Lugn växte delvis upp i Vallentuna innan hon blev en av Sveriges mest folkkära poeter och dramatiker. 2006 valdes hon in i Svenska Akademien, på stol nummer 14 — vilket innebar att hon under resten av sitt liv var med och utsåg mottagaren av Nobelpriset i litteratur.",
-    "relatedPlace": null,
-    "source": "SVT, skbl.se, Wikipedia",
-    "verified": true,
-    "image": "/assets/veckans-fakta/poeten-fran-vallentuna-som-fick-valja-nobelpristagare.webp"
-  },
-  {
-    "id": 24,
-    "title": "Racerföraren från blomsteraffären",
-    "shortFact": "En pojke från familjens blomsterbutik i Vallentuna blev en av Sveriges mest framgångsrika racerförare.",
-    "longFact": "Rickard Rydell föddes i Vallentuna och tränade ursprungligen för att ta över familjens blomsterbutik. Racingen tog över istället — han vann brittiska touringcarmästerskapet 1998 och blev en av Sveriges mest namnkunniga förare inom internationell motorsport.",
-    "relatedPlace": null,
-    "source": "Wikipedia",
-    "verified": true,
-    "image": "/assets/veckans-fakta/racerforaren-fran-blomsteraffaren.webp"
-  },
-  {
-    "id": 25,
-    "title": "Där Eurovision-Sverige bor",
-    "shortFact": "Melodifestivalens Robin Bengtsson bor tillsammans med dansaren Sigrid Bernson i Bällsta.",
-    "longFact": "Robin Bengtsson, som representerade Sverige i Eurovision Song Contest 2017, bor i Bällsta med sin sambo, dansaren och sångerskan Sigrid Bernson. De sällar sig till en lång rad kända namn som bott i kommunen, bland dem Agnetha och Björn från ABBA.",
-    "relatedPlace": null,
-    "source": "Mitt i",
-    "verified": true,
-    "image": "/assets/veckans-fakta/dar-eurovision-sverige-bor.webp"
-  },
-  {
-    "id": 26,
-    "title": "Rösten som väckte Sverige i tretton år",
-    "shortFact": "Mannen bakom Morgonpasset i P3 växte upp i Vallentuna.",
-    "longFact": "Kodjo Akolor växte upp i Vallentuna och blev en av Sveriges mest folkkära radio- och TV-profiler. Han ledde Morgonpasset i P3 i över tretton år, fram till 2022, och var en av programledarna för Melodifestivalen 2019.",
-    "relatedPlace": null,
-    "source": "Wikipedia, mellopedia.svt.se",
-    "verified": true,
-    "image": "/assets/veckans-fakta/rosten-som-vackte-sverige-i-tretton-ar.webp"
   },
   {
     "id": 27,
