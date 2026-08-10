@@ -19,6 +19,20 @@
   to = "/evenemang/hostfest-skordefest-i-lindholmen-2026-09-06.html"
   status = 301
 
+# Closed business — keep old URLs from 404ing
+[[redirects]]
+  from = "/plats/rookie-cafe-och-restaurang.html"
+  to = "/"
+  status = 301
+[[redirects]]
+  from = "/plats/rookie-cafe-och-restaurang"
+  to = "/"
+  status = 301
+[[redirects]]
+  from = "/assets/upplev/rookie-cafe-och-restaurang/*"
+  to = "/assets/og.jpg"
+  status = 301
+
 # Service worker must revalidate so clients pick up new shell caches
 [[headers]]
   for = "/sw.js"

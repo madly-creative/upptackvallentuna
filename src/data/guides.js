@@ -357,16 +357,12 @@ export const guides = [
     season: "sommar",
     heroImg: "/assets/upplev/markims-bergby/cover.webp",
     intro:
-      "Ställen man lätt kör förbi i augusti — bakgårdscafé, ishallslunch, gård i Markim, stilla bad och grill vid torget. Fem stopp för er som redan sett det uppenbara.",
+      "Ställen man lätt kör förbi i augusti — bakgårdscafé, gård i Markim, stilla bad och grill vid torget. Fyra stopp för er som redan sett det uppenbara.",
     lead: "Det lokala blir ännu bättre när man lämnar huvudgatan.",
     stops: [
       {
         place: "Ljuvliga Bakverk",
         text: "Börja i Söderbydal. Susannes bakgårdscafé är litet nog att missa — och starkt nog att ni pratar om det efteråt. Glutenfritt ur egen ugn, hembakat på riktigt. Sitt ute om ni får plats.",
-      },
-      {
-        place: "Rookie Café & Restaurang",
-        text: "Lunch där få turister letar: Rookie i ishallen. Lagat från grunden, prisvärt, med den där oväntade känslan av att ha hittat något. Passa lunchtiderna — de håller dem.",
       },
       {
         place: "Markims Bergby",
