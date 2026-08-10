@@ -1636,7 +1636,7 @@ import { facts as FACTS_SEED, currentFact, isSagen } from "../data/facts.js";
     const metaEl=document.getElementById('todayBriefMeta');
     const weekend=isWeekendWindow();
     if(eyeEl) eyeEl.textContent=weekend?"Helgen":"Just nu";
-    if(titleEl) titleEl.textContent=weekend?`Helgen i ${K}`:`Idag i ${K}`;
+    if(titleEl) titleEl.textContent=weekend?`Helgen i ${K}`:`Händer i ${K}`;
 
     const openRanked=rankedPlaces().filter(x=>x.open && isTimedVenue(x.p)).slice(0,3);
     const openN=openVenueCount();
