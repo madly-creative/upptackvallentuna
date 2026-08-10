@@ -302,33 +302,35 @@
   .tcard h3{font-family:var(--font-serif);font-size:22px;font-weight:500;line-height:1.1;margin-bottom:6px}
   .tcard p{font-size:13px;line-height:1.4;color:rgba(255,255,255,.88);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 
+  /* Light theme — leaves the dark moss card language to Veckans Visste du att */
   .pick-quote{
-    border-radius:var(--radius);background:var(--moss-deep);color:var(--paper);
+    border-radius:var(--radius);background:var(--card);color:var(--moss-deep);
+    border:1px solid var(--line-soft);
     padding:28px 26px;display:flex;flex-direction:column;justify-content:space-between;
     position:relative;overflow:hidden;min-height:260px;
   }
   .pick-quote .botanical{
     position:absolute;right:-12px;bottom:-24px;
     width:min(52%,200px);height:auto;
-    opacity:.55;pointer-events:none;user-select:none;
-    /* Knock out cream/white fills into the moss background */
+    opacity:.28;pointer-events:none;user-select:none;
     mix-blend-mode:multiply;
   }
   .pick-quote .eyebrow{
     font-size:11px;letter-spacing:.14em;text-transform:uppercase;
-    color:#e8b4a0;font-weight:700;margin-bottom:14px;
+    color:var(--rust);font-weight:700;margin-bottom:14px;
   }
   .pick-quote blockquote{
     font-family:var(--font-serif);font-size:clamp(22px,2.4vw,28px);font-weight:500;
     font-style:italic;line-height:1.25;margin:0 0 16px;position:relative;max-width:18ch;
+    color:var(--moss-deep);
   }
-  .pick-quote p{font-size:13px;line-height:1.55;color:rgba(247,243,235,.78);position:relative;max-width:28ch;margin:0}
+  .pick-quote p{font-size:13px;line-height:1.55;color:var(--ink-soft);position:relative;max-width:28ch;margin:0}
   .pick-quote .lnk{
-    margin-top:20px;font-size:13px;color:#e8b4a0;font-weight:600;
+    margin-top:20px;font-size:13px;color:var(--rust);font-weight:600;
     cursor:pointer;position:relative;align-self:flex-start;background:none;border:none;
     font-family:inherit;padding:0;
   }
-  .pick-quote .lnk:hover{color:#fff}
+  .pick-quote .lnk:hover{color:var(--rust-deep)}
 
   /* Legacy aliases (om andra views refererar) */
   .today-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
@@ -634,6 +636,62 @@
   .recurring-sec{margin:0 0 36px;padding-bottom:28px;border-bottom:1px solid var(--line-soft)}
   .recurring-h{
     font-family:var(--font-serif,Georgia,serif);font-size:1.45rem;font-weight:600;margin:8px 0 6px;color:var(--ink)
+  }
+  /* Veckans Visste du att — mossgrönt kort, text + image-placeholder till höger */
+  .weekly-fact-sec{padding-top:28px}
+  .weekly-fact-card{
+    border-radius:var(--radius);background:var(--moss-deep);color:var(--paper);
+    padding:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(140px,240px);
+    overflow:hidden;min-height:240px;align-items:stretch;
+  }
+  .weekly-fact-copy{padding:32px 22px 28px 34px;display:flex;flex-direction:column;min-width:0}
+  .weekly-fact-card .eyebrow{
+    font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    color:#e8b4a0;font-weight:700;margin-bottom:14px;
+  }
+  .weekly-fact-card blockquote{
+    font-family:var(--font-serif);font-size:clamp(24px,2.8vw,34px);font-weight:500;
+    font-style:italic;line-height:1.22;margin:0 0 16px;
+    max-width:none;text-wrap:balance;color:var(--paper);
+  }
+  .weekly-fact-copy > p{
+    font-size:15px;line-height:1.65;color:rgba(247,243,235,.84);
+    max-width:none;margin:0;
+  }
+  .weekly-fact-card .weekly-fact-sagen{
+    font-size:13px;font-style:italic;color:rgba(232,180,160,.9);margin:0 0 10px;
+  }
+  .weekly-fact-card .weekly-fact-source{
+    font-size:12px;line-height:1.45;color:rgba(247,243,235,.55);margin:14px 0 0;
+  }
+  .weekly-fact-media{
+    position:relative;min-height:100%;
+    background:var(--moss-deep);
+    border-left:1px solid rgba(247,243,235,.06);
+  }
+  .weekly-fact-art{
+    display:block;width:100%;height:100%;min-height:220px;
+    object-fit:cover;object-position:center;
+  }
+  .weekly-fact-ph{
+    width:100%;height:100%;min-height:220px;display:grid;place-items:center;
+    font-family:var(--font-serif);font-size:64px;font-weight:500;
+    color:rgba(247,243,235,.28);
+    background:
+      linear-gradient(145deg,rgba(247,243,235,.04) 0%,transparent 55%),
+      repeating-linear-gradient(
+        -45deg,transparent,transparent 10px,
+        rgba(247,243,235,.03) 10px,rgba(247,243,235,.03) 11px
+      );
+  }
+  @media (max-width:720px){
+    .weekly-fact-sec{padding-top:20px}
+    .weekly-fact-card{grid-template-columns:1fr}
+    .weekly-fact-copy{padding:22px 20px 20px}
+    .weekly-fact-media{border-left:none;border-top:1px solid rgba(247,243,235,.06);order:-1}
+    .weekly-fact-art,.weekly-fact-ph{min-height:150px;max-height:180px}
+    .weekly-fact-card blockquote{font-size:clamp(22px,6vw,28px);margin-bottom:12px}
+    .weekly-fact-copy > p{font-size:14px;line-height:1.6}
   }
   .plats-soldat{margin:22px 0 8px}
   .plats-soldat h3{font-family:var(--font-serif,Georgia,serif);font-size:1.15rem;margin:0 0 10px}
