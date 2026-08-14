@@ -1632,6 +1632,43 @@
     .today-brief{padding:0 16px;margin-top:-20px}
   }
 
+  /* ---------- SEN SIST DU VAR HÄR (optional; only when delta) ---------- */
+  .since-last{
+    max-width:var(--max);margin:18px auto 0;padding:0 28px;
+  }
+  .since-last .inner{
+    background:var(--card);border:1px solid var(--line-soft);border-radius:16px;
+    padding:16px 18px 14px;
+  }
+  .since-last-head{margin-bottom:12px}
+  .since-last-head .eyebrow{
+    font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--rust);margin-bottom:4px;
+  }
+  .since-last-head h2{
+    font-family:var(--font-serif);font-size:clamp(20px,2.4vw,24px);font-weight:500;
+    color:var(--moss-deep);line-height:1.2;margin:0;
+  }
+  .since-last-groups{
+    display:flex;flex-wrap:wrap;gap:14px 28px;
+  }
+  .since-last-group h3{
+    font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--ink-soft);margin:0 0 6px;
+  }
+  .since-last-group ul{
+    list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px;
+  }
+  .since-last-link{
+    font-family:inherit;font-size:14px;font-weight:600;color:var(--moss-deep);
+    background:none;border:none;padding:2px 0;cursor:pointer;text-align:left;
+  }
+  .since-last-link:hover{color:var(--rust)}
+  .since-last-link:focus-visible{outline:2px solid var(--rust);outline-offset:2px}
+  @media (max-width:1100px){
+    .since-last{padding:0 16px}
+  }
+
   .quick-paths{
     max-width:var(--max);margin:28px auto 0;padding:0 28px;
   }

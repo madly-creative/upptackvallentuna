@@ -3,7 +3,9 @@ import {
   textMatchesQuery,
   eventSearchHay,
   recurringSearchHay,
+  producerSearchHay,
 } from "../src/lib/searchMatch.js";
+import { producers } from "../src/data/producers.js";
 
 describe("searchMatch", () => {
   it("matches all tokens", () => {
@@ -32,5 +34,24 @@ describe("searchMatch", () => {
     });
     expect(textMatchesQuery(hay, "socialdans")).toBe(true);
     expect(textMatchesQuery(hay, "varje vecka")).toBe(true);
+  });
+
+  it("every producer is findable by name", () => {
+    expect(producers.length).toBeGreaterThan(0);
+    for (const pr of producers) {
+      const hay = producerSearchHay(pr);
+      const token = pr.name.split(/\s+/)[0];
+      expect(textMatchesQuery(hay, token), pr.name).toBe(true);
+    }
+  });
+
+  it("producer hay includes soldAt and category words", () => {
+    const mosters = producers.find((p) => p.slug === "mosters-goda");
+    expect(mosters).toBeTruthy();
+    const hay = producerSearchHay(mosters);
+    expect(textMatchesQuery(hay, "mosters")).toBe(true);
+    expect(textMatchesQuery(hay, "marmelader")).toBe(true);
+    expect(textMatchesQuery(hay, "hökeriet")).toBe(true);
+    expect(textMatchesQuery(hay, "producent")).toBe(true);
   });
 });
