@@ -155,4 +155,16 @@ export const PLACE_META = {
         {label:"Vallentuna kommun — Lindholmen",url:"https://www.vallentuna.se/fritid-och-kultur/kultur/kulturmiljo/hitta-din-plats-historia/orkesta/gardar-och-byar/lindholmen/"},
       ],
       hoursVerified:"2026-08-14"},
+    "Vallentuna Konditori":{tags:["barn","inomhus"],district:"Centrum",updated:"2026-08-14",addedDate:"2026-08-14",holidayClosed:true,
+      hours:[H(11,15),H(7,18),H(7,18),H(7,18),H(7,18),H(7,18),H(8,16)],
+      sources:[{label:"Hitta.se / öppettider-kataloger"},{label:"Lokal info"}],
+      hoursVerified:"2026-08-14"},
+    "Äppellundens Café":{tags:["barn","ute"],district:"Kårsta",updated:"2026-08-14",addedDate:"2026-08-14",holidayClosed:false,
+      seasonNote:"Café ca 12–16 (kan ändras) — följ Facebook Kårsta 4H för aktuella tider, minigolf och evenemang",
+      hours:[C,H(12,16),H(12,16),H(12,16),H(12,16),H(12,16),H(12,16)],
+      sources:[
+        {label:"Kårsta 4H",url:"https://www.4h.se/karsta/"},
+        {label:"Facebook Kårsta 4H",url:"https://www.facebook.com/karsta4h"},
+      ],
+      hoursVerified:"2026-08-14"},
 };

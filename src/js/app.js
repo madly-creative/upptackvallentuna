@@ -609,6 +609,26 @@ import {
       <p>På höjden mellan Lillsjön och Storsjön syns lämningarna efter ett medeltida stenhus (borgruin) och två ekar som naturminnesförklarades 1918. Samhället <em>Lindholmen</em> växte fram väster om gården när Roslagsbanan fick station här 1887 — namnet hör historiskt till Orkesta, även om många idag säger Lindholmen.</p>
       <p><strong>Herrgården är privat.</strong> Besök kulle, ruin och minnessten utifrån informationstavlan på plats. Mer: <a href="https://sv.wikipedia.org/wiki/Lindholmens_g%C3%A5rd" target="_blank" rel="noopener">Wikipedia — Lindholmens gård</a> · <a href="https://www.vallentuna.se/fritid-och-kultur/kultur/kulturmiljo/hitta-din-plats-historia/orkesta/gardar-och-byar/lindholmen/" target="_blank" rel="noopener">vallentuna.se</a>.</p>`
     },
+    "Vallentuna Konditori":{
+      address:"Centralvägen 1, 186 31 Vallentuna",
+      facts:["Konditori","Bröd & tårta","Centrum","Frukostfik"],
+      localPhotos:true,
+      images:[
+        {url:"/assets/upplev/vallentuna-konditori/cover.webp",alt:"Vallentuna Konditori på Centralvägen"}
+      ],
+      body:`<p><strong>Vallentuna Konditori</strong> på Centralvägen 1 — traditionellt konditori med bröd, fikabröd, tårtor och smörgåstårta. Ett litet kvartersställe mitt i centrum, öppet tidigt på vardagar.</p>
+      <p>Öppet mån–fre 07–18, lör 08–16, sön 11–15 (kan variera — ring gärna). Tel 08-511 740 04.</p>`
+    },
+    "Äppellundens Café":{
+      address:"Kårstavägen 311, 186 60 Vallentuna",
+      facts:["4H","Café","Minigolf","Barnvänligt"],
+      localPhotos:true,
+      images:[
+        {url:"/assets/upplev/appellundens-cafe/cover.webp",alt:"Äppellundens Café hos Kårsta 4H"}
+      ],
+      body:`<p><strong>Äppellundens Café</strong> hör till Kårsta 4H på Kårstavägen 311 — fika och enklare mat i gårdsmiljö, plus minigolf och aktiviteter för barn och familjer.</p>
+      <p>Caféet siktar på öppet ca <strong>12–16</strong> (tider ändras ofta). Följ <a href="https://www.facebook.com/karsta4h" target="_blank" rel="noopener">Facebook Kårsta 4H</a> eller ring 073-852 27 98 innan ni åker. Info: <a href="https://www.4h.se/karsta/" target="_blank" rel="noopener">4h.se/karsta</a>.</p>`
+    },
   };
 
     const cats=[{key:"alla",label:"Allt"},{key:"fika",label:"Fika & Mat"},{key:"gard",label:"Gård & Handelsträdgård"},{key:"natur",label:"Natur & Historia"},{key:"butik",label:"Butik & Kultur"},{key:"loppis",label:"Loppis"}];
@@ -671,7 +691,9 @@ import {
     "Jano":"2026-08-06",
     "Bergsjöns badplats":"2026-08-07",
     "AutoMat Kårsta":"2026-08-07",
-    "Vasakullen":"2026-08-14"
+    "Vasakullen":"2026-08-14",
+    "Vallentuna Konditori":"2026-08-14",
+    "Äppellundens Café":"2026-08-14"
   };
 
   const now=new Date();

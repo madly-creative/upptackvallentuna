@@ -97,12 +97,12 @@ test("search finds all producers by name", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "Sök" }).first().click();
   await expect(page.locator("#view-sok")).toHaveClass(/on/);
-  for (const name of ["Mosters Goda", "Markims honung", "Söderbydal keramik"]) {
+  for (const name of ["Mosters Goda", "Markims honung", "Söderbydal keramik", "Surgubbens Hantverksbageri"]) {
     await page.locator("#globalSearch").fill(name);
     await expect(page.locator("#searchResults")).toContainText("Producenter");
     await expect(page.locator("#searchResults").getByRole("heading", { name })).toBeVisible();
   }
-  await page.locator("#searchResults").getByRole("heading", { name: "Söderbydal keramik" }).click();
+  await page.locator("#searchResults").getByRole("heading", { name: "Surgubbens Hantverksbageri" }).click();
   await expect(page.locator("#view-verksamhet")).toHaveClass(/on/);
-  await expect(page.locator("#verkName")).toHaveText("Söderbydal keramik");
+  await expect(page.locator("#verkName")).toHaveText("Surgubbens Hantverksbageri");
 });
