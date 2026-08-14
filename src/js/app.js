@@ -25,6 +25,7 @@ import {
   eventSearchHay,
   recurringSearchHay,
   placeSearchHay,
+  producerSearchHay,
 } from "../lib/searchMatch.js";
 import { facts as FACTS_SEED, currentFact, isSagen } from "../data/facts.js";
 import {
@@ -2021,6 +2022,11 @@ import {
     if(!q) return false;
     return textMatchesQuery(recurringSearchHay(r), q);
   }
+  function producerMatchesSearch(pr){
+    const q=searchQuery();
+    if(!q) return false; // som evenemang: bara vid fritext
+    return textMatchesQuery(producerSearchHay(pr), q);
+  }
   function searchEventRowHTML(e){
     const d=new Date(e.date+"T12:00:00");
     const whenShort=`${d.getDate()} ${MON[d.getMonth()]}`;
@@ -2063,6 +2069,17 @@ import {
       <div class="travel">${fmtDist(t.km)}<br>Bil ${t.car} min<br>Cykel ${t.bike} min<br>SL ${t.sl} min</div>
     </article>`;
   }
+  function searchProducerRowHTML(pr){
+    return `<article class="s-item" onclick="openProducer('${jsEsc(producerSlug(pr))}')">
+      <div class="im" style="background-image:url('${pr.img||""}')"></div>
+      <div>
+        <h3>${escHtml(pr.name)}</h3>
+        <div class="meta">${escHtml(pr.cat||"Producent")} · Ingen egen butiksadress</div>
+        <div class="tags"><span class="tag">Producent</span></div>
+      </div>
+      <div class="travel">→</div>
+    </article>`;
+  }
   function runSearch(){
     initSearchUI();
     const box=document.getElementById('searchResults'); if(!box) return;
@@ -2072,10 +2089,11 @@ import {
       p._km=t.km;
       return p;
     }).sort((a,b)=>(a._km||99)-(b._km||99));
-    // Place-only filters (öppet nu, barn…) apply to places; events match fritext only.
+    // Place-only filters (öppet nu, barn…) apply to places; events/producers match fritext only.
     const eventHits=q ? liveEvents.filter(eventMatchesSearch) : [];
     const recurringHits=q ? recurring.filter(recurringMatchesSearch) : [];
-    if(!placeHits.length && !eventHits.length && !recurringHits.length){
+    const producerHits=q ? producers.filter(producerMatchesSearch) : [];
+    if(!placeHits.length && !eventHits.length && !recurringHits.length && !producerHits.length){
       box.innerHTML=`<div class="ev-empty">Inga träffar — prova ett annat ord eller färre filter.</div>`;
       return;
     }
@@ -2091,6 +2109,10 @@ import {
     if(placeHits.length){
       if(q) parts.push(`<p class="search-group">Platser <span>${placeHits.length}</span></p>`);
       parts.push(...placeHits.map(searchPlaceRowHTML));
+    }
+    if(producerHits.length){
+      parts.push(`<p class="search-group">Producenter <span>${producerHits.length}</span></p>`);
+      parts.push(...producerHits.map(searchProducerRowHTML));
     }
     box.innerHTML=parts.join("");
   }
