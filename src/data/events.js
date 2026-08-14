@@ -61,6 +61,17 @@ export const events = [
     source: "https://www.vallentuna.se/evenemang-och-upplevelser/evenemangskalender/2026/08/drop-in-vasby-kvarn2/",
   },
   {
+    host: "VaDoM / Vallentuna Dans och Musikförening",
+    title: "Living Room Concert — Roslagens ungdomsspelmanslag",
+    date: "2026-08-18",
+    when: "Tis 18 aug · 19:00",
+    time: "19:00 – 20:00",
+    cat: "KULTUR",
+    note: "Folkmusik i trädgården på Rosenlundsvägen 14, östra Bällsta — Roslagens spelmanslags ungdomssektion. Ta med något att sitta på och kaffekorg. Fri entré.",
+    img: "/assets/evenemang/living-room-concert-vadom/cover.webp",
+    source: "https://vadom.se/program.html",
+  },
+  {
     host: "Orkesta Bygdegård Lindholmen",
     title: "Brädspelskväll",
     date: "2026-08-19",
@@ -226,6 +237,17 @@ export const events = [
     source: "https://www.orkestahembygd.se/event",
   },
   {
+    host: "Vallentuna Hembygdsförening",
+    title: "Hembygdstorsdag — Porkalaparentesen",
+    date: "2026-09-03",
+    when: "Tor 3 sep · 19:00",
+    time: "19:00 – 20:00",
+    cat: "KULTUR",
+    note: "Föreläsning i Kulturrummet, Vallentuna Kulturhus — Henrik Wirén om Porkalaparentesen 1944–1956 (sovjetisk bas på Finlands sydkust). Första torsdagen i månaden.",
+    img: "/assets/evenemang/hembygdstorsdag-porkala/cover.webp",
+    source: "https://www.hembygd.se/vallentuna/activities/55941",
+  },
+  {
     host: "Jano / Vallentuna Teater",
     title: "Jano — Sylvia Vrethammar",
     date: "2026-09-20",
@@ -246,6 +268,17 @@ export const events = [
     note: "Tyska bluesbandet B.B. & The Blues Shacks på Vallentuna Teater. Insläpp från 18:30. Biljetter från 200 kr via Nortic.",
     img: "/assets/evenemang/bb-and-the-blues-shacks/cover.webp",
     source: "https://nortic.se/ticket/show/353486",
+  },
+  {
+    host: "Vallentuna Hembygdsförening",
+    title: "Hembygdstorsdag — Svensk militärmusik",
+    date: "2026-10-01",
+    when: "Tor 1 okt · 19:00",
+    time: "19:00 – 20:00",
+    cat: "KULTUR",
+    note: "Föreläsning i Kulturrummet, Vallentuna Kulturhus — svensk militärmusik genom femhundra år (jubileumsår 2026). Första torsdagen i månaden.",
+    img: "/assets/evenemang/hembygdstorsdag-militarmusik/cover.webp",
+    source: "https://www.hembygd.se/vallentuna/activities/55942",
   },
   {
     host: "Jano / Vallentuna Teater",
@@ -489,6 +522,18 @@ export const EVENT_CONTENT = {
   "Drop-in Väsby kvarn": {
     body: `<p>Lördagsöppet i <strong>Väsby kvarn</strong> vid Kvarnbadet — Väsby kvarnförening bemannar kvarnen och visar utställningen om historien och funktionen. Packa gärna picknickkorgen. Fri entré.</p>
       <p>Öppet bl.a. 15 och 22 augusti kl. 12–14. Större fest: <em>Kvarnens dag</em> 5 september. Info: <a href="https://www.vallentuna.se/evenemang-och-upplevelser/evenemangskalender/2026/08/drop-in-vasby-kvarn2/" target="_blank" rel="noopener">vallentuna.se</a>.</p>`,
+  },
+  "Living Room Concert — Roslagens ungdomsspelmanslag": {
+    body: `<p>Tisdag 18 augusti kl. 19 i trädgården på <strong>Rosenlundsvägen 14</strong>, östra Bällsta — Living Room Concert med Roslagens spelmanslags ungdomssektion. Arrangör: VaDoM (Vallentuna Dans och Musikförening).</p>
+      <p>Ta med något att sitta på och kaffekorg. <strong>Fri entré.</strong> Program: <a href="https://vadom.se/program.html" target="_blank" rel="noopener">vadom.se</a>.</p>`,
+  },
+  "Hembygdstorsdag — Porkalaparentesen": {
+    body: `<p>Torsdag 3 september kl. 19–20 i Kulturrummet, Vallentuna Kulturhus — Hembygdstorsdag med Vallentuna Hembygdsförening. Henrik Wirén berättar om Porkalaparentesen 1944–1956.</p>
+      <p>Info: <a href="https://www.hembygd.se/vallentuna/activities/55941" target="_blank" rel="noopener">hembygd.se / Vallentuna</a>.</p>`,
+  },
+  "Hembygdstorsdag — Svensk militärmusik": {
+    body: `<p>Torsdag 1 oktober kl. 19–20 i Kulturrummet, Vallentuna Kulturhus — Hembygdstorsdag om svensk militärmusik genom femhundra år (jubileumsår 2026).</p>
+      <p>Info: <a href="https://www.hembygd.se/vallentuna/activities/55942" target="_blank" rel="noopener">hembygd.se / Vallentuna</a>.</p>`,
   },
   "Bio Halvåtta: The Invite": {
     body: `<p>Torsdag 27 augusti kl. 19:30 på Vallentuna Teater — <em>The Invite</em>, dramakomedi av Olivia Wilde med Seth Rogen, Penélope Cruz och Edward Norton. Arrangör: Tuna Bio / Kultur Vallentuna.</p>

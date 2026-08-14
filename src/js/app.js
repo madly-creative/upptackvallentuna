@@ -586,6 +586,20 @@ import { facts as FACTS_SEED, currentFact, isSagen } from "../data/facts.js";
       body:`<p><strong>Jazzklubb Nordost (Jano)</strong> arrangerar jazzkonserter på Vallentuna Teater i centrum — ca 100 m från stationen, 320 sittplatser, hörslinga och rullstolsanpassat. Caféet öppnar kl. 17:30; musiken startar kl. 18:30 (om inte annat anges). Servering sköts av Triften.</p>
       <p>Biljetter via <a href="https://jano.nu/biljetter-29542633" target="_blank" rel="noopener">Nortic</a> eller över disk på Vallentuna bibliotek. Medlemskap 200 kr / VIP 800 kr (halvår) via Plusgiro 19 25 83-3 eller Swish 123 494 71 72. Program och mer: <a href="https://jano.nu/" target="_blank" rel="noopener">jano.nu</a>.</p>`
     },
+    "Vasakullen":{
+      address:"Lindholmens gård / Orkesta, Lindholmen",
+      facts:["Gustav Vasa","Borgruin","Minnessten 1866","Orkesta"],
+      localPhotos:true,
+      photoCredit:"Foto: Wikimedia Commons (Holger Ellgaard).",
+      images:[
+        {url:"/assets/upplev/vasakullen/cover.webp",alt:"Vasakullen vid Lindholmens gård"},
+        {url:"/assets/upplev/vasakullen/img1.webp",alt:"Minnessten och landskap vid Vasakullen"},
+        {url:"/assets/upplev/vasakullen/img2.webp",alt:"Borgruinen på Vasakullen"}
+      ],
+      body:`<p><strong>Vasakullen</strong> ligger vid Lindholmens gård i Orkesta socken. Enligt en tradition föddes Gustav Vasa här den 12 maj 1496 (en annan tradition pekar på Rydboholm). Hans mormor Sigrid Eskilsdotter (Banér) bodde på Lindholmen från 1496 till sin död 1527. År 1866 restes en minnessten på kullen.</p>
+      <p>På höjden mellan Lillsjön och Storsjön syns lämningarna efter ett medeltida stenhus (borgruin) och två ekar som naturminnesförklarades 1918. Samhället <em>Lindholmen</em> växte fram väster om gården när Roslagsbanan fick station här 1887 — namnet hör historiskt till Orkesta, även om många idag säger Lindholmen.</p>
+      <p><strong>Herrgården är privat.</strong> Besök kulle, ruin och minnessten utifrån informationstavlan på plats. Mer: <a href="https://sv.wikipedia.org/wiki/Lindholmens_g%C3%A5rd" target="_blank" rel="noopener">Wikipedia — Lindholmens gård</a> · <a href="https://www.vallentuna.se/fritid-och-kultur/kultur/kulturmiljo/hitta-din-plats-historia/orkesta/gardar-och-byar/lindholmen/" target="_blank" rel="noopener">vallentuna.se</a>.</p>`
+    },
   };
 
     const cats=[{key:"alla",label:"Allt"},{key:"fika",label:"Fika & Mat"},{key:"gard",label:"Gård & Handelsträdgård"},{key:"natur",label:"Natur & Historia"},{key:"butik",label:"Butik & Kultur"},{key:"loppis",label:"Loppis"}];
@@ -647,7 +661,8 @@ import { facts as FACTS_SEED, currentFact, isSagen } from "../data/facts.js";
     "Folkantik och Vintage":"2026-08-05",
     "Jano":"2026-08-06",
     "Bergsjöns badplats":"2026-08-07",
-    "AutoMat Kårsta":"2026-08-07"
+    "AutoMat Kårsta":"2026-08-07",
+    "Vasakullen":"2026-08-14"
   };
 
   const now=new Date();

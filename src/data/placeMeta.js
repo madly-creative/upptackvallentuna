@@ -147,4 +147,12 @@ export const PLACE_META = {
       hours:[H(17,21),C,C,C,C,C,C],
       sources:[{label:"jano.nu",url:"https://jano.nu/"},{label:"Vallentuna Teater",url:"https://jano.nu/vallentuna-teater"}],
       hoursVerified:"2026-08-06"},
+    "Vasakullen":{tags:["barn","hund","gratis","ute"],district:"Lindholmen",updated:"2026-08-14",holidayClosed:false,
+      seasonNote:"Alltid tillgänglig utomhus — herrgården är privat, besök kulle/ruin/minnessten",
+      hours:[A,A,A,A,A,A,A],
+      sources:[
+        {label:"Wikipedia — Lindholmens gård",url:"https://sv.wikipedia.org/wiki/Lindholmens_g%C3%A5rd"},
+        {label:"Vallentuna kommun — Lindholmen",url:"https://www.vallentuna.se/fritid-och-kultur/kultur/kulturmiljo/hitta-din-plats-historia/orkesta/gardar-och-byar/lindholmen/"},
+      ],
+      hoursVerified:"2026-08-14"},
 };
