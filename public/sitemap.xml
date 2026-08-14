@@ -211,6 +211,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://upptackvallentuna.se/plats/vasakullen.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://upptackvallentuna.se/evenemang/sommarkvall-med-live-jazz-2026-08-07.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -232,6 +237,11 @@
   </url>
   <url>
     <loc>https://upptackvallentuna.se/evenemang/drop-in-vasby-kvarn-2026-08-15.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/evenemang/living-room-concert-roslagens-ungdomsspelmanslag-2026-08-18.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -311,12 +321,22 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://upptackvallentuna.se/evenemang/hembygdstorsdag-porkalaparentesen-2026-09-03.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://upptackvallentuna.se/evenemang/jano-sylvia-vrethammar-2026-09-20.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://upptackvallentuna.se/evenemang/b-b-the-blues-shacks-2026-10-02.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/evenemang/hembygdstorsdag-svensk-militarmusik-2026-10-01.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
