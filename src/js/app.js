@@ -27,6 +27,14 @@ import {
   placeSearchHay,
 } from "../lib/searchMatch.js";
 import { facts as FACTS_SEED, currentFact, isSagen } from "../data/facts.js";
+import {
+  resolveVisitState,
+  writeLastVisit,
+  collectSinceLastDelta,
+  deltaIsEmpty,
+  placeGroupLabel,
+  eventGroupLabel,
+} from "../lib/sinceLastVisit.js";
 
   const CONFIG = { kommun: SITE.kommun, region: SITE.region, center: SITE.center, zoom: SITE.zoom };
   const K = CONFIG.kommun;
@@ -760,7 +768,7 @@ import { facts as FACTS_SEED, currentFact, isSagen } from "../data/facts.js";
     return `<div class="source-box">${upd}${src?`Källor: ${src}. `:""}Öppettider kan ändras. Ser du fel? <a href="#" onclick="openReport();return false">Rapportera</a>.</div>`;
   }
   function isNewPlace(p){
-    const s=NEW_SINCE[p.name]; if(!s) return false;
+    const s=metaOf(p).addedDate||NEW_SINCE[p.name]; if(!s) return false;
     const added=new Date(s+"T12:00:00");
     return (now-added)/(1000*60*60*24) <= 45;
   }
@@ -1028,6 +1036,69 @@ import { facts as FACTS_SEED, currentFact, isSagen } from "../data/facts.js";
   const heroSubBase="Handplockade lokala favoriter — inte kedjorna du redan känner till.";
   S('heroSub', isWeekend ? "Helgläge: utflykter, fika och det som gör bygden levande — nära dig." : heroSubBase);
   updateFavBadge();
+
+  /**
+   * "Sen sist du var här" — only when there is a non-empty delta.
+   * Launch migration: missing uv_last_visit → set to now, render nothing
+   * (covers first-timers AND known visitors who lack the new key).
+   */
+  function renderSinceLastVisit(){
+    try{
+      document.getElementById("sinceLast")?.remove();
+      const after=document.getElementById("todayBrief");
+      if(!after || !after.parentNode) return;
+
+      let storage=null;
+      try{ storage=window.localStorage; }catch(e){ storage=null; }
+
+      const visitNow=new Date();
+      const state=resolveVisitState(storage, visitNow);
+      if(state.mode==="bootstrap"){
+        writeLastVisit(storage, visitNow);
+        return;
+      }
+
+      const delta=collectSinceLastDelta({
+        places,
+        placeMeta:PLACE_META,
+        events,
+        lastVisitISO:state.lastVisitISO,
+      });
+      writeLastVisit(storage, visitNow);
+      if(deltaIsEmpty(delta)) return;
+
+      const groups=[];
+      if(delta.places.length){
+        const items=delta.places.map(p=>
+          `<li><button type="button" class="since-last-link" onclick="openPlace('${jsEsc(p.name)}')">${escHtml(p.name)}</button></li>`
+        ).join("");
+        groups.push(`<div class="since-last-group"><h3>${placeGroupLabel(delta.places.length)}</h3><ul>${items}</ul></div>`);
+      }
+      if(delta.events.length){
+        const items=delta.events.map(e=>{
+          const key=jsEsc(e.title+"||"+e.date);
+          return `<li><button type="button" class="since-last-link" onclick="openEvent('${key}')">${escHtml(e.title)}</button></li>`;
+        }).join("");
+        groups.push(`<div class="since-last-group"><h3>${eventGroupLabel(delta.events.length)}</h3><ul>${items}</ul></div>`);
+      }
+
+      const sec=document.createElement("section");
+      sec.id="sinceLast";
+      sec.className="since-last";
+      sec.setAttribute("aria-label","Sen sist du var här");
+      sec.innerHTML=`<div class="inner">
+        <header class="since-last-head">
+          <div class="eyebrow">Sen sist</div>
+          <h2>Sen sist du var här</h2>
+        </header>
+        <div class="since-last-groups">${groups.join("")}</div>
+      </div>`;
+      after.insertAdjacentElement("afterend", sec);
+    }catch(e){
+      console.warn("renderSinceLastVisit", e);
+    }
+  }
+  try{ renderSinceLastVisit(); }catch(e){}
 
   // Return visit memory
   (function showReturn(){
