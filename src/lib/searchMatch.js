@@ -1,5 +1,5 @@
 /**
- * Shared helpers for global search (places + events + recurring).
+ * Shared helpers for global search (places + events + recurring + producers).
  */
 
 /** True when every whitespace-separated token in q appears in hay (case-insensitive). */
@@ -34,6 +34,27 @@ export function placeSearchHay(p, extras = {}) {
     extras.district,
     extras.tags,
     extras.address,
+  ]
+    .filter(Boolean)
+    .join(" ");
+}
+
+/** Haystack for address-free producers (verksamheter). */
+export function producerSearchHay(pr) {
+  const sold = (pr?.soldAt || [])
+    .map((s) => [s?.label, s?.name, s?.placeSlug].filter(Boolean).join(" "))
+    .filter(Boolean)
+    .join(" ");
+  return [
+    pr?.name,
+    pr?.cat,
+    pr?.blurb,
+    pr?.short,
+    pr?.slug,
+    sold,
+    "producent",
+    "verksamhet",
+    "mathantverk",
   ]
     .filter(Boolean)
     .join(" ");
