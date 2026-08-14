@@ -381,6 +381,40 @@ export const guides = [
       "Hem med känslan av att ni känner bygden lite bättre — och att kartan fortfarande har vita fläckar. Bra så.",
     signature: "Vallentuna levererar.",
   },
+  {
+    slug: "lindholmen-och-vasakullen",
+    title: "Lindholmen & Vasakullen",
+    season: "sommar",
+    heroImg: "/assets/upplev/vasakullen/cover.webp",
+    intro:
+      "Norrut längs Roslagsbanan: antik vid stationen, en röd lada full av kuriosa, Gustav Vasas kulle — och fika bland vikingalandskapet. Fem stopp för dig som vill blanda historia och fynd.",
+    lead: "Lindholmen hör till Orkesta — namnet växte fram när tåget kom. Vasakullen har stått kvar längre än så.",
+    stops: [
+      {
+        place: "Folkantik och Vintage",
+        text: "Börja vid Lindholmens station. Folkantik fyller den klassiska handelsboden med allmoge, asiatiskt och folkkonst — Elin och Andreas öppnar främst söndagar, så kolla Instagram innan ni rullar.",
+      },
+      {
+        place: "Röda Magasinet",
+        text: "Några steg bort: tre våningar antik och kuriosa i en röd lada. Syskonkänsla till Antikladan, men egen själ. Enkel fika om magen redan protesterar.",
+      },
+      {
+        place: "Vasakullen",
+        text: "Vidare till Lindholmens gård — men herrgården är privat. Det ni besöker är Vasakullen: minnessten från 1866, medeltida borgruin och ekarna som naturminne. Enligt en tradition föddes Gustav Vasa här. Läs skylten, andas ut.",
+      },
+      {
+        place: "Orkesta Granby Gård",
+        text: "Sväng till Granby. Hökeriet, Charolais på ängen och Granbyhällen mitt i betet — vikingalandskap som fortfarande känns nära. Fika eller bara stå en stund vid hällen.",
+      },
+      {
+        place: "Ljuvliga Bakverk",
+        text: "Avsluta i Söderbydal om Susanne har öppet. Bakgårdscaféet är litet nog att missa — och starkt nog att ni pratar om det efteråt. Hembakat, ofta glutenfritt ur egen ugn.",
+      },
+    ],
+    outro:
+      "Hemåt med dammiga skor, kanske ett loppis-fynd — och känslan av att Orkesta/Lindholmen är mer än en stationsskylt.",
+    signature: "Vallentuna levererar.",
+  },
 ];
 
 /** Matchar seasonCards()-fönstren i appen (0-indexerad månad). */
