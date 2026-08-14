@@ -64,6 +64,29 @@ export const producers = [
     url: "",
     soldAt: [{ placeSlug: "vallboden" }, { name: "Tillfälliga pop-ups i Tuna Torg" }],
   },
+  {
+    slug: "surgubbens-hantverksbageri",
+    name: "Surgubbens Hantverksbageri",
+    cat: "Hemmabageri",
+    blurb:
+      "Anders Borgmark bakar stenugnsbakat surdegsbröd på ekologiskt kulturspannmål i Brottby — bara mjöl, vatten, surdeg och salt. Beställ senast torsdag lunch; uthämtning lördagar. Ingen öppen butik utan beställning.",
+    short: "Surdegsbröd från Brottby — beställ och hämta på lördag.",
+    img: "/assets/verksamhet/surgubbens-hantverksbageri/cover.webp",
+    gallery: [
+      {
+        url: "/assets/verksamhet/surgubbens-hantverksbageri/cover.webp",
+        alt: "Surdegsfrallor från Surgubbens Hantverksbageri",
+      },
+      {
+        url: "/assets/verksamhet/surgubbens-hantverksbageri/brod.webp",
+        alt: "Samling surdegsbröd från Surgubben",
+      },
+    ],
+    url: "https://surgubbensbageri.se/",
+    soldAt: [
+      { name: "Uthämtning Spånlöt 18, Brottby (lör 8–11 efter beställning)" },
+    ],
+  },
 ];
 
 export function producerSlug(p) {
