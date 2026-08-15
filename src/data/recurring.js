@@ -18,6 +18,19 @@ export const recurring = [
     img: "/assets/upplev/vallentuna-kulturhus/cover.webp",
     source: "",
   },
+  {
+    slug: "roslagsloppis-sondag",
+    title: "Roslagsloppis",
+    weekday: 0,
+    start: "11:00",
+    end: "15:00",
+    whenLabel: "Varje söndag 11–15",
+    place: "Roslagsloppis",
+    host: "Loppistajm / Stockholmsmarknader AB",
+    note: "Bakluckeloppis bakom Roslagsstoppet (Söderhall). Säsong 31 maj–13 sept 2026; stängt 21 juni. Fri entré för besökare — kolla roslagsloppis.se innan ni åker.",
+    img: "/assets/upplev/roslagsloppis/cover.webp",
+    source: "https://www.roslagsloppis.se/oppet/",
+  },
 ];
 
 export function recurringSlug(r) {

@@ -37,6 +37,18 @@ test.describe("recurring + producers built markup", () => {
     expect(html).not.toMatch(/2026-\d{2}-\d{2}T/);
   });
 
+  test("Roslagsloppis has one Sunday recurring activity page", () => {
+    const dir = join(root, "dist/aktivitet");
+    const files = readdirSync(dir).filter((f) => f.endsWith(".html"));
+    expect(files).toContain("roslagsloppis-sondag.html");
+    const loppis = files.filter((f) => f.includes("roslagsloppis"));
+    expect(loppis).toHaveLength(1);
+    const html = readFileSync(join(dir, "roslagsloppis-sondag.html"), "utf8");
+    expect(html).toContain("Roslagsloppis");
+    expect(html).toContain("Varje söndag");
+    expect(html).not.toMatch(/2026-\d{2}-\d{2}T/);
+  });
+
   test("producer pages have no address/geo markup", () => {
     const dir = join(root, "dist/verksamhet");
     const files = readdirSync(dir).filter((f) => f.endsWith(".html"));
