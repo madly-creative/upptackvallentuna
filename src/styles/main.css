@@ -1690,16 +1690,19 @@
   .nara-dig-cta-copy p{margin:0;color:var(--ink-soft);font-size:14px;max-width:42ch}
   .nara-dig-cta-btn{
     appearance:none;border:none;cursor:pointer;
-    background:var(--moss-deep);color:#fff;font-weight:700;font-size:14px;
-    padding:12px 18px;border-radius:999px;
+    background:var(--moss-deep);color:#fff;font-weight:700;font-size:13px;
+    padding:8px 14px;border-radius:999px;
   }
   .nara-dig-cta-btn:hover{background:var(--moss)}
   .nara-dig-cta-btn:disabled{opacity:.65;cursor:wait}
   .nara-dig-cta-btn:focus-visible{outline:2px solid var(--rust);outline-offset:3px}
 
   .nara-dig-head{
-    display:flex;align-items:flex-start;justify-content:space-between;gap:16px;
     margin-bottom:14px;
+  }
+  .nara-dig-toolbar{
+    display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;
+    gap:8px 12px;margin-bottom:14px;
   }
   .nara-dig-head-actions{
     display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:flex-end;
@@ -1719,13 +1722,13 @@
   .nara-dig-view-toggle{
     appearance:none;cursor:pointer;flex-shrink:0;
     background:var(--card);border:1px solid var(--line);color:var(--ink);
-    font-size:13px;font-weight:600;padding:10px 14px;border-radius:999px;
+    font-size:13px;font-weight:600;padding:8px 14px;border-radius:999px;
   }
   .nara-dig-view-toggle:hover{border-color:var(--ink-soft)}
   .nara-dig-view-toggle:focus-visible{outline:2px solid var(--rust);outline-offset:2px}
 
   .nara-dig-filters{
-    display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;
+    display:flex;flex-wrap:wrap;gap:8px;flex:1;min-width:min(100%,220px);
   }
   .nara-dig-chip{
     appearance:none;cursor:pointer;
@@ -1814,10 +1817,12 @@
   }
 
   .nara-dig-list{
-    display:flex;flex-direction:column;gap:8px;
+    display:none;flex-direction:column;gap:8px;
     background:var(--card);border:1px solid var(--line-soft);border-radius:16px;
     padding:12px;
   }
+  .nara-dig-list.is-visible{display:flex}
+  .nara-dig-list[hidden]{display:none!important}
   .nara-dig-list-item{
     appearance:none;border:none;background:var(--paper);border-radius:12px;
     padding:12px 14px;cursor:pointer;text-align:left;
@@ -1831,9 +1836,8 @@
 
   @media (max-width:1100px){
     .nara-dig{padding:0 16px}
-    .nara-dig-head{flex-direction:column;align-items:stretch}
+    .nara-dig-toolbar{flex-direction:column;align-items:stretch}
     .nara-dig-head-actions{justify-content:flex-start}
-    .nara-dig-view-toggle{align-self:flex-start}
     .nara-dig-panel{left:10px;bottom:10px;width:min(210px,70vw);padding:12px}
     .nara-dig-stat{font-size:44px}
     .nara-dig-map{min-height:360px;height:52vh}

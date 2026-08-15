@@ -78,6 +78,10 @@ test.describe("Nära dig", () => {
     await page.locator("#naraDigViewToggle").click();
     await expect(page.locator("#naraDigList")).toBeVisible();
     await expect(page.locator("#naraDigMapWrap")).toBeHidden();
+    await page.locator("#naraDigViewToggle").click();
+    await expect(page.locator("#naraDigMapWrap")).toBeVisible();
+    await expect(page.locator("#naraDigList")).toBeHidden();
+    await expect(page.locator("#naraDigList")).not.toHaveClass(/is-visible/);
   });
 
   test("far position: still shows full tip count and undimmed pins", async ({ page }) => {

@@ -1176,20 +1176,22 @@ import {
   function mountNearDigPanel(){
     const root=document.getElementById("naraDigRoot");
     if(!root) return;
-    root.innerHTML=`<section class="nara-dig" id="naraDig" aria-label="Nära dig">
+    root.innerHTML=`<section class="nara-dig" id="naraDig" aria-label="Utforska">
       <div class="inner">
         <header class="nara-dig-head">
           <div class="nara-dig-titles">
-            <div class="eyebrow">📍 Nära dig</div>
+            <div class="eyebrow">📍 Utforska</div>
             <h2>Upptäck runt hörnet</h2>
             <p class="nara-dig-sub">Se vad som finns runt dig just nu. Fika, natur, upplevelser och mer — zooma kartan för att utforska.</p>
           </div>
+        </header>
+        <div class="nara-dig-toolbar">
+          <div class="nara-dig-filters" id="naraDigFilters" role="toolbar" aria-label="Filter"></div>
           <div class="nara-dig-head-actions">
             <button type="button" class="nara-dig-cta-btn" id="naraDigAskBtn">Använd min position</button>
             <button type="button" class="nara-dig-view-toggle" id="naraDigViewToggle" aria-pressed="false">≡ Visa som lista</button>
           </div>
-        </header>
-        <div class="nara-dig-filters" id="naraDigFilters" role="toolbar" aria-label="Filter nära dig"></div>
+        </div>
         <div class="nara-dig-stage">
           <div class="nara-dig-map-wrap" id="naraDigMapWrap">
             <div id="naraDigMap" class="nara-dig-map" role="presentation"></div>
@@ -1309,11 +1311,17 @@ import {
       toggle.textContent=nearDigMode==="list"?"☰ Visa som karta":"≡ Visa som lista";
     }
     if(wrap) wrap.hidden=nearDigMode==="list";
-    if(list) list.hidden=nearDigMode==="map";
+    if(list){
+      const showList=nearDigMode==="list";
+      list.hidden=!showList;
+      list.classList.toggle("is-visible", showList);
+      if(!showList) list.innerHTML="";
+    }
     if(nearDigMode==="map"){
       setTimeout(()=>{ nearDigMap?.invalidateSize(); }, 40);
+    }else{
+      renderNearDigList();
     }
-    renderNearDigList();
   }
 
   function renderNearDigPanel(hits){
