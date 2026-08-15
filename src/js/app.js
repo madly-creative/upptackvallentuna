@@ -6,6 +6,7 @@ import {
   swedishHoliday,
   daySlot as libDaySlot,
   isOpenAt,
+  addDays,
 } from "../lib/hours.js";
 import { places as PLACES_SEED, placeSlug, placeBySlug, resolvePlaceRef, isMappablePlace } from "../data/places.js";
 import { PLACE_META, A } from "../data/placeMeta.js";
@@ -36,6 +37,14 @@ import {
   placeGroupLabel,
   eventGroupLabel,
 } from "../lib/sinceLastVisit.js";
+import {
+  NEAR_FILTERS,
+  filterPlacesNear,
+  pinColorForType,
+  pinIconSvgForType,
+  summarizeNearGroups,
+  walkMinutesFromKm,
+} from "../lib/nearYou.js";
 
   const CONFIG = { kommun: SITE.kommun, region: SITE.region, center: SITE.center, zoom: SITE.zoom };
   const K = CONFIG.kommun;
@@ -881,8 +890,9 @@ import {
     const km=distToPlace(p);
     const car=Math.max(3,Math.round(km/45*60));
     const bike=Math.max(5,Math.round(km/15*60));
+    const walk=walkMinutesFromKm(km);
     const sl=Math.max(12,Math.round(km/22*60)+8);
-    return {km,car,bike,sl,fromUser:!!userPos};
+    return {km,car,bike,walk,sl,fromUser:!!userPos};
   }
   function travelHTML(p){
     const t=travelEstimate(p);
@@ -1137,6 +1147,342 @@ import {
     }
   }
   try{ renderSinceLastVisit(); }catch(e){}
+
+  // ============================================================
+  //  NÄRA DIG (homepage) — strict privacy: in-memory only, no Umami geo
+  //  Default: all places. "Använd min position" only pans + marks you — no radius filter.
+  // ============================================================
+  let nearDigPos=null; // session memory only — never localStorage / never analytics
+  let nearDigFilter="alla";
+  let nearDigOpenNow=false;
+  let nearDigMode="map"; // map | list
+  let nearDigMap=null;
+  let nearDigMarkers=[];
+  let nearDigYouMarker=null;
+
+  function nearDigIsOpen(p){
+    return isOpenVenue(p) || (!isTimedVenue(p) && isOpen(p));
+  }
+
+  function nearDigHits(){
+    return filterPlacesNear(places.filter(isMappablePlace), nearDigPos, haversineKm, {
+      filterKey:nearDigFilter,
+      openNowOnly:nearDigOpenNow,
+      isOpenFn:nearDigIsOpen,
+    });
+  }
+
+  function mountNearDigPanel(){
+    const root=document.getElementById("naraDigRoot");
+    if(!root) return;
+    root.innerHTML=`<section class="nara-dig" id="naraDig" aria-label="Utforska">
+      <div class="inner">
+        <header class="nara-dig-head">
+          <div class="nara-dig-titles">
+            <div class="eyebrow">📍 Utforska</div>
+            <h2>Upptäck runt hörnet</h2>
+            <p class="nara-dig-sub">Se vad som finns runt dig just nu. Fika, natur, upplevelser och mer — zooma kartan för att utforska.</p>
+          </div>
+        </header>
+        <div class="nara-dig-toolbar">
+          <div class="nara-dig-filters" id="naraDigFilters" role="toolbar" aria-label="Filter"></div>
+          <div class="nara-dig-head-actions">
+            <button type="button" class="nara-dig-cta-btn" id="naraDigAskBtn">Använd min position</button>
+            <button type="button" class="nara-dig-view-toggle" id="naraDigViewToggle" aria-pressed="false">≡ Visa som lista</button>
+          </div>
+        </div>
+        <div class="nara-dig-stage">
+          <div class="nara-dig-map-wrap" id="naraDigMapWrap">
+            <div id="naraDigMap" class="nara-dig-map" role="presentation"></div>
+            <aside class="nara-dig-panel" id="naraDigPanel" aria-live="polite"></aside>
+            <div class="nara-dig-controls" aria-label="Kartkontroller">
+              <button type="button" class="nara-dig-ctrl" id="naraDigLocate" title="Min position" aria-label="Min position">◎</button>
+              <button type="button" class="nara-dig-ctrl" id="naraDigZoomIn" title="Zooma in" aria-label="Zooma in">+</button>
+              <button type="button" class="nara-dig-ctrl" id="naraDigZoomOut" title="Zooma ut" aria-label="Zooma ut">−</button>
+            </div>
+          </div>
+          <div class="nara-dig-list" id="naraDigList" hidden></div>
+        </div>
+      </div>
+    </section>`;
+    nearDigMode="map";
+    nearDigFilter="alla";
+    nearDigOpenNow=false;
+    renderNearDigFilters();
+    syncNearDigAskBtn();
+    document.getElementById("naraDigAskBtn")?.addEventListener("click", requestNearDigLocation);
+    document.getElementById("naraDigViewToggle")?.addEventListener("click", toggleNearDigView);
+    document.getElementById("naraDigLocate")?.addEventListener("click", ()=>{
+      if(nearDigPos && nearDigMap){
+        nearDigMap.setView([nearDigPos.lat, nearDigPos.lng], 14);
+      }else{
+        requestNearDigLocation();
+      }
+    });
+    document.getElementById("naraDigZoomIn")?.addEventListener("click", ()=>nearDigMap?.zoomIn());
+    document.getElementById("naraDigZoomOut")?.addEventListener("click", ()=>nearDigMap?.zoomOut());
+    renderNearDigContent();
+    initNearDigMap();
+  }
+
+  function syncNearDigAskBtn(){
+    const btn=document.getElementById("naraDigAskBtn");
+    if(!btn) return;
+    if(!navigator.geolocation){
+      btn.hidden=true;
+      return;
+    }
+    btn.hidden=false;
+    btn.disabled=false;
+    if(nearDigPos){
+      btn.textContent="Visa hela kartan";
+      btn.dataset.mode="overview";
+    }else{
+      btn.textContent="Använd min position";
+      btn.dataset.mode="ask";
+    }
+  }
+
+  function requestNearDigLocation(){
+    const btn=document.getElementById("naraDigAskBtn");
+    if(btn?.dataset.mode==="overview"){
+      nearDigPos=null;
+      clearNearDigYouMarker();
+      syncNearDigAskBtn();
+      renderNearDigContent();
+      refreshNearDigMapMarkers();
+      fitNearDigMap(nearDigHits());
+      return;
+    }
+    if(!navigator.geolocation) return;
+    if(btn){ btn.disabled=true; btn.textContent="Hämtar…"; }
+    navigator.geolocation.getCurrentPosition(
+      (pos)=>{
+        nearDigPos={ lat:pos.coords.latitude, lng:pos.coords.longitude };
+        syncNearDigAskBtn();
+        applyNearDigPositionToMap();
+        renderNearDigContent();
+        refreshNearDigMapMarkers();
+      },
+      ()=>{
+        // Silent deny — keep all-places map, no alert, no analytics
+        syncNearDigAskBtn();
+      },
+      { enableHighAccuracy:false, timeout:8000, maximumAge:0 }
+    );
+  }
+
+  function renderNearDigFilters(){
+    const bar=document.getElementById("naraDigFilters");
+    if(!bar) return;
+    const chips=[
+      { key:"alla", label:"Allt", kind:"cat" },
+      { key:"open", label:"Öppet nu", kind:"open" },
+      ...NEAR_FILTERS.filter(f=>f.key!=="alla").map(f=>({ key:f.key, label:f.label, kind:"cat" })),
+    ];
+    bar.innerHTML=chips.map(c=>{
+      const on=c.kind==="open" ? nearDigOpenNow : nearDigFilter===c.key;
+      const ico=c.key==="open"?"🕒 ":c.key==="fika"?"🍴 ":c.key==="natur"?"🌲 ":c.key==="butik"?"🛍️ ":c.key==="mer"?"··· ":"";
+      const label=c.key==="alla"?(on?"● Allt":"Allt"):ico+c.label;
+      return `<button type="button" class="nara-dig-chip${on?" on":""}" data-kind="${c.kind}" data-key="${c.key}" aria-pressed="${on?"true":"false"}">${label}</button>`;
+    }).join("");
+    bar.querySelectorAll(".nara-dig-chip").forEach(btn=>{
+      btn.addEventListener("click",()=>{
+        const kind=btn.dataset.kind;
+        const key=btn.dataset.key;
+        if(kind==="open"){
+          nearDigOpenNow=!nearDigOpenNow;
+        }else{
+          nearDigFilter=key;
+        }
+        renderNearDigFilters();
+        renderNearDigContent();
+        refreshNearDigMapMarkers();
+      });
+    });
+  }
+
+  function toggleNearDigView(){
+    nearDigMode=nearDigMode==="map"?"list":"map";
+    const toggle=document.getElementById("naraDigViewToggle");
+    const wrap=document.getElementById("naraDigMapWrap");
+    const list=document.getElementById("naraDigList");
+    if(toggle){
+      toggle.setAttribute("aria-pressed", nearDigMode==="list"?"true":"false");
+      toggle.textContent=nearDigMode==="list"?"☰ Visa som karta":"≡ Visa som lista";
+    }
+    if(wrap) wrap.hidden=nearDigMode==="list";
+    if(list){
+      const showList=nearDigMode==="list";
+      list.hidden=!showList;
+      list.classList.toggle("is-visible", showList);
+      if(!showList) list.innerHTML="";
+    }
+    if(nearDigMode==="map"){
+      setTimeout(()=>{ nearDigMap?.invalidateSize(); }, 40);
+    }else{
+      renderNearDigList();
+    }
+  }
+
+  function renderNearDigPanel(hits){
+    const panel=document.getElementById("naraDigPanel");
+    if(!panel) return;
+    const groups=summarizeNearGroups(hits);
+    const n=hits.length;
+    const kicker=nearDigPos
+      ? `<span aria-hidden="true">📍</span> Från din position`
+      : `<span aria-hidden="true">🗺️</span> Alla platser`;
+    const rows=groups.map(g=>`
+      <div class="nara-dig-row">
+        <span class="nara-dig-ico" style="background:${g.color}" aria-hidden="true">${pinIconSvgForType(g.types[0])}</span>
+        <span class="nara-dig-row-label">${escHtml(g.label)}</span>
+        <span class="nara-dig-row-count">${g.count}</span>
+      </div>`).join("");
+    panel.innerHTML=`
+      <div class="nara-dig-panel-kicker">${kicker}</div>
+      <div class="nara-dig-stat">${n}</div>
+      <div class="nara-dig-stat-label">tips för dig</div>
+      <div class="nara-dig-rows">${rows||`<p class="nara-dig-empty">Inga träffar med nuvarande filter.</p>`}</div>
+      <button type="button" class="nara-dig-panel-link" id="naraDigShowMap">Se alla på karta →</button>`;
+    document.getElementById("naraDigShowMap")?.addEventListener("click",()=>{
+      if(nearDigMode!=="map") toggleNearDigView();
+      else fitNearDigMap(hits);
+    });
+  }
+
+  function renderNearDigList(){
+    const list=document.getElementById("naraDigList");
+    if(!list || nearDigMode!=="list") return;
+    const hits=nearDigHits();
+    if(!hits.length){
+      list.innerHTML=`<p class="nara-dig-empty">Inga träffar med nuvarande filter.</p>`;
+      return;
+    }
+    list.innerHTML=hits.map(({place:p})=>{
+      return `<button type="button" class="nara-dig-list-item" data-name="${escHtml(p.name)}">
+        <span class="nara-dig-ico" style="background:${pinColorForType(p.type)}" aria-hidden="true">${pinIconSvgForType(p.type)}</span>
+        <span class="nara-dig-list-copy">
+          <strong>${escHtml(p.name)}</strong>
+          <span>${escHtml(p.cat)}</span>
+        </span>
+      </button>`;
+    }).join("");
+    list.querySelectorAll(".nara-dig-list-item").forEach(btn=>{
+      btn.addEventListener("click",()=>focusNearDigPlace(btn.dataset.name));
+    });
+  }
+
+  function renderNearDigContent(){
+    const hits=nearDigHits();
+    renderNearDigPanel(hits);
+    renderNearDigList();
+  }
+
+  /** List → map: pan to the place and open its popup (detail via "Läs mer"). */
+  function focusNearDigPlace(name){
+    const p=places.find(x=>x.name===name);
+    if(!p || !isMappablePlace(p)) return;
+    const wasList=nearDigMode==="list";
+    if(wasList) toggleNearDigView();
+    const reveal=()=>{
+      if(!nearDigMap) return;
+      nearDigMap.invalidateSize();
+      nearDigMap.flyTo([p.lat, p.lng], 15, { duration:0.55 });
+      const entry=nearDigMarkers.find(x=>x.name===name);
+      setTimeout(()=>entry?.marker?.openPopup(), wasList ? 620 : 560);
+    };
+    setTimeout(reveal, wasList ? 50 : 0);
+  }
+
+  function nearDigPinIcon(type){
+    const Lref=window.L;
+    if(!Lref) return null;
+    const color=pinColorForType(type);
+    const svg=pinIconSvgForType(type);
+    return Lref.divIcon({
+      className:"",
+      html:`<div class="nara-dig-pin" style="--pin:${color}">${svg}</div>`,
+      iconSize:[32,32],
+      iconAnchor:[16,16],
+    });
+  }
+
+  function clearNearDigYouMarker(){
+    if(nearDigYouMarker && nearDigMap){
+      try{ nearDigMap.removeLayer(nearDigYouMarker); }catch(e){}
+    }
+    nearDigYouMarker=null;
+  }
+
+  function applyNearDigPositionToMap(){
+    const Lref=window.L;
+    if(!nearDigMap || !nearDigPos || !Lref) return;
+    clearNearDigYouMarker();
+    nearDigYouMarker=Lref.circleMarker([nearDigPos.lat, nearDigPos.lng],{
+      radius:9,
+      color:"#fff",
+      weight:3,
+      fillColor:"#2a3228",
+      fillOpacity:1,
+      className:"nara-dig-you",
+    }).addTo(nearDigMap);
+    nearDigMap.setView([nearDigPos.lat, nearDigPos.lng], 13);
+  }
+
+  function fitNearDigMap(hits){
+    const Lref=window.L;
+    if(!nearDigMap || !Lref) return;
+    if(!hits.length){
+      nearDigMap.setView(CONFIG.center, CONFIG.zoom || 12);
+      return;
+    }
+    const bounds=Lref.latLngBounds(hits.map(h=>[h.place.lat, h.place.lng]));
+    if(nearDigPos) bounds.extend([nearDigPos.lat, nearDigPos.lng]);
+    nearDigMap.fitBounds(bounds.pad(0.18));
+  }
+
+  async function initNearDigMap(){
+    const el=document.getElementById("naraDigMap");
+    if(!el) return;
+    let Lref;
+    try{ Lref=await ensureLeaflet(); }catch(e){ return; }
+    if(!Lref) return;
+    if(nearDigMap){
+      try{ nearDigMap.remove(); }catch(err){}
+      nearDigMap=null;
+    }
+    nearDigMap=Lref.map("naraDigMap",{
+      zoomControl:false,
+      scrollWheelZoom:true,
+      attributionControl:false,
+    }).setView(CONFIG.center, CONFIG.zoom || 12);
+    Lref.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",{
+      subdomains:"abcd", maxZoom:20,
+    }).addTo(nearDigMap);
+    refreshNearDigMapMarkers();
+    setTimeout(()=>{
+      nearDigMap?.invalidateSize();
+      fitNearDigMap(nearDigHits());
+    }, 80);
+  }
+
+  function refreshNearDigMapMarkers(){
+    const Lref=window.L;
+    if(!nearDigMap || !Lref) return;
+    nearDigMarkers.forEach(({marker:m})=>{ try{ nearDigMap.removeLayer(m); }catch(e){} });
+    nearDigMarkers=[];
+    const hits=nearDigHits();
+    hits.forEach(({place:p})=>{
+      const icon=nearDigPinIcon(p.type);
+      if(!icon) return;
+      const m=Lref.marker([p.lat,p.lng],{ icon })
+        .addTo(nearDigMap)
+        .bindPopup(`<strong>${escHtml(p.name)}</strong><br>${escHtml(p.cat)}<br><button type="button" class="popup-more" onclick="openPlace('${jsEsc(p.name)}')">Läs mer →</button>`,{ closeButton:false, maxWidth:220 });
+      nearDigMarkers.push({ name:p.name, marker:m });
+    });
+    renderNearDigPanel(hits);
+  }
 
   // Return visit memory
   (function showReturn(){
@@ -2796,17 +3142,21 @@ import {
   }
 
   function requestNearMe(){
+    // TODO: bryter mot integritetskrav satta för feature/nara-dig — se separat uppstädning.
     if(!navigator.geolocation){alert("Din webbläsare stödjer inte plats.");return;}
     navigator.geolocation.getCurrentPosition(pos=>{
       userPos={lat:pos.coords.latitude,lng:pos.coords.longitude};
       saveJSON(LS_GEO_ASKED,true);
+      // TODO: bryter mot integritetskrav satta för feature/nara-dig — se separat uppstädning.
       trackEvent('geo','granted');
       renderPicks();
       renderRoute();
       if(document.getElementById('view-sok')?.classList.contains('on')) runSearch();
       if(map){buildList();renderFilter();}
     },()=>{
+      // TODO: bryter mot integritetskrav satta för feature/nara-dig — se separat uppstädning.
       trackEvent('geo','denied');
+      // TODO: bryter mot integritetskrav satta för feature/nara-dig — se separat uppstädning.
       alert("Kunde inte hämta din plats. Du kan fortsätta utan den.");
     },{enableHighAccuracy:false,timeout:8000,maximumAge:300000});
   }
@@ -2889,10 +3239,12 @@ import {
     });
     return leafletPromise;
   }
+  try{ mountNearDigPanel(); }catch(e){ console.warn("mountNearDigPanel", e); }
   async function initMap(){
     if(map)return;
     try{ await ensureLeaflet(); }catch(e){ console.warn(e); return; }
-    map=L.map('map',{zoomControl:true,scrollWheelZoom:true}).setView(CONFIG.center,CONFIG.zoom);
+    map=L.map('map',{zoomControl:false,scrollWheelZoom:true}).setView(CONFIG.center,CONFIG.zoom);
+    L.control.zoom({position:'bottomright'}).addTo(map);
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap, © CARTO',subdomains:'abcd',maxZoom:20}).addTo(map);
     places.filter(isMappablePlace).forEach((p)=>{
       const open=isOpen(p);
@@ -2946,9 +3298,31 @@ import {
     if(favOnly&&!favorites.has(p.name)) return false;
     return true;
   }
+  function renderMapSummary(shownPlaces){
+    const el=document.getElementById("mapSummary");
+    if(!el) return;
+    const hits=shownPlaces.map(place=>({place}));
+    const groups=summarizeNearGroups(hits).filter(g=>g.count>0);
+    const n=shownPlaces.length;
+    const pills=groups.map(g=>`
+      <span class="map-summary-pill">
+        <span class="nara-dig-ico" style="background:${g.color}" aria-hidden="true">${pinIconSvgForType(g.types[0])}</span>
+        <span>${escHtml(g.label)}</span>
+        <strong>${g.count}</strong>
+      </span>`).join("");
+    el.innerHTML=`
+      <div class="map-summary-stat">
+        <span class="map-summary-n">${n}</span>
+        <span class="map-summary-label">tips på kartan</span>
+      </div>
+      <div class="map-summary-groups">${pills||`<span class="map-summary-label">Inga träffar med nuvarande filter.</span>`}</div>`;
+    el.hidden=false;
+  }
+
   function renderFilter(){
     document.querySelectorAll('#filters .chip').forEach(c=>c.classList.toggle('on',c.dataset.key===active));
     let shown=0;
+    const shownPlaces=[];
     const mappable=places.filter(isMappablePlace);
     const items=[...document.querySelectorAll('#mlist .item')];
     items.forEach(el=>{
@@ -2958,19 +3332,21 @@ import {
       el.classList.toggle('hidden',!m);
       const i=mappable.indexOf(p);
       if(i<0) return;
-      if(m){markers[i].addTo(map);shown++;}else{markers[i].remove();}
+      if(m){markers[i].addTo(map);shown++;shownPlaces.push(p);}else{markers[i].remove();}
     });
     let label=shown+' platser i '+K;
     if(openNowOnly) label=shown+' öppna nu';
     if(favOnly) label=shown+' favoriter';
     if(userPos) label+=' · närmast först';
     document.getElementById('mcount').textContent=label;
+    renderMapSummary(shownPlaces);
   }
 
   document.getElementById('search')?.addEventListener('input',function(){
     const q=this.value.trim().toLowerCase();document.getElementById('searchClr')?.classList.toggle('show',q.length>0);
     if(!q){renderFilter();return;}
     let shown=0;
+    const shownPlaces=[];
     const mappable=places.filter(isMappablePlace);
     document.querySelectorAll('#mlist .item').forEach(el=>{
       const p=places.find(x=>x.name===el.dataset.name); if(!p) return;
@@ -2979,10 +3355,11 @@ import {
       const m=hay.includes(q)&&placeMatchesFilters(p);
       el.classList.toggle('hidden',!m);
       if(i<0) return;
-      if(m){markers[i]?.addTo(map);shown++;}else{markers[i]?.remove();}
+      if(m){markers[i]?.addTo(map);shown++;shownPlaces.push(p);}else{markers[i]?.remove();}
     });
     document.querySelectorAll('#filters .chip').forEach(c=>c.classList.toggle('on',c.dataset.key==='alla'));active='alla';
     const mc=document.getElementById('mcount'); if(mc) mc.textContent=(shown?shown+' träffar':'Inga träffar')+' · '+K;
+    renderMapSummary(shownPlaces);
   });
   document.getElementById('searchClr')?.addEventListener('click',()=>{const s=document.getElementById('search');if(!s)return;s.value='';s.dispatchEvent(new Event('input'));s.focus();});
 
