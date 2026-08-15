@@ -39,8 +39,6 @@ import {
 } from "../lib/sinceLastVisit.js";
 import {
   NEAR_FILTERS,
-  NEAR_RADIUS_KM,
-  NEAR_WALK_MINUTES,
   filterPlacesNear,
   pinColorForType,
   pinIconSvgForType,
@@ -1152,45 +1150,27 @@ import {
 
   // ============================================================
   //  NÄRA DIG (homepage) — strict privacy: in-memory only, no Umami geo
-  //  Default: all places on map. "Använd min position" → 10 min walk filter.
+  //  Default: all places. "Använd min position" only pans + marks you — no radius filter.
   // ============================================================
   let nearDigPos=null; // session memory only — never localStorage / never analytics
-  let nearDigNearOnly=false;
   let nearDigFilter="alla";
   let nearDigOpenNow=false;
   let nearDigMode="map"; // map | list
   let nearDigMap=null;
   let nearDigMarkers=[];
-  let nearDigRadiusLayer=null;
   let nearDigYouMarker=null;
 
   function nearDigIsOpen(p){
     return isOpenVenue(p) || (!isTimedVenue(p) && isOpen(p));
   }
 
-  /** Category/open filters only — used for map pins (never empty just because of radius). */
-  function nearDigCatalogHits(){
+  function nearDigHits(){
     return filterPlacesNear(places.filter(isMappablePlace), nearDigPos, haversineKm, {
       filterKey:nearDigFilter,
       openNowOnly:nearDigOpenNow,
       nearOnly:false,
       isOpenFn:nearDigIsOpen,
     });
-  }
-
-  /** Places inside the 10 min walk circle (for panel count when position is on). */
-  function nearDigWithinHits(){
-    if(!nearDigPos || !nearDigNearOnly) return nearDigCatalogHits();
-    return filterPlacesNear(places.filter(isMappablePlace), nearDigPos, haversineKm, {
-      filterKey:nearDigFilter,
-      openNowOnly:nearDigOpenNow,
-      nearOnly:true,
-      isOpenFn:nearDigIsOpen,
-    });
-  }
-
-  function nearDigHits(){
-    return nearDigNearOnly ? nearDigWithinHits() : nearDigCatalogHits();
   }
 
   function mountNearDigPanel(){
@@ -1202,7 +1182,7 @@ import {
           <div class="nara-dig-titles">
             <div class="eyebrow">📍 Nära dig</div>
             <h2>Upptäck runt hörnet</h2>
-            <p class="nara-dig-sub">Se vad som finns inom ${NEAR_WALK_MINUTES} minuter från där du är just nu. Fika, natur, upplevelser och mer.</p>
+            <p class="nara-dig-sub">Se vad som finns runt dig just nu. Fika, natur, upplevelser och mer — zooma kartan för att utforska.</p>
           </div>
           <div class="nara-dig-head-actions">
             <button type="button" class="nara-dig-cta-btn" id="naraDigAskBtn">Använd min position</button>
@@ -1233,7 +1213,7 @@ import {
     document.getElementById("naraDigViewToggle")?.addEventListener("click", toggleNearDigView);
     document.getElementById("naraDigLocate")?.addEventListener("click", ()=>{
       if(nearDigPos && nearDigMap){
-        nearDigMap.setView([nearDigPos.lat, nearDigPos.lng], 15);
+        nearDigMap.setView([nearDigPos.lat, nearDigPos.lng], 14);
       }else{
         requestNearDigLocation();
       }
@@ -1253,9 +1233,9 @@ import {
     }
     btn.hidden=false;
     btn.disabled=false;
-    if(nearDigNearOnly && nearDigPos){
-      btn.textContent="Visa alla platser";
-      btn.dataset.mode="clear";
+    if(nearDigPos){
+      btn.textContent="Visa hela kartan";
+      btn.dataset.mode="overview";
     }else{
       btn.textContent="Använd min position";
       btn.dataset.mode="ask";
@@ -1264,17 +1244,11 @@ import {
 
   function requestNearDigLocation(){
     const btn=document.getElementById("naraDigAskBtn");
-    if(btn?.dataset.mode==="clear"){
-      nearDigNearOnly=false;
-      // Keep nearDigPos in memory for locate button, but show all pins again
-      clearNearDigRadius();
+    if(btn?.dataset.mode==="overview"){
       syncNearDigAskBtn();
       renderNearDigContent();
       refreshNearDigMapMarkers();
-      if(nearDigMap){
-        nearDigMap.setView(CONFIG.center, CONFIG.zoom || 12);
-        setTimeout(()=>nearDigMap?.invalidateSize(), 40);
-      }
+      fitNearDigMap(nearDigHits());
       return;
     }
     if(!navigator.geolocation) return;
@@ -1282,7 +1256,6 @@ import {
     navigator.geolocation.getCurrentPosition(
       (pos)=>{
         nearDigPos={ lat:pos.coords.latitude, lng:pos.coords.longitude };
-        nearDigNearOnly=true;
         syncNearDigAskBtn();
         applyNearDigPositionToMap();
         renderNearDigContent();
@@ -1346,15 +1319,11 @@ import {
   function renderNearDigPanel(hits){
     const panel=document.getElementById("naraDigPanel");
     if(!panel) return;
-    const within=nearDigNearOnly ? nearDigWithinHits() : hits;
-    const groups=summarizeNearGroups(within);
-    const n=within.length;
-    const kicker=nearDigNearOnly
-      ? `<span aria-hidden="true">🚶</span> Inom ${NEAR_WALK_MINUTES} minuter`
+    const groups=summarizeNearGroups(hits);
+    const n=hits.length;
+    const kicker=nearDigPos
+      ? `<span aria-hidden="true">📍</span> Från din position`
       : `<span aria-hidden="true">🗺️</span> Alla platser`;
-    const emptyNote=nearDigNearOnly && n===0
-      ? `<p class="nara-dig-empty">Inget inom ${NEAR_WALK_MINUTES} minuters gång härifrån — kartan visar fortfarande övriga tips (nedtonade utanför cirkeln).</p>`
-      : (n===0 ? `<p class="nara-dig-empty">Inga träffar med nuvarande filter.</p>` : "");
     const rows=groups.map(g=>`
       <div class="nara-dig-row">
         <span class="nara-dig-ico" style="background:${g.color}" aria-hidden="true">${pinIconSvgForType(g.types[0])}</span>
@@ -1365,28 +1334,23 @@ import {
       <div class="nara-dig-panel-kicker">${kicker}</div>
       <div class="nara-dig-stat">${n}</div>
       <div class="nara-dig-stat-label">tips för dig</div>
-      <div class="nara-dig-rows">${rows||emptyNote}</div>
+      <div class="nara-dig-rows">${rows||`<p class="nara-dig-empty">Inga träffar med nuvarande filter.</p>`}</div>
       <button type="button" class="nara-dig-panel-link" id="naraDigShowMap">Se alla på karta →</button>`;
     document.getElementById("naraDigShowMap")?.addEventListener("click",()=>{
       if(nearDigMode!=="map") toggleNearDigView();
-      else fitNearDigMap(nearDigCatalogHits());
+      else fitNearDigMap(hits);
     });
   }
 
   function renderNearDigList(){
     const list=document.getElementById("naraDigList");
     if(!list || nearDigMode!=="list") return;
-    const within=nearDigNearOnly ? nearDigWithinHits() : nearDigCatalogHits();
-    const catalog=nearDigCatalogHits();
-    const hits=within.length ? within : (nearDigNearOnly ? catalog.slice(0, 12) : catalog);
+    const hits=nearDigHits();
     if(!hits.length){
       list.innerHTML=`<p class="nara-dig-empty">Inga träffar med nuvarande filter.</p>`;
       return;
     }
-    const preface=nearDigNearOnly && within.length===0
-      ? `<p class="nara-dig-empty">Inget inom ${NEAR_WALK_MINUTES} minuters gång — visar närmaste tips:</p>`
-      : "";
-    list.innerHTML=preface+hits.map(({place:p, walkMin, km})=>{
+    list.innerHTML=hits.map(({place:p, walkMin, km})=>{
       const dist=nearDigPos && km!=null
         ? ` · ~${walkMin} min gång · ${fmtDist(km)}`
         : "";
@@ -1404,28 +1368,25 @@ import {
   }
 
   function renderNearDigContent(){
-    renderNearDigPanel(nearDigHits());
+    const hits=nearDigHits();
+    renderNearDigPanel(hits);
     renderNearDigList();
   }
 
-  function nearDigPinIcon(type, { dimmed=false }={}){
+  function nearDigPinIcon(type){
     const Lref=window.L;
     if(!Lref) return null;
     const color=pinColorForType(type);
     const svg=pinIconSvgForType(type);
     return Lref.divIcon({
       className:"",
-      html:`<div class="nara-dig-pin${dimmed?" is-dimmed":""}" style="--pin:${color}">${svg}</div>`,
+      html:`<div class="nara-dig-pin" style="--pin:${color}">${svg}</div>`,
       iconSize:[32,32],
       iconAnchor:[16,16],
     });
   }
 
-  function clearNearDigRadius(){
-    if(nearDigRadiusLayer && nearDigMap){
-      try{ nearDigMap.removeLayer(nearDigRadiusLayer); }catch(e){}
-    }
-    nearDigRadiusLayer=null;
+  function clearNearDigYouMarker(){
     if(nearDigYouMarker && nearDigMap){
       try{ nearDigMap.removeLayer(nearDigYouMarker); }catch(e){}
     }
@@ -1435,38 +1396,27 @@ import {
   function applyNearDigPositionToMap(){
     const Lref=window.L;
     if(!nearDigMap || !nearDigPos || !Lref) return;
-    clearNearDigRadius();
-    nearDigRadiusLayer=Lref.circle([nearDigPos.lat, nearDigPos.lng],{
-      radius:NEAR_RADIUS_KM*1000,
-      color:"#7a9a72",
-      weight:1,
-      fillColor:"#a8c4a0",
-      fillOpacity:0.22,
-      className:"nara-dig-radius",
-    }).addTo(nearDigMap);
+    clearNearDigYouMarker();
     nearDigYouMarker=Lref.circleMarker([nearDigPos.lat, nearDigPos.lng],{
-      radius:8,
-      color:"#2a3228",
+      radius:9,
+      color:"#fff",
       weight:3,
       fillColor:"#2a3228",
       fillOpacity:1,
       className:"nara-dig-you",
     }).addTo(nearDigMap);
-    nearDigMap.setView([nearDigPos.lat, nearDigPos.lng], 14);
+    nearDigMap.setView([nearDigPos.lat, nearDigPos.lng], 13);
   }
 
   function fitNearDigMap(hits){
     const Lref=window.L;
     if(!nearDigMap || !Lref) return;
-    if(nearDigNearOnly && nearDigPos){
-      nearDigMap.setView([nearDigPos.lat, nearDigPos.lng], 14);
-      return;
-    }
     if(!hits.length){
       nearDigMap.setView(CONFIG.center, CONFIG.zoom || 12);
       return;
     }
     const bounds=Lref.latLngBounds(hits.map(h=>[h.place.lat, h.place.lng]));
+    if(nearDigPos) bounds.extend([nearDigPos.lat, nearDigPos.lng]);
     nearDigMap.fitBounds(bounds.pad(0.18));
   }
 
@@ -1500,20 +1450,17 @@ import {
     if(!nearDigMap || !Lref) return;
     nearDigMarkers.forEach(m=>{ try{ nearDigMap.removeLayer(m); }catch(e){} });
     nearDigMarkers=[];
-    const catalog=nearDigCatalogHits();
-    const withinNames=nearDigNearOnly
-      ? new Set(nearDigWithinHits().map(h=>h.place.name))
-      : null;
-    catalog.forEach(({place:p, km})=>{
-      const dimmed=!!(withinNames && !withinNames.has(p.name));
-      const icon=nearDigPinIcon(p.type, { dimmed });
+    const hits=nearDigHits();
+    hits.forEach(({place:p, km})=>{
+      const icon=nearDigPinIcon(p.type);
       if(!icon) return;
-      const m=Lref.marker([p.lat,p.lng],{ icon, opacity: dimmed ? 0.45 : 1 })
+      const distLine=nearDigPos && km!=null ? `<br>~${walkMinutesFromKm(km)} min gång` : "";
+      const m=Lref.marker([p.lat,p.lng],{ icon })
         .addTo(nearDigMap)
-        .bindPopup(`<strong>${escHtml(p.name)}</strong><br>${escHtml(p.cat)}${km!=null?`<br>~${walkMinutesFromKm(km)} min gång`:""}<br><button type="button" class="popup-more" onclick="openPlace('${jsEsc(p.name)}')">Läs mer →</button>`,{ closeButton:false, maxWidth:220 });
+        .bindPopup(`<strong>${escHtml(p.name)}</strong><br>${escHtml(p.cat)}${distLine}<br><button type="button" class="popup-more" onclick="openPlace('${jsEsc(p.name)}')">Läs mer →</button>`,{ closeButton:false, maxWidth:220 });
       nearDigMarkers.push(m);
     });
-    renderNearDigPanel(nearDigHits());
+    renderNearDigPanel(hits);
   }
 
   // Return visit memory

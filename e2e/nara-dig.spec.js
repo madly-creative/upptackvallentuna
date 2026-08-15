@@ -2,7 +2,6 @@ import { test, expect } from "@playwright/test";
 
 /** Distinct from CONFIG.center weather coords so network assertions aren't false positives. */
 const NEAR_POS = { latitude: 59.53381, longitude: 18.07842 };
-/** Far from Vallentuna — used to prove near-only can be empty while all-places still works. */
 const FAR_POS = { latitude: 59.33, longitude: 18.06 };
 
 async function mockGeo(page, { grant = true, coords = NEAR_POS } = {}) {
@@ -60,13 +59,17 @@ test.describe("Nära dig", () => {
     expect(dialogs).toEqual([]);
   });
 
-  test("granted near centrum: filters to walk radius + icons + list toggle", async ({ page }) => {
+  test("granted: pans to me, keeps all pins full color, list toggle", async ({ page }) => {
     await mockGeo(page, { grant: true, coords: NEAR_POS });
     await page.goto("/");
+    const before = await page.locator("#naraDigPanel .nara-dig-stat").textContent();
+
     await page.locator("#naraDigAskBtn").click();
-    await expect(page.locator("#naraDigPanel")).toContainText("Inom 10 minuter");
-    await expect(page.locator("#naraDigPanel .nara-dig-stat")).not.toHaveText("0");
-    await expect(page.locator("#naraDigAskBtn")).toHaveText("Visa alla platser");
+    await expect(page.locator("#naraDigPanel")).toContainText("Från din position");
+    await expect(page.locator("#naraDigPanel .nara-dig-stat")).toHaveText(before);
+    await expect(page.locator("#naraDigAskBtn")).toHaveText("Visa hela kartan");
+    await expect(page.locator(".nara-dig-pin.is-dimmed")).toHaveCount(0);
+    await expect(page.locator(".nara-dig-pin").first()).toBeVisible();
 
     await page.locator('.nara-dig-chip[data-key="fika"]').click();
     await expect(page.locator("#naraDigPanel")).toContainText("Fika & mat");
@@ -77,24 +80,17 @@ test.describe("Nära dig", () => {
     await expect(page.locator("#naraDigMapWrap")).toBeHidden();
   });
 
-  test("far away position: panel can be 0 within radius but pins stay on map", async ({ page }) => {
+  test("far position: still shows full tip count and undimmed pins", async ({ page }) => {
     await mockGeo(page, { grant: true, coords: FAR_POS });
     await page.goto("/");
     const before = await page.locator("#naraDigPanel .nara-dig-stat").textContent();
     expect(Number(before)).toBeGreaterThan(0);
 
     await page.locator("#naraDigAskBtn").click();
-    await expect(page.locator("#naraDigPanel")).toContainText("Inom 10 minuter");
-    await expect(page.locator("#naraDigPanel .nara-dig-stat")).toHaveText("0");
-    await expect(page.locator("#naraDigPanel")).toContainText("nedtonade");
-    // Pins must not disappear — outside-radius places stay (dimmed)
-    await expect(page.locator(".nara-dig-pin").first()).toBeVisible();
-    const pinCount = await page.locator(".nara-dig-pin").count();
-    expect(pinCount).toBeGreaterThan(5);
-
-    await page.locator("#naraDigAskBtn").click();
-    await expect(page.locator("#naraDigPanel")).toContainText("Alla platser");
+    await expect(page.locator("#naraDigPanel")).toContainText("Från din position");
     await expect(page.locator("#naraDigPanel .nara-dig-stat")).toHaveText(before);
+    await expect(page.locator(".nara-dig-pin.is-dimmed")).toHaveCount(0);
+    expect(await page.locator(".nara-dig-pin").count()).toBeGreaterThan(5);
   });
 
   test("network: no visitor position payload to Umami or any backend", async ({ page }) => {
@@ -113,7 +109,7 @@ test.describe("Nära dig", () => {
     await mockGeo(page, { grant: true });
     await page.goto("/");
     await page.locator("#naraDigAskBtn").click();
-    await expect(page.locator("#naraDigPanel")).toContainText("Inom 10 minuter");
+    await expect(page.locator("#naraDigPanel")).toContainText("Från din position");
     await page.waitForTimeout(1500);
 
     expect(suspicious, JSON.stringify(suspicious, null, 2)).toEqual([]);
