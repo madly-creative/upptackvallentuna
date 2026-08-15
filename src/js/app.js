@@ -641,7 +641,7 @@ import {
         {url:"/assets/upplev/roslagsloppis/folkfest.webp",alt:"Folkfeststämning på Roslagsloppis"}
       ],
       body:`<p><strong>Roslagsloppis</strong> är den stora bakluckeloppisen bakom Roslagsstoppet vid Söderhalls trafikplats — halvvägs ut i Roslagen, i Vallentuna kommun. Sälj direkt från bilen eller kom och fynda; fri entré och parkering för besökare.</p>
-      <p>Öppet <strong>söndagar 11–15</strong> under säsongen <strong>31 maj–13 september 2026</strong> (stängt 21 juni). Åk runt den långa röda byggnaden till baksidan. Vill du sälja? Plats online från 175 kr via <a href="https://www.roslagsloppis.se/salja/" target="_blank" rel="noopener">roslagsloppis.se</a>, eller Swish på plats om det finns rum. Tel 076-896 63 70. Psst: fabriksförsäljning av cocosbollar finns intill.</p>`
+      <p>Öppet <strong>söndagar 11–15</strong> under säsongen <strong>31 maj–13 september 2026</strong> (stängt 21 juni). Åk runt den långa röda byggnaden till baksidan. Vill du sälja? Plats online från 175 kr via <a href="https://www.roslagsloppis.se/salja/" target="_blank" rel="noopener">roslagsloppis.se</a>, eller Swish på plats om det finns rum. Frågor: <a href="mailto:info@stockholmsmarknader.se">info@stockholmsmarknader.se</a>. Psst: fabriksförsäljning av cocosbollar finns intill.</p>`
     },
   };
 
