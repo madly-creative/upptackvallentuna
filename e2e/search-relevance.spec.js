@@ -17,3 +17,14 @@ test("search bad ranks Kvarnbadet, not kvarn events from note mentions", async (
   expect(body).not.toMatch(/Kvarnens dag/);
   expect(body).toMatch(/Kvarnbadet|badplats|Bad/i);
 });
+
+test("search bada finds bathing places via stem/synonyms", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("#heroSearch").fill("bada");
+  await page.locator(".hero-search-go").click();
+  await expect(page.locator("#view-sok")).toHaveClass(/on/);
+  await expect(page.locator(".search-group").first()).toContainText("Platser");
+  const body = await page.locator("#searchResults").textContent();
+  expect(body).toMatch(/Kvarnbadet|badplats|Bad/i);
+  expect(body).not.toMatch(/Drop-in Väsby kvarn/);
+});
