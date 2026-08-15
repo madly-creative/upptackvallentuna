@@ -1064,25 +1064,20 @@ import {
     <p class="om-pwa" data-pwa-install-entry><button type="button" class="lnk" onclick="promptPwaInstall()">Lägg till på hemskärmen</button> — snabbare öppning, utan appbutik.</p>`;}
 
   function refreshHeroGreet(){
-    let greet;
-    const sunsetH=ctx.sunset?Number(String(ctx.sunset).slice(0,2)):null;
-    const stillDaylight=sunsetH!=null?hour<sunsetH:(hour<20);
-    if(holidayToday){greet=holidayToday+" i "+K;}
-    else if(hour<10){greet="God morgon, "+K;}
-    else if(hour<14){greet=isWeekend?"Helglunch i bygden":"Lunchdags i bygden";}
-    else if(hour<18 || (stillDaylight && hour<20)){
-      greet=isWeekend?"Helgeftermiddag i "+K:"Eftermiddag i "+K;
+    // Clock beside weather (hero intent)
+    const clock=document.getElementById("heroClock");
+    if(clock){
+      const label=formatWeekday(day,{capitalize:true});
+      const hh=String(hour).padStart(2,"0");
+      const mm=String(minute).padStart(2,"0");
+      clock.textContent=`${label} ${hh}:${mm}`;
     }
-    else if(hour<21){greet="Kvällsljus i "+K;}
-    else {greet="God kväll, "+K;}
-    S('heroGreet',greet);
   }
   refreshHeroGreet();
   const heroTitleEl=document.getElementById('heroTitle');
-  if(heroTitleEl) heroTitleEl.textContent="Vad vill du upptäcka idag?";
-  S('heroTagline',"Smultronställen · Fika · Natur · Evenemang");
-  const heroSubBase="Handplockade lokala favoriter — inte kedjorna du redan känner till.";
-  S('heroSub', isWeekend ? "Helgläge: utflykter, fika och det som gör bygden levande — nära dig." : heroSubBase);
+  if(heroTitleEl) heroTitleEl.textContent="Vad vill du göra idag?";
+  const heroSubEl=document.getElementById('heroSub');
+  if(heroSubEl) heroSubEl.textContent="Vi hjälper dig hitta det bästa i Vallentuna – just nu.";
   updateFavBadge();
 
   /**
@@ -1957,51 +1952,13 @@ import {
   let heroEventKey=null;
   function refreshPulse(){ refreshHeroToday(); }
   function refreshHeroToday(){
-    const openN=openVenueCount();
-    const elOpen=document.getElementById('pulseOpen');
-    const elMsg=document.getElementById('pulseMsg');
-    if(elOpen) elOpen.textContent=openN?`${openN} ställen öppna`:"Få ställen öppna";
-    if(elMsg) elMsg.textContent=openN?"med öppettider just nu":"kolla öppettider";
-
+    // Rail counts come from renderTodayBrief; keep event/season hooks for other entry points.
     const ev=eventsToday[0]||liveEvents[0]||null;
-    const evTitle=document.getElementById('heroEventTitle');
-    const evSub=document.getElementById('heroEventSub');
-    const evRow=document.getElementById('heroEventRow');
-    if(ev){
-      heroEventKey=eventKeyAttr(ev);
-      if(evTitle) evTitle.textContent=ev.title;
-      if(evSub){
-        if(ev.date===todayISO){
-          const t=(ev.time||ev.when||"").match(/(\d{1,2}:\d{2})/);
-          evSub.textContent=t?`idag kl. ${t[1]}`:(ev.when||"idag");
-        } else {
-          const n=daysUntil(ev.date);
-          evSub.textContent=n===1?"imorgon":(ev.when||`om ${n} dagar`);
-        }
-      }
-      if(evRow) evRow.hidden=false;
-    } else {
-      heroEventKey=null;
-      if(evTitle) evTitle.textContent="Inga evenemang just nu";
-      if(evSub) evSub.textContent="Se kalendern";
-    }
+    if(ev) heroEventKey=eventKeyAttr(ev);
+    else heroEventKey=null;
 
     const season=seasonCards()[0];
-    const sTitle=document.getElementById('heroSeasonTitle');
-    const sSub=document.getElementById('heroSeasonSub');
-    const sIco=document.getElementById('heroSeasonIco');
     if(season){
-      if(sTitle) sTitle.textContent=season.title.includes("i säsong")||/jordgubbar|ägg|skörd|svamp|rabarber/i.test(season.title)
-        ? (season.title.toLowerCase().includes("jordgubb")?"Jordgubbar i säsong":season.title)
-        : season.title;
-      if(sSub){
-        if(/jordgubb/i.test(season.title)) sSub.textContent="hos gårdsbutikerna";
-        else if(season.type==="gard") sSub.textContent="hos gårdsbutikerna";
-        else if(season.type==="natur") sSub.textContent="i naturen runt knuten";
-        else if(season.type==="fika") sSub.textContent="hos bygdens fik";
-        else sSub.textContent=season.text.split("—")[0].trim().slice(0,42);
-      }
-      if(sIco) sIco.innerHTML=SEASON_ICO[season.bot]||SEASON_ICO.berry;
       heroSeasonAction=()=>{
         if(season.type==="hander") showView('hander');
         else if(CATEGORIES[season.type]) openCategory(season.type);
@@ -2023,6 +1980,47 @@ import {
       showView('start');
       setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'start'}),50);
     } else openCategory('attgora');
+  }
+
+  function heroSubmitSearch(ev){
+    ev?.preventDefault?.();
+    const q=(document.getElementById("heroSearch")?.value||"").trim();
+    heroGoSearch(q);
+    return false;
+  }
+  function heroGoSearch(q, filterKey){
+    searchFilters.clear();
+    if(filterKey) searchFilters.add(filterKey);
+    const input=document.getElementById("globalSearch");
+    if(input) input.value=q||"";
+    showView("sok");
+    initSearchUI();
+    runSearch();
+    setTimeout(()=>document.getElementById("globalSearch")?.focus(), 60);
+  }
+  function heroSurprise(){
+    const ranked=rankedPlaces();
+    const openPool=ranked.filter(x=>x.open && isTimedVenue(x.p));
+    const pool=openPool.length ? openPool : ranked;
+    if(!pool.length){ openCategory("attgora"); return; }
+    const pick=pool[Math.floor(Math.random()*Math.min(10, pool.length))];
+    if(pick?.p) openPlace(pick.p.name);
+  }
+  function heroIntent(key){
+    trackEvent("hero-intent", key);
+    if(key==="barn"){ openGuide("en-dag-med-barnen"); return; }
+    if(key==="fika"){ openCategory("fika"); return; }
+    if(key==="ute"){ openCategory("natur"); return; }
+    if(key==="kvall"){ showView("hander"); return; }
+    if(key==="hund"){ heroGoSearch("", "hund"); return; }
+    if(key==="surprise"){ heroSurprise(); return; }
+  }
+  function scrollToNaraDig(){
+    showView("start");
+    setTimeout(()=>{
+      const el=document.getElementById("naraDig")||document.getElementById("naraDigRoot");
+      el?.scrollIntoView({behavior:"smooth",block:"start"});
+    }, 40);
   }
 
   function isoPlusDays(n){
@@ -2101,85 +2099,57 @@ import {
     const grid=document.getElementById('todayBriefGrid');
     if(!grid) return;
 
-    const titleEl=document.getElementById('todayBriefTitle');
-    const eyeEl=document.getElementById('todayBriefEyebrow');
-    const metaEl=document.getElementById('todayBriefMeta');
-    const weekend=isWeekendWindow();
-    if(eyeEl) eyeEl.textContent=weekend?"Helgen":"Just nu";
-    if(titleEl) titleEl.textContent=weekend?`Helgen i ${K}`:`Händer i ${K}`;
-
-    const openRanked=rankedPlaces().filter(x=>x.open && isTimedVenue(x.p)).slice(0,3);
     const openN=openVenueCount();
-    if(metaEl){
-      const bits=[];
-      if(ctx.temp!=null){
-        const wk=ctx.code!=null?weatherKind(ctx.code):null;
-        bits.push(`${ctx.temp}°${wk?.t?" · "+wk.t:""}`);
-      }
-      bits.push(openN?`${openN} ställen öppna`:"Kolla öppettider");
-      if(eventsToday.length) bits.push(eventsToday.length===1?"1 event idag":`${eventsToday.length} event idag`);
-      else if(recurringTodayList.length) bits.push(recurringTodayList.length===1?"1 återkommande idag":`${recurringTodayList.length} återkommande idag`);
-      else if(weekend && liveEvents.length) bits.push("Se helgens program");
-      metaEl.textContent=bits.join(" · ");
-    }
+    const tipN=Math.max(3, selectDiversePicks(8).length);
+    const evN=eventsToday.length || recurringTodayList.length;
+    const tempBit=ctx.temp!=null
+      ? `${ctx.temp}°${ctx.code!=null&&weatherKind(ctx.code)?.t?" · "+weatherKind(ctx.code).t.toLowerCase():""}`
+      : "tips för dagen";
 
-    const evBundle=todayBriefEventBundle();
-    let evBody="";
-    if(evBundle.list.length){
-      evBody=`<div class="tc-list">${evBundle.list.map(e=>todayBriefItem(
-        e.img, escHtml(e.title), escHtml(eventWhenShort(e)), `openEvent('${eventKeyAttr(e)}')`
-      )).join("")}</div>`;
-    } else if(recurringTodayList.length){
-      evBody=`<div class="tc-list">${recurringTodayList.map(r=>todayBriefItem(
-        r.img, escHtml(r.title), escHtml(recurringWhenLine(r)), `showView('hander')`
-      )).join("")}</div>`;
-    } else {
-      evBody=`<p class="tc-empty">Inga inplanerade evenemang just nu — kika in snart igen.</p>`;
-    }
-    const evLabel=evBundle.mode==="today"?"Händer idag"
-      :evBundle.mode==="weekend"?"Händer i helgen"
-      :evBundle.mode==="soon"?"Nästa evenemang"
-      :recurringTodayList.length?"Varje vecka · idag"
-      :"Evenemang";
-    const evCard=`<article class="today-card">
-      <p class="tc-label">${evLabel}</p>
-      ${evBody}
-      <button type="button" class="tc-foot" onclick="showView('hander')">Alla evenemang →</button>
-    </article>`;
+    const forYouTitle=isWeekendWindow()?"En fin helg i Vallentuna":"En perfekt dag i Vallentuna";
+    const forYouText=ctx.temp!=null
+      ? `${tipN} tips som passar ${tempBit}.`
+      : `${tipN} handplockade tips för dig just nu.`;
 
-    let openBody="";
-    if(openRanked.length){
-      openBody=`<div class="tc-list">${openRanked.map(({p,reasons,mins})=>{
-        const sub=mins!==Infinity&&mins<=75?`Stänger om ${mins} min`
-          :(p.short||reasons.find(r=>!/^Öppet|väder|Soligt|ute|Landskapet|utflykt|inomhus|Tak över|Innekos|Varm dryck/i.test(r))||p.cat);
-        return todayBriefItem(p.img, escHtml(p.name), escHtml(sub), `openPlace('${jsEsc(p.name)}')`);
-      }).join("")}</div>`;
-    } else {
-      openBody=`<p class="tc-empty">Få ställen har öppet i just den här stunden — planera med kartan eller kom tillbaka senare.</p>`;
-    }
-    const openCard=`<article class="today-card">
-      <p class="tc-label">Öppet nu${openN?` · ${openN}`:""}</p>
-      ${openBody}
-      <button type="button" class="tc-foot" onclick="showOpenNowOnMap()">Visa på karta →</button>
-    </article>`;
+    const openTitle=openN?`${openN} ställen`:"Öppettider";
+    const openText=openN
+      ? "Fika, gårdsbutiker och mer med öppet nu."
+      : "Kolla öppettider eller planera med kartan.";
 
-    const wx=weatherFitBundle();
-    let wxBody="";
-    if(wx.place){
-      wxBody=`<div class="tc-list">${todayBriefItem(
-        wx.place.img, escHtml(wx.place.name), escHtml(wx.why), `openPlace('${jsEsc(wx.place.name)}')`
-      )}<p class="tc-empty" style="flex:0">${escHtml(wx.hint)}</p></div>`;
-    } else {
-      wxBody=`<p class="tc-empty">${escHtml(wx.hint)}. Tipsen uppdateras när vädret hämtats.</p>`;
-    }
-    const wxCard=`<article class="today-card">
-      <p class="tc-label">Passar vädret</p>
-      <p class="tc-sub" style="margin:0;font-weight:600;color:var(--moss-deep)">${escHtml(wx.label)}</p>
-      ${wxBody}
-      <button type="button" class="tc-foot" onclick="document.getElementById('picksHeading')?.scrollIntoView({behavior:'smooth',block:'start'})">Fler tips →</button>
-    </article>`;
+    const evTitle=evN
+      ? (eventsToday.length
+          ? (eventsToday.length===1?"1 evenemang":`${eventsToday.length} evenemang`)
+          : (recurringTodayList.length===1?"1 återkommande":`${recurringTodayList.length} återkommande`))
+      : "Kalendern";
+    const evText=evN
+      ? "Konserter, marknader och det som händer lokalt."
+      : "Inga inplanerade just nu — kika in snart igen.";
 
-    grid.innerHTML=evCard+openCard+wxCard;
+    grid.innerHTML=`
+      <button type="button" class="hero-rail-cell" onclick="document.getElementById('picksHeading')?.scrollIntoView({behavior:'smooth',block:'start'})">
+        <span class="hero-rail-kicker">För dig idag</span>
+        <span class="hero-rail-title">${escHtml(forYouTitle)}</span>
+        <span class="hero-rail-text">${escHtml(forYouText)}</span>
+        <span class="hero-rail-link">Visa mina tips →</span>
+      </button>
+      <button type="button" class="hero-rail-cell" onclick="showOpenNowOnMap()">
+        <span class="hero-rail-kicker">Öppet nu</span>
+        <span class="hero-rail-title">${escHtml(openTitle)}</span>
+        <span class="hero-rail-text">${escHtml(openText)}</span>
+        <span class="hero-rail-link">Se vad som är öppet →</span>
+      </button>
+      <button type="button" class="hero-rail-cell" onclick="showView('hander')">
+        <span class="hero-rail-kicker">Händer idag</span>
+        <span class="hero-rail-title">${escHtml(evTitle)}</span>
+        <span class="hero-rail-text">${escHtml(evText)}</span>
+        <span class="hero-rail-link">Se alla events →</span>
+      </button>
+      <button type="button" class="hero-rail-cell" onclick="scrollToNaraDig()">
+        <span class="hero-rail-kicker">Nära dig</span>
+        <span class="hero-rail-title">Utforska runt dig</span>
+        <span class="hero-rail-text">Smultronställen runt där du är just nu.</span>
+        <span class="hero-rail-link">Utforska på karta →</span>
+      </button>`;
   }
   function showOpenNowOnMap(){
     openNowOnly=true;
@@ -4258,6 +4228,9 @@ Object.assign(window, {
   heroTodayOpenEvent,
   heroTodayOpenSeason,
   heroTodaySeeMore,
+  heroSubmitSearch,
+  heroIntent,
+  scrollToNaraDig,
   mobileGo,
   showOpenNowOnMap,
   openCategory,

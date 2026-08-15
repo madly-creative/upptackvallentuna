@@ -2,9 +2,12 @@ import { test, expect } from "@playwright/test";
 
 test("home loads with hero and today module", async ({ page }) => {
   await page.goto("/");
-  await expect(page.locator("#heroTitle")).toContainText("upptäcka");
-  await expect(page.locator("#heroToday")).toBeVisible();
-  await expect(page.locator("#wPlace")).toHaveText("Vallentuna");
+  await expect(page.locator("#heroTitle")).toContainText("göra idag");
+  await expect(page.locator("#heroWx")).toBeVisible();
+  await expect(page.locator("#heroSearch")).toBeVisible();
+  await expect(page.locator(".hero-chip--accent")).toContainText("Överraska");
+  await expect(page.locator("#todayBrief")).toBeVisible();
+  await expect(page.locator(".hero-rail-cell").first()).toBeVisible();
   await expect(page.locator("#picksGrid")).toBeVisible();
 });
 
@@ -35,8 +38,20 @@ test("place SEO page has LocalBusiness schema", async ({ page }) => {
 
 test("map view opens", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "Öppna kartan" }).click();
+  await page.locator("#nav-karta").click();
   await expect(page.locator("#view-karta")).toHaveClass(/on/);
+});
+
+test("hero search and intent chip navigate", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("#heroSearch").fill("fika");
+  await page.locator("#heroSearchForm").evaluate((f) => f.requestSubmit());
+  await expect(page.locator("#view-sok")).toHaveClass(/on/);
+  await expect(page.locator("#globalSearch")).toHaveValue("fika");
+
+  await page.goto("/");
+  await page.locator(".hero-chip", { hasText: "Äta & fika" }).click();
+  await expect(page.locator("#view-kategori")).toHaveClass(/on/);
 });
 
 test("guides section and summer guide open", async ({ page }) => {
