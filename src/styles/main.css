@@ -829,6 +829,8 @@
   .map-summary-pill .nara-dig-ico{width:20px;height:20px}
   .map-summary-pill strong{font-weight:700}
   .map-summary-pill span{color:var(--ink-soft)}
+  /* Keep zoom clear of the top summary bar and the centered search. */
+  .mapcol .leaflet-bottom.leaflet-right{bottom:78px;right:14px}
   .searchbar{
     position:absolute;z-index:600;bottom:22px;left:50%;transform:translateX(-50%);
     width:min(440px,80%);display:flex;align-items:center;gap:10px;

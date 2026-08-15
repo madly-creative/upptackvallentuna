@@ -3226,7 +3226,8 @@ import {
   async function initMap(){
     if(map)return;
     try{ await ensureLeaflet(); }catch(e){ console.warn(e); return; }
-    map=L.map('map',{zoomControl:true,scrollWheelZoom:true}).setView(CONFIG.center,CONFIG.zoom);
+    map=L.map('map',{zoomControl:false,scrollWheelZoom:true}).setView(CONFIG.center,CONFIG.zoom);
+    L.control.zoom({position:'bottomright'}).addTo(map);
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap, © CARTO',subdomains:'abcd',maxZoom:20}).addTo(map);
     places.filter(isMappablePlace).forEach((p)=>{
       const open=isOpen(p);
