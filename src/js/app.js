@@ -1369,7 +1369,7 @@ import {
       </button>`;
     }).join("");
     list.querySelectorAll(".nara-dig-list-item").forEach(btn=>{
-      btn.addEventListener("click",()=>openPlace(btn.dataset.name));
+      btn.addEventListener("click",()=>focusNearDigPlace(btn.dataset.name));
     });
   }
 
@@ -1377,6 +1377,22 @@ import {
     const hits=nearDigHits();
     renderNearDigPanel(hits);
     renderNearDigList();
+  }
+
+  /** List → map: pan to the place and open its popup (detail via "Läs mer"). */
+  function focusNearDigPlace(name){
+    const p=places.find(x=>x.name===name);
+    if(!p || !isMappablePlace(p)) return;
+    const wasList=nearDigMode==="list";
+    if(wasList) toggleNearDigView();
+    const reveal=()=>{
+      if(!nearDigMap) return;
+      nearDigMap.invalidateSize();
+      nearDigMap.flyTo([p.lat, p.lng], 15, { duration:0.55 });
+      const entry=nearDigMarkers.find(x=>x.name===name);
+      setTimeout(()=>entry?.marker?.openPopup(), wasList ? 620 : 560);
+    };
+    setTimeout(reveal, wasList ? 50 : 0);
   }
 
   function nearDigPinIcon(type){
@@ -1454,7 +1470,7 @@ import {
   function refreshNearDigMapMarkers(){
     const Lref=window.L;
     if(!nearDigMap || !Lref) return;
-    nearDigMarkers.forEach(m=>{ try{ nearDigMap.removeLayer(m); }catch(e){} });
+    nearDigMarkers.forEach(({marker:m})=>{ try{ nearDigMap.removeLayer(m); }catch(e){} });
     nearDigMarkers=[];
     const hits=nearDigHits();
     hits.forEach(({place:p})=>{
@@ -1463,7 +1479,7 @@ import {
       const m=Lref.marker([p.lat,p.lng],{ icon })
         .addTo(nearDigMap)
         .bindPopup(`<strong>${escHtml(p.name)}</strong><br>${escHtml(p.cat)}<br><button type="button" class="popup-more" onclick="openPlace('${jsEsc(p.name)}')">Läs mer →</button>`,{ closeButton:false, maxWidth:220 });
-      nearDigMarkers.push(m);
+      nearDigMarkers.push({ name:p.name, marker:m });
     });
     renderNearDigPanel(hits);
   }

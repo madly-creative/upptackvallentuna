@@ -87,16 +87,20 @@ test.describe("Nära dig", () => {
     await expect(page.locator("#naraDigAskBtn")).toHaveText("Använd min position");
   });
 
-  test("far position: still shows full tip count", async ({ page }) => {
-    await mockGeo(page, { grant: true, coords: FAR_POS });
+  test("list item focuses place on map instead of opening place page", async ({ page }) => {
     await page.goto("/");
-    const before = await page.locator("#naraDigPanel .nara-dig-stat").textContent();
-    expect(Number(before)).toBeGreaterThan(0);
-
-    await page.locator("#naraDigAskBtn").click();
-    await expect(page.locator("#naraDigPanel")).toContainText("Från din position");
-    await expect(page.locator("#naraDigPanel .nara-dig-stat")).toHaveText(before);
-    expect(await page.locator(".nara-dig-pin").count()).toBeGreaterThan(5);
+    await expect(page.locator(".nara-dig-pin").first()).toBeVisible({ timeout: 15_000 });
+    await page.locator("#naraDigViewToggle").click();
+    await expect(page.locator("#naraDigList")).toBeVisible();
+    const first = page.locator(".nara-dig-list-item").first();
+    const name = await first.locator("strong").textContent();
+    await first.click();
+    await expect(page.locator("#naraDigMapWrap")).toBeVisible();
+    await expect(page.locator("#naraDigList")).toBeHidden();
+    await expect(page.locator("#view-plats")).not.toHaveClass(/on/);
+    await expect(page.locator(".leaflet-popup")).toBeVisible({ timeout: 5_000 });
+    await expect(page.locator(".leaflet-popup")).toContainText(name || "");
+    await expect(page.locator(".leaflet-popup .popup-more")).toBeVisible();
   });
 
   test("karta: tips-summary overlays map on mobile", async ({ page }) => {
