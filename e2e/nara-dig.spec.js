@@ -77,7 +77,7 @@ test.describe("Nära dig", () => {
     await expect(page.locator("#naraDigMapWrap")).toBeHidden();
   });
 
-  test("far away position: near filter may be empty, Visa alla restores pins", async ({ page }) => {
+  test("far away position: panel can be 0 within radius but pins stay on map", async ({ page }) => {
     await mockGeo(page, { grant: true, coords: FAR_POS });
     await page.goto("/");
     const before = await page.locator("#naraDigPanel .nara-dig-stat").textContent();
@@ -86,6 +86,11 @@ test.describe("Nära dig", () => {
     await page.locator("#naraDigAskBtn").click();
     await expect(page.locator("#naraDigPanel")).toContainText("Inom 10 minuter");
     await expect(page.locator("#naraDigPanel .nara-dig-stat")).toHaveText("0");
+    await expect(page.locator("#naraDigPanel")).toContainText("nedtonade");
+    // Pins must not disappear — outside-radius places stay (dimmed)
+    await expect(page.locator(".nara-dig-pin").first()).toBeVisible();
+    const pinCount = await page.locator(".nara-dig-pin").count();
+    expect(pinCount).toBeGreaterThan(5);
 
     await page.locator("#naraDigAskBtn").click();
     await expect(page.locator("#naraDigPanel")).toContainText("Alla platser");

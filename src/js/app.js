@@ -1168,13 +1168,29 @@ import {
     return isOpenVenue(p) || (!isTimedVenue(p) && isOpen(p));
   }
 
-  function nearDigHits(){
+  /** Category/open filters only — used for map pins (never empty just because of radius). */
+  function nearDigCatalogHits(){
     return filterPlacesNear(places.filter(isMappablePlace), nearDigPos, haversineKm, {
       filterKey:nearDigFilter,
       openNowOnly:nearDigOpenNow,
-      nearOnly:nearDigNearOnly,
+      nearOnly:false,
       isOpenFn:nearDigIsOpen,
     });
+  }
+
+  /** Places inside the 10 min walk circle (for panel count when position is on). */
+  function nearDigWithinHits(){
+    if(!nearDigPos || !nearDigNearOnly) return nearDigCatalogHits();
+    return filterPlacesNear(places.filter(isMappablePlace), nearDigPos, haversineKm, {
+      filterKey:nearDigFilter,
+      openNowOnly:nearDigOpenNow,
+      nearOnly:true,
+      isOpenFn:nearDigIsOpen,
+    });
+  }
+
+  function nearDigHits(){
+    return nearDigNearOnly ? nearDigWithinHits() : nearDigCatalogHits();
   }
 
   function mountNearDigPanel(){
@@ -1330,11 +1346,15 @@ import {
   function renderNearDigPanel(hits){
     const panel=document.getElementById("naraDigPanel");
     if(!panel) return;
-    const groups=summarizeNearGroups(hits);
-    const n=hits.length;
+    const within=nearDigNearOnly ? nearDigWithinHits() : hits;
+    const groups=summarizeNearGroups(within);
+    const n=within.length;
     const kicker=nearDigNearOnly
       ? `<span aria-hidden="true">🚶</span> Inom ${NEAR_WALK_MINUTES} minuter`
       : `<span aria-hidden="true">🗺️</span> Alla platser`;
+    const emptyNote=nearDigNearOnly && n===0
+      ? `<p class="nara-dig-empty">Inget inom ${NEAR_WALK_MINUTES} minuters gång härifrån — kartan visar fortfarande övriga tips (nedtonade utanför cirkeln).</p>`
+      : (n===0 ? `<p class="nara-dig-empty">Inga träffar med nuvarande filter.</p>` : "");
     const rows=groups.map(g=>`
       <div class="nara-dig-row">
         <span class="nara-dig-ico" style="background:${g.color}" aria-hidden="true">${pinIconSvgForType(g.types[0])}</span>
@@ -1345,23 +1365,28 @@ import {
       <div class="nara-dig-panel-kicker">${kicker}</div>
       <div class="nara-dig-stat">${n}</div>
       <div class="nara-dig-stat-label">tips för dig</div>
-      <div class="nara-dig-rows">${rows||`<p class="nara-dig-empty">Inga träffar med nuvarande filter.</p>`}</div>
+      <div class="nara-dig-rows">${rows||emptyNote}</div>
       <button type="button" class="nara-dig-panel-link" id="naraDigShowMap">Se alla på karta →</button>`;
     document.getElementById("naraDigShowMap")?.addEventListener("click",()=>{
       if(nearDigMode!=="map") toggleNearDigView();
-      else fitNearDigMap(hits);
+      else fitNearDigMap(nearDigCatalogHits());
     });
   }
 
   function renderNearDigList(){
     const list=document.getElementById("naraDigList");
     if(!list || nearDigMode!=="list") return;
-    const hits=nearDigHits();
+    const within=nearDigNearOnly ? nearDigWithinHits() : nearDigCatalogHits();
+    const catalog=nearDigCatalogHits();
+    const hits=within.length ? within : (nearDigNearOnly ? catalog.slice(0, 12) : catalog);
     if(!hits.length){
-      list.innerHTML=`<p class="nara-dig-empty">${nearDigNearOnly?`Inga träffar inom ${NEAR_WALK_MINUTES} minuters gång.`:"Inga träffar med nuvarande filter."}</p>`;
+      list.innerHTML=`<p class="nara-dig-empty">Inga träffar med nuvarande filter.</p>`;
       return;
     }
-    list.innerHTML=hits.map(({place:p, walkMin, km})=>{
+    const preface=nearDigNearOnly && within.length===0
+      ? `<p class="nara-dig-empty">Inget inom ${NEAR_WALK_MINUTES} minuters gång — visar närmaste tips:</p>`
+      : "";
+    list.innerHTML=preface+hits.map(({place:p, walkMin, km})=>{
       const dist=nearDigPos && km!=null
         ? ` · ~${walkMin} min gång · ${fmtDist(km)}`
         : "";
@@ -1379,19 +1404,18 @@ import {
   }
 
   function renderNearDigContent(){
-    const hits=nearDigHits();
-    renderNearDigPanel(hits);
+    renderNearDigPanel(nearDigHits());
     renderNearDigList();
   }
 
-  function nearDigPinIcon(type){
+  function nearDigPinIcon(type, { dimmed=false }={}){
     const Lref=window.L;
     if(!Lref) return null;
     const color=pinColorForType(type);
     const svg=pinIconSvgForType(type);
     return Lref.divIcon({
       className:"",
-      html:`<div class="nara-dig-pin" style="--pin:${color}">${svg}</div>`,
+      html:`<div class="nara-dig-pin${dimmed?" is-dimmed":""}" style="--pin:${color}">${svg}</div>`,
       iconSize:[32,32],
       iconAnchor:[16,16],
     });
@@ -1476,16 +1500,20 @@ import {
     if(!nearDigMap || !Lref) return;
     nearDigMarkers.forEach(m=>{ try{ nearDigMap.removeLayer(m); }catch(e){} });
     nearDigMarkers=[];
-    const hits=nearDigHits();
-    hits.forEach(({place:p})=>{
-      const icon=nearDigPinIcon(p.type);
+    const catalog=nearDigCatalogHits();
+    const withinNames=nearDigNearOnly
+      ? new Set(nearDigWithinHits().map(h=>h.place.name))
+      : null;
+    catalog.forEach(({place:p, km})=>{
+      const dimmed=!!(withinNames && !withinNames.has(p.name));
+      const icon=nearDigPinIcon(p.type, { dimmed });
       if(!icon) return;
-      const m=Lref.marker([p.lat,p.lng],{ icon })
+      const m=Lref.marker([p.lat,p.lng],{ icon, opacity: dimmed ? 0.45 : 1 })
         .addTo(nearDigMap)
-        .bindPopup(`<strong>${escHtml(p.name)}</strong><br>${escHtml(p.cat)}<br><button type="button" class="popup-more" onclick="openPlace('${jsEsc(p.name)}')">Läs mer →</button>`,{ closeButton:false, maxWidth:220 });
+        .bindPopup(`<strong>${escHtml(p.name)}</strong><br>${escHtml(p.cat)}${km!=null?`<br>~${walkMinutesFromKm(km)} min gång`:""}<br><button type="button" class="popup-more" onclick="openPlace('${jsEsc(p.name)}')">Läs mer →</button>`,{ closeButton:false, maxWidth:220 });
       nearDigMarkers.push(m);
     });
-    renderNearDigPanel(hits);
+    renderNearDigPanel(nearDigHits());
   }
 
   // Return visit memory
