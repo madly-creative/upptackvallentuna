@@ -629,6 +629,20 @@ import {
       body:`<p><strong>Äppellundens Café</strong> hör till Kårsta 4H på Kårstavägen 311 — fika och enklare mat i gårdsmiljö, plus minigolf och aktiviteter för barn och familjer.</p>
       <p>Caféet siktar på öppet ca <strong>12–16</strong> (tider ändras ofta). Följ <a href="https://www.facebook.com/karsta4h" target="_blank" rel="noopener">Facebook Kårsta 4H</a> eller ring 073-852 27 98 innan ni åker. Info: <a href="https://www.4h.se/karsta/" target="_blank" rel="noopener">4h.se/karsta</a>.</p>`
     },
+    "Roslagsloppis":{
+      address:"Roslagsstoppet, Söderhalls trafikplats, Vallentuna",
+      facts:["Bakluckeloppis","Söndagar","Fri entré","Säsong"],
+      localPhotos:true,
+      photoCredit:"Foto: roslagsloppis.se / Loppistajm.",
+      images:[
+        {url:"/assets/upplev/roslagsloppis/cover.webp",alt:"Bakluckeloppis vid Roslagsstoppet"},
+        {url:"/assets/upplev/roslagsloppis/fynd.webp",alt:"Fynd och prylar på Roslagsloppis"},
+        {url:"/assets/upplev/roslagsloppis/bakluckor.webp",alt:"Bilar och bakluckor på loppisen"},
+        {url:"/assets/upplev/roslagsloppis/folkfest.webp",alt:"Folkfeststämning på Roslagsloppis"}
+      ],
+      body:`<p><strong>Roslagsloppis</strong> är den stora bakluckeloppisen bakom Roslagsstoppet vid Söderhalls trafikplats — halvvägs ut i Roslagen, i Vallentuna kommun. Sälj direkt från bilen eller kom och fynda; fri entré och parkering för besökare.</p>
+      <p>Öppet <strong>söndagar 11–15</strong> under säsongen <strong>31 maj–13 september 2026</strong> (stängt 21 juni). Åk runt den långa röda byggnaden till baksidan. Vill du sälja? Plats online från 175 kr via <a href="https://www.roslagsloppis.se/salja/" target="_blank" rel="noopener">roslagsloppis.se</a>, eller Swish på plats om det finns rum. Frågor: <a href="mailto:info@stockholmsmarknader.se">info@stockholmsmarknader.se</a>. Psst: fabriksförsäljning av cocosbollar finns intill.</p>`
+    },
   };
 
     const cats=[{key:"alla",label:"Allt"},{key:"fika",label:"Fika & Mat"},{key:"gard",label:"Gård & Handelsträdgård"},{key:"natur",label:"Natur & Historia"},{key:"butik",label:"Butik & Kultur"},{key:"loppis",label:"Loppis"}];
@@ -693,7 +707,8 @@ import {
     "AutoMat Kårsta":"2026-08-07",
     "Vasakullen":"2026-08-14",
     "Vallentuna Konditori":"2026-08-14",
-    "Äppellundens Café":"2026-08-14"
+    "Äppellundens Café":"2026-08-14",
+    "Roslagsloppis":"2026-08-15"
   };
 
   const now=new Date();
