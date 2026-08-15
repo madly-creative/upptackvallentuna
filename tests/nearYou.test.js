@@ -55,23 +55,31 @@ describe("nearFilterTypes", () => {
 });
 
 describe("filterPlacesNear", () => {
-  it("keeps places within walk radius only", () => {
-    const hits = filterPlacesNear(sample, origin, haversineKm);
+  it("keeps places within walk radius when nearOnly", () => {
+    const hits = filterPlacesNear(sample, origin, haversineKm, { nearOnly: true });
     expect(hits.every((h) => h.km <= NEAR_RADIUS_KM)).toBe(true);
     expect(hits.map((h) => h.place.name)).not.toContain("Far");
     expect(hits.length).toBe(5);
+  });
+
+  it("shows all places when nearOnly is off", () => {
+    const hits = filterPlacesNear(sample, origin, haversineKm, { nearOnly: false });
+    expect(hits.map((h) => h.place.name)).toContain("Far");
+    expect(hits.length).toBe(6);
   });
 
   it("filters by category and additive open-now", () => {
     const open = new Set(["A Fika", "D Loppis"]);
     const fika = filterPlacesNear(sample, origin, haversineKm, {
       filterKey: "fika",
+      nearOnly: true,
     });
     expect(fika.map((h) => h.place.name)).toEqual(["A Fika"]);
 
     const merOpen = filterPlacesNear(sample, origin, haversineKm, {
       filterKey: "mer",
       openNowOnly: true,
+      nearOnly: true,
       isOpenFn: (p) => open.has(p.name),
     });
     expect(merOpen.map((h) => h.place.name)).toEqual(["D Loppis"]);
@@ -80,7 +88,7 @@ describe("filterPlacesNear", () => {
 
 describe("summarizeNearGroups", () => {
   it("returns compact non-zero group counts", () => {
-    const hits = filterPlacesNear(sample, origin, haversineKm);
+    const hits = filterPlacesNear(sample, origin, haversineKm, { nearOnly: true });
     const groups = summarizeNearGroups(hits);
     expect(groups.find((g) => g.key === "fika")?.count).toBe(1);
     expect(groups.find((g) => g.key === "mer")?.count).toBe(2);

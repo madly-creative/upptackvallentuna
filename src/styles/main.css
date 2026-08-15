@@ -1701,6 +1701,10 @@
     display:flex;align-items:flex-start;justify-content:space-between;gap:16px;
     margin-bottom:14px;
   }
+  .nara-dig-head-actions{
+    display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:flex-end;
+    flex-shrink:0;
+  }
   .nara-dig-titles .eyebrow{
     font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
     color:var(--rust);margin-bottom:6px;
@@ -1760,7 +1764,7 @@
   }
   .nara-dig-rows{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
   .nara-dig-row{
-    display:grid;grid-template-columns:14px 1fr auto;align-items:center;gap:8px;
+    display:grid;grid-template-columns:22px 1fr auto;align-items:center;gap:8px;
     font-size:13px;
   }
   .nara-dig-row-label{color:var(--ink)}
@@ -1768,6 +1772,11 @@
   .nara-dig-dot{
     width:10px;height:10px;border-radius:50%;display:inline-block;
   }
+  .nara-dig-ico{
+    width:22px;height:22px;border-radius:50%;display:inline-flex;
+    align-items:center;justify-content:center;flex-shrink:0;
+  }
+  .nara-dig-ico svg{display:block}
   .nara-dig-panel-link{
     appearance:none;background:none;border:none;cursor:pointer;padding:6px 0 0;
     font-size:13px;font-weight:700;color:var(--rust);text-align:left;
@@ -1788,15 +1797,13 @@
   .nara-dig-ctrl:focus-visible{outline:2px solid var(--rust);outline-offset:-2px}
 
   .nara-dig-pin{
-    width:28px;height:28px;border-radius:50%;
+    width:32px;height:32px;border-radius:50%;
     background:var(--pin,#2a3228);
     border:2px solid #fff;
     box-shadow:0 4px 10px rgba(0,0,0,.22);
     display:flex;align-items:center;justify-content:center;
   }
-  .nara-dig-pin span{
-    width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.85);
-  }
+  .nara-dig-pin svg{display:block}
   .nara-dig-you{
     animation:nara-dig-pulse 2.4s ease-out infinite;
   }
@@ -1814,7 +1821,7 @@
   .nara-dig-list-item{
     appearance:none;border:none;background:var(--paper);border-radius:12px;
     padding:12px 14px;cursor:pointer;text-align:left;
-    display:grid;grid-template-columns:14px 1fr;gap:10px;align-items:center;
+    display:grid;grid-template-columns:22px 1fr;gap:10px;align-items:center;
   }
   .nara-dig-list-item:hover{background:var(--paper-2)}
   .nara-dig-list-copy{display:flex;flex-direction:column;gap:2px}
@@ -1825,6 +1832,7 @@
   @media (max-width:1100px){
     .nara-dig{padding:0 16px}
     .nara-dig-head{flex-direction:column;align-items:stretch}
+    .nara-dig-head-actions{justify-content:flex-start}
     .nara-dig-view-toggle{align-self:flex-start}
     .nara-dig-panel{left:10px;bottom:10px;width:min(210px,70vw);padding:12px}
     .nara-dig-stat{font-size:44px}
