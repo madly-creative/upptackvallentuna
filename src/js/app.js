@@ -1350,15 +1350,12 @@ import {
       list.innerHTML=`<p class="nara-dig-empty">Inga träffar med nuvarande filter.</p>`;
       return;
     }
-    list.innerHTML=hits.map(({place:p, walkMin, km})=>{
-      const dist=nearDigPos && km!=null
-        ? ` · ~${walkMin} min gång · ${fmtDist(km)}`
-        : "";
+    list.innerHTML=hits.map(({place:p})=>{
       return `<button type="button" class="nara-dig-list-item" data-name="${escHtml(p.name)}">
         <span class="nara-dig-ico" style="background:${pinColorForType(p.type)}" aria-hidden="true">${pinIconSvgForType(p.type)}</span>
         <span class="nara-dig-list-copy">
           <strong>${escHtml(p.name)}</strong>
-          <span>${escHtml(p.cat)}${dist}</span>
+          <span>${escHtml(p.cat)}</span>
         </span>
       </button>`;
     }).join("");
@@ -1451,13 +1448,12 @@ import {
     nearDigMarkers.forEach(m=>{ try{ nearDigMap.removeLayer(m); }catch(e){} });
     nearDigMarkers=[];
     const hits=nearDigHits();
-    hits.forEach(({place:p, km})=>{
+    hits.forEach(({place:p})=>{
       const icon=nearDigPinIcon(p.type);
       if(!icon) return;
-      const distLine=nearDigPos && km!=null ? `<br>~${walkMinutesFromKm(km)} min gång` : "";
       const m=Lref.marker([p.lat,p.lng],{ icon })
         .addTo(nearDigMap)
-        .bindPopup(`<strong>${escHtml(p.name)}</strong><br>${escHtml(p.cat)}${distLine}<br><button type="button" class="popup-more" onclick="openPlace('${jsEsc(p.name)}')">Läs mer →</button>`,{ closeButton:false, maxWidth:220 });
+        .bindPopup(`<strong>${escHtml(p.name)}</strong><br>${escHtml(p.cat)}<br><button type="button" class="popup-more" onclick="openPlace('${jsEsc(p.name)}')">Läs mer →</button>`,{ closeButton:false, maxWidth:220 });
       nearDigMarkers.push(m);
     });
     renderNearDigPanel(hits);
