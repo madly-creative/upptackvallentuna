@@ -3280,9 +3280,31 @@ import {
     if(favOnly&&!favorites.has(p.name)) return false;
     return true;
   }
+  function renderMapSummary(shownPlaces){
+    const el=document.getElementById("mapSummary");
+    if(!el) return;
+    const hits=shownPlaces.map(place=>({place}));
+    const groups=summarizeNearGroups(hits).filter(g=>g.count>0);
+    const n=shownPlaces.length;
+    const pills=groups.map(g=>`
+      <span class="map-summary-pill">
+        <span class="nara-dig-ico" style="background:${g.color}" aria-hidden="true">${pinIconSvgForType(g.types[0])}</span>
+        <span>${escHtml(g.label)}</span>
+        <strong>${g.count}</strong>
+      </span>`).join("");
+    el.innerHTML=`
+      <div class="map-summary-stat">
+        <span class="map-summary-n">${n}</span>
+        <span class="map-summary-label">tips på kartan</span>
+      </div>
+      <div class="map-summary-groups">${pills||`<span class="map-summary-label">Inga träffar med nuvarande filter.</span>`}</div>`;
+    el.hidden=false;
+  }
+
   function renderFilter(){
     document.querySelectorAll('#filters .chip').forEach(c=>c.classList.toggle('on',c.dataset.key===active));
     let shown=0;
+    const shownPlaces=[];
     const mappable=places.filter(isMappablePlace);
     const items=[...document.querySelectorAll('#mlist .item')];
     items.forEach(el=>{
@@ -3292,19 +3314,21 @@ import {
       el.classList.toggle('hidden',!m);
       const i=mappable.indexOf(p);
       if(i<0) return;
-      if(m){markers[i].addTo(map);shown++;}else{markers[i].remove();}
+      if(m){markers[i].addTo(map);shown++;shownPlaces.push(p);}else{markers[i].remove();}
     });
     let label=shown+' platser i '+K;
     if(openNowOnly) label=shown+' öppna nu';
     if(favOnly) label=shown+' favoriter';
     if(userPos) label+=' · närmast först';
     document.getElementById('mcount').textContent=label;
+    renderMapSummary(shownPlaces);
   }
 
   document.getElementById('search')?.addEventListener('input',function(){
     const q=this.value.trim().toLowerCase();document.getElementById('searchClr')?.classList.toggle('show',q.length>0);
     if(!q){renderFilter();return;}
     let shown=0;
+    const shownPlaces=[];
     const mappable=places.filter(isMappablePlace);
     document.querySelectorAll('#mlist .item').forEach(el=>{
       const p=places.find(x=>x.name===el.dataset.name); if(!p) return;
@@ -3313,10 +3337,11 @@ import {
       const m=hay.includes(q)&&placeMatchesFilters(p);
       el.classList.toggle('hidden',!m);
       if(i<0) return;
-      if(m){markers[i]?.addTo(map);shown++;}else{markers[i]?.remove();}
+      if(m){markers[i]?.addTo(map);shown++;shownPlaces.push(p);}else{markers[i]?.remove();}
     });
     document.querySelectorAll('#filters .chip').forEach(c=>c.classList.toggle('on',c.dataset.key==='alla'));active='alla';
     const mc=document.getElementById('mcount'); if(mc) mc.textContent=(shown?shown+' träffar':'Inga träffar')+' · '+K;
+    renderMapSummary(shownPlaces);
   });
   document.getElementById('searchClr')?.addEventListener('click',()=>{const s=document.getElementById('search');if(!s)return;s.value='';s.dispatchEvent(new Event('input'));s.focus();});
 
