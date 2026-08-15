@@ -1551,9 +1551,23 @@
     .topbar{padding:12px 16px}
     .btn-outline{display:none}
     .mside{display:none}
-    .map-summary{top:10px;left:10px;right:10px;gap:12px;padding:10px 14px}
-    .map-summary-n{font-size:26px}
+    .map-summary{
+      top:10px;left:10px;right:10px;gap:8px 12px;padding:10px 12px;
+      flex-wrap:nowrap;align-items:center;
+    }
+    .map-summary-n{font-size:24px}
+    .map-summary-label{font-size:12px}
+    .map-summary-groups{
+      flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+      scrollbar-width:none;padding-bottom:2px;
+    }
+    .map-summary-groups::-webkit-scrollbar{display:none}
     .map-summary-pill{font-size:12px;padding:5px 9px 5px 6px}
+    .mapcol .leaflet-bottom.leaflet-right{bottom:86px;right:10px}
+    .searchbar{
+      width:min(440px,calc(100% - 72px));
+      left:12px;transform:none;
+    }
     .today-grid,.week-grid,.events-grid{grid-template-columns:1fr}
     .ev{grid-template-columns:112px minmax(0,1fr);min-height:132px}
     .ev .media{min-height:132px}
@@ -1706,20 +1720,6 @@
     max-width:var(--max);margin:22px auto 0;padding:0 28px;
   }
   .nara-dig .inner{width:100%}
-  .nara-dig--cta .inner{
-    display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
-    background:var(--card);border:1px solid var(--line-soft);border-radius:16px;
-    padding:18px 20px;
-  }
-  .nara-dig-cta-copy .eyebrow{
-    font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
-    color:var(--rust);margin-bottom:4px;
-  }
-  .nara-dig-cta-copy h2{
-    font-family:var(--font-serif);font-size:clamp(22px,2.6vw,28px);font-weight:500;
-    color:var(--ink);line-height:1.15;margin:0 0 6px;
-  }
-  .nara-dig-cta-copy p{margin:0;color:var(--ink-soft);font-size:14px;max-width:42ch}
   .nara-dig-cta-btn{
     appearance:none;border:none;cursor:pointer;
     background:var(--moss-deep);color:#fff;font-weight:700;font-size:13px;
@@ -1804,9 +1804,6 @@
   }
   .nara-dig-row-label{color:var(--ink)}
   .nara-dig-row-count{font-weight:700;color:var(--ink)}
-  .nara-dig-dot{
-    width:10px;height:10px;border-radius:50%;display:inline-block;
-  }
   .nara-dig-ico{
     width:22px;height:22px;border-radius:50%;display:inline-flex;
     align-items:center;justify-content:center;flex-shrink:0;

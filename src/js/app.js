@@ -1168,7 +1168,6 @@ import {
     return filterPlacesNear(places.filter(isMappablePlace), nearDigPos, haversineKm, {
       filterKey:nearDigFilter,
       openNowOnly:nearDigOpenNow,
-      nearOnly:false,
       isOpenFn:nearDigIsOpen,
     });
   }
@@ -1247,6 +1246,8 @@ import {
   function requestNearDigLocation(){
     const btn=document.getElementById("naraDigAskBtn");
     if(btn?.dataset.mode==="overview"){
+      nearDigPos=null;
+      clearNearDigYouMarker();
       syncNearDigAskBtn();
       renderNearDigContent();
       refreshNearDigMapMarkers();

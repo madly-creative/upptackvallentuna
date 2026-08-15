@@ -1,12 +1,9 @@
 /**
- * "Nära dig" — filter places by category and optional walking distance.
+ * "Nära dig" / Utforska — filter places by category; optional distance sort when origin set.
  * Position stays in-memory only; this module never touches storage or analytics.
  */
 
 export const WALK_KMH = 5;
-export const NEAR_WALK_MINUTES = 10;
-/** ≈ 0.833 km — 10 min walk @ 5 km/h */
-export const NEAR_RADIUS_KM = (NEAR_WALK_MINUTES / 60) * WALK_KMH;
 
 export const NEAR_PIN_COLORS = {
   fika: "#a85a3a",
@@ -65,19 +62,17 @@ export function nearFilterTypes(filterKey) {
 }
 
 /**
- * Filter catalog places. Distance is optional — omit origin / set nearOnly=false for all.
+ * Filter catalog places. With origin, sorts nearest-first (no hard radius cut-off).
  * @param {Array<{lat:number,lng:number,type:string}>} places
  * @param {{lat:number,lng:number}|null} origin
  * @param {(a:number,b:number,c:number,d:number)=>number} haversineKm
- * @param {{filterKey?:string, openNowOnly?:boolean, isOpenFn?:(p:any)=>boolean, nearOnly?:boolean}} [opts]
+ * @param {{filterKey?:string, openNowOnly?:boolean, isOpenFn?:(p:any)=>boolean}} [opts]
  */
 export function filterPlacesNear(places, origin, haversineKm, opts = {}) {
   const filterKey = opts.filterKey || "alla";
   const openNowOnly = !!opts.openNowOnly;
-  const nearOnly = !!opts.nearOnly && !!origin;
   const isOpenFn = opts.isOpenFn || (() => true);
   const types = nearFilterTypes(filterKey);
-  const radius = NEAR_RADIUS_KM;
 
   return places
     .map((p) => {
@@ -90,8 +85,7 @@ export function filterPlacesNear(places, origin, haversineKm, opts = {}) {
         walkMin: km == null ? null : walkMinutesFromKm(km),
       };
     })
-    .filter(({ place, km }) => {
-      if (nearOnly && (km == null || km > radius)) return false;
+    .filter(({ place }) => {
       if (types && !types.includes(place.type)) return false;
       if (openNowOnly && !isOpenFn(place)) return false;
       return true;

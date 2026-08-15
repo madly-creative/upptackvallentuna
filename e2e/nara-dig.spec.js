@@ -59,7 +59,7 @@ test.describe("Nära dig", () => {
     expect(dialogs).toEqual([]);
   });
 
-  test("granted: pans to me, keeps all pins full color, list toggle", async ({ page }) => {
+  test("granted: pans to me, keeps all pins, list toggle, overview resets", async ({ page }) => {
     await mockGeo(page, { grant: true, coords: NEAR_POS });
     await page.goto("/");
     const before = await page.locator("#naraDigPanel .nara-dig-stat").textContent();
@@ -68,7 +68,6 @@ test.describe("Nära dig", () => {
     await expect(page.locator("#naraDigPanel")).toContainText("Från din position");
     await expect(page.locator("#naraDigPanel .nara-dig-stat")).toHaveText(before);
     await expect(page.locator("#naraDigAskBtn")).toHaveText("Visa hela kartan");
-    await expect(page.locator(".nara-dig-pin.is-dimmed")).toHaveCount(0);
     await expect(page.locator(".nara-dig-pin").first()).toBeVisible();
 
     await page.locator('.nara-dig-chip[data-key="fika"]').click();
@@ -82,9 +81,13 @@ test.describe("Nära dig", () => {
     await expect(page.locator("#naraDigMapWrap")).toBeVisible();
     await expect(page.locator("#naraDigList")).toBeHidden();
     await expect(page.locator("#naraDigList")).not.toHaveClass(/is-visible/);
+
+    await page.locator("#naraDigAskBtn").click();
+    await expect(page.locator("#naraDigPanel")).toContainText("Alla platser");
+    await expect(page.locator("#naraDigAskBtn")).toHaveText("Använd min position");
   });
 
-  test("far position: still shows full tip count and undimmed pins", async ({ page }) => {
+  test("far position: still shows full tip count", async ({ page }) => {
     await mockGeo(page, { grant: true, coords: FAR_POS });
     await page.goto("/");
     const before = await page.locator("#naraDigPanel .nara-dig-stat").textContent();
@@ -93,8 +96,22 @@ test.describe("Nära dig", () => {
     await page.locator("#naraDigAskBtn").click();
     await expect(page.locator("#naraDigPanel")).toContainText("Från din position");
     await expect(page.locator("#naraDigPanel .nara-dig-stat")).toHaveText(before);
-    await expect(page.locator(".nara-dig-pin.is-dimmed")).toHaveCount(0);
     expect(await page.locator(".nara-dig-pin").count()).toBeGreaterThan(5);
+  });
+
+  test("karta: tips-summary overlays map on mobile", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/");
+    await page.evaluate(() => showView("karta"));
+    await expect(page.locator("#view-karta")).toHaveClass(/on/);
+    await expect(page.locator("#mapSummary")).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator("#mapSummary")).toContainText("tips på kartan");
+    const n = await page.locator("#mapSummary .map-summary-n").textContent();
+    expect(Number(n)).toBeGreaterThan(10);
+    await expect(page.locator("#mapSummary .map-summary-pill").first()).toBeVisible();
+    // Summary stays a single strip (no multi-line wrap covering the map)
+    const box = await page.locator("#mapSummary").boundingBox();
+    expect(box?.height ?? 99).toBeLessThan(72);
   });
 
   test("network: no visitor position payload to Umami or any backend", async ({ page }) => {
