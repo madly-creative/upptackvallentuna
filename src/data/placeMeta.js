@@ -167,4 +167,12 @@ export const PLACE_META = {
         {label:"Facebook Kårsta 4H",url:"https://www.facebook.com/karsta4h"},
       ],
       hoursVerified:"2026-08-14"},
+    "Roslagsloppis":{tags:["barn","ute","gratis"],district:"Söderhall",updated:"2026-08-15",addedDate:"2026-08-15",holidayClosed:false,
+      seasonNote:"Säsong 31 maj–13 sept 2026 · söndagar 11–15 · stängt 21 juni · bakom den röda byggnaden på Roslagsstoppet",
+      hours:[H(11,15),C,C,C,C,C,C],
+      sources:[
+        {label:"roslagsloppis.se",url:"https://www.roslagsloppis.se/oppet/"},
+        {label:"Loppistajm / Stockholmsmarknader AB"},
+      ],
+      hoursVerified:"2026-08-15"},
 };
