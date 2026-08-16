@@ -1,3 +1,5 @@
+import { placeHasType } from "../data/places.js";
+
 /**
  * "Nära dig" / Utforska — filter places by category; optional distance sort when origin set.
  * Position stays in-memory only; this module never touches storage or analytics.
@@ -86,7 +88,7 @@ export function filterPlacesNear(places, origin, haversineKm, opts = {}) {
       };
     })
     .filter(({ place }) => {
-      if (types && !types.includes(place.type)) return false;
+      if (types && !types.some((t) => placeHasType(place, t))) return false;
       if (openNowOnly && !isOpenFn(place)) return false;
       return true;
     })
@@ -102,6 +104,6 @@ export function summarizeNearGroups(hits) {
   const places = hits.map((h) => h.place);
   return NEAR_SUMMARY_GROUPS.map((g) => ({
     ...g,
-    count: places.filter((p) => g.types.includes(p.type)).length,
+    count: places.filter((p) => g.types.some((t) => placeHasType(p, t))).length,
   })).filter((g) => g.count > 0);
 }

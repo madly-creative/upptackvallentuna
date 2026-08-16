@@ -220,7 +220,8 @@ export function recurringSearchHay(r) {
 }
 
 export function placeSearchPrimary(p, extras = {}) {
-  return [p?.name, p?.cat, p?.type, extras.district, extras.tags]
+  const aka = Array.isArray(p?.aka) ? p.aka.join(" ") : p?.aka;
+  return [p?.name, aka, p?.cat, p?.type, ...(Array.isArray(p?.types) ? p.types : []), extras.district, extras.tags]
     .filter(Boolean)
     .join(" ");
 }
