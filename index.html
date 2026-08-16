@@ -203,6 +203,17 @@
         <h1 id="heroTitle">Vad vill du upptäcka idag?</h1>
         <p class="hero-tagline" id="heroTagline">Smultronställen · Fika · Natur · Evenemang</p>
         <p id="heroSub">Handplockade lokala favoriter — inte kedjorna du redan känner till.</p>
+        <form class="hero-search" id="heroSearchForm" role="search" action="#" onsubmit="return heroSubmitSearch(event)">
+          <span class="hero-search-ico" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3.2-3.2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </span>
+          <label class="sr-only" for="heroSearch">Sök i Vallentuna</label>
+          <input id="heroSearch" type="search" name="q" autocomplete="off" enterkeyhint="search"
+            placeholder="T.ex. fika, bad, loppis, något ikväll…" />
+          <button type="submit" class="hero-search-go" aria-label="Sök">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </form>
         <div class="cta">
           <button class="btn-primary" onclick="showView('karta')">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s7-5.8 7-11a7 7 0 1 0-14 0c0 5.2 7 11 7 11z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10" r="2.4" stroke="currentColor" stroke-width="1.8"/></svg>

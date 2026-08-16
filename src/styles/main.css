@@ -103,6 +103,10 @@
   @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
   /* ---------- hero ---------- */
+  .sr-only{
+    position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+    overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;
+  }
   .hero-full{
     position:relative;min-height:min(54vh,513px); /* +30px så Just nu kan ligga ovanpå underkanten */
     display:flex;align-items:stretch;
@@ -195,7 +199,29 @@
     margin-top:10px;font-size:15px;font-weight:400;
     color:rgba(247,243,235,.88);max-width:480px;line-height:1.5;
   }
-  .hero-full .cta{margin-top:20px;display:flex;gap:12px;flex-wrap:wrap}
+  .hero-search{
+    margin-top:18px;display:flex;align-items:center;gap:10px;
+    width:min(480px,100%);
+    background:rgba(251,248,242,.96);
+    border:1px solid rgba(255,255,255,.45);
+    border-radius:999px;
+    padding:8px 8px 8px 16px;
+    box-shadow:0 10px 28px rgba(20,28,18,.18);
+    backdrop-filter:blur(8px);
+  }
+  .hero-search-ico{color:#8a8270;display:grid;place-items:center;flex-shrink:0}
+  .hero-search input{
+    flex:1;min-width:0;border:none;background:transparent;outline:none;
+    font-family:var(--font-serif);font-size:16px;color:var(--ink);
+  }
+  .hero-search input::placeholder{color:#a89e88;font-style:italic}
+  .hero-search-go{
+    width:44px;height:44px;border-radius:50%;border:none;cursor:pointer;flex-shrink:0;
+    background:var(--moss-deep);color:#fff;display:grid;place-items:center;
+  }
+  .hero-search-go:hover{background:#243024}
+  .hero-search-go:focus-visible{outline:2px solid var(--rust);outline-offset:2px}
+  .hero-full .cta{margin-top:18px;display:flex;gap:12px;flex-wrap:wrap}
   .btn-primary{
     display:inline-flex;align-items:center;gap:8px;
     font-size:14px;font-weight:600;padding:13px 22px;border-radius:999px;
@@ -1678,6 +1704,9 @@
     .hero-inner{padding:24px 18px 40px;flex-direction:column;align-items:stretch;gap:20px}
     .hero-top{justify-content:stretch}
     .hero-today{width:100%}
+    .hero-search{margin-top:14px;padding:6px 6px 6px 14px}
+    .hero-search input{font-size:15px}
+    .hero-search-go{width:40px;height:40px}
     .sec{padding:36px 18px 8px}
     .sitefooter .foot-inner{
       grid-template-columns:1fr 1fr;

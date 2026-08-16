@@ -29,11 +29,15 @@ import {
 } from "../data/stockholm.js";
 import { picksRotationSeed, selectRotatedDiversePicks } from "../lib/picksRotate.js";
 import {
-  textMatchesQuery,
-  eventSearchHay,
-  recurringSearchHay,
-  placeSearchHay,
-  producerSearchHay,
+  matchesPrimaryOrSecondary,
+  eventSearchPrimary,
+  eventSearchSecondary,
+  recurringSearchPrimary,
+  recurringSearchSecondary,
+  placeSearchPrimary,
+  placeSearchSecondary,
+  producerSearchPrimary,
+  producerSearchSecondary,
 } from "../lib/searchMatch.js";
 import { facts as FACTS_SEED, currentFact, isSagen } from "../data/facts.js";
 import {
@@ -2032,6 +2036,23 @@ import {
     } else openCategory('attgora');
   }
 
+  function heroSubmitSearch(ev){
+    ev?.preventDefault?.();
+    const q=(document.getElementById("heroSearch")?.value||"").trim();
+    heroGoSearch(q);
+    return false;
+  }
+  function heroGoSearch(q, filterKey){
+    searchFilters.clear();
+    if(filterKey) searchFilters.add(filterKey);
+    const input=document.getElementById("globalSearch");
+    if(input) input.value=q||"";
+    showView("sok");
+    initSearchUI();
+    runSearch();
+    setTimeout(()=>document.getElementById("globalSearch")?.focus(), 60);
+  }
+
   function isoPlusDays(n){
     const d=new Date(todayISO+"T12:00:00");
     d.setDate(d.getDate()+n);
@@ -2395,27 +2416,31 @@ import {
     const q=searchQuery();
     if(!q) return true;
     const m=metaOf(p);
-    const hay=placeSearchHay(p,{
+    const extras={
       district:m.district,
       tags:(m.tags||[]).join(" "),
       address:CONTENT[p.name]?.address||"",
-    });
-    return textMatchesQuery(hay, q);
+    };
+    return matchesPrimaryOrSecondary(
+      placeSearchPrimary(p, extras),
+      placeSearchSecondary(p, extras),
+      q
+    );
   }
   function eventMatchesSearch(e){
     const q=searchQuery();
     if(!q) return false; // evenemang bara vid fritext — annars drunknar listan
-    return textMatchesQuery(eventSearchHay(e), q);
+    return matchesPrimaryOrSecondary(eventSearchPrimary(e), eventSearchSecondary(e), q);
   }
   function recurringMatchesSearch(r){
     const q=searchQuery();
     if(!q) return false;
-    return textMatchesQuery(recurringSearchHay(r), q);
+    return matchesPrimaryOrSecondary(recurringSearchPrimary(r), recurringSearchSecondary(r), q);
   }
   function producerMatchesSearch(pr){
     const q=searchQuery();
     if(!q) return false; // som evenemang: bara vid fritext
-    return textMatchesQuery(producerSearchHay(pr), q);
+    return matchesPrimaryOrSecondary(producerSearchPrimary(pr), producerSearchSecondary(pr), q);
   }
   function searchEventRowHTML(e){
     const d=new Date(e.date+"T12:00:00");
@@ -2488,21 +2513,40 @@ import {
       return;
     }
     const parts=[];
-    if(eventHits.length){
-      parts.push(`<p class="search-group">Evenemang <span>${eventHits.length}</span></p>`);
-      parts.push(...eventHits.map(searchEventRowHTML));
-    }
-    if(recurringHits.length){
-      parts.push(`<p class="search-group">Återkommande <span>${recurringHits.length}</span></p>`);
-      parts.push(...recurringHits.map(searchRecurringRowHTML));
-    }
-    if(placeHits.length){
-      if(q) parts.push(`<p class="search-group">Platser <span>${placeHits.length}</span></p>`);
-      parts.push(...placeHits.map(searchPlaceRowHTML));
-    }
-    if(producerHits.length){
-      parts.push(`<p class="search-group">Producenter <span>${producerHits.length}</span></p>`);
-      parts.push(...producerHits.map(searchProducerRowHTML));
+    // With a query: places first (name hits like "bad" → Kvarnbadet beat note-mentions in events).
+    if(q){
+      if(placeHits.length){
+        parts.push(`<p class="search-group">Platser <span>${placeHits.length}</span></p>`);
+        parts.push(...placeHits.map(searchPlaceRowHTML));
+      }
+      if(eventHits.length){
+        parts.push(`<p class="search-group">Evenemang <span>${eventHits.length}</span></p>`);
+        parts.push(...eventHits.map(searchEventRowHTML));
+      }
+      if(recurringHits.length){
+        parts.push(`<p class="search-group">Återkommande <span>${recurringHits.length}</span></p>`);
+        parts.push(...recurringHits.map(searchRecurringRowHTML));
+      }
+      if(producerHits.length){
+        parts.push(`<p class="search-group">Producenter <span>${producerHits.length}</span></p>`);
+        parts.push(...producerHits.map(searchProducerRowHTML));
+      }
+    } else {
+      if(eventHits.length){
+        parts.push(`<p class="search-group">Evenemang <span>${eventHits.length}</span></p>`);
+        parts.push(...eventHits.map(searchEventRowHTML));
+      }
+      if(recurringHits.length){
+        parts.push(`<p class="search-group">Återkommande <span>${recurringHits.length}</span></p>`);
+        parts.push(...recurringHits.map(searchRecurringRowHTML));
+      }
+      if(placeHits.length){
+        parts.push(...placeHits.map(searchPlaceRowHTML));
+      }
+      if(producerHits.length){
+        parts.push(`<p class="search-group">Producenter <span>${producerHits.length}</span></p>`);
+        parts.push(...producerHits.map(searchProducerRowHTML));
+      }
     }
     box.innerHTML=parts.join("");
   }
@@ -4295,6 +4339,8 @@ Object.assign(window, {
   heroTodayOpenEvent,
   heroTodayOpenSeason,
   heroTodaySeeMore,
+  heroSubmitSearch,
+  heroGoSearch,
   mobileGo,
   showOpenNowOnMap,
   openCategory,
