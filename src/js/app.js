@@ -30,9 +30,11 @@ import {
 import { picksRotationSeed, selectRotatedDiversePicks } from "../lib/picksRotate.js";
 import {
   daypartTypesForMood,
-  filterRankedForWeather,
+  prepareRankedForPicks,
   weatherScoreDelta,
   isOutdoorBathPlace,
+  isHotSwimWeather,
+  picksWhyForWeather,
 } from "../lib/picksFit.js";
 import {
   matchesPrimaryOrSecondary,
@@ -983,7 +985,10 @@ import {
   }
 
   function daypartTypes(){
-    return daypartTypesForMood(daypart, isWeekend, ctx.mood||"mild");
+    return daypartTypesForMood(daypart, isWeekend, ctx.mood||"mild", {
+      temp:ctx.temp,
+      code:ctx.code,
+    });
   }
 
   function scorePlace(p){
@@ -1014,9 +1019,16 @@ import {
     if(isWeekend && ["natur","gard","loppis","fika"].includes(p.type)){s+=12;reasons.push("Helgläge");}
     if(!isWeekend && ["fika","butik"].includes(p.type) && daypart==="lunch"){s+=8;}
 
-    const wxDelta=weatherScoreDelta(p, ctx.mood, {hasTag:(pl,t)=>hasTag(pl,t)});
+    const wxDelta=weatherScoreDelta(p, ctx.mood, {
+      hasTag:(pl,t)=>hasTag(pl,t),
+      temp:ctx.temp,
+      code:ctx.code,
+    });
     s+=wxDelta;
-    if(ctx.mood==="nice" && (["natur","gard","loppis"].includes(p.type) || hasTag(p,"ute"))){
+    const hot=isHotSwimWeather(ctx.temp, ctx.code);
+    if(hot && isOutdoorBathPlace(p)){
+      reasons.push("Perfekt baddags");
+    } else if(ctx.mood==="nice" && (["natur","gard","loppis"].includes(p.type) || hasTag(p,"ute"))){
       const outdoor=["Soligt läge","Fin dag ute","Landskapet kallar","Bra utflyktsväder"];
       if(!reasons.some(r=>outdoor.includes(r))){
         reasons.push(outdoor[Math.abs([...p.name].reduce((a,c)=>a+c.charCodeAt(0),0))%outdoor.length]);
@@ -2094,7 +2106,19 @@ import {
   function weatherFitBundle(){
     const ranked=rankedPlaces();
     const wk=ctx.code!=null?weatherKind(ctx.code):null;
+    const hot=isHotSwimWeather(ctx.temp, ctx.code);
     // Underrubrik = platsens egen text — inte samma väderfras som på korten.
+    if(hot){
+      const hit=ranked.find(x=>isOutdoorBathPlace(x.p))
+        ||ranked.find(x=>x.p.type==="natur")
+        ||ranked.find(x=>x.open);
+      return {
+        label: ctx.temp!=null?`${wk?.t||"Varmt"} · ${ctx.temp}°`:"Stekhett",
+        hint:"Dags att bada",
+        place:hit?.p||null,
+        why:hit?.p?.short||hit?.p?.blurb||"Svalka i bygden"
+      };
+    }
     if(ctx.mood==="nice"){
       const hit=ranked.find(x=>["natur","gard","loppis"].includes(x.p.type))||ranked.find(x=>x.open);
       return {
@@ -2230,8 +2254,10 @@ import {
       mood:ctx.mood||"mild",
       weatherCode:ctx.code,
     });
-    const ranked=filterRankedForWeather(rankedPlaces(), ctx.mood||"mild", {
+    const ranked=prepareRankedForPicks(rankedPlaces(), ctx.mood||"mild", {
       hasTag:(p,t)=>hasTag(p,t),
+      temp:ctx.temp,
+      code:ctx.code,
     });
     return selectRotatedDiversePicks(ranked, {
       seed,
@@ -2265,23 +2291,24 @@ import {
     const grid=document.getElementById('picksGrid'); if(!grid) return;
     // En full mening — inte fragment som "fint väder · lunchläge"
     const wk=ctx.code!=null?weatherKind(ctx.code):null;
-    let picksWhy;
-    if(ctx.mood==="nice"){
-      picksWhy=ctx.temp!=null
-        ?`Soligt läge · ca ${ctx.temp}° — uteplatser och utflykter som passar idag.`
-        :"Fint väder idag — här är ställena som passar ute.";
-    } else if(ctx.mood==="rough"){
-      const kind=wk?.t?wk.t.toLowerCase():"grått";
-      picksWhy=ctx.temp!=null
-        ?`${kind[0].toUpperCase()+kind.slice(1)} · ca ${ctx.temp}° — mysiga stopp under tak.`
-        :"Lite gråare väder — här är mysiga stopp under tak.";
-    } else if(holidayToday) picksWhy=holidayToday+" — handplockat för dagen.";
-    else if(isWeekend) picksWhy="Helgläge — handplockat för en fin sväng i bygden.";
-    else if(daypart==="morgon") picksWhy="Morgonläge — öppna ställen som passar nu.";
-    else if(daypart==="lunch") picksWhy="Lunchdags — några bra stopp mitt i dagen.";
-    else if(ctx.temp!=null && wk) picksWhy=`${wk.t} · ca ${ctx.temp}° — dagens handplockade stopp.`;
-    else picksWhy="Handplockat just nu — lokala favoriter nära dig.";
-    if(userPos && ctx.mood!=="nice" && ctx.mood!=="rough") picksWhy=picksWhy.replace(/\.$/, "")+" · nära dig.";
+    const hot=isHotSwimWeather(ctx.temp, ctx.code);
+    let picksWhy=picksWhyForWeather({
+      mood:ctx.mood,
+      temp:ctx.temp,
+      weatherLabel:wk?.t,
+      hot,
+    });
+    if(!picksWhy){
+      if(holidayToday) picksWhy=holidayToday+" — handplockat för dagen.";
+      else if(isWeekend) picksWhy="Helgläge — handplockat för en fin sväng i bygden.";
+      else if(daypart==="morgon") picksWhy="Morgonläge — öppna ställen som passar nu.";
+      else if(daypart==="lunch") picksWhy="Lunchdags — några bra stopp mitt i dagen.";
+      else if(ctx.temp!=null && wk) picksWhy=`${wk.t} · ca ${ctx.temp}° — dagens handplockade stopp.`;
+      else picksWhy="Handplockat just nu — lokala favoriter nära dig.";
+    }
+    if(userPos && ctx.mood!=="nice" && ctx.mood!=="rough" && !hot) {
+      picksWhy=picksWhy.replace(/\.$/, "")+" · nära dig.";
+    }
     S('picksWhy', picksWhy);
 
     const pool=selectDiversePicks(3);

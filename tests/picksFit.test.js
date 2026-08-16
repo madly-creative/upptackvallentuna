@@ -1,10 +1,13 @@
 import { describe, expect, it } from "vitest";
 import {
   isOutdoorBathPlace,
+  isHotSwimWeather,
   placeFitsWeatherMood,
   filterRankedForWeather,
+  prepareRankedForPicks,
   weatherScoreDelta,
   daypartTypesForMood,
+  picksWhyForWeather,
 } from "../src/lib/picksFit.js";
 import { selectRotatedDiversePicks, picksRotationSeed } from "../src/lib/picksRotate.js";
 
@@ -38,6 +41,13 @@ describe("picksFit weather", () => {
     expect(isOutdoorBathPlace(kvarnbadet)).toBe(true);
     expect(isOutdoorBathPlace(mjolkrummet)).toBe(false);
     expect(isOutdoorBathPlace(angarn)).toBe(false);
+  });
+
+  it("hot swim weather needs ≥22° and no rain", () => {
+    expect(isHotSwimWeather(28, 0)).toBe(true);
+    expect(isHotSwimWeather(22, 1)).toBe(true);
+    expect(isHotSwimWeather(21, 0)).toBe(false);
+    expect(isHotSwimWeather(28, 61)).toBe(false);
   });
 
   it("excludes baths and natur from rough Handplockat", () => {
@@ -89,16 +99,54 @@ describe("picksFit weather", () => {
     expect(names.length).toBe(3);
   });
 
+  it("hot days boost baths and surface them first in prepareRankedForPicks", () => {
+    expect(weatherScoreDelta(kvarnbadet, "nice", { temp: 28, code: 0 })).toBeGreaterThan(35);
+    expect(weatherScoreDelta(automat, "nice", { temp: 28, code: 0 })).toBeLessThan(
+      weatherScoreDelta(kvarnbadet, "nice", { temp: 28, code: 0 })
+    );
+
+    const ranked = [
+      { p: mjolkrummet, score: 80, open: true },
+      { p: automat, score: 78, open: true },
+      { p: kvarnbadet, score: 70, open: true },
+      { p: angarn, score: 60, open: true },
+    ];
+    const prepared = prepareRankedForPicks(ranked, "nice", { temp: 28, code: 0 });
+    expect(prepared[0].p.name).toBe("Kvarnbadet");
+
+    const picks = selectRotatedDiversePicks(prepared, {
+      seed: picksRotationSeed({
+        todayISO: "2026-08-16",
+        daypart: "eftermiddag",
+        mood: "nice",
+        weatherCode: 0,
+      }),
+      count: 3,
+    });
+    expect(picks.map((x) => x.p.name)).toContain("Kvarnbadet");
+  });
+
   it("penalizes outdoor baths hard in rough scoring delta", () => {
     expect(weatherScoreDelta(kvarnbadet, "rough")).toBeLessThanOrEqual(-50);
     expect(weatherScoreDelta(automat, "rough", { hasTag: () => true })).toBeGreaterThan(0);
   });
 
-  it("drops natur from daypart types when rough", () => {
+  it("drops natur from daypart types when rough; adds natur when hot lunch", () => {
     const nice = daypartTypesForMood("eftermiddag", true, "nice");
     const rough = daypartTypesForMood("eftermiddag", true, "rough");
+    const hotLunch = daypartTypesForMood("lunch", false, "nice", { temp: 27, code: 0 });
     expect(nice).toContain("natur");
     expect(rough).not.toContain("natur");
     expect(rough).toContain("fika");
+    expect(hotLunch).toContain("natur");
+  });
+
+  it("writes honest Handplockat copy for rain and heat", () => {
+    expect(picksWhyForWeather({ mood: "rough", temp: 16, weatherLabel: "Regn" })).toMatch(
+      /under tak/i
+    );
+    expect(picksWhyForWeather({ mood: "nice", temp: 28, weatherLabel: "Soligt", hot: true })).toMatch(
+      /bad/i
+    );
   });
 });
