@@ -10,7 +10,14 @@ import {
 } from "../lib/hours.js";
 import { places as PLACES_SEED, placeSlug, placeBySlug, resolvePlaceRef, isMappablePlace } from "../data/places.js";
 import { PLACE_META, A } from "../data/placeMeta.js";
-import { guides as GUIDES_SEED, featuredGuide, guideBySlug, seasonLabel } from "../data/guides.js";
+import {
+  guides as GUIDES_SEED,
+  featuredGuide,
+  guideBySlug,
+  seasonLabel,
+  GUIDE_HOME_FILTERS,
+  guidesForHomeFilter,
+} from "../data/guides.js";
 import { producers as PRODUCERS_SEED, producerBySlug, producersAtPlaceSlug, producerSlug } from "../data/producers.js";
 import { recurring as RECURRING_SEED, recurringSlug, recurringToday, recurringWhenLine } from "../data/recurring.js";
 import {
@@ -2802,32 +2809,62 @@ import {
     return `<button type="button" class="btn-guide primary" onclick="saveGuideAsList('${slug}')">Spara som lista</button>
       <button type="button" class="btn-guide" onclick="planGuideRoute('${slug}')">Planera rutten</button>`;
   }
-  function renderGuidesHome(){
-    syncGuidesVisibility();
-    const wrap=document.getElementById('guidesHomeTeaser');
+  let guidesHomeFilter="popular";
+  const GUIDE_FILTER_ICONS={
+    star:`<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4.5l2.2 4.5 5 .7-3.6 3.5.9 5-4.5-2.4L7.5 18.2l.9-5L4.8 9.7l5-.7L12 4.5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>`,
+    family:`<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="9" cy="8" r="2.4" stroke="currentColor" stroke-width="1.6"/><circle cx="15.5" cy="9" r="2" stroke="currentColor" stroke-width="1.6"/><path d="M4.5 18.5c.6-3 2.4-4.5 4.5-4.5s3.9 1.5 4.5 4.5M13 14c1.5 0 3 .8 3.8 2.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>`,
+    tree:`<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 20v-5M12 15l-5 2 5-9 5 9-5-2z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 11L8.5 13.2 12 6l3.5 7.2L12 11z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>`,
+    cup:`<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9h10v5.5A3.5 3.5 0 0 1 12.5 18h-3A3.5 3.5 0 0 1 6 14.5V9z" stroke="currentColor" stroke-width="1.6"/><path d="M16 10h1.8A2.2 2.2 0 0 1 20 12.2v0A2.2 2.2 0 0 1 17.8 14H16M8 20h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>`,
+    museum:`<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 10.5L12 5l8 5.5M6 10.5V18M10 10.5V18M14 10.5V18M18 10.5V18M4 18h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+    gift:`<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="1.5" stroke="currentColor" stroke-width="1.6"/><path d="M5 14h14M12 10v10M12 10c-2.2 0-4-1.2-4-2.6S10.2 5 12 7.2C13.8 5 16 5.8 16 7.4S14.2 10 12 10z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>`,
+  };
+  function renderGuidesHomeFilters(){
+    const el=document.getElementById("guidesHomeFilters");
+    if(!el) return;
+    el.innerHTML=GUIDE_HOME_FILTERS.map(f=>{
+      const on=f.key===guidesHomeFilter;
+      const ico=GUIDE_FILTER_ICONS[f.icon]||"";
+      return `<button type="button" class="guides-home-chip${on?" on":""}" role="tab" aria-selected="${on?"true":"false"}" onclick="setGuidesHomeFilter('${f.key}')">${ico}<span>${escHtml(f.label)}</span></button>`;
+    }).join("");
+  }
+  function setGuidesHomeFilter(key){
+    guidesHomeFilter=key||"popular";
+    renderGuidesHomeFilters();
+    renderGuidesHomeCards();
+  }
+  function renderGuidesHomeCards(){
+    const wrap=document.getElementById("guidesHomeTeaser");
     if(!wrap) return;
     if(!guides.length){ wrap.innerHTML=""; return; }
-    // Featured season guide first, then fill up to 3
-    const featured=featuredGuide(guides, month);
-    const ordered=[];
-    if(featured) ordered.push(featured);
-    for(const g of guides){
-      if(ordered.length>=3) break;
-      if(!ordered.some(x=>x.slug===g.slug)) ordered.push(g);
+    const ordered=guidesForHomeFilter(guides, guidesHomeFilter, month, 3);
+    if(!ordered.length){
+      wrap.innerHTML=`<p class="guides-home-empty">Inga guider i den här kategorin just nu — prova en annan.</p>`;
+      return;
     }
     wrap.innerHTML=ordered.map(g=>{
       const img=g.heroImg || guideResolvedStops(g)[0]?.placeObj?.img || "";
       const n=g.stops.length;
+      const kicker=g.kicker || seasonLabel(g.season);
       return `<button type="button" class="guide-home-card" onclick="openGuide('${g.slug}')">
-        <div class="im" style="background-image:url('${img}')" role="img" aria-hidden="true"></div>
+        <div class="im" aria-hidden="true">
+          <div class="im-bg" style="background-image:url('${escHtml(img)}')"></div>
+          <span class="stops-pill">${n} stopp</span>
+        </div>
         <div class="bd">
-          <div class="tag">${seasonLabel(g.season)} · ${n} stopp</div>
-          <h3>${g.title}</h3>
-          <p>${g.intro}</p>
-          <span class="lnk">Läs guiden →</span>
+          <div class="tag">${escHtml(kicker)}</div>
+          <h3>${escHtml(g.title)}</h3>
+          <p>${escHtml(g.intro)}</p>
+          <span class="arrow" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
         </div>
       </button>`;
     }).join("");
+  }
+  function renderGuidesHome(){
+    syncGuidesVisibility();
+    renderGuidesHomeFilters();
+    renderGuidesHomeCards();
   }
   function renderGuidesGrid(){
     const grid=document.getElementById('guidesGrid'); if(!grid) return;
@@ -4263,6 +4300,7 @@ Object.assign(window, {
   openCategory,
   openEvent,
   openGuide,
+  setGuidesHomeFilter,
   openLevererarMoment,
   openLightbox,
   openList,
