@@ -2887,20 +2887,14 @@ import {
     }
     wrap.innerHTML=ordered.map(g=>{
       const img=g.heroImg || guideResolvedStops(g)[0]?.placeObj?.img || "";
-      const n=g.stops.length;
       const kicker=g.kicker || seasonLabel(g.season);
-      return `<button type="button" class="guide-home-card" onclick="openGuide('${g.slug}')">
-        <div class="im" aria-hidden="true">
-          <div class="im-bg" style="background-image:url('${escHtml(img)}')"></div>
-          <span class="stops-pill">${n} stopp</span>
-        </div>
+      return `<button type="button" class="guide-card" onclick="openGuide('${g.slug}')">
+        <div class="im" style="background-image:url('${escHtml(img)}')"></div>
         <div class="bd">
           <div class="tag">${escHtml(kicker)}</div>
           <h3>${escHtml(g.title)}</h3>
           <p>${escHtml(g.intro)}</p>
-          <span class="arrow" aria-hidden="true">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </span>
+          <span class="lnk">Läs guiden →</span>
         </div>
       </button>`;
     }).join("");
