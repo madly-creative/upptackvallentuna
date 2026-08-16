@@ -8,7 +8,7 @@ import {
   isOpenAt,
   addDays,
 } from "../lib/hours.js";
-import { places as PLACES_SEED, placeSlug, placeBySlug, resolvePlaceRef, isMappablePlace } from "../data/places.js";
+import { places as PLACES_SEED, placeSlug, placeBySlug, resolvePlaceRef, isMappablePlace, placeHasType, placeTypes } from "../data/places.js";
 import { PLACE_META, A } from "../data/placeMeta.js";
 import {
   guides as GUIDES_SEED,
@@ -2553,7 +2553,7 @@ import {
 
   function pickBest(type,except=new Set()){
     const scored=places
-      .filter(p=>p.type===type)
+      .filter(p=>placeHasType(p,type))
       .map(p=>({p,s:scorePlace(p).score+(isOpen(p)?8:0)+(hasTag(p,"barn")?2:0)}))
       .sort((a,b)=>b.s-a.s);
     const fresh=scored.filter(x=>!except.has(x.p.name));
@@ -2622,7 +2622,7 @@ import {
     const cat=CATEGORIES[key]||CATEGORIES.attgora;
     if(cat.isProducer) return [];
     let list=places.slice();
-    if(cat.types) list=list.filter(p=>cat.types.includes(p.type));
+    if(cat.types) list=list.filter(p=>cat.types.some(t=>placeHasType(p,t)));
     return list
       .map(p=>({p,s:scorePlace(p).score+(isOpen(p)?6:0)}))
       .sort((a,b)=>b.s-a.s)
@@ -3368,7 +3368,7 @@ import {
     });
   }
   function placeMatchesFilters(p){
-    if(active!=="alla"&&p.type!==active) return false;
+    if(active!=="alla"&&!placeHasType(p,active)) return false;
     if(openNowOnly&&!isOpenVenue(p)) return false;
     if(favOnly&&!favorites.has(p.name)) return false;
     return true;
@@ -3426,7 +3426,7 @@ import {
     document.querySelectorAll('#mlist .item').forEach(el=>{
       const p=places.find(x=>x.name===el.dataset.name); if(!p) return;
       const i=mappable.indexOf(p);
-      const hay=(p.name+' '+p.cat+' '+p.blurb+' '+p.type).toLowerCase();
+      const hay=(p.name+' '+(p.aka||[]).join(' ')+' '+p.cat+' '+p.blurb+' '+placeTypes(p).join(' ')).toLowerCase();
       const m=hay.includes(q)&&placeMatchesFilters(p);
       el.classList.toggle('hidden',!m);
       if(i<0) return;
