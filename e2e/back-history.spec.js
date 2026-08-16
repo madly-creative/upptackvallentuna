@@ -93,7 +93,7 @@ test("in-app ← from place→place returns to category in one tap", async ({ pa
 test("browser back from guide card returns to start", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("#guidesHomeSec")).toBeVisible();
-  await page.locator("#guidesHomeTeaser .guide-home-card").first().click();
+  await page.locator("#guidesHomeTeaser .guide-card").first().click();
   await expect(page.locator("#view-guide")).toHaveClass(/on/);
   await page.goBack();
   await expect(page.locator("#view-guide")).not.toHaveClass(/on/);

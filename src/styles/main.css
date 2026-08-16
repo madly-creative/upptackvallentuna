@@ -362,40 +362,69 @@
   .today-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
   .manifesto{display:none}
 
-  /* Guider — tre kort i rad (egen sektion) */
+  /* Guider — editorial home section */
   .guides-sec[hidden]{display:none!important}
+  .guides-sec{
+    position:relative;overflow:hidden;
+    max-width:none;width:100%;
+    margin:28px 0 8px;padding:56px 0 48px;
+    background:linear-gradient(180deg,#f3eee4 0%,var(--paper) 72%);
+  }
+  .guides-sec-inner{
+    position:relative;z-index:1;
+    max-width:var(--max);margin:0 auto;padding:0 28px;
+  }
+  .guides-home-head{
+    display:flex;align-items:flex-start;justify-content:space-between;gap:24px;
+    margin-bottom:22px;
+  }
+  .guides-home-copy{flex:1;min-width:0}
+  .guides-home-eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--rust);margin-bottom:14px;
+  }
+  .guides-home-eyebrow svg{flex-shrink:0}
+  .guides-home-copy h2{
+    font-family:var(--font-serif);font-size:clamp(28px,3.4vw,42px);
+    font-weight:500;color:var(--moss-deep);letter-spacing:-.015em;line-height:1.15;
+    margin:0 0 12px;
+  }
+  .guides-home-all{
+    flex-shrink:0;margin-top:2px;font-size:14px;font-weight:600;color:var(--rust);
+    background:none;border:none;padding:0;cursor:pointer;white-space:nowrap;
+  }
+  .guides-home-all:hover{color:var(--rust-deep)}
+  .guides-home-all:focus-visible{outline:2px solid var(--rust);outline-offset:3px;border-radius:4px}
+  .guides-home-lede{
+    font-size:16px;line-height:1.55;color:var(--ink-soft);margin:0;
+  }
+  .guides-home-filters{
+    display:flex;flex-wrap:wrap;gap:10px;margin:0 0 28px;
+  }
+  .guides-home-chip{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:10px 16px 10px 14px;border-radius:999px;
+    border:1px solid var(--ink);background:transparent;
+    color:var(--ink);font-size:14px;font-weight:500;cursor:pointer;
+    transition:background .15s,color .15s,border-color .15s,transform .15s;
+  }
+  .guides-home-chip svg{width:16px;height:16px;flex-shrink:0}
+  .guides-home-chip:hover{background:rgba(42,50,40,.04)}
+  .guides-home-chip.on{
+    background:var(--moss-deep);border-color:var(--moss-deep);color:#fff;
+  }
+  .guides-home-chip:focus-visible{outline:2px solid var(--rust);outline-offset:2px}
   .guides-home-row{
-    display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
+    display:grid;grid-template-columns:repeat(3,1fr);gap:18px;
   }
-  .guide-home-card{
-    display:flex;flex-direction:column;text-align:left;
-    border:1px solid var(--line-soft);border-radius:calc(var(--radius) + 2px);
-    overflow:hidden;background:var(--card);cursor:pointer;padding:0;
-    font:inherit;color:inherit;width:100%;
-    transition:transform .18s,box-shadow .18s;
+  .guides-home-empty{
+    grid-column:1/-1;padding:28px 8px;color:var(--ink-soft);font-size:15px;
   }
-  .guide-home-card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
-  .guide-home-card .im{
-    aspect-ratio:16/11;background-size:cover;background-position:center;
-    background-color:var(--paper-2);transition:transform .4s;
-  }
-  .guide-home-card:hover .im{transform:scale(1.03)}
-  .guide-home-card .bd{padding:18px 18px 20px;display:flex;flex-direction:column;flex:1}
-  .guide-home-card .tag{
-    font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
-    color:var(--rust);margin-bottom:8px;
-  }
-  .guide-home-card h3{
-    font-family:var(--font-serif);font-size:clamp(20px,2vw,24px);
-    font-weight:500;color:var(--moss-deep);line-height:1.2;margin-bottom:8px;
-  }
-  .guide-home-card p{
-    font-size:13px;line-height:1.5;color:var(--ink-soft);margin-bottom:14px;
+  /* Home teaser reuses .guide-card from Guider-sidan */
+  .guides-home-row .guide-card p{
     display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
-    flex:1;
   }
-  .guide-home-card .lnk{font-size:13px;font-weight:700;color:var(--moss-deep)}
-  .guide-home-card:hover .lnk{color:var(--rust)}
 
   /* Händer — featured + list */
   .happen-grid{display:grid;gap:14px}
@@ -1553,6 +1582,16 @@
     .levererar-latest .ll-img{min-height:180px}
     .levererar-page{padding:36px 18px 64px}
     .guides-home-row{grid-template-columns:1fr}
+    .guides-sec{padding:40px 0 28px;margin-top:12px}
+    .guides-sec-inner{padding:0 18px}
+    .guides-home-head{flex-direction:column;align-items:stretch;gap:10px}
+    .guides-home-all{align-self:flex-end}
+    .guides-home-filters{
+      flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+      scrollbar-width:none;margin-right:-18px;padding-right:18px;
+    }
+    .guides-home-filters::-webkit-scrollbar{display:none}
+    .guides-home-chip{flex-shrink:0}
   }
 
   @media (max-width:900px){

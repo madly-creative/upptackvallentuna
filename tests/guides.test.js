@@ -4,6 +4,8 @@ import {
   currentSeasonKey,
   featuredGuide,
   guideBySlug,
+  GUIDE_HOME_FILTERS,
+  guidesForHomeFilter,
 } from "../src/data/guides.js";
 import { places } from "../src/data/places.js";
 
@@ -17,6 +19,9 @@ describe("guides", () => {
     const placeNames = places.map((p) => p.name);
     for (const guide of guides) {
       expect(guide.stops.length).toBeGreaterThanOrEqual(3);
+      expect(guide.kicker).toBeTruthy();
+      expect(Array.isArray(guide.themes)).toBe(true);
+      expect(guide.themes.length).toBeGreaterThan(0);
       for (const s of guide.stops) {
         expect(placeNames).toContain(s.place);
       }
@@ -39,5 +44,22 @@ describe("guides", () => {
     const g = featuredGuide(guides, 7); // augusti
     expect(g?.season).toBe("sommar");
     expect(g?.slug).toBe("perfekt-sommarsondag");
+  });
+
+  it("home filters map to themed guide cards", () => {
+    expect(GUIDE_HOME_FILTERS.map((f) => f.key)).toEqual([
+      "popular",
+      "barn",
+      "natur",
+      "fika",
+      "historia",
+      "gratis",
+    ]);
+    const popular = guidesForHomeFilter(guides, "popular", 7, 3);
+    expect(popular).toHaveLength(3);
+    expect(popular[0].slug).toBe("perfekt-sommarsondag");
+    const barn = guidesForHomeFilter(guides, "barn", 7, 3);
+    expect(barn.some((g) => g.slug === "en-dag-med-barnen")).toBe(true);
+    expect(barn.every((g) => g.themes.includes("barn"))).toBe(true);
   });
 });

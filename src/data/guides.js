@@ -4,6 +4,8 @@ export const guides = [
     slug: "perfekt-sommarsondag",
     title: "En perfekt sommarsöndag i Vallentuna",
     season: "sommar",
+    kicker: "Sommarens favorit",
+    themes: ["popular","fika","natur"],
     heroImg: "/assets/upplev/angarnsjoangen/cover.webp",
     intro:
       "Sex stopp, en hel dag, från morgonkaffe till solnedgång. Gör den till din — hoppa ett stopp eller byt ett mot ett annat. Bygden är förlåtande.",
@@ -42,6 +44,8 @@ export const guides = [
     slug: "en-dag-med-barnen",
     title: "En dag med barnen i Vallentuna",
     season: "sommar",
+    kicker: "Med barn",
+    themes: ["barn","popular","fika"],
     heroImg: "/assets/upplev/cafe-valkyria/cover.webp",
     intro:
       "Fem stopp för en familjedag som faktiskt håller hela vägen — fika, gård, bad, fyndjakt och pizza. Inget schema som knäcker er. Bara saker barnen orkar, och ni också.",
@@ -75,6 +79,8 @@ export const guides = [
     slug: "lugnet-och-det-lokala",
     title: "Lugnet & det lokala",
     season: "sommar",
+    kicker: "Romantik",
+    themes: ["fika","popular"],
     heroImg: "/assets/upplev/gravelsta-gard/cover.webp",
     intro:
       "En långsam dag för två — eller för dig som vill ha bygden utan brus. Gård, stilla bad, hantverk och en kväll där ni äter ordentligt. Fem stopp, gott om luft emellan.",
@@ -108,6 +114,8 @@ export const guides = [
     slug: "vikingasparet",
     title: "Vikingaspåret",
     season: "sommar",
+    kicker: "Historia & kultur",
+    themes: ["historia","gratis","natur"],
     heroImg: "/assets/upplev/arkils-tingstad/cover.webp",
     intro:
       "Sex stopp genom Runriket — stenar, ting och landskap som burit berättelser i tusen år. En dag där historien ligger i vägen, bokstavligen, och där ni avslutar med mat nära sista hällen.",
@@ -147,6 +155,8 @@ export const guides = [
     slug: "sista-varma-doppen",
     title: "Sista varma doppen",
     season: "sommar",
+    kicker: "Natur & friluft",
+    themes: ["natur","gratis"],
     heroImg: "/assets/upplev/toftesta-holme/cover.webp",
     intro:
       "Augusti när vattnet fortfarande är badbart och kvällarna fortfarande ljusa. Fem stopp: fika, två bad, en promenad och något att äta när ni är hungriga på riktigt.",
@@ -181,6 +191,8 @@ export const guides = [
     slug: "sensommar-pa-garden",
     title: "Sensommar på gården",
     season: "sommar",
+    kicker: "Fika & mat",
+    themes: ["fika","natur"],
     heroImg: "/assets/upplev/orkesta-granby-gard/cover.webp",
     intro:
       "När odlingarna fortfarande ger och gårdsbutikerna är mitt i säsongen. Fem stopp för dig som vill fylla korgen — och sitta ute en stund till.",
@@ -215,6 +227,8 @@ export const guides = [
     slug: "langa-kvallar-ute",
     title: "Långa kvällar ute",
     season: "sommar",
+    kicker: "Natur & friluft",
+    themes: ["natur","gratis"],
     heroImg: "/assets/upplev/vallentuna-stenugnsbageri/cover.webp",
     intro:
       "Sensommarens bästa grej: det är fortfarande ljust efter åtta. Fem stopp för en eftermiddag som glider över i kväll — uteservering, promenad och ingen brådska hem.",
@@ -249,6 +263,8 @@ export const guides = [
     slug: "fyndjakt-pa-landet",
     title: "Fyndjakt på landet",
     season: "sommar",
+    kicker: "Fyndjakt",
+    themes: ["fika","popular"],
     heroImg: "/assets/upplev/antikladan/cover.webp",
     intro:
       "Ladorna är öppna, vägarna torra och fikat smakar bäst efter en timme bland kuriosa. Fem stopp för dig som hellre jagar skatter än köper nytt — mitt i sensommaren.",
@@ -283,6 +299,8 @@ export const guides = [
     slug: "loppisrundan",
     title: "Loppisrundan",
     season: "sommar",
+    kicker: "Fyndjakt",
+    themes: ["gratis","fika"],
     heroImg: "/assets/upplev/antikladan/cover.webp",
     intro:
       "Fem stopp för den som jagar fynd på riktigt — lador, retro, second hand. Bäst på helg (Röda Magasinet främst söndag; Röda Korset torsdag eller lördag).",
@@ -317,6 +335,8 @@ export const guides = [
     slug: "centrum-pa-foten",
     title: "Centrum på foten",
     season: "sommar",
+    kicker: "I centrum",
+    themes: ["fika","gratis"],
     heroImg: "/assets/upplev/ellens-corner/cover.webp",
     intro:
       "En sensommareftermiddag utan bil. Sex stopp runt Tuna Torg och Centralvägen — fika, kultur, hantverk, mode och mat medan uteserveringarna fortfarande är igång.",
@@ -355,6 +375,8 @@ export const guides = [
     slug: "dolda-parlorna",
     title: "Dolda pärlorna",
     season: "sommar",
+    kicker: "Dolda pärlor",
+    themes: ["fika","popular"],
     heroImg: "/assets/upplev/markims-bergby/cover.webp",
     intro:
       "Ställen man lätt kör förbi i augusti — bakgårdscafé, gård i Markim, stilla bad och grill vid torget. Fyra stopp för er som redan sett det uppenbara.",
@@ -385,6 +407,8 @@ export const guides = [
     slug: "lindholmen-och-vasakullen",
     title: "Lindholmen & Vasakullen",
     season: "sommar",
+    kicker: "Historia & kultur",
+    themes: ["historia","natur"],
     heroImg: "/assets/upplev/vasakullen/cover.webp",
     intro:
       "Norrut längs Roslagsbanan: antik vid stationen, en röd lada full av kuriosa, Gustav Vasas kulle — och fika bland vikingalandskapet. Fem stopp för dig som vill blanda historia och fynd.",
@@ -439,4 +463,37 @@ export function featuredGuide(list = guides, monthIndex = new Date().getMonth())
 export function seasonLabel(season) {
   const map = { sommar: "Sommar", höst: "Höst", vinter: "Vinter", vår: "Vår" };
   return map[season] || season;
+}
+
+/** Home-section filter chips (theme keys match guide.themes). */
+export const GUIDE_HOME_FILTERS = [
+  { key: "popular", label: "Populära", icon: "star" },
+  { key: "barn", label: "Med barn", icon: "family" },
+  { key: "natur", label: "Natur & friluftsliv", icon: "tree" },
+  { key: "fika", label: "Fika & mat", icon: "cup" },
+  { key: "historia", label: "Historie & kultur", icon: "museum" },
+  { key: "gratis", label: "Gratis", icon: "gift" },
+];
+
+/** Up to `count` guides for a home filter chip. */
+export function guidesForHomeFilter(list = guides, filterKey = "popular", monthIndex = new Date().getMonth(), count = 3) {
+  const key = filterKey || "popular";
+  let pool;
+  if (key === "popular") {
+    const featured = featuredGuide(list, monthIndex);
+    pool = [];
+    if (featured) pool.push(featured);
+    for (const g of list) {
+      if (pool.length >= count) break;
+      if (!pool.some((x) => x.slug === g.slug) && (g.themes || []).includes("popular")) pool.push(g);
+    }
+    // fill from remaining if not enough tagged popular
+    for (const g of list) {
+      if (pool.length >= count) break;
+      if (!pool.some((x) => x.slug === g.slug)) pool.push(g);
+    }
+    return pool.slice(0, count);
+  }
+  pool = list.filter((g) => (g.themes || []).includes(key));
+  return pool.slice(0, count);
 }
