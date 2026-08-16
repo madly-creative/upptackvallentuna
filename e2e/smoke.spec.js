@@ -4,7 +4,10 @@ test("home loads with hero and today module", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("#heroTitle")).toContainText("upptäcka");
   await expect(page.locator("#heroToday")).toBeVisible();
+  await expect(page.locator("#heroSearch")).toBeVisible();
   await expect(page.locator("#wPlace")).toHaveText("Vallentuna");
+  await expect(page.locator("#todayBrief")).toBeVisible();
+  await expect(page.locator("#todayBriefGrid .today-card").first()).toBeVisible();
   await expect(page.locator("#picksGrid")).toBeVisible();
 });
 
@@ -37,6 +40,14 @@ test("map view opens", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "Öppna kartan" }).click();
   await expect(page.locator("#view-karta")).toHaveClass(/on/);
+});
+
+test("hero search navigates to search view", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("#heroSearch").fill("fika");
+  await page.locator("#heroSearchForm").evaluate((f) => f.requestSubmit());
+  await expect(page.locator("#view-sok")).toHaveClass(/on/);
+  await expect(page.locator("#globalSearch")).toHaveValue("fika");
 });
 
 test("guides section and summer guide open", async ({ page }) => {
