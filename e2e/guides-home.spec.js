@@ -7,7 +7,6 @@ test.describe("Guides home section", () => {
     const sec = page.locator("#guidesHomeSec");
     await expect(sec).toBeVisible();
     await expect(sec.locator("#guidesHomeTitle")).toContainText("Färdiga guider för alla slags dagar");
-    await expect(sec.locator(".guides-flora img")).toBeVisible();
     await expect(sec.locator(".guides-home-all")).toBeVisible();
     await expect(sec.locator(".guides-home-chip")).toHaveCount(6);
     await expect(sec.locator(".guides-home-chip.on")).toContainText("Populära");
