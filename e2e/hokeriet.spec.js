@@ -11,5 +11,5 @@ test("Sommarbuffé på Hökeriet is listed in calendar", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "Se vad som händer" }).click();
   await expect(page.locator("#view-hander")).toHaveClass(/on/);
-  await expect(page.getByText("Sommarbuffé på Hökeriet").first()).toBeVisible();
+  await expect(page.locator("#eventsFull")).toContainText("Sommarbuffé på Hökeriet");
 });
