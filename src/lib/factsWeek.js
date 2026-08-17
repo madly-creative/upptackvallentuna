@@ -4,8 +4,8 @@
  * Pure helpers — pass the facts list in (keeps Vite + Node import paths clean).
  */
 
-/** First Monday after launch — rotation epoch (Europe/Stockholm calendar date). */
-export const FACTS_EPOCH = "2026-08-11";
+/** Rotation epoch: Monday of the first published week (Europe/Stockholm calendar date). */
+export const FACTS_EPOCH = "2026-08-10";
 
 /** Parse YYYY-MM-DD as UTC midnight for stable day-diff math. */
 export function parseISODateUTC(iso) {

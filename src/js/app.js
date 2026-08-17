@@ -142,6 +142,13 @@ import {
   // Deep link: #levererar=<id>  → opens stream and scrolls to that moment
   const moments = [
     {
+      id: "bygden-svarade",
+      title: "Bygden svarade",
+      img: "/assets/levererar/bygden-svarade/cover.webp",
+      body: "För en vecka sedan lade jag upp en karta över Vallentuna. Jag hade hållit på några veckor, mest på kvällarna, och trodde ärligt talat att ett femtiotal personer skulle titta på den.\n\nSedan hände något jag inte räknat med.\n\nDet började komma mejl. Fredrik, som sitter i styrelsen för Vallentuna Dans, undrade hur de bäst får in sina kurser och danskvällar. Anna hörde av sig och berättade att hon gör surkål och picklade grönsaker för hand i sitt eget kök, och frågade försiktigt om hon passade in i guiden. Det gör hon. Carl-Axel berättade att Företagareföreningen lanserade namnet \"Upptäck Vallentuna\" redan 1984, i samband med sin företagsmässa. Det hade jag ingen aning om.\n\nOch så tipsen. Ställen jag aldrig hört talas om, trots att de legat en kvart bort hela tiden. Evenemang jag missat. Vänliga rättelser från folk som visste bättre än jag om öppettider. En som skrev att jag hade fel om en gårdsbutik, och som hade rätt.\n\nDet är därför den här sektionen heter Vallentuna levererar.\n\nSedan lanseringen har det tillkommit ännu fler platser och evenemang till sajten och ambitionen är att fortsätta fylla upp med fler guldkorn.\n\nJag lade upp en karta. Jag fick tillbaka en bygd.\n\nTack. Fortsätt skicka.",
+      datePublished: "2026-08-17"
+    },
+    {
       id: "sigrids-sjalvplock-markim",
       title: "Sigrids självplock i Markim",
       img: "/assets/levererar/sigrids-sjalvplock-markim/cover.webp",
