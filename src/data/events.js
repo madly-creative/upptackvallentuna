@@ -1,5 +1,6 @@
 /**
  * Evenemangskalender — verifierad mot arrangörssidor (aug 2026).
+ * Hemmaplan-marknader: https://hemmaplanmedia.se/event
  * Past dates auto-hide i appen. Tider kan ändras — käll-URL i `source`.
  */
 const FALLBACK_IMG = "/assets/hero/2.webp";
@@ -380,15 +381,16 @@ export const events = [
     source: "https://www.nortic.se/ticket/show/344918",
   },
   {
-    host: "Vallentuna Centrum",
-    title: "SkördeFEST — AW & musik",
-    date: "2026-09-12",
-    when: "Fre 12 sep · kväll",
-    time: "Kväll",
+    host: "Hemmaplan Media / Vallentuna Centrum",
+    title: "Vallentuna Höstmarknad",
+    date: "2026-09-19",
+    addedDate: "2026-08-18",
+    when: "Lör 19 sep · 11–15",
+    time: "11:00 – 15:00",
     cat: "MARKNAD",
-    note: "Fredagsöppning av SkördeFEST: musik och AW hos restaurangerna i centrum. Familjefesten är dagen efter.",
-    img: "/assets/evenemang/skordefest/cover.webp",
-    source: "https://vallentunacentrum.se/skordefest/",
+    note: "Säsongens skörd, lokala företag och höstmys på Tuna Torg. Arrangeras av Hemmaplan Media i samarbete med Vallentuna Centrum och Fastpartner.",
+    img: "/assets/evenemang/vallentuna-hostmarknad/cover.webp",
+    source: "https://hemmaplanmedia.se/event",
   },
   {
     host: "Konstrundan Täby Vallentuna",
@@ -401,17 +403,6 @@ export const events = [
     note: "Öppna ateljéer under Konstrundan Täby Vallentuna — se hela programmet och öppettider på konstrundans webb.",
     img: "/assets/evenemang/konstrundan-opna-ateljeer/cover.webp",
     source: "https://tabyvallentunakonstrunda.se/",
-  },
-  {
-    host: "Vallentuna Centrum",
-    title: "SkördeFEST — familjefest",
-    date: "2026-09-13",
-    when: "Lör 13 sep · 10–15",
-    time: "10:00 – 15:00",
-    cat: "MARKNAD",
-    note: "Finaldag på Tuna Torg: torgmarknad, barnaktiviteter (bl.a. i gamla Pressbyrån), karusell, livemusik och tävlingar. Program uppdateras på vallentunacentrum.se.",
-    img: "/assets/evenemang/skordefest/cover.webp",
-    source: "https://vallentunacentrum.se/skordefest/",
   },
   {
     host: "Tuna Bio / Kultur Vallentuna",
@@ -493,15 +484,16 @@ export const events = [
     source: "https://www.orkestahembygd.se/event",
   },
   {
-    host: "Vallentuna Centrum",
-    title: "Julmarknad i centrum",
-    date: "2026-12-13",
-    when: "Sön 13 dec · 11–15",
+    host: "Hemmaplan Media / Vallentuna Centrum",
+    title: "Vallentuna Julmarknad",
+    date: "2026-12-12",
+    addedDate: "2026-08-18",
+    when: "Lör 12 dec · 11–15",
     time: "11:00 – 15:00",
     cat: "MARKNAD",
-    note: "Julmarknad i Vallentuna centrum — angivet i centrumets avvikande öppettider (11–15).",
+    note: "Julstämning på Tuna Torg & Torgpassagen — glögg, hantverk och lokala delikatesser. Arrangeras av Hemmaplan Media i samarbete med Vallentuna Centrum och Fastpartner.",
     img: "/assets/evenemang/julmarknad-centrum/cover.webp",
-    source: "https://vallentunacentrum.se/",
+    source: "https://hemmaplanmedia.se/event",
   },
 ].map((e) => ({
   img: FALLBACK_IMG,
@@ -654,17 +646,16 @@ export const EVENT_CONTENT = {
     body: `<p>Söndag 29 november kl. 18:30 — Vivian Buczek (<em>Le Grand Michel</em>) hos Jano. Café från 17:30.</p>
       <p>Biljetter: <a href="https://www.nortic.se/ticket/show/344918" target="_blank" rel="noopener">Nortic</a> · <a href="https://jano.nu/" target="_blank" rel="noopener">jano.nu</a>.</p>`,
   },
-  "SkördeFEST — AW & musik": {
-    body: `<p>Fredag 12 september: musik och AW hos restaurangerna i Vallentuna centrum — upptakt till lördagens familjefest. Se <a href="https://vallentunacentrum.se/skordefest/" target="_blank" rel="noopener">vallentunacentrum.se/skordefest</a>.</p>`,
-  },
-  "SkördeFEST — familjefest": {
-    body: `<p>Lördag 13 september kl. 10–15 på Tuna Torg: torgmarknad, barnaktiviteter, karusell, livemusik med Linda Rapp &amp; Livat, käpphästrace m.m. Programmet uppdateras löpande.</p>`,
+  "Vallentuna Höstmarknad": {
+    body: `<p>Lördag 19 september kl. 11–15 på <strong>Tuna Torg</strong> — säsongens skörd, lokala företag och höstmys i centrum.</p>
+      <p>Arrangeras av Hemmaplan Media i samarbete med Vallentuna Centrum och Fastpartner. Info: <a href="https://hemmaplanmedia.se/event" target="_blank" rel="noopener">hemmaplanmedia.se/event</a>.</p>`,
   },
   "Julmarknad i Lindholmen": {
     body: `<p>Julmarknad i Orkesta Bygdegård 6 december kl. 11–15 med hantverk, lokala smaker och fika.</p>`,
   },
-  "Julmarknad i centrum": {
-    body: `<p>Julmarknad i Vallentuna centrum 13 december kl. 11–15 (enligt centrumets öppettider).</p>`,
+  "Vallentuna Julmarknad": {
+    body: `<p>Lördag 12 december kl. 11–15 på <strong>Tuna Torg &amp; Torgpassagen</strong> — julstämning med glögg, hantverk och lokala delikatesser.</p>
+      <p>Arrangeras av Hemmaplan Media i samarbete med Vallentuna Centrum och Fastpartner. Info: <a href="https://hemmaplanmedia.se/event" target="_blank" rel="noopener">hemmaplanmedia.se/event</a>.</p>`,
   },
   "Beredskapsveckan": {
     body: `<p>21–27 september 2026. Tema: <em>Du är en del av Sveriges totalförsvar</em>. Öppna aktiviteter i kalendern — fullt program på <a href="https://www.vallentuna.se/evenemang-och-upplevelser/beredskapsveckan/" target="_blank" rel="noopener">vallentuna.se</a>.</p>`,

@@ -25,15 +25,30 @@ describe("events calendar", () => {
     const live = upcomingEvents("2026-09-01");
     expect(live.every((e) => e.date >= "2026-09-01")).toBe(true);
     expect(live.some((e) => e.title.includes("Smaka"))).toBe(false);
-    expect(live.some((e) => e.title.includes("Skörde"))).toBe(true);
+    expect(live.some((e) => e.title === "Vallentuna Höstmarknad")).toBe(true);
   });
 
   it("has EVENT_CONTENT for flagship events", () => {
     expect(EVENT_CONTENT["Smaka på Vallentuna"]).toBeTruthy();
     expect(EVENT_CONTENT["Höstfest / Skördefest i Lindholmen"]).toBeTruthy();
+    expect(EVENT_CONTENT["Vallentuna Höstmarknad"]).toBeTruthy();
+    expect(EVENT_CONTENT["Vallentuna Julmarknad"]).toBeTruthy();
     expect(EVENT_CONTENT["Jano — Sylvia Vrethammar"]).toBeTruthy();
     expect(EVENT_CONTENT["Sommarbuffé på Hökeriet"]).toBeTruthy();
     expect(EVENT_CONTENT["Granby Vikingagård — guidad visning"]).toBeTruthy();
+  });
+
+  it("Hemmaplan marknader match official 2026 dates", () => {
+    const host = events.find((e) => e.title === "Vallentuna Höstmarknad");
+    const jul = events.find((e) => e.title === "Vallentuna Julmarknad");
+    expect(host?.date).toBe("2026-09-19");
+    expect(host?.source).toContain("hemmaplanmedia.se");
+    expect(jul?.date).toBe("2026-12-12");
+    expect(jul?.source).toContain("hemmaplanmedia.se");
+    // Stale 2025 SkördeFEST must not reappear as 2026
+    expect(events.some((e) => /skördefest/i.test(e.title) && e.host.includes("Centrum"))).toBe(
+      false
+    );
   });
 
   it("eventSlug is url-safe", () => {
