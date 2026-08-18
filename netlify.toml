@@ -19,6 +19,20 @@
   to = "/evenemang/hostfest-skordefest-i-lindholmen-2026-09-06.html"
   status = 301
 
+# Stale 2025 SkördeFEST (wrongly year-bumped) → Hemmaplan Höstmarknad 2026
+[[redirects]]
+  from = "/evenemang/skordefest-aw-musik-2026-09-12.html"
+  to = "/evenemang/vallentuna-hostmarknad-2026-09-19.html"
+  status = 301
+[[redirects]]
+  from = "/evenemang/skordefest-familjefest-2026-09-13.html"
+  to = "/evenemang/vallentuna-hostmarknad-2026-09-19.html"
+  status = 301
+[[redirects]]
+  from = "/evenemang/julmarknad-i-centrum-2026-12-13.html"
+  to = "/evenemang/vallentuna-julmarknad-2026-12-12.html"
+  status = 301
+
 # Closed business — keep old URLs from 404ing
 [[redirects]]
   from = "/plats/rookie-cafe-och-restaurang.html"
