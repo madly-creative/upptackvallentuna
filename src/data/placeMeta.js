@@ -175,4 +175,20 @@ export const PLACE_META = {
         {label:"Loppistajm / Stockholmsmarknader AB"},
       ],
       hoursVerified:"2026-08-15"},
+    "Lilla Cirkeln Secondhand":{tags:["barn","inomhus","rullstol"],district:"Centrum",updated:"2026-08-20",addedDate:"2026-08-20",holidayClosed:true,
+      seasonNote:"Kommissionsbutik på Tuna Torg — mån–fre 10–18, lör 10–15. Inlämning enligt lillacirkeln.se",
+      hours:[C,H(10,18),H(10,18),H(10,18),H(10,18),H(10,18),H(10,15)],
+      sources:[
+        {label:"lillacirkeln.se",url:"https://www.lillacirkeln.se/"},
+        {label:"Vallentuna Centrum",url:"https://vallentunacentrum.se/butik/lillacirkeln-secondhand/"},
+      ],
+      hoursVerified:"2026-08-20"},
+    "Vallentuna skolmuseum":{tags:["barn","gratis","inomhus"],district:"Brottby",updated:"2026-08-20",addedDate:"2026-08-20",holidayClosed:false,
+      seasonNote:"Söndagsöppet under sommaren (t.ex. aug–sep kl 13–16) — övrig tid via kultur@vallentuna.se. Kolla aktuella datum innan du åker.",
+      hours:[H(13,16),C,C,C,C,C,C],
+      sources:[
+        {label:"Vallentuna kommun / skolmuseum",url:"https://www.vallentuna.se/fritid-och-kultur/kultur/kulturmiljo/vallentuna-skolmuseum/"},
+        {label:"Össeby församling / söndagsöppet"},
+      ],
+      hoursVerified:"2026-08-20"},
 };
