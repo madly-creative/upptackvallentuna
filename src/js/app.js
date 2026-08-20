@@ -678,6 +678,28 @@ import {
       body:`<p><strong>Roslagsloppis</strong> är den stora bakluckeloppisen bakom Roslagsstoppet vid Söderhalls trafikplats — halvvägs ut i Roslagen, i Vallentuna kommun. Sälj direkt från bilen eller kom och fynda; fri entré och parkering för besökare.</p>
       <p>Öppet <strong>söndagar 11–15</strong> under säsongen <strong>31 maj–13 september 2026</strong> (stängt 21 juni). Åk runt den långa röda byggnaden till baksidan. Vill du sälja? Plats online från 175 kr via <a href="https://www.roslagsloppis.se/salja/" target="_blank" rel="noopener">roslagsloppis.se</a>, eller Swish på plats om det finns rum. Frågor: <a href="mailto:info@stockholmsmarknader.se">info@stockholmsmarknader.se</a>. Psst: fabriksförsäljning av cocosbollar finns intill.</p>`
     },
+    "Lilla Cirkeln Secondhand":{
+      address:"Tuna Torg 2, 186 39 Vallentuna",
+      facts:["Second hand","Kommission","Barn & dam","Centrum"],
+      localPhotos:false,
+      photoCredit:"Stämningsbild (Unsplash) — byt gärna mot eget butiksfoto.",
+      images:[
+        {url:"/assets/upplev/lilla-cirkeln-secondhand/cover.webp",alt:"Second hand-fynd i butiksmiljö"}
+      ],
+      body:`<p><strong>Lilla Cirkeln Secondhand</strong> ligger mitt på Tuna Torg — en liten kommissionsbaserad butik med fokus på kläder, barnprylar och märkesfynd. Klimatsmart shopping utan att lämna centrum.</p>
+      <p>Öppet mån–fre 10–18, lör 10–15 (avvikelser på storhelger). Inlämning enligt <a href="https://www.lillacirkeln.se/" target="_blank" rel="noopener">lillacirkeln.se</a> · även listad på <a href="https://vallentunacentrum.se/butik/lillacirkeln-secondhand/" target="_blank" rel="noopener">vallentunacentrum.se</a>.</p>`
+    },
+    "Vallentuna skolmuseum":{
+      address:"Lilla Garn 32, Brottby (vid Össeby-Garns kyrka)",
+      facts:["Museum","1910-tal","Fri entré","Kultur Vallentuna"],
+      localPhotos:true,
+      photoCredit:"Foto: Vallentuna kommun.",
+      images:[
+        {url:"/assets/upplev/vallentuna-skolmuseum/cover.webp",alt:"Vallentuna skolmuseum vid Össeby-Garn"}
+      ],
+      body:`<p><strong>Vallentuna skolmuseum</strong> ligger i det gamla skolhuset (1887–1965) invid Össeby-Garns kyrka i Brottby. På övre våningen finns en rekonstruktion av skolsal och lärarbostad som runt 1910, plus planscher och skolmaterial från nerlagda skolor i kommunen.</p>
+      <p>Söndagsöppet under sommaren (t.ex. kl. 13–16 — kolla aktuella datum). Övrig tid: boka via <a href="mailto:kultur@vallentuna.se">kultur@vallentuna.se</a> eller tel 08-587 853 54. Fri entré. Nära Toftesta Holme. Mer: <a href="https://www.vallentuna.se/fritid-och-kultur/kultur/kulturmiljo/vallentuna-skolmuseum/" target="_blank" rel="noopener">vallentuna.se / skolmuseum</a>.</p>`
+    },
   };
 
     const cats=[{key:"alla",label:"Allt"},{key:"fika",label:"Fika & Mat"},{key:"gard",label:"Gård & Handelsträdgård"},{key:"natur",label:"Natur & Historia"},{key:"butik",label:"Butik & Kultur"},{key:"loppis",label:"Loppis"}];
@@ -743,7 +765,9 @@ import {
     "Vasakullen":"2026-08-14",
     "Vallentuna Konditori":"2026-08-14",
     "Äppellundens Café":"2026-08-14",
-    "Roslagsloppis":"2026-08-15"
+    "Roslagsloppis":"2026-08-15",
+    "Lilla Cirkeln Secondhand":"2026-08-20",
+    "Vallentuna skolmuseum":"2026-08-20"
   };
 
   const now=new Date();
