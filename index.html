@@ -92,7 +92,7 @@
     </div>
     <button id="nav-hander" onclick="showView('hander')">Evenemang</button>
     <button id="nav-guider" type="button" onclick="showView('guider')" hidden>Guider</button>
-    <button id="nav-roester" type="button" onclick="openVoicesNav()">Bygdens röster</button>
+    <button id="nav-roester" type="button" onclick="openVoicesNav()" hidden>Bygdens röster</button>
     <button id="nav-levererar" type="button" onclick="openLevererarMoment('')">Vallentuna levererar</button>
     <button id="nav-karta" onclick="showView('karta')">Karta</button>
     <button id="nav-om" type="button" onclick="showView('om')">Om Upptäck Vallentuna</button>
@@ -135,7 +135,7 @@
     </div>
     <button type="button" onclick="mobileGo(()=>showView('hander'))">Evenemang</button>
     <button type="button" id="mnav-guider" onclick="mobileGo(()=>showView('guider'))" hidden>Guider</button>
-    <button type="button" onclick="mobileGo(()=>openVoicesNav())">Bygdens röster</button>
+    <button type="button" id="mnav-roester" onclick="mobileGo(()=>openVoicesNav())" hidden>Bygdens röster</button>
     <button type="button" onclick="mobileGo(()=>openLevererarMoment(''))">Vallentuna levererar</button>
     <button type="button" onclick="mobileGo(()=>showView('karta'))">Karta</button>
     <button type="button" onclick="mobileGo(()=>showView('om'))">Om Upptäck Vallentuna</button>

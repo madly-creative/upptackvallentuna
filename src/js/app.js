@@ -394,10 +394,12 @@ import {
       facts:["Antik & retro","Ons 16–18","Lör–sön 11–16","Dödsbon"],
       localPhotos:true,
       images:[
-        {url:"/assets/upplev/antikladan/cover.webp",alt:"Antikladan utifrån — röd lada med antikviteter utanför"},
-        {url:"/assets/upplev/antikladan/interior.webp",alt:"Interiör i Antikladan — högt trätak och rader av antika stolar"},
-        {url:"/assets/upplev/antikladan/slade.webp",alt:"Gammal hästsläde utanför Antikladan"},
-        {url:"/assets/upplev/antikladan/vas.webp",alt:"Turkos vas med lejonmotiv inne i Antikladan"}
+        {url:"/assets/upplev/antikladan/cover.webp",alt:"Antikladan utifrån — röd lada med skylten Veda Antik & Diversehandel"},
+        {url:"/assets/upplev/antikladan/interior.webp",alt:"Interiör i Antikladan — vintagekläder och tegelvägg"},
+        {url:"/assets/upplev/antikladan/neon.webp",alt:"Neon- och bilrummet inne i Antikladan"},
+        {url:"/assets/upplev/antikladan/bar.webp",alt:"Disk med vintagebelysning i Antikladan"},
+        {url:"/assets/upplev/antikladan/motorcykel.webp",alt:"Motorcykel och modellflygplan i Antikladans sal"},
+        {url:"/assets/upplev/antikladan/keramik.webp",alt:"Hylla med svensk keramik och syltburkar i Antikladan"}
       ],
       body:`<p>Stor antik- och kuriosalada två minuter från E18-avfarten mot Åkersberga — möbler, lampor, glas, porslin och samlarobjekt som byts från vecka till vecka (ofta via dödsbon). Grannen Handelshuset Cedergren kompletterar med vintagekläder och maritimt.</p>
       <p>Öppet onsdag 16–18 samt lördag–söndag 11–16 enligt antikladangillinge.se (kolla Facebook för avvikelser). Tel 070-756 80 18. Webb: <a href="https://www.antikladangillinge.se/" target="_blank" rel="noopener">antikladangillinge.se</a>.</p>`
