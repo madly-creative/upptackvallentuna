@@ -3941,8 +3941,9 @@ import {
   // ============================================================
   //  BYGDENS RÖSTER — editorial portraits
   // ============================================================
-  // Bygdens röster — true = visa “kommer inom kort” i stället för porträtt
-  const VOICES_COMING_SOON = true;
+  // Bygdens röster — false = gömd helt (nav/footer/deep links → start)
+  const VOICES_ENABLED = false;
+  const VOICES_COMING_SOON = true; // kept for when VOICES_ENABLED flips on
 
   let lastViewBeforePortratt='start';
   let currentPortraitSlug=null;
@@ -4018,6 +4019,7 @@ import {
     }
   }
   function openVoicesNav(){
+    if(!VOICES_ENABLED){ showView('start'); return; }
     if(VOICES_COMING_SOON){
       showView('roester');
       return;
@@ -4027,6 +4029,7 @@ import {
     openPortrait(list[0].slug);
   }
   function openPortrait(slug, opts={}){
+    if(!VOICES_ENABLED){ showView('start',{fromPopstate:opts.fromPopstate,historyMode:opts.historyMode||"none"}); return; }
     const list=sortedPortraits();
     const pr=list.find(x=>x.slug===slug)||list[0];
     if(!pr) return;
@@ -4297,6 +4300,7 @@ import {
   }
 
   function showView(v, opts={}){
+    if(!VOICES_ENABLED && (v==="roester" || v==="portratt")) v="start";
     opts=opts||{};
     // Leaving plats via nav/logo must pop pushState entries — not replaceState-strip
     // (that leaves a ghost history entry where swipe/back appears to do nothing).
