@@ -793,7 +793,7 @@ writeFileSync(
   <main class="seo-main">
     <h1>Evenemang i ${esc(SITE.kommun)}</h1>
     <p class="lede">Handplockade marknader, matdagar och kultur i bygden. Uppgifter är hämtade från arrangörerna — kolla alltid källan närmare datum.</p>
-    <p class="events-tip-cta">Vill du tipsa om ett evenemang? <a class="lnk" href="/#skicka">Hör av dig!</a></p>
+    <p class="events-tip-cta">Vill du tipsa om en plats eller ett evenemang? <a class="lnk" href="/#skicka">Hör av dig!</a></p>
     <div class="filter-row event-pills" id="eventFilters" role="navigation" aria-label="Evenemangskategorier">
 ${evFilterChips}
     </div>
@@ -802,7 +802,7 @@ ${evFilterChips}
 ${evArticles}
     </div>
     <p class="ev-empty" id="evSeoEmpty" hidden>Inga evenemang i den här kategorin just nu.</p>
-    <p class="seo-cta"><a href="/#hander">Öppna den interaktiva kalendern →</a> · <a href="/#skicka">Tipsa om ett event</a></p>
+    <p class="seo-cta"><a href="/#hander">Öppna den interaktiva kalendern →</a> · <a href="/#skicka">Tipsa oss</a></p>
   </main>
   <footer class="seo-foot">
     <a href="/">Startsida</a>

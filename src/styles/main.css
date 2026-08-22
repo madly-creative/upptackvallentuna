@@ -1113,6 +1113,18 @@
   .notify button{font-size:12px;font-weight:700;border:none;border-radius:999px;padding:7px 12px;cursor:pointer}
   .notify .ok{background:var(--moss-deep);color:var(--paper)}
   .notify .no{background:transparent;color:var(--ink-soft);border:1px solid var(--line)!important}
+  .tip-tabs{
+    display:inline-flex;gap:4px;padding:4px;margin:0 0 16px;
+    background:var(--paper-2);border:1px solid var(--line-soft);border-radius:999px;
+  }
+  .tip-tab{
+    appearance:none;border:none;background:transparent;cursor:pointer;
+    font-size:13px;font-weight:600;color:var(--ink-soft);
+    padding:9px 18px;border-radius:999px;transition:background .15s,color .15s;
+  }
+  .tip-tab:hover{color:var(--moss-deep)}
+  .tip-tab.on{background:var(--card);color:var(--moss-deep);box-shadow:0 1px 3px rgba(40,34,24,.08)}
+  .tip-tab:focus-visible{outline:2px solid var(--rust);outline-offset:2px}
   .form-card{border:1px solid var(--line-soft);border-radius:14px;background:var(--card);padding:20px;max-width:560px}
   .form-card label{display:block;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--moss);margin:12px 0 6px}
   .form-card input,.form-card select,.form-card textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px 12px;font:inherit;background:var(--paper);color:var(--ink)}
