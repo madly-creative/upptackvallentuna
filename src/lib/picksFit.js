@@ -10,8 +10,19 @@ const RAINY_CODES = [
   51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 71, 73, 75, 77, 80, 81, 82, 85, 86, 95, 96, 99,
 ];
 
+/** Never feature these as Handplockat experiences (still on map / platsidor). */
+const HANDPLOCK_NEVER = new Set([
+  "AutoMat Kårsta", // matbutik — nyttig i katalogen, inte en upplevelse att highlighta
+]);
+
+export function isHandplockEligible(p) {
+  if (!p?.name) return false;
+  return !HANDPLOCK_NEVER.has(p.name);
+}
+
 /** Outdoor swim / beach. */
 export function isOutdoorBathPlace(p) {
+
   if (!p) return false;
   const blob = [p.name, p.cat, p.short, p.blurb].filter(Boolean).join(" ");
   if (OUTDOOR_CAT_RE.test(p.cat || "") && BATH_RE.test(blob)) return true;
@@ -110,7 +121,8 @@ export function daypartTypesForMood(daypart, isWeekend, mood, opts = {}) {
  * Keeps diversity — only reorders baths ahead within the eligibility set.
  */
 export function prepareRankedForPicks(ranked, mood, opts = {}) {
-  let list = filterRankedForWeather(ranked, mood, opts);
+  const eligible = (ranked || []).filter((x) => isHandplockEligible(x?.p));
+  let list = filterRankedForWeather(eligible, mood, opts);
   if (!isHotSwimWeather(opts.temp, opts.code) || list.length < 2) return list;
 
   const baths = [];

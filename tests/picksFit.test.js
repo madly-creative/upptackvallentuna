@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   isOutdoorBathPlace,
   isHotSwimWeather,
+  isHandplockEligible,
   placeFitsWeatherMood,
   filterRankedForWeather,
   prepareRankedForPicks,
@@ -48,6 +49,33 @@ describe("picksFit weather", () => {
     expect(isHotSwimWeather(22, 1)).toBe(true);
     expect(isHotSwimWeather(21, 0)).toBe(false);
     expect(isHotSwimWeather(28, 61)).toBe(false);
+  });
+
+
+  it("never features AutoMat Kårsta in Handplockat pool", () => {
+    expect(isHandplockEligible(automat)).toBe(false);
+    expect(isHandplockEligible(mjolkrummet)).toBe(true);
+
+    const ranked = [
+      { p: automat, score: 99, open: true },
+      { p: mjolkrummet, score: 70, open: true },
+      { p: { name: "Vallboden", cat: "Butik", type: "butik", short: "Keramik" }, score: 65, open: true },
+      { p: angarn, score: 55, open: true },
+    ];
+    const prepared = prepareRankedForPicks(ranked, "mild");
+    expect(prepared.map((x) => x.p.name)).not.toContain("AutoMat Kårsta");
+    expect(prepared.map((x) => x.p.name)).toContain("Gårdsbutiken Gamla Mjölkrummet");
+
+    const picks = selectRotatedDiversePicks(prepared, {
+      seed: picksRotationSeed({
+        todayISO: "2026-08-16",
+        daypart: "kvall",
+        mood: "mild",
+        weatherCode: 1,
+      }),
+      count: 3,
+    });
+    expect(picks.map((x) => x.p.name)).not.toContain("AutoMat Kårsta");
   });
 
   it("excludes baths and natur from rough Handplockat", () => {
