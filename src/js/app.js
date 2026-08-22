@@ -3162,23 +3162,69 @@ import {
     saveJSON(LS_NOTIFY,[...seen].slice(-40));
   }
 
-  async function submitEventForm(){
-    const title=document.getElementById('evTitle')?.value.trim();
-    const host=document.getElementById('evHost')?.value.trim();
-    const date=document.getElementById('evDate')?.value;
-    const time=document.getElementById('evTime')?.value.trim();
-    const note=document.getElementById('evNote')?.value.trim();
-    const email=document.getElementById('evEmail')?.value.trim();
-    const msg=document.getElementById('evFormMsg');
+  let tipKind="place";
+  function setTipKind(kind){
+    tipKind=kind==="event"?"event":"place";
+    const place=tipKind==="place";
+    const tabP=document.getElementById("tipTabPlace");
+    const tabE=document.getElementById("tipTabEvent");
+    const panelP=document.getElementById("tipPanelPlace");
+    const panelE=document.getElementById("tipPanelEvent");
+    if(tabP){ tabP.classList.toggle("on",place); tabP.setAttribute("aria-selected",place?"true":"false"); }
+    if(tabE){ tabE.classList.toggle("on",!place); tabE.setAttribute("aria-selected",place?"false":"true"); }
+    if(panelP) panelP.hidden=!place;
+    if(panelE) panelE.hidden=place;
+    const msg=document.getElementById("evFormMsg");
+    if(msg) msg.textContent="";
+  }
+  async function submitTipForm(){
+    const msg=document.getElementById("evFormMsg");
+    if(tipKind==="place"){
+      const name=document.getElementById("plName")?.value.trim();
+      const type=document.getElementById("plKind")?.value.trim();
+      const where=document.getElementById("plWhere")?.value.trim();
+      const note=document.getElementById("plNote")?.value.trim();
+      const web=document.getElementById("plWeb")?.value.trim();
+      const email=document.getElementById("plEmail")?.value.trim();
+      if(!name||!where){ if(msg) msg.textContent="Fyll i namn och adress/område."; return; }
+      const fields={tipType:"plats",name,type,where,note,web,email,source:location.href};
+      const subject=`Platstips: ${name}`;
+      if(msg) msg.textContent="Skickar…";
+      try{
+        const result=await deliverForm({ kind:"place", subject, fields });
+        const activate=/activat|confirm|check your email|bekräft/i.test(result.message||"");
+        if(msg) msg.textContent=activate
+          ? "Nästan klart — kolla info@upptackvallentuna.se (även skräppost) och bekräfta aktiveringsmejlet. Sedan fungerar tipsen."
+          : "Tack! Tipset är skickat till info@upptackvallentuna.se — syns inte publikt förrän det godkänts.";
+        ["plName","plKind","plWhere","plNote","plWeb","plEmail"].forEach(id=>{const el=document.getElementById(id);if(el) el.value="";});
+        trackEvent("place-submit",name);
+      }catch(err){
+        const mailto=buildMailtoUrl(subject,fields);
+        if(msg){
+          msg.innerHTML=err.code==="NOT_DEPLOYED"
+            ? `Lokalt läge — <a href="${mailto}">skicka tipset via e-post till info@</a> i stället.`
+            : `Kunde inte skicka automatiskt. <a href="${mailto}">Öppna e-post till info@upptackvallentuna.se</a> och skicka manuellt.`;
+        }
+      }
+      return;
+    }
+    const title=document.getElementById("evTitle")?.value.trim();
+    const host=document.getElementById("evHost")?.value.trim();
+    const date=document.getElementById("evDate")?.value;
+    const time=document.getElementById("evTime")?.value.trim();
+    const note=document.getElementById("evNote")?.value.trim();
+    const email=document.getElementById("evEmail")?.value.trim();
     if(!title||!host||!date){if(msg) msg.textContent="Fyll i titel, plats och datum.";return;}
     const payload={id:"pe_"+Date.now(),title,host,date,time,note,email,status:"pending",at:new Date().toISOString()};
+    const fields={tipType:"evenemang",title,host,date,time,note,email,source:location.href};
+    const subject=`Evenemangstips: ${title}`;
     if(msg) msg.textContent="Skickar…";
     try{
       const result=await deliverForm({
         kind:"event",
-        subject:`Evenemangstips: ${title}`,
-        fields:{title,host,date,time,note,email,source:location.href},
-        persistLocal:(fields)=>{
+        subject,
+        fields,
+        persistLocal:()=>{
           const pending=loadJSON(LS_PENDING,[]);
           pending.push(payload);
           saveJSON(LS_PENDING,pending);
@@ -3190,9 +3236,9 @@ import {
         : "Tack! Tipset är skickat till info@upptackvallentuna.se — syns inte publikt förrän det godkänts.";
       ["evTitle","evHost","evDate","evTime","evNote","evEmail"].forEach(id=>{const el=document.getElementById(id);if(el) el.value="";});
       renderPendingAdmin();
-      trackEvent('event-submit',title);
+      trackEvent("event-submit",title);
     }catch(err){
-      const mailto=buildMailtoUrl(`Evenemangstips: ${title}`,{title,host,date,time,note,email,source:location.href});
+      const mailto=buildMailtoUrl(subject,fields);
       if(msg){
         msg.innerHTML=err.code==="NOT_DEPLOYED"
           ? `Lokalt läge — <a href="${mailto}">skicka tipset via e-post till info@</a> i stället.`
@@ -3200,6 +3246,8 @@ import {
       }
     }
   }
+  /** @deprecated alias — older onclick bindings */
+  async function submitEventForm(){ return submitTipForm(); }
   function renderPendingAdmin(){
     const box=document.getElementById('pendingAdmin'); if(!box) return;
     if(!/admin=1/.test(location.search)){box.innerHTML="";return;}
@@ -4278,7 +4326,7 @@ import {
     if(v==='favoriter') renderFavorites();
     if(v==='sok'){runSearch();setTimeout(()=>document.getElementById('globalSearch')?.focus(),80);}
     if(v==='listor') renderLists();
-    if(v==='skicka') renderPendingAdmin();
+    if(v==='skicka'){ setTipKind(tipKind||'place'); renderPendingAdmin(); }
     if(v==='kategori') renderCategory();
     if(v==='guider') renderGuidesGrid();
     if(v==='levererar') renderLevererarView();
@@ -4429,6 +4477,8 @@ Object.assign(window, {
   shareList,
   shareWxCard,
   showView,
+  setTipKind,
+  submitTipForm,
   submitEventForm,
   submitReport,
   toggleFavorite,
