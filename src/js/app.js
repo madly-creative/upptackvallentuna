@@ -649,7 +649,7 @@ import {
       facts:["Konditori","Bröd & tårta","Centrum","Frukostfik"],
       localPhotos:true,
       images:[
-        {url:"/assets/upplev/vallentuna-konditori/cover.webp",alt:"Vallentuna Konditori på Centralvägen"}
+        {url:"/assets/upplev/vallentuna-konditori/cover.webp",alt:"Disken på Vallentuna Konditori med smörgåsar och bakverk"}
       ],
       body:`<p><strong>Vallentuna Konditori</strong> på Centralvägen 1 — traditionellt konditori med bröd, fikabröd, tårtor och smörgåstårta. Ett litet kvartersställe mitt i centrum, öppet tidigt på vardagar.</p>
       <p>Öppet mån–fre 07–18, lör 08–16, sön 11–15 (kan variera — ring gärna). Tel 08-511 740 04.</p>`
@@ -3207,7 +3207,7 @@ import {
     if(!pending.length){box.innerHTML="";return;}
     box.innerHTML=`<h3 style="font-family:var(--font-serif);font-size:22px;color:var(--moss-deep);margin-bottom:10px">Inkomna (lokal kö)</h3>
       ${pending.map(e=>`<div class="s-item" style="cursor:default">
-        <div class="im" style="background:#efe8dc"></div>
+        <div class="im" style="background:#f0ebe4"></div>
         <div>
           <h3>${e.title}</h3>
           <div class="meta">${e.host} · ${e.date} · ${e.status}</div>
@@ -3408,7 +3408,7 @@ import {
     buildFilters();buildList();renderFilter();
     setTimeout(()=>map.invalidateSize(),50);
   }
-  function pinIcon(color,cls){return L.divIcon({className:'',html:`<div class="pin ${cls||''}"><svg width="26" height="34" viewBox="0 0 26 34" fill="none"><path d="M13 0C5.8 0 0 5.8 0 13c0 9.2 13 21 13 21s13-11.8 13-21C26 5.8 20.2 0 13 0z" fill="${color}"/><circle cx="13" cy="13" r="5" fill="#f7f3eb"/></svg></div>`,iconSize:[26,34],iconAnchor:[13,34],popupAnchor:[0,-32]});}
+  function pinIcon(color,cls){return L.divIcon({className:'',html:`<div class="pin ${cls||''}"><svg width="26" height="34" viewBox="0 0 26 34" fill="none"><path d="M13 0C5.8 0 0 5.8 0 13c0 9.2 13 21 13 21s13-11.8 13-21C26 5.8 20.2 0 13 0z" fill="${color}"/><circle cx="13" cy="13" r="5" fill="#f9f7f3"/></svg></div>`,iconSize:[26,34],iconAnchor:[13,34],popupAnchor:[0,-32]});}
 
   function buildFilters(){const bar=document.getElementById('filters');bar.innerHTML='';cats.forEach(c=>{const b=document.createElement('div');b.className='chip'+(c.key==="alla"?' on':'');b.textContent=c.label;b.dataset.key=c.key;b.onclick=()=>{active=c.key;document.getElementById('search').value='';renderFilter();};bar.appendChild(b);});}
   function buildList(){

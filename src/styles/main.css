@@ -1,17 +1,18 @@
   :root{
     --ink:#2a3228;
     --ink-soft:#5a6356;
-    --paper:#f7f3eb;
-    --paper-2:#efe8dc;
-    --card:#fbf8f2;
+    /* Slightly cooler/whiter neutrals — still warm, less cream */
+    --paper:#f9f7f3;
+    --paper-2:#f0ebe4;
+    --card:#ffffff;
     --moss:#3d4f3a;
     --moss-deep:#2f3d2e;
     --rust:#a85a3a;
     --rust-deep:#8f4a2f;
-    --line:#ddd4c4;
-    --line-soft:#e8e0d2;
+    --line:#e2dbd0;
+    --line-soft:#ece7df;
     --closed:#a49c8b;
-    --shadow:0 10px 28px rgba(47,61,46,.08);
+    --shadow:0 10px 28px rgba(47,61,46,.07);
     --radius:12px;
     --radius-sm:8px;
     --max:1180px;
@@ -30,7 +31,7 @@
   /* ---------- top bar ---------- */
   .topbar{
     position:sticky;top:0;z-index:1000;
-    background:rgba(247,243,235,.94);
+    background:color-mix(in srgb,var(--paper) 94%,transparent);
     backdrop-filter:blur(10px);
     border-bottom:1px solid var(--line-soft);
     display:flex;align-items:center;justify-content:space-between;gap:20px;
@@ -122,8 +123,8 @@
   .hero-slide.on{opacity:1}
   .hero-overlay{
     position:absolute;inset:0;z-index:1;
-    /* Warm near-black — keeps photo color; enough contrast for light type on the left */
-    background:linear-gradient(105deg,rgba(22,18,14,.58) 0%,rgba(22,18,14,.32) 45%,rgba(22,18,14,.10) 100%);
+    /* Dark gradient so light hero type stays readable on bright photos */
+    background:linear-gradient(105deg,rgba(22,18,14,.52) 0%,rgba(22,18,14,.28) 45%,rgba(22,18,14,.08) 100%);
   }
   .hero-inner{
     position:relative;z-index:2;max-width:var(--max);margin:0 auto;width:100%;
@@ -133,7 +134,7 @@
   .hero-top{display:flex;justify-content:flex-end;flex-shrink:0;padding-top:0}
   .hero-today{
     width:min(300px,88vw);
-    background:rgba(251,248,242,.94);
+    background:color-mix(in srgb,var(--card) 94%,transparent);
     backdrop-filter:blur(10px);
     border:1px solid rgba(255,255,255,.5);
     border-radius:28px;
@@ -368,7 +369,7 @@
     position:relative;overflow:hidden;
     max-width:none;width:100%;
     margin:28px 0 8px;padding:56px 0 48px;
-    background:linear-gradient(180deg,#f3eee4 0%,var(--paper) 72%);
+    background:linear-gradient(180deg,var(--paper-2) 0%,var(--paper) 72%);
   }
   .guides-sec-inner{
     position:relative;z-index:1;
@@ -796,7 +797,7 @@
   .om-body .om-quote{
     font-family:var(--font-serif);font-size:clamp(26px,3.4vw,34px);font-style:italic;
     color:var(--moss-deep);line-height:1.35;margin:28px 0 24px;
-    padding:4px 0 4px 22px;border-left:3px solid var(--rust);
+    padding:4px 0 4px 18px;border-left:1px solid color-mix(in srgb,var(--rust) 55%,transparent);
   }
   .om-body .om-sign{
     font-family:var(--font-serif);font-size:18px;font-style:italic;
@@ -970,7 +971,7 @@
   }
   .return-banner .inner{
     display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;
-    background:linear-gradient(120deg,#efe8dc,#f7f3eb);border:1px solid var(--line);
+    background:linear-gradient(120deg,var(--paper-2),var(--paper));border:1px solid var(--line);
     border-radius:12px;padding:12px 16px;font-size:14px;color:var(--ink);
   }
   .return-banner .inner button{
@@ -1088,7 +1089,7 @@
   .cat-page .cat-tools .chip{cursor:pointer}
   .cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
   @media (max-width:900px){.cat-grid{grid-template-columns:1fr}}
-  .wx-share{border:1px solid var(--line-soft);border-radius:16px;background:linear-gradient(135deg,#efe8dc,#fbf8f2);padding:22px;display:grid;grid-template-columns:1.2fr 1fr;gap:18px;align-items:center}
+  .wx-share{border:1px solid var(--line-soft);border-radius:16px;background:linear-gradient(135deg,var(--paper-2),var(--card));padding:22px;display:grid;grid-template-columns:1.2fr 1fr;gap:18px;align-items:center}
   .wx-share h3{font-family:var(--font-serif);font-size:28px;font-weight:500;color:var(--moss-deep);line-height:1.15;margin-bottom:8px}
   .wx-share p{font-size:14px;color:var(--ink-soft);line-height:1.5;margin-bottom:14px}
   .wx-share .mini{display:grid;gap:8px}
@@ -1425,7 +1426,7 @@
   .portratt-mid .meta .what{font-size:14px;color:var(--ink-soft);margin-bottom:10px}
   .portratt-mid .meta .note{font-size:12px;line-height:1.45;color:var(--closed);max-width:28em}
   .portratt-quote{
-    margin:40px 0;padding:8px 0 8px 22px;border-left:3px solid var(--rust);
+    margin:40px 0;padding:8px 0 8px 18px;border-left:1px solid color-mix(in srgb,var(--rust) 55%,transparent);
     max-width:720px;
   }
   .portratt-quote p{
@@ -2030,7 +2031,7 @@
     max-width:420px;margin:0 auto;
     display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 14px;
     padding:12px 14px;border-radius:12px;
-    background:var(--card,#fbf8f2);border:1px solid var(--line,#ddd4c4);
+    background:var(--card,#ffffff);border:1px solid var(--line,#e2dbd0);
     box-shadow:0 12px 32px rgba(47,61,46,.14);
     opacity:0;transform:translateY(12px);pointer-events:none;
     transition:opacity .25s ease,transform .25s ease;
@@ -2043,7 +2044,7 @@
   .pwa-install-yes{
     font:inherit;font-size:13px;font-weight:600;cursor:pointer;
     padding:8px 12px;border-radius:8px;border:none;
-    background:var(--moss-deep,#2f3d2e);color:var(--paper,#f7f3eb);
+    background:var(--moss-deep,#2f3d2e);color:var(--paper,#f9f7f3);
   }
   .pwa-install-yes:hover{filter:brightness(1.06)}
   .pwa-install-no{
@@ -2067,7 +2068,7 @@
     width:min(400px,calc(100vw - 32px));
     transform:translate(-50%,-46%);
     padding:22px 22px 18px;border-radius:14px;
-    background:var(--card,#fbf8f2);border:1px solid var(--line,#ddd4c4);
+    background:var(--card,#ffffff);border:1px solid var(--line,#e2dbd0);
     box-shadow:0 20px 48px rgba(28,36,26,.22);
     opacity:0;pointer-events:none;transition:opacity .22s ease,transform .22s ease;
   }

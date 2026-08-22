@@ -1,6 +1,6 @@
 .seo-page{
   min-height:100vh;
-  background:var(--paper, #f7f3eb);
+  background:var(--paper, #f9f7f3);
   color:var(--ink, #2a261c);
   font-family:var(--font-sans, "DM Sans"), system-ui, sans-serif;
   --font-serif:"Playfair Display",Georgia,"Times New Roman",serif;
@@ -38,7 +38,7 @@
 }
 .seo-main .events-tip-cta .lnk:hover{color:var(--moss-deep, #2f3d2e)}
 .seo-main .event-pills{margin:0 0 10px}
-.seo-main .event-pills .chip{background:var(--card, #fbf8f2)}
+.seo-main .event-pills .chip{background:var(--card, #ffffff)}
 .seo-main .event-count{
   font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
   color:var(--ink-soft, #5c5648);margin:0 0 16px;min-height:1.2em;
