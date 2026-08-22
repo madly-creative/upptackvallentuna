@@ -91,10 +91,10 @@
       </div>
     </div>
     <button id="nav-hander" onclick="showView('hander')">Evenemang</button>
-    <button id="nav-guider" type="button" onclick="showView('guider')" hidden>Guider</button>
-    <button id="nav-roester" type="button" onclick="openVoicesNav()" hidden>Bygdens röster</button>
-    <button id="nav-levererar" type="button" onclick="openLevererarMoment('')">Vallentuna levererar</button>
     <button id="nav-karta" onclick="showView('karta')">Karta</button>
+    <button id="nav-guider" type="button" onclick="showView('guider')" hidden>Guider</button>
+    <button id="nav-levererar" type="button" onclick="openLevererarMoment('')">Vallentuna levererar</button>
+    <button id="nav-roester" type="button" onclick="openVoicesNav()" hidden>Bygdens röster</button>
     <button id="nav-om" type="button" onclick="showView('om')">Om Upptäck Vallentuna</button>
   </nav>
   <div class="nav-utils">
@@ -134,10 +134,10 @@
       <button type="button" onclick="mobileGo(()=>openCategory('natur'))">Natur &amp; uteliv</button>
     </div>
     <button type="button" onclick="mobileGo(()=>showView('hander'))">Evenemang</button>
-    <button type="button" id="mnav-guider" onclick="mobileGo(()=>showView('guider'))" hidden>Guider</button>
-    <button type="button" id="mnav-roester" onclick="mobileGo(()=>openVoicesNav())" hidden>Bygdens röster</button>
-    <button type="button" onclick="mobileGo(()=>openLevererarMoment(''))">Vallentuna levererar</button>
     <button type="button" onclick="mobileGo(()=>showView('karta'))">Karta</button>
+    <button type="button" id="mnav-guider" onclick="mobileGo(()=>showView('guider'))" hidden>Guider</button>
+    <button type="button" onclick="mobileGo(()=>openLevererarMoment(''))">Vallentuna levererar</button>
+    <button type="button" id="mnav-roester" onclick="mobileGo(()=>openVoicesNav())" hidden>Bygdens röster</button>
     <button type="button" onclick="mobileGo(()=>showView('om'))">Om Upptäck Vallentuna</button>
   </nav>
   <div class="mnav-utils">
@@ -271,8 +271,8 @@
     </div>
   </div>
 
-  <!-- Just nu: konkret idag-svar under den välkomnande heron -->
-  <section class="today-brief" id="todayBrief" aria-label="Just nu i Vallentuna">
+  <!-- 2. Helgen / Just nu -->
+  <section class="today-brief" id="todayBrief" aria-label="Helgen i Vallentuna">
     <div class="inner">
       <header class="today-brief-head">
         <div>
@@ -285,7 +285,14 @@
     </div>
   </section>
 
-  <!-- Nära dig: CTA → full panel only after granted geolocation (strict privacy path) -->
+  <div class="return-banner" id="returnBanner" hidden>
+    <div class="inner">
+      <span id="returnText"></span>
+      <button type="button" id="returnBtn">Öppna igen →</button>
+    </div>
+  </div>
+
+  <!-- 3. Upptäck runt hörnet — karta -->
   <div id="naraDigRoot"></div>
 
   <div class="quick-paths" id="quickPaths" aria-label="Snabbvägar">
@@ -301,14 +308,19 @@
     </div>
   </div>
 
-  <div class="return-banner" id="returnBanner" hidden>
-    <div class="inner">
-      <span id="returnText"></span>
-      <button type="button" id="returnBtn">Öppna igen →</button>
+  <!-- 4. Händer i bygden -->
+  <div class="sec" id="eventsHomeSec">
+    <div class="sec-head">
+      <div>
+        <h2 id="happenHeading">Händer i bygden</h2>
+        <div class="wtip" id="happenWhy" style="margin-top:6px"></div>
+      </div>
+      <button type="button" class="more" onclick="showView('hander')">Alla evenemang →</button>
     </div>
+    <div class="happen-grid" id="happenGrid"></div>
   </div>
 
-  <!-- Handplockat: en sektion (ersätter Passar dig + Att göra) -->
+  <!-- 5. Handplockat just nu -->
   <div class="sec picks-sec">
     <div class="sec-head">
       <div>
@@ -320,12 +332,7 @@
     <div class="picks-grid" id="picksGrid"></div>
   </div>
 
-  <!-- Veckans Visste du att -->
-  <div class="sec weekly-fact-sec">
-    <article class="weekly-fact-card" id="weeklyFactCard" aria-label="Veckans Visste du att"></article>
-  </div>
-
-  <!-- Guider — redaktionella dagsrundor med temafilter -->
+  <!-- 6. Färdiga guider -->
   <section class="sec guides-sec" id="guidesHomeSec" hidden aria-labelledby="guidesHomeTitle">
     <div class="guides-sec-inner">
       <header class="guides-home-head">
@@ -344,20 +351,19 @@
     </div>
   </section>
 
-  <!-- Bygdens röster — intervjuer, full width för sig -->
-  <div class="sec voices-sec" id="voicesSec" hidden>
+  <!-- 7. Gör en eftermiddag -->
+  <div class="sec route-sec">
     <div class="sec-head">
       <div>
-        <h2>Bygdens röster</h2>
-        <div class="wtip" style="margin-top:6px">Porträtt som lyfter dem som får bygden att leva</div>
+        <h2>Gör en eftermiddag</h2>
+        <div class="wtip" style="margin-top:6px">Tre stopp — fika, gård och natur</div>
       </div>
-      <button type="button" class="more" onclick="openVoicesNav()">Alla porträtt →</button>
+      <button type="button" class="more" onclick="reshuffleRoute()">Ny rutt →</button>
     </div>
-    <div id="voicesFeature"></div>
-    <div class="voice-more" id="voicesMore" hidden></div>
+    <div class="journey" id="routeGrid"></div>
   </div>
 
-  <!-- Vallentuna levererar — redaktionell röst, senaste inlägget -->
+  <!-- 8. Vallentuna levererar -->
   <div class="sec levererar-sec" id="levererarSec" hidden>
     <div class="sec-head">
       <div>
@@ -369,28 +375,22 @@
     <div id="levererarTeaser"></div>
   </div>
 
-  <!-- Evenemang: en sektion -->
-  <div class="sec" id="eventsHomeSec">
-    <div class="sec-head">
-      <div>
-        <h2 id="happenHeading">Händer i bygden</h2>
-        <div class="wtip" id="happenWhy" style="margin-top:6px"></div>
-      </div>
-      <button type="button" class="more" onclick="showView('hander')">Alla evenemang →</button>
-    </div>
-    <div class="happen-grid" id="happenGrid"></div>
+  <!-- 9. Redaktionell story — Veckans Visste du att -->
+  <div class="sec weekly-fact-sec">
+    <article class="weekly-fact-card" id="weeklyFactCard" aria-label="Veckans Visste du att"></article>
   </div>
 
-  <!-- Rutt: tydlig journey, inte fler lika kort -->
-  <div class="sec route-sec">
+  <!-- Bygdens röster — gömd -->
+  <div class="sec voices-sec" id="voicesSec" hidden>
     <div class="sec-head">
       <div>
-        <h2>Gör en eftermiddag</h2>
-        <div class="wtip" style="margin-top:6px">Tre stopp — fika, gård och natur</div>
+        <h2>Bygdens röster</h2>
+        <div class="wtip" style="margin-top:6px">Porträtt som lyfter dem som får bygden att leva</div>
       </div>
-      <button type="button" class="more" onclick="reshuffleRoute()">Ny rutt →</button>
+      <button type="button" class="more" onclick="openVoicesNav()">Alla porträtt →</button>
     </div>
-    <div class="journey" id="routeGrid"></div>
+    <div id="voicesFeature"></div>
+    <div class="voice-more" id="voicesMore" hidden></div>
   </div>
 </section>
 
