@@ -649,7 +649,7 @@ import {
       facts:["Konditori","Bröd & tårta","Centrum","Frukostfik"],
       localPhotos:true,
       images:[
-        {url:"/assets/upplev/vallentuna-konditori/cover.webp",alt:"Vallentuna Konditori på Centralvägen"}
+        {url:"/assets/upplev/vallentuna-konditori/cover.webp",alt:"Disken på Vallentuna Konditori med smörgåsar och bakverk"}
       ],
       body:`<p><strong>Vallentuna Konditori</strong> på Centralvägen 1 — traditionellt konditori med bröd, fikabröd, tårtor och smörgåstårta. Ett litet kvartersställe mitt i centrum, öppet tidigt på vardagar.</p>
       <p>Öppet mån–fre 07–18, lör 08–16, sön 11–15 (kan variera — ring gärna). Tel 08-511 740 04.</p>`

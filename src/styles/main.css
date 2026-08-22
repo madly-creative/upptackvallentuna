@@ -121,6 +121,11 @@
     opacity:0;transition:opacity 1.6s ease;
   }
   .hero-slide.on{opacity:1}
+  .hero-overlay{
+    position:absolute;inset:0;z-index:1;
+    /* Dark gradient so light hero type stays readable on bright photos */
+    background:linear-gradient(105deg,rgba(22,18,14,.52) 0%,rgba(22,18,14,.28) 45%,rgba(22,18,14,.08) 100%);
+  }
   .hero-inner{
     position:relative;z-index:2;max-width:var(--max);margin:0 auto;width:100%;
     padding:32px 28px 52px;display:flex;flex-direction:row;align-items:center;
