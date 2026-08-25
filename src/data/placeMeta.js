@@ -191,4 +191,12 @@ export const PLACE_META = {
         {label:"Össeby församling / söndagsöppet"},
       ],
       hoursVerified:"2026-08-20"},
+    "Sweden History Tours":{tags:["ute"],district:"Vallentuna",updated:"2026-08-25",addedDate:"2026-08-25",holidayClosed:false,
+      seasonNote:"Bokas efter förfrågan · möts på platsen enligt bokning · svenska & engelska",
+      hours:[C,C,C,C,C,C,C],
+      sources:[
+        {label:"swedenhistorytours.se",url:"https://www.swedenhistorytours.se/"},
+        {label:"Tips från verksamheten"},
+      ],
+      hoursVerified:"2026-08-25"},
 };

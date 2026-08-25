@@ -308,7 +308,8 @@ import {
         {url:"/assets/upplev/arkils-tingstad/img1.webp",alt:"Stensättningen vid Arkils tingstad"}
       ],
       body:`<p>Vikingatida tingsplats vid Vallentunasjön — kvadratisk stensättning (ca 10×10 m) och två runstenar (U 225 och U 226), resta av Skålhamrasläkten till minne av Ulv. Stenarna har sammanhängande text; platsen anlades troligen på 1010-talet.</p>
-      <p>Ett av nio stopp i <strong>Runriket</strong>. Fri entré, alltid öppet. Ljudguide finns på informationstavlan. Läs mer på <a href="https://www.vallentuna.se/runriket/runrikets-platser/arkils-tingstad/" target="_blank" rel="noopener">vallentuna.se / Runriket</a>.</p>`
+      <p>Ett av nio stopp i <strong>Runriket</strong>. Fri entré, alltid öppet. Ljudguide finns på informationstavlan. Läs mer på <a href="https://www.vallentuna.se/runriket/runrikets-platser/arkils-tingstad/" target="_blank" rel="noopener">vallentuna.se / Runriket</a>.</p>
+      <p>Vill du ha guidning på platsen? <button type="button" class="place-btn" onclick="openPlace('Sweden History Tours')">Sweden History Tours →</button></p>`
     },
     "Vallentuna Kulturhus":{
       address:"Allévägen 1, Vallentuna centrum",
@@ -526,7 +527,8 @@ import {
         {url:"/assets/upplev/vallentuna-kyrka/cover.webp",alt:"Vallentuna kyrka"}
       ],
       body:`<p>Medeltidskyrka mitt i byn (ca 1150–1250) — ett av Runrikets stopp med flera runinskrifter. I tornet och bogårdsmuren har murmästare ristat sina namn; inne i tornrummet sitter en runsten inmurad. Ljudguide finns på plats.</p>
-      <p>Fri entré till området runt kyrkan. Mer: <a href="https://www.vallentuna.se/runriket/runrikets-platser/vallentuna-kyrka/" target="_blank" rel="noopener">vallentuna.se / Vallentuna kyrka</a>.</p>`
+      <p>Fri entré till området runt kyrkan. Mer: <a href="https://www.vallentuna.se/runriket/runrikets-platser/vallentuna-kyrka/" target="_blank" rel="noopener">vallentuna.se / Vallentuna kyrka</a>.</p>
+      <p>Vill du ha guidning här? <button type="button" class="place-btn" onclick="openPlace('Sweden History Tours')">Sweden History Tours →</button></p>`
     },
     "Gällsta":{
       address:"Gällsta, väster om Vallentuna",
@@ -702,13 +704,31 @@ import {
       body:`<p><strong>Vallentuna skolmuseum</strong> ligger i det gamla skolhuset (1887–1965) invid Össeby-Garns kyrka i Brottby. På övre våningen finns en rekonstruktion av skolsal och lärarbostad som runt 1910, plus planscher och skolmaterial från nerlagda skolor i kommunen.</p>
       <p>Söndagsöppet under sommaren (t.ex. kl. 13–16 — kolla aktuella datum). Övrig tid: boka via <a href="mailto:kultur@vallentuna.se">kultur@vallentuna.se</a> eller tel 08-587 853 54. Fri entré. Nära Toftesta Holme. Mer: <a href="https://www.vallentuna.se/fritid-och-kultur/kultur/kulturmiljo/vallentuna-skolmuseum/" target="_blank" rel="noopener">vallentuna.se / skolmuseum</a>.</p>`
     },
+    "Sweden History Tours":{
+      address:"Möts på platsen enligt bokning",
+      facts:["Bokas","Svenska & engelska","Historia & folktro","Cykelturer"],
+      localPhotos:true,
+      photoCredit:"Foto från verksamheten.",
+      images:[
+        {url:"/assets/upplev/sweden-history-tours/cover.webp",alt:"Guidning vid runsten med Sweden History Tours"}
+      ],
+      body:`<p>Guideföretag med bas i Vallentuna. De erbjuder turer mot förfrågan — eller när någon bokar — på svenska eller engelska. Fokus på historiska guidningar och folktro.</p>
+      <p>Bland stoppen: Arkils tingstad, Vallentuna kyrka, ute i Markim och Orkesta, samt guidade cykelturer. Specialturer vid jul och halloween erbjuds vid Vallentuna kvarn och runt kyrkan.</p>
+      <p>Boka via <a href="https://www.swedenhistorytours.se/" target="_blank" rel="noopener">swedenhistorytours.se</a>.</p>
+      <div class="plats-soldat"><h3>Platser de guidar</h3><div class="plats-soldat-actions">
+        <button type="button" class="place-btn" onclick="openPlace('Arkils Tingstad')">Arkils tingstad</button>
+        <button type="button" class="place-btn" onclick="openPlace('Vallentuna kyrka')">Vallentuna kyrka</button>
+        <button type="button" class="place-btn" onclick="openPlace('Markims Bergby')">Markim</button>
+        <button type="button" class="place-btn" onclick="openPlace('Orkesta Granby Gård')">Orkesta</button>
+      </div></div>`
+    },
   };
 
-    const cats=[{key:"alla",label:"Allt"},{key:"fika",label:"Fika & Mat"},{key:"gard",label:"Gård & Handelsträdgård"},{key:"natur",label:"Natur & Historia"},{key:"butik",label:"Butik & Kultur"},{key:"loppis",label:"Loppis"}];
+    const cats=[{key:"alla",label:"Allt"},{key:"fika",label:"Fika & Mat"},{key:"gard",label:"Gård & Handelsträdgård"},{key:"natur",label:"Natur & Historia"},{key:"butik",label:"Butik & Kultur"},{key:"loppis",label:"Loppis"},{key:"guidning",label:"Guidning"}];
 
   const DOW=["SÖN","MÅN","TIS","ONS","TOR","FRE","LÖR"];
   const MON=["JAN","FEB","MAR","APR","MAJ","JUN","JUL","AUG","SEP","OKT","NOV","DEC"];
-  const typeLabel={fika:"FIKA",gard:"HANDLA LOKALT",butik:"BUTIK",loppis:"LOPPIS",natur:"NATUR"};
+  const typeLabel={fika:"FIKA",gard:"HANDLA LOKALT",butik:"BUTIK",loppis:"LOPPIS",natur:"NATUR",guidning:"GUIDNING"};
 
   // Editorial category landings (nav + view-kategori)
   const CATEGORIES={
@@ -736,6 +756,11 @@ import {
       key:"natur", nav:"Natur & uteliv", title:"Natur & uteliv",
       lede:"Spänger, bad, runstenar och öppna landskap — utflykter nära dig när du vill andas ut.",
       types:["natur"], mapKey:"natur"
+    },
+    guidning:{
+      key:"guidning", nav:"Guidning", title:"Guidning & historia",
+      lede:"Bokade guidningar i bygden — historia, folktro och platser som berättas på plats. Ingen drop-in; möts enligt bokning.",
+      types:["guidning"], mapKey:null
     },
     producent:{
       key:"producent", nav:"Producenter", title:"Lokala producenter",
@@ -769,7 +794,8 @@ import {
     "Äppellundens Café":"2026-08-14",
     "Roslagsloppis":"2026-08-15",
     "Lilla Cirkeln Secondhand":"2026-08-20",
-    "Vallentuna skolmuseum":"2026-08-20"
+    "Vallentuna skolmuseum":"2026-08-20",
+    "Sweden History Tours":"2026-08-25"
   };
 
   const now=new Date();
@@ -935,11 +961,13 @@ import {
     return CONFIG.center;
   }
   function distToPlace(p){
+    if(!isMappablePlace(p)) return null;
     const [la,ln]=originLatLng();
     return haversineKm(la,ln,p.lat,p.lng);
   }
   function travelEstimate(p){
     const km=distToPlace(p);
+    if(km==null) return null;
     const car=Math.max(3,Math.round(km/45*60));
     const bike=Math.max(5,Math.round(km/15*60));
     const walk=walkMinutesFromKm(km);
@@ -948,6 +976,7 @@ import {
   }
   function travelHTML(p){
     const t=travelEstimate(p);
+    if(!t) return "Möts på platsen enligt bokning — ingen fast adress.";
     const from=t.fromUser?"från dig":"från centrum";
     return `<strong>${fmtDist(t.km)}</strong> ${from}<br>Bil ~${t.car} min · Cykel ~${t.bike} min · SL ~${t.sl} min`;
   }
@@ -1081,7 +1110,7 @@ import {
     if(eventsByHost[p.name]?.some(e=>e.date===todayISO)){s+=22;reasons.push("Event idag");}
     if(isNewPlace(p)){s+=6;reasons.push("Nytt i guiden");}
     if(favorites.has(p.name)){s+=10;reasons.push("Din favorit");}
-    if(userPos){
+    if(userPos && isMappablePlace(p)){
       const km=haversineKm(userPos.lat,userPos.lng,p.lat,p.lng);
       p._km=km;
       if(km<1.2){s+=20;reasons.push(fmtDist(km)+" bort");}
@@ -1994,7 +2023,8 @@ import {
     }
     const meta=metaOf(p);
     if(meta.hours && meta.hours.every(h=>!h) && meta.seasonNote){
-      return `<span class="status-pill closed">Efter överenskommelse</span>`;
+      const book=/bokas|förfrågan|överenskommelse/i.test(meta.seasonNote);
+      return `<span class="status-pill closed">${book?"Bokas":"Efter överenskommelse"}</span>`;
     }
     return `<span class="status-pill closed">Stängt</span>`;
   }
@@ -3756,16 +3786,25 @@ import {
     document.getElementById('platsBody').innerHTML = body;
     const todayHrs=fmtHoursSlot(daySlot(p));
     let statusTxt;
-    if(!isTimedVenue(p)) statusTxt=open?"Alltid tillgänglig":"Ej tillgänglig just nu";
-    else statusTxt=open?(soon?`Öppet — stänger om ${mins} min`:"Öppet nu"):"Stängt just nu";
+    if(!isTimedVenue(p)){
+      const note=metaOf(p).seasonNote||"";
+      if(/bokas|förfrågan|överenskommelse/i.test(note)) statusTxt=/bokas|förfrågan/i.test(note)?"Bokas efter förfrågan":"Efter överenskommelse";
+      else statusTxt=open?"Alltid tillgänglig":"Ej tillgänglig just nu";
+    } else statusTxt=open?(soon?`Öppet — stänger om ${mins} min`:"Öppet nu"):"Stängt just nu";
     if(holidayToday&&isHolidayClosed(p)) statusTxt=`Stängt (${holidayToday})`;
     const tags=placeTags(p).map(t=>TAG_LABEL[t]||t);
     let info = `<div class="irow"><span class="k">Kategori</span><span class="v">${p.cat}${isNewPlace(p)?" · Nytt":""}</span></div>`;
     info += `<div class="irow"><span class="k">Status</span><span class="v ${open?'open':'closed'}">${statusTxt}</span></div>`;
     info += `<div class="irow"><span class="k">Idag</span><span class="v">${todayHrs}</span></div>`;
     if(tags.length) info += `<div class="irow"><span class="k">Passar</span><span class="v">${tags.join(" · ")}</span></div>`;
-    const t=travelEstimate(p); p._km=t.km;
-    info += `<div class="irow"><span class="k">Avstånd</span><span class="v">${fmtDist(t.km)} ${t.fromUser?"från dig":"från centrum"}</span></div>`;
+    const t=travelEstimate(p);
+    if(t){
+      p._km=t.km;
+      info += `<div class="irow"><span class="k">Avstånd</span><span class="v">${fmtDist(t.km)} ${t.fromUser?"från dig":"från centrum"}</span></div>`;
+    } else {
+      p._km=null;
+      info += `<div class="irow"><span class="k">Möte</span><span class="v">På platsen enligt bokning</span></div>`;
+    }
     if(p.phone) info += `<div class="irow"><span class="k">Telefon</span><span class="v"><a href="tel:${p.phone.replace(/\s/g,'')}" onclick="trackEvent('phone','${jsEsc(p.name)}')">${p.phone}</a></span></div>`;
     if(p.url) info += `<div class="irow"><span class="k">Hemsida</span><span class="v"><a href="${p.url}" target="_blank" rel="noopener" onclick="trackEvent('website','${jsEsc(p.name)}')">Besök hemsidan →</a></span></div>`;
     document.getElementById('platsInfo').innerHTML=info;
@@ -3773,8 +3812,18 @@ import {
     const hrsEl=document.getElementById('platsHours'); if(hrsEl) hrsEl.innerHTML=hoursTableHTML(p);
     const favBtn=document.getElementById('platsFavBtn');
     if(favBtn){const on=favorites.has(p.name);favBtn.classList.toggle('on',on);favBtn.textContent=on?'♥ Sparad':'♡ Spara som favorit';}
-    document.getElementById('platsDir').href=`https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}`;
-    document.getElementById('platsDir').onclick=()=>trackEvent('hitta-hit',p.name);
+    const dir=document.getElementById('platsDir');
+    if(dir){
+      if(isMappablePlace(p)){
+        dir.hidden=false;
+        dir.href=`https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}`;
+        dir.onclick=()=>trackEvent('hitta-hit',p.name);
+      } else {
+        dir.hidden=true;
+        dir.removeAttribute('href');
+        dir.onclick=null;
+      }
+    }
     const evs=eventsByHost[p.name]||[];
     document.getElementById('platsEvent').innerHTML = evs.length
       ? `<div class="plats-ev"><div class="lbl">📅 Händer här</div><h4>${evs[0].title}</h4><div class="when">${evs[0].when}</div><p>${evs[0].note}</p><div class="remind-actions">${remindBtnHTML(evs[0])}</div></div>` : '';
