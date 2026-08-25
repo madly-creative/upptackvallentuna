@@ -265,6 +265,11 @@ for (const p of places) {
   const atPlace = producersAtPlaceSlug(slug);
 
   const hoursSpec = openingHoursSpecification(p);
+  const mappable =
+    typeof p.lat === "number" &&
+    typeof p.lng === "number" &&
+    Number.isFinite(p.lat) &&
+    Number.isFinite(p.lng);
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": schemaType,
@@ -274,7 +279,9 @@ for (const p of places) {
     url: canonical,
     ...(p.phone ? { telephone: p.phone } : {}),
     ...(p.url ? { sameAs: [p.url] } : {}),
-    geo: { "@type": "GeoCoordinates", latitude: p.lat, longitude: p.lng },
+    ...(mappable
+      ? { geo: { "@type": "GeoCoordinates", latitude: p.lat, longitude: p.lng } }
+      : {}),
     address: {
       "@type": "PostalAddress",
       addressLocality: meta.district || SITE.kommun,
@@ -288,9 +295,11 @@ for (const p of places) {
   const links = [];
   if (p.url) links.push(`<a href="${esc(p.url)}" target="_blank" rel="noopener">Webbplats</a>`);
   links.push(`<a href="/?plats=${encodeURIComponent(slug)}">Öppna i guiden</a>`);
-  links.push(
-    `<a href="https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}" target="_blank" rel="noopener">Hitta hit</a>`
-  );
+  if (mappable) {
+    links.push(
+      `<a href="https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}" target="_blank" rel="noopener">Hitta hit</a>`
+    );
+  }
 
   const producersBlock = atPlace.length
     ? `<h2>Lokala producenter här</h2>

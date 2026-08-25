@@ -45,6 +45,7 @@ const PLACES_RAW = [
     {name:"Roslagsloppis",cat:"Bakluckeloppis",type:"loppis",lat:59.6347953,lng:18.3315439,color:"#7a5a4a",oh:11,ch:15,web:true,url:"https://www.roslagsloppis.se/",blurb:"Stor bakluckeloppis bakom Roslagsstoppet vid Söderhall — sälj från bilen eller fynda bland andra. Söndagar 11–15 under sommarsäsongen; fri entré för besökare. Missa inte cocosbollarna från fabriken intill.",short:"Söndagsbakluckeloppis vid Roslagsstoppet.",img:"/assets/upplev/roslagsloppis/cover.webp"},
     {name:"Lilla Cirkeln Secondhand",cat:"Second Hand",type:"loppis",aka:["Lillacirkeln Secondhand","Lilla Cirkeln"],lat:59.53425,lng:18.07855,color:"#7a5a4a",oh:10,ch:18,web:true,url:"https://www.lillacirkeln.se/",blurb:"Kommissionsbaserad second hand mitt på Tuna Torg — kläder, barnprylar och märkesfynd i liten, personlig butik. Klimatsmart shopping utan att lämna centrum.",short:"Personlig second hand mitt på Tuna Torg.",img:"/assets/upplev/lilla-cirkeln-secondhand/cover.webp"},
     {name:"Vallentuna skolmuseum",cat:"Kultur & Museum",type:"natur",aka:["Skolmuseet","Össeby-Garn skolmuseum"],lat:59.56265,lng:18.25415,color:"#2f3d2e",oh:13,ch:16,web:true,url:"https://www.vallentuna.se/fritid-och-kultur/kultur/kulturmiljo/vallentuna-skolmuseum/",phone:"+46 8 587 853 54",blurb:"I skolhuset från 1887 vid Össeby-Garns kyrka står en skolsal och lärarbostad som runt 1910 — plus planscher och skolmaterial från bygden. Nära Toftesta Holme; fri entré när det är öppet.",short:"Skolsal från 1910-talet vid Össeby-Garns kyrka.",img:"/assets/upplev/vallentuna-skolmuseum/cover.webp"},
+    {name:"Sweden History Tours",cat:"Guidning & historia",type:"guidning",color:"#2f3d2e",oh:0,ch:0,web:true,url:"https://www.swedenhistorytours.se/",blurb:"Lokalt guideföretag — bokade turer på svenska eller engelska vid Arkils tingstad, Vallentuna kyrka, i Markim och Orkesta, plus guidade cykelturer. Fokus på historiska guidningar och folktro; specialturer vid jul och halloween runt kvarnen och kyrkan.",short:"Guidade historieturer och folktro — bokas efter förfrågan.",img:"/assets/upplev/sweden-history-tours/cover.webp"},
 ];
 
 /** Stable URL slugs when display spelling differs from the historical path. */
@@ -113,6 +114,8 @@ export function schemaTypeFor(place) {
       return "Store";
     case "natur":
       return "TouristAttraction";
+    case "guidning":
+      return "TouristInformationCenter";
     default:
       return "LocalBusiness";
   }
