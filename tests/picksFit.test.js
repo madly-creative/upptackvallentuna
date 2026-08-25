@@ -9,6 +9,7 @@ import {
   weatherScoreDelta,
   daypartTypesForMood,
   picksWhyForWeather,
+  pickWeatherFitPlace,
 } from "../src/lib/picksFit.js";
 import { selectRotatedDiversePicks, picksRotationSeed } from "../src/lib/picksRotate.js";
 
@@ -36,6 +37,12 @@ const angarn = {
   type: "natur",
   short: "Fågelliv och spänger.",
 };
+const bageri = {
+  name: "Stenugnsbageri",
+  cat: "Bageri",
+  type: "fika",
+  short: "Buller",
+};
 
 describe("picksFit weather", () => {
   it("detects outdoor baths", () => {
@@ -50,7 +57,6 @@ describe("picksFit weather", () => {
     expect(isHotSwimWeather(21, 0)).toBe(false);
     expect(isHotSwimWeather(28, 61)).toBe(false);
   });
-
 
   it("never features AutoMat Kårsta in Handplockat pool", () => {
     expect(isHandplockEligible(automat)).toBe(false);
@@ -78,26 +84,33 @@ describe("picksFit weather", () => {
     expect(picks.map((x) => x.p.name)).not.toContain("AutoMat Kårsta");
   });
 
-  it("excludes baths and natur from rough Handplockat", () => {
+  it("excludes baths unless hot-swim; excludes natur from rough", () => {
     expect(placeFitsWeatherMood(kvarnbadet, "rough")).toBe(false);
     expect(placeFitsWeatherMood(angarn, "rough")).toBe(false);
     expect(placeFitsWeatherMood(mjolkrummet, "rough")).toBe(true);
     expect(placeFitsWeatherMood(automat, "rough")).toBe(true);
-    expect(placeFitsWeatherMood(kvarnbadet, "nice")).toBe(true);
+    // 15° / nice without hot opts → no baths
+    expect(placeFitsWeatherMood(kvarnbadet, "nice")).toBe(false);
+    expect(placeFitsWeatherMood(kvarnbadet, "mild")).toBe(false);
+    expect(placeFitsWeatherMood(kvarnbadet, "nice", { temp: 28, code: 0 })).toBe(true);
+    expect(placeFitsWeatherMood(angarn, "nice")).toBe(true);
   });
 
-  it("filterRankedForWeather drops Kvarnbadet in rain", () => {
+  it("filterRankedForWeather drops Kvarnbadet in rain and cool mild", () => {
     const ranked = [
       { p: kvarnbadet, score: 70, open: true },
       { p: mjolkrummet, score: 65, open: true },
       { p: automat, score: 60, open: true },
       { p: angarn, score: 55, open: true },
     ];
-    const out = filterRankedForWeather(ranked, "rough");
-    expect(out.map((x) => x.p.name)).toEqual([
+    const rough = filterRankedForWeather(ranked, "rough");
+    expect(rough.map((x) => x.p.name)).toEqual([
       "Gårdsbutiken Gamla Mjölkrummet",
       "AutoMat Kårsta",
     ]);
+    const mild15 = filterRankedForWeather(ranked, "mild", { temp: 15, code: 2 });
+    expect(mild15.map((x) => x.p.name)).not.toContain("Kvarnbadet");
+    expect(mild15.map((x) => x.p.name)).toContain("Angarnssjöängen");
   });
 
   it("rough Handplockat rotation never picks Kvarnbadet for diversity", () => {
@@ -107,7 +120,7 @@ describe("picksFit weather", () => {
       { p: { name: "Vallboden", cat: "Butik", type: "butik", short: "Keramik" }, score: 70, open: true },
       { p: kvarnbadet, score: 68, open: true },
       { p: { name: "Lindra Second Hand", cat: "Second Hand", type: "loppis", short: "Fynd" }, score: 66, open: true },
-      { p: { name: "Stenugnsbageri", cat: "Bageri", type: "fika", short: "Buller" }, score: 64, open: true },
+      { p: bageri, score: 64, open: true },
       { p: angarn, score: 50, open: true },
       { p: { name: "Ellen's Corner", cat: "Mode", type: "butik", short: "Boutique" }, score: 62, open: true },
     ];
@@ -154,9 +167,35 @@ describe("picksFit weather", () => {
     expect(picks.map((x) => x.p.name)).toContain("Kvarnbadet");
   });
 
+  it("cool nice/mild days never pick Kvarnbadet for Passar vädret", () => {
+    const ranked = [
+      { p: kvarnbadet, score: 90, open: true },
+      { p: angarn, score: 80, open: true },
+      { p: mjolkrummet, score: 70, open: true },
+      { p: bageri, score: 65, open: true },
+    ];
+    // 15° växlande moln → mild path
+    const mild = pickWeatherFitPlace(ranked, { mood: "mild", temp: 15, code: 2 });
+    expect(mild?.p.name).not.toBe("Kvarnbadet");
+    expect(["Angarnssjöängen", "Gårdsbutiken Gamla Mjölkrummet", "Stenugnsbageri"]).toContain(
+      mild?.p.name
+    );
+
+    const niceCool = pickWeatherFitPlace(ranked, { mood: "nice", temp: 18, code: 1 });
+    expect(niceCool?.p.name).not.toBe("Kvarnbadet");
+
+    const hot = pickWeatherFitPlace(ranked, { mood: "nice", temp: 26, code: 0 });
+    expect(hot?.p.name).toBe("Kvarnbadet");
+  });
+
   it("penalizes outdoor baths hard in rough scoring delta", () => {
     expect(weatherScoreDelta(kvarnbadet, "rough")).toBeLessThanOrEqual(-50);
     expect(weatherScoreDelta(automat, "rough", { hasTag: () => true })).toBeGreaterThan(0);
+  });
+
+  it("penalizes baths on cool nice days", () => {
+    expect(weatherScoreDelta(kvarnbadet, "nice", { temp: 16, code: 1 })).toBeLessThan(0);
+    expect(weatherScoreDelta(angarn, "nice", { temp: 16, code: 1 })).toBeGreaterThan(0);
   });
 
   it("drops natur from daypart types when rough; adds natur when hot lunch", () => {
