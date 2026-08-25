@@ -27,7 +27,7 @@ import {
   stockholmHourMinute,
   stockholmMonth,
 } from "../data/stockholm.js";
-import { picksRotationSeed, selectRotatedDiversePicks } from "../lib/picksRotate.js";
+import { picksRotationSeed, selectRotatedDiversePicks, hashStr } from "../lib/picksRotate.js";
 import {
   daypartTypesForMood,
   prepareRankedForPicks,
@@ -2627,13 +2627,18 @@ import {
     const openHit=rotated.find(x=>!isTimedVenue(x.p) || isOpen(x.p));
     return (openHit||rotated[0])?.p || null;
   }
+  /** Daily base so first load isn't locked on the top-scoring fika (e.g. Konditoriet). */
+  function routeDayOffset(){
+    return hashStr(`route|${todayISO}|${daypart}|${ctx.mood||"mild"}|${ctx.code??""}`);
+  }
   function buildRoute(){
+    const base=routeDayOffset()+routeSeed;
     const except=new Set(homeShownNames);
-    const fika=pickFromPool(pickBest("fika",except), routeSeed);
+    const fika=pickFromPool(pickBest("fika",except), base);
     if(fika) except.add(fika.name);
-    const gard=pickFromPool(pickBest("gard",except), routeSeed+1);
+    const gard=pickFromPool(pickBest("gard",except), base+1);
     if(gard) except.add(gard.name);
-    const natur=pickFromPool(pickBest("natur",except), routeSeed+2);
+    const natur=pickFromPool(pickBest("natur",except), base+2);
     return [fika,gard,natur].filter(Boolean);
   }
   function journeyStepHTML(p, n, kind){
