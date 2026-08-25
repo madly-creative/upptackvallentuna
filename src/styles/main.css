@@ -98,6 +98,15 @@
     padding:10px 16px;border-radius:999px;cursor:pointer;transition:all .18s;white-space:nowrap;
   }
   .btn-outline:hover{background:var(--moss-deep);color:var(--paper)}
+  /* Secondary CTA — same look as outline, but never hidden on mobile (Tipsa uses .btn-outline) */
+  .btn-secondary{
+    font-family:inherit;appearance:none;
+    font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;
+    color:var(--moss-deep);background:transparent;border:1.5px solid var(--moss-deep);
+    padding:10px 16px;border-radius:999px;cursor:pointer;transition:all .18s;white-space:nowrap;
+  }
+  .btn-secondary:hover{background:var(--moss-deep);color:var(--paper)}
+  .btn-secondary:focus-visible{outline:2px solid var(--rust);outline-offset:3px}
 
   .view{display:none}
   .view.on{display:block;animation:fade .35s ease}
@@ -1728,7 +1737,7 @@
     box-shadow:0 14px 36px rgba(47,61,46,.12);
   }
   .today-brief-head{
-    display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;
+    display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;
     gap:8px 16px;margin-bottom:16px;
   }
   .today-brief-head h2{

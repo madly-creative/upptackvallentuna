@@ -35,6 +35,7 @@ import {
   isOutdoorBathPlace,
   isHotSwimWeather,
   picksWhyForWeather,
+  pickWeatherFitPlace,
 } from "../lib/picksFit.js";
 import {
   matchesPrimaryOrSecondary,
@@ -1087,7 +1088,7 @@ import {
     const hot=isHotSwimWeather(ctx.temp, ctx.code);
     if(hot && isOutdoorBathPlace(p)){
       reasons.push("Perfekt baddags");
-    } else if(ctx.mood==="nice" && (["natur","gard","loppis"].includes(p.type) || hasTag(p,"ute"))){
+    } else if(ctx.mood==="nice" && !isOutdoorBathPlace(p) && (["natur","gard","loppis"].includes(p.type) || hasTag(p,"ute"))){
       const outdoor=["Soligt läge","Fin dag ute","Landskapet kallar","Bra utflyktsväder"];
       if(!reasons.some(r=>outdoor.includes(r))){
         reasons.push(outdoor[Math.abs([...p.name].reduce((a,c)=>a+c.charCodeAt(0),0))%outdoor.length]);
@@ -1269,10 +1270,9 @@ import {
         <header class="nara-dig-head">
           <div class="nara-dig-titles">
             <h2>Upptäck runt hörnet</h2>
-            <p class="nara-dig-sub">Tre platser nära dig — fika, natur och mer. Zooma kartan eller öppna ett stopp direkt.</p>
+            <p class="nara-dig-sub">Fika, natur, gårdar och mer — zooma kartan, filtrera eller byt till lista.</p>
           </div>
         </header>
-        <div class="nara-dig-teasers" id="naraDigTeasers" aria-label="Platser nära dig"></div>
         <div class="nara-dig-toolbar">
           <div class="nara-dig-filters" id="naraDigFilters" role="toolbar" aria-label="Filter"></div>
           <div class="nara-dig-head-actions">
@@ -1446,38 +1446,8 @@ import {
     });
   }
 
-  function renderNearDigTeasers(){
-    const el=document.getElementById("naraDigTeasers");
-    if(!el) return;
-    const hits=nearDigHits().slice(0,3);
-    if(!hits.length){
-      el.innerHTML=`<p class="nara-dig-empty">Inga platser med nuvarande filter — prova en annan kategori.</p>`;
-      return;
-    }
-    el.innerHTML=hits.map(({place:p, km})=>{
-      const open=nearDigIsOpen(p);
-      const dist=km!=null?fmtDist(km):(nearDigPos?"":"");
-      const sub=[typeLabel[p.type]||p.cat, open&&isTimedVenue(p)?"Öppet nu":null, dist].filter(Boolean).join(" · ");
-      return `<button type="button" class="nara-dig-teaser" data-name="${escHtml(p.name)}">
-        <span class="nara-dig-teaser-im" style="background-image:url('${escHtml(p.img)}')" aria-hidden="true"></span>
-        <span class="nara-dig-teaser-copy">
-          <strong>${escHtml(p.name)}</strong>
-          <span>${escHtml(sub||p.short||"")}</span>
-        </span>
-        <span class="nara-dig-teaser-go" aria-hidden="true">→</span>
-      </button>`;
-    }).join("");
-    el.querySelectorAll(".nara-dig-teaser").forEach(btn=>{
-      btn.addEventListener("click",()=>{
-        const name=btn.dataset.name;
-        if(name) openPlace(name);
-      });
-    });
-  }
-
   function renderNearDigContent(){
     const hits=nearDigHits();
-    renderNearDigTeasers();
     renderNearDigPanel(hits);
     renderNearDigList();
     syncNearDigAskBtn();
@@ -1998,7 +1968,8 @@ import {
     const rainy=[51,53,55,56,57,61,63,65,66,67,71,73,75,77,80,81,82,85,86,95,96,99].includes(code);
     const cold=temp!=null&&temp<8;
     if(rainy||cold)return "rough";
-    if(code<=2 && temp!=null && temp>=15)return "nice";
+    // "Nice" = riktigt fint uteväder — 15° + växlande moln är mild, inte badväder
+    if(code<=2 && temp!=null && temp>=18)return "nice";
     return "mild";
   }
   function statusPill(p){
@@ -2161,45 +2132,45 @@ import {
     const ranked=rankedPlaces();
     const wk=ctx.code!=null?weatherKind(ctx.code):null;
     const hot=isHotSwimWeather(ctx.temp, ctx.code);
+    const mood=ctx.mood||"mild";
+    const hit=pickWeatherFitPlace(ranked, {
+      mood,
+      temp:ctx.temp,
+      code:ctx.code,
+      isTimedVenue,
+    });
+    const place=hit?.p||null;
+    const why=place?.short||place?.blurb||"Handplockat tips";
     // Underrubrik = platsens egen text — inte samma väderfras som på korten.
     if(hot){
-      const hit=ranked.find(x=>isOutdoorBathPlace(x.p))
-        ||ranked.find(x=>x.p.type==="natur")
-        ||ranked.find(x=>x.open);
       return {
         label: ctx.temp!=null?`${wk?.t||"Varmt"} · ${ctx.temp}°`:"Stekhett",
         hint:"Dags att bada",
-        place:hit?.p||null,
-        why:hit?.p?.short||hit?.p?.blurb||"Svalka i bygden"
+        place,
+        why:why==="Handplockat tips"?"Svalka i bygden":why
       };
     }
-    if(ctx.mood==="nice"){
-      const hit=ranked.find(x=>["natur","gard","loppis"].includes(x.p.type))||ranked.find(x=>x.open);
+    if(mood==="nice"){
       return {
         label: ctx.temp!=null?`${wk?.t||"Fint"} · ${ctx.temp}°`:"Fint väder",
         hint:"Passar uteliv",
-        place:hit?.p||null,
-        why:hit?.p?.short||hit?.p?.blurb||"Ut och njut i bygden"
+        place,
+        why:why==="Handplockat tips"?"Ut och njut i bygden":why
       };
     }
-    if(ctx.mood==="rough"){
-      const hit=ranked.find(x=>["fika","butik"].includes(x.p.type)&&x.open)
-        ||ranked.find(x=>x.p.type==="fika")
-        ||ranked.find(x=>["butik","gard","loppis"].includes(x.p.type)&&x.open)
-        ||ranked.find(x=>!isOutdoorBathPlace(x.p) && x.p.type!=="natur" && x.open);
+    if(mood==="rough"){
       return {
         label: ctx.temp!=null?`${wk?.t||"Mulet"} · ${ctx.temp}°`:"Inomhusväder",
         hint:"Mysigt inomhus",
-        place:hit?.p||null,
-        why:hit?.p?.short||hit?.p?.blurb||"Varm dryck under tak"
+        place,
+        why:why==="Handplockat tips"?"Varm dryck under tak":why
       };
     }
-    const hit=ranked.find(x=>x.open)||ranked[0];
     return {
       label: ctx.temp!=null?`${wk?.t||"Lokalt"} · ${ctx.temp}°`:`Just nu i ${K}`,
       hint:"Passar läget",
-      place:hit?.p||null,
-      why:hit?.p?.short||hit?.p?.blurb||"Handplockat tips"
+      place,
+      why
     };
   }
   function todayBriefItem(thumb, name, sub, onclick){
@@ -2219,7 +2190,7 @@ import {
     const titleEl=document.getElementById('todayBriefTitle');
     const metaEl=document.getElementById('todayBriefMeta');
     const weekend=isWeekendWindow();
-    if(titleEl) titleEl.textContent=weekend?`Helgen i ${K}`:`Just nu i ${K}`;
+    if(titleEl) titleEl.textContent=weekend?`Helgen i ${K}`:`Händer i ${K}`;
 
     const openRanked=rankedPlaces().filter(x=>x.open && isTimedVenue(x.p)).slice(0,3);
     const openN=openVenueCount();

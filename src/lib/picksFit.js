@@ -1,6 +1,6 @@
 /**
- * Weather-aware fit for Handplockat / ranking.
- * Rough → under tak. Hot → bad. Nice → ute.
+ * Weather-aware fit for Handplockat / ranking / "Passar vädret".
+ * Rough → under tak. Hot (≥22°) → bad. Nice → ute utan bad. Mild → öppna ställen, ej bad.
  */
 
 const BATH_RE = /\bbad(plats|sjö|et)?\b|utomhusbad|bassäng|beachvolley|sandstrand|brygga/i;
@@ -22,7 +22,6 @@ export function isHandplockEligible(p) {
 
 /** Outdoor swim / beach. */
 export function isOutdoorBathPlace(p) {
-
   if (!p) return false;
   const blob = [p.name, p.cat, p.short, p.blurb].filter(Boolean).join(" ");
   if (OUTDOOR_CAT_RE.test(p.cat || "") && BATH_RE.test(blob)) return true;
@@ -30,7 +29,7 @@ export function isOutdoorBathPlace(p) {
   return false;
 }
 
-/** Stekhett + no rain → Handplockat should lean into swimming. */
+/** Stekhett + no rain → Handplockat / Passar vädret may lean into swimming. */
 export function isHotSwimWeather(temp, code) {
   if (temp == null || temp < 22) return false;
   if (code != null && RAINY_CODES.includes(code)) return false;
@@ -38,15 +37,17 @@ export function isHotSwimWeather(temp, code) {
 }
 
 /**
- * True if the place is a sensible Handplockat tip for this weather mood.
+ * True if the place is a sensible tip for this weather mood.
+ * Baths only when it is actually hot-swim weather (not merely "nice" at 15°).
  * @param {{ type?: string, cat?: string, name?: string, short?: string, blurb?: string }} p
  * @param {"nice"|"mild"|"rough"|string} mood
  * @param {{ hasTag?: (p: object, tag: string) => boolean, temp?: number|null, code?: number|null }} [opts]
  */
 export function placeFitsWeatherMood(p, mood, opts = {}) {
   if (!p) return false;
+  const hot = isHotSwimWeather(opts.temp, opts.code);
+  if (isOutdoorBathPlace(p) && !hot) return false;
   if (mood === "rough") {
-    if (isOutdoorBathPlace(p)) return false;
     if (p.type === "natur") return false;
     return true;
   }
@@ -82,13 +83,14 @@ export function weatherScoreDelta(p, mood, opts = {}) {
   if (hot && isOutdoorBathPlace(p)) {
     d += 42; // beat typical open shops so Handplockat actually features a bath
   } else if (mood === "nice") {
-    if (isOutdoorBathPlace(p)) d += 20;
-    if (["natur", "gard", "loppis"].includes(p.type)) d += 18;
+    if (isOutdoorBathPlace(p)) d -= 25; // cool "nice" must not surface baths
+    if (["natur", "gard", "loppis"].includes(p.type) && !isOutdoorBathPlace(p)) d += 18;
     if (hasTag(p, "ute")) d += 8;
     if (p.type === "natur" && !isOutdoorBathPlace(p)) d += 6;
   } else if (mood === "mild") {
-    if (hasTag(p, "ute")) d += 2;
-    if (isOutdoorBathPlace(p) && opts.temp != null && opts.temp >= 18) d += 8;
+    if (["fika", "gard", "butik"].includes(p.type)) d += 6;
+    if (hasTag(p, "ute") && !isOutdoorBathPlace(p)) d += 2;
+    if (isOutdoorBathPlace(p)) d -= 30;
   }
 
   return d;
@@ -133,9 +135,66 @@ export function prepareRankedForPicks(ranked, mood, opts = {}) {
   }
   if (!baths.length) return list;
 
-  // Highest-scoring bath first, then the rest (rotation still diversifies types)
   baths.sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
   return [...baths, ...rest];
+}
+
+/**
+ * Pick one place for the "Passar vädret" card.
+ * @param {Array<{p: object, open?: boolean, score?: number}>} ranked
+ * @param {{ mood?: string, temp?: number|null, code?: number|null, isTimedVenue?: (p:object)=>boolean }} opts
+ */
+export function pickWeatherFitPlace(ranked, opts = {}) {
+  const list = ranked || [];
+  const mood = opts.mood || "mild";
+  const hot = isHotSwimWeather(opts.temp, opts.code);
+  const timed = opts.isTimedVenue || (() => true);
+  const find = (pred) => list.find((x) => x?.p && pred(x));
+
+  if (hot) {
+    return (
+      find((x) => isOutdoorBathPlace(x.p)) ||
+      find((x) => x.p.type === "natur" && !isOutdoorBathPlace(x.p)) ||
+      find((x) => x.open) ||
+      list[0] ||
+      null
+    );
+  }
+
+  if (mood === "rough") {
+    return (
+      find((x) => ["fika", "butik"].includes(x.p.type) && x.open) ||
+      find((x) => x.p.type === "fika") ||
+      find((x) => ["butik", "gard", "loppis"].includes(x.p.type) && x.open) ||
+      find((x) => !isOutdoorBathPlace(x.p) && x.p.type !== "natur" && x.open) ||
+      find((x) => !isOutdoorBathPlace(x.p) && x.p.type !== "natur") ||
+      null
+    );
+  }
+
+  if (mood === "nice") {
+    // Ute — men inte bad när det inte är badväder
+    return (
+      find(
+        (x) =>
+          !isOutdoorBathPlace(x.p) &&
+          ["natur", "gard", "loppis"].includes(x.p.type) &&
+          (x.open || !timed(x.p))
+      ) ||
+      find((x) => x.p.type === "fika" && x.open) ||
+      find((x) => !isOutdoorBathPlace(x.p) && x.open) ||
+      find((x) => !isOutdoorBathPlace(x.p)) ||
+      null
+    );
+  }
+
+  // mild: växlande / svalare — öppna fik & gårdar, aldrig bad
+  return (
+    find((x) => ["fika", "gard", "butik"].includes(x.p.type) && x.open) ||
+    find((x) => !isOutdoorBathPlace(x.p) && x.open) ||
+    find((x) => !isOutdoorBathPlace(x.p)) ||
+    null
+  );
 }
 
 /** Copy hint for Handplockat eyebrow when weather drives the pitch. */
