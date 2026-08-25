@@ -710,17 +710,14 @@ import {
       localPhotos:true,
       photoCredit:"Foto från verksamheten.",
       images:[
-        {url:"/assets/upplev/sweden-history-tours/cover.webp",alt:"Guidning vid runsten med Sweden History Tours"}
+        {url:"/assets/upplev/sweden-history-tours/medeltidskyrka.webp",alt:"Medeltidskyrka i landskapet under guidning"},
+        {url:"/assets/upplev/sweden-history-tours/guide-runsten.webp",alt:"Guide vid runsten ute i markerna"},
+        {url:"/assets/upplev/sweden-history-tours/runsten-besok.webp",alt:"Besökare vid runsten under guidning"}
       ],
       body:`<p>Guideföretag med bas i Vallentuna. De erbjuder turer mot förfrågan — eller när någon bokar — på svenska eller engelska. Fokus på historiska guidningar och folktro.</p>
       <p>Bland stoppen: Arkils tingstad, Vallentuna kyrka, ute i Markim och Orkesta, samt guidade cykelturer. Specialturer vid jul och halloween erbjuds vid Vallentuna kvarn och runt kyrkan.</p>
-      <p>Boka via <a href="https://www.swedenhistorytours.se/" target="_blank" rel="noopener">swedenhistorytours.se</a>.</p>
-      <div class="plats-soldat"><h3>Platser de guidar</h3><div class="plats-soldat-actions">
-        <button type="button" class="place-btn" onclick="openPlace('Arkils Tingstad')">Arkils tingstad</button>
-        <button type="button" class="place-btn" onclick="openPlace('Vallentuna kyrka')">Vallentuna kyrka</button>
-        <button type="button" class="place-btn" onclick="openPlace('Markims Bergby')">Markim</button>
-        <button type="button" class="place-btn" onclick="openPlace('Orkesta Granby Gård')">Orkesta</button>
-      </div></div>`
+      <p>Sedan 2015 har guiderna tagit ut mer än 29 000 gäster till historiska platser i landskapet — vid runstenar, medeltidskyrkor och andra fornlämningar, inte inne på museum. Privata turer eller små grupper om högst 16 personer.</p>
+      <p>Boka via <a href="https://www.swedenhistorytours.se/" target="_blank" rel="noopener">swedenhistorytours.se</a>.</p>`
     },
   };
 
