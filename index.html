@@ -273,16 +273,17 @@
     </div>
   </div>
 
-  <!-- 2. Helgen / Just nu -->
+  <!-- 2. Helgen / Just nu (evenemang + öppet + väder i ett) -->
   <section class="today-brief" id="todayBrief" aria-label="Helgen i Vallentuna">
     <div class="inner">
       <header class="today-brief-head">
         <div>
-          <div class="eyebrow" id="todayBriefEyebrow">Just nu</div>
-          <h2 id="todayBriefTitle">Händer i Vallentuna</h2>
+          <h2 id="todayBriefTitle">Helgen i Vallentuna</h2>
+          <p class="today-brief-meta" id="todayBriefMeta"></p>
         </div>
-        <p class="today-brief-meta" id="todayBriefMeta"></p>
+        <button type="button" class="more" onclick="showView('hander')">Alla evenemang →</button>
       </header>
+      <div class="today-brief-feature" id="todayBriefFeature"></div>
       <div class="today-brief-grid" id="todayBriefGrid"></div>
     </div>
   </section>
@@ -297,32 +298,7 @@
   <!-- 3. Upptäck runt hörnet — karta -->
   <div id="naraDigRoot"></div>
 
-  <div class="quick-paths" id="quickPaths" aria-label="Snabbvägar">
-    <div class="inner">
-      <span class="qlabel">Utforska</span>
-      <button type="button" class="qchip" onclick="openCategory('fika')">Äta &amp; fika</button>
-      <button type="button" class="qchip" onclick="openCategory('gard')">Handla lokalt</button>
-      <button type="button" class="qchip" onclick="openCategory('loppis')">Loppis</button>
-      <button type="button" class="qchip" onclick="openCategory('natur')">Natur &amp; uteliv</button>
-      <button type="button" class="qchip" onclick="openCategory('producent')">Producenter</button>
-      <button type="button" class="qchip" onclick="showView('hander')">Evenemang</button>
-      <button type="button" class="qchip" onclick="showView('karta')">Karta</button>
-    </div>
-  </div>
-
-  <!-- 4. Händer i bygden -->
-  <div class="sec" id="eventsHomeSec">
-    <div class="sec-head">
-      <div>
-        <h2 id="happenHeading">Händer i bygden</h2>
-        <div class="wtip" id="happenWhy" style="margin-top:6px"></div>
-      </div>
-      <button type="button" class="more" onclick="showView('hander')">Alla evenemang →</button>
-    </div>
-    <div class="happen-grid" id="happenGrid"></div>
-  </div>
-
-  <!-- 5. Handplockat just nu -->
+  <!-- 4. Handplockat just nu -->
   <div class="sec picks-sec">
     <div class="sec-head">
       <div>
@@ -334,38 +310,36 @@
     <div class="picks-grid" id="picksGrid"></div>
   </div>
 
-  <!-- 6. Färdiga guider -->
+  <!-- 5. Färdiga guider -->
   <section class="sec guides-sec" id="guidesHomeSec" hidden aria-labelledby="guidesHomeTitle">
     <div class="guides-sec-inner">
       <header class="guides-home-head">
         <div class="guides-home-copy">
-          <div class="guides-home-eyebrow">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 5.5C4 4.67 4.67 4 5.5 4H11v14.5H5.5A1.5 1.5 0 0 1 4 17V5.5zM20 5.5c0-.83-.67-1.5-1.5-1.5H13v14.5h5.5a1.5 1.5 0 0 0 1.5-1.5V5.5z" stroke="currentColor" stroke-width="1.6"/><path d="M13 4v14.5" stroke="currentColor" stroke-width="1.6"/></svg>
-            Guider
-          </div>
           <h2 id="guidesHomeTitle">Färdiga guider för alla slags dagar</h2>
-          <p class="guides-home-lede">Berättade stopp, lokala tips och smultronställen – vi har gjort jobbet, du njuter.</p>
+          <p class="guides-home-lede">Berättade stopp och smultronställen — vi har gjort jobbet, du njuter.</p>
         </div>
         <button type="button" class="guides-home-all" onclick="showView('guider')">Alla guider →</button>
       </header>
-      <div class="guides-home-filters" id="guidesHomeFilters" role="tablist" aria-label="Filtrera guider"></div>
       <div class="guides-home-row" id="guidesHomeTeaser"></div>
     </div>
   </section>
 
-  <!-- 7. Gör en eftermiddag -->
+  <!-- 6. Gör en eftermiddag -->
   <div class="sec route-sec">
     <div class="sec-head">
       <div>
         <h2>Gör en eftermiddag</h2>
-        <div class="wtip" style="margin-top:6px">Tre stopp — fika, gård och natur</div>
+        <div class="wtip" id="routeWhy" style="margin-top:6px">Tre stopp — fika, gård och natur</div>
       </div>
-      <button type="button" class="more" onclick="reshuffleRoute()">Ny rutt →</button>
+      <div class="route-actions">
+        <button type="button" class="more" id="routeMapsBtn" hidden>Öppna i Maps →</button>
+        <button type="button" class="more" onclick="reshuffleRoute()">Ny rutt →</button>
+      </div>
     </div>
-    <div class="journey" id="routeGrid"></div>
+    <div class="journey journey-timeline" id="routeGrid"></div>
   </div>
 
-  <!-- 8. Vallentuna levererar -->
+  <!-- 7. Vallentuna levererar -->
   <div class="sec levererar-sec" id="levererarSec" hidden>
     <div class="sec-head">
       <div>
@@ -377,7 +351,7 @@
     <div id="levererarTeaser"></div>
   </div>
 
-  <!-- 9. Redaktionell story — Veckans Visste du att -->
+  <!-- 8. Redaktionell story — Veckans Visste du att -->
   <div class="sec weekly-fact-sec">
     <article class="weekly-fact-card" id="weeklyFactCard" aria-label="Veckans Visste du att"></article>
   </div>

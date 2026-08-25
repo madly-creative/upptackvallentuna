@@ -1268,15 +1268,14 @@ import {
       <div class="inner">
         <header class="nara-dig-head">
           <div class="nara-dig-titles">
-            <div class="eyebrow">📍 Utforska</div>
             <h2>Upptäck runt hörnet</h2>
-            <p class="nara-dig-sub">Se vad som finns runt dig just nu. Fika, natur, upplevelser och mer — zooma kartan för att utforska.</p>
+            <p class="nara-dig-sub">Tre platser nära dig — fika, natur och mer. Zooma kartan eller öppna ett stopp direkt.</p>
           </div>
         </header>
+        <div class="nara-dig-teasers" id="naraDigTeasers" aria-label="Platser nära dig"></div>
         <div class="nara-dig-toolbar">
           <div class="nara-dig-filters" id="naraDigFilters" role="toolbar" aria-label="Filter"></div>
           <div class="nara-dig-head-actions">
-            <button type="button" class="nara-dig-cta-btn" id="naraDigAskBtn">Använd min position</button>
             <button type="button" class="nara-dig-view-toggle" id="naraDigViewToggle" aria-pressed="false">≡ Visa som lista</button>
           </div>
         </div>
@@ -1285,7 +1284,7 @@ import {
             <div id="naraDigMap" class="nara-dig-map" role="presentation"></div>
             <aside class="nara-dig-panel" id="naraDigPanel" aria-live="polite"></aside>
             <div class="nara-dig-controls" aria-label="Kartkontroller">
-              <button type="button" class="nara-dig-ctrl" id="naraDigLocate" title="Min position" aria-label="Min position">◎</button>
+              <button type="button" class="nara-dig-ctrl" id="naraDigLocate" title="Min position" aria-label="Använd min position">◎</button>
               <button type="button" class="nara-dig-ctrl" id="naraDigZoomIn" title="Zooma in" aria-label="Zooma in">+</button>
               <button type="button" class="nara-dig-ctrl" id="naraDigZoomOut" title="Zooma ut" aria-label="Zooma ut">−</button>
             </div>
@@ -1298,8 +1297,6 @@ import {
     nearDigFilter="alla";
     nearDigOpenNow=false;
     renderNearDigFilters();
-    syncNearDigAskBtn();
-    document.getElementById("naraDigAskBtn")?.addEventListener("click", requestNearDigLocation);
     document.getElementById("naraDigViewToggle")?.addEventListener("click", toggleNearDigView);
     document.getElementById("naraDigLocate")?.addEventListener("click", ()=>{
       if(nearDigPos && nearDigMap){
@@ -1315,46 +1312,33 @@ import {
   }
 
   function syncNearDigAskBtn(){
-    const btn=document.getElementById("naraDigAskBtn");
-    if(!btn) return;
+    const locate=document.getElementById("naraDigLocate");
+    if(!locate) return;
     if(!navigator.geolocation){
-      btn.hidden=true;
+      locate.hidden=true;
       return;
     }
-    btn.hidden=false;
-    btn.disabled=false;
-    if(nearDigPos){
-      btn.textContent="Visa hela kartan";
-      btn.dataset.mode="overview";
-    }else{
-      btn.textContent="Använd min position";
-      btn.dataset.mode="ask";
-    }
+    locate.hidden=false;
+    locate.title=nearDigPos?"Centrera på min position":"Använd min position";
+    locate.setAttribute("aria-label", locate.title);
+    locate.classList.toggle("is-active", !!nearDigPos);
   }
 
   function requestNearDigLocation(){
-    const btn=document.getElementById("naraDigAskBtn");
-    if(btn?.dataset.mode==="overview"){
-      nearDigPos=null;
-      clearNearDigYouMarker();
-      syncNearDigAskBtn();
-      renderNearDigContent();
-      refreshNearDigMapMarkers();
-      fitNearDigMap(nearDigHits());
-      return;
-    }
     if(!navigator.geolocation) return;
-    if(btn){ btn.disabled=true; btn.textContent="Hämtar…"; }
+    const locate=document.getElementById("naraDigLocate");
+    if(locate) locate.disabled=true;
     navigator.geolocation.getCurrentPosition(
       (pos)=>{
         nearDigPos={ lat:pos.coords.latitude, lng:pos.coords.longitude };
+        if(locate) locate.disabled=false;
         syncNearDigAskBtn();
         applyNearDigPositionToMap();
         renderNearDigContent();
         refreshNearDigMapMarkers();
       },
       ()=>{
-        // Silent deny — keep all-places map, no alert, no analytics
+        if(locate) locate.disabled=false;
         syncNearDigAskBtn();
       },
       { enableHighAccuracy:false, timeout:8000, maximumAge:0 }
@@ -1462,10 +1446,41 @@ import {
     });
   }
 
+  function renderNearDigTeasers(){
+    const el=document.getElementById("naraDigTeasers");
+    if(!el) return;
+    const hits=nearDigHits().slice(0,3);
+    if(!hits.length){
+      el.innerHTML=`<p class="nara-dig-empty">Inga platser med nuvarande filter — prova en annan kategori.</p>`;
+      return;
+    }
+    el.innerHTML=hits.map(({place:p, km})=>{
+      const open=nearDigIsOpen(p);
+      const dist=km!=null?fmtDist(km):(nearDigPos?"":"");
+      const sub=[typeLabel[p.type]||p.cat, open&&isTimedVenue(p)?"Öppet nu":null, dist].filter(Boolean).join(" · ");
+      return `<button type="button" class="nara-dig-teaser" data-name="${escHtml(p.name)}">
+        <span class="nara-dig-teaser-im" style="background-image:url('${escHtml(p.img)}')" aria-hidden="true"></span>
+        <span class="nara-dig-teaser-copy">
+          <strong>${escHtml(p.name)}</strong>
+          <span>${escHtml(sub||p.short||"")}</span>
+        </span>
+        <span class="nara-dig-teaser-go" aria-hidden="true">→</span>
+      </button>`;
+    }).join("");
+    el.querySelectorAll(".nara-dig-teaser").forEach(btn=>{
+      btn.addEventListener("click",()=>{
+        const name=btn.dataset.name;
+        if(name) openPlace(name);
+      });
+    });
+  }
+
   function renderNearDigContent(){
     const hits=nearDigHits();
+    renderNearDigTeasers();
     renderNearDigPanel(hits);
     renderNearDigList();
+    syncNearDigAskBtn();
   }
 
   /** List → map: pan to the place and open its popup (detail via "Läs mer"). */
@@ -1953,11 +1968,8 @@ import {
       </div>
     </article>`;
   }
-  function renderHappenHome(){
-    const grid=document.getElementById('happenGrid');
-    const sec=document.getElementById('eventsHomeSec');
-    const why=document.getElementById('happenWhy');
-    if(!grid) return;
+  /** Homepage events live in todayBrief — keep helper for featured pool only. */
+  function happenHomePool(limit=3){
     const pool=[];
     const seen=new Set();
     for(const e of [...eventsToday, ...liveEvents]){
@@ -1965,29 +1977,11 @@ import {
       if(seen.has(k)) continue;
       seen.add(k);
       pool.push(e);
-      if(pool.length>=4) break;
+      if(pool.length>=limit) break;
     }
-    if(!pool.length){
-      if(sec) sec.style.display="none";
-      grid.innerHTML="";
-      return;
-    }
-    if(sec) sec.style.display="";
-    const [feat, ...rest]=pool;
-    if(eventsToday.length){
-      S('happenHeading',"Händer i bygden");
-      if(why) why.textContent=eventsToday.length===1?"Ett event idag — och mer i kalendern":`${eventsToday.length} events idag`;
-    } else {
-      const n=daysUntil(feat.date);
-      S('happenHeading',"Händer i bygden");
-      if(why) why.textContent=n===1?"Nästa upp: imorgon":`Nästa upp om ${n} dagar`;
-    }
-    const more=rest.slice(0,2).map(e=>eventCard(e,true)).join("");
-    grid.innerHTML=eventFeatureHTML(feat)+(more?`<div class="happen-more">${more}</div>`:"");
+    return pool;
   }
-  renderHappenHome();
-
-  const manifestoArt=`<img class="botanical" src="/assets/shared/botanical-sprig.webp" alt="" width="200" height="300" decoding="async" loading="lazy" aria-hidden="true" />`;
+  function renderHappenHome(){ /* merged into renderTodayBrief */ }
 
   const WEATHER_ICONS={sun:"☀️",cloud:"☁️",part:"⛅",rain:"🌧️",snow:"❄️",fog:"🌫️",storm:"⛈️"};
   function weatherKind(code){
@@ -2219,14 +2213,13 @@ import {
   }
   function renderTodayBrief(){
     const grid=document.getElementById('todayBriefGrid');
+    const featureEl=document.getElementById('todayBriefFeature');
     if(!grid) return;
 
     const titleEl=document.getElementById('todayBriefTitle');
-    const eyeEl=document.getElementById('todayBriefEyebrow');
     const metaEl=document.getElementById('todayBriefMeta');
     const weekend=isWeekendWindow();
-    if(eyeEl) eyeEl.textContent=weekend?"Helgen":"Just nu";
-    if(titleEl) titleEl.textContent=weekend?`Helgen i ${K}`:`Händer i ${K}`;
+    if(titleEl) titleEl.textContent=weekend?`Helgen i ${K}`:`Just nu i ${K}`;
 
     const openRanked=rankedPlaces().filter(x=>x.open && isTimedVenue(x.p)).slice(0,3);
     const openN=openVenueCount();
@@ -2243,29 +2236,30 @@ import {
       metaEl.textContent=bits.join(" · ");
     }
 
-    const evBundle=todayBriefEventBundle();
-    let evBody="";
-    if(evBundle.list.length){
-      evBody=`<div class="tc-list">${evBundle.list.map(e=>todayBriefItem(
-        e.img, escHtml(e.title), escHtml(eventWhenShort(e)), `openEvent('${eventKeyAttr(e)}')`
-      )).join("")}</div>`;
-    } else if(recurringTodayList.length){
-      evBody=`<div class="tc-list">${recurringTodayList.map(r=>todayBriefItem(
-        r.img, escHtml(r.title), escHtml(recurringWhenLine(r)), `showView('hander')`
-      )).join("")}</div>`;
-    } else {
-      evBody=`<p class="tc-empty">Inga inplanerade evenemang just nu — kika in snart igen.</p>`;
+    // Featured event spine (replaces the old separate "Händer i bygden" block)
+    const pool=happenHomePool(3);
+    if(featureEl){
+      if(pool.length){
+        const [feat, ...rest]=pool;
+        const more=rest.map(e=>eventCard(e,true)).join("");
+        featureEl.innerHTML=eventFeatureHTML(feat)+(more?`<div class="happen-more">${more}</div>`:"");
+        featureEl.hidden=false;
+      } else if(recurringTodayList.length){
+        featureEl.innerHTML=`<div class="happen-more">${recurringTodayList.slice(0,2).map(r=>`
+          <article class="ev compact" onclick="showView('hander')" role="button" tabindex="0">
+            <div class="media"><div class="thumb" style="background-image:url('${r.img}')"></div></div>
+            <div class="bd">
+              <div class="when">${escHtml(recurringWhenLine(r))}</div>
+              <h3>${escHtml(r.title)}</h3>
+              <p class="meta">Återkommande · varje vecka</p>
+            </div>
+          </article>`).join("")}</div>`;
+        featureEl.hidden=false;
+      } else {
+        featureEl.innerHTML=`<p class="tc-empty" style="margin:0 0 4px">Inga inplanerade evenemang just nu — kika in snart igen.</p>`;
+        featureEl.hidden=false;
+      }
     }
-    const evLabel=evBundle.mode==="today"?"Händer idag"
-      :evBundle.mode==="weekend"?"Händer i helgen"
-      :evBundle.mode==="soon"?"Nästa evenemang"
-      :recurringTodayList.length?"Varje vecka · idag"
-      :"Evenemang";
-    const evCard=`<article class="today-card">
-      <p class="tc-label">${evLabel}</p>
-      ${evBody}
-      <button type="button" class="tc-foot" onclick="showView('hander')">Alla evenemang →</button>
-    </article>`;
 
     let openBody="";
     if(openRanked.length){
@@ -2296,10 +2290,10 @@ import {
       <p class="tc-label">Passar vädret</p>
       <p class="tc-sub" style="margin:0;font-weight:600;color:var(--moss-deep)">${escHtml(wx.label)}</p>
       ${wxBody}
-      <button type="button" class="tc-foot" onclick="document.getElementById('picksHeading')?.scrollIntoView({behavior:'smooth',block:'start'})">Fler tips →</button>
+      <button type="button" class="tc-foot" onclick="document.getElementById('naraDig')?.scrollIntoView({behavior:'smooth',block:'start'})">Utforska runt hörnet →</button>
     </article>`;
 
-    grid.innerHTML=evCard+openCard+wxCard;
+    grid.innerHTML=openCard+wxCard;
   }
   function showOpenNowOnMap(){
     openNowOnly=true;
@@ -2337,6 +2331,16 @@ import {
     const media=fact.image
       ?`<img class="weekly-fact-art" src="${escHtml(fact.image)}" alt="" width="1024" height="682" decoding="async" loading="lazy" />`
       :`<div class="weekly-fact-ph">${sagen?"✦":"?"}</div>`;
+    let cta="";
+    if(fact.relatedPlace){
+      const place=placeBySlug(fact.relatedPlace, places) || places.find(p=>(p.slug||placeSlug(p.name))===fact.relatedPlace);
+      if(place){
+        cta=`<button type="button" class="weekly-fact-cta" onclick="openPlace('${jsEsc(place.name)}')">Se ${escHtml(place.name)} →</button>`;
+      }
+    }
+    if(!cta){
+      cta=`<button type="button" class="weekly-fact-cta" onclick="document.getElementById('naraDig')?.scrollIntoView({behavior:'smooth',block:'start'})">Utforska bygden på kartan →</button>`;
+    }
     card.innerHTML=`
       <div class="weekly-fact-copy">
         <div class="eyebrow">${sagen?"Enligt sägnen…":"Veckans Visste du att"}</div>
@@ -2344,12 +2348,12 @@ import {
         ${sagen?`<p class="weekly-fact-sagen">Folktro — inte fastslagen historia.</p>`:""}
         <p>${escHtml(fact.longFact)}</p>
         ${source}
+        ${cta}
       </div>
       <div class="weekly-fact-media" aria-hidden="true">${media}</div>`;
   }
   function renderPicks(){
     const grid=document.getElementById('picksGrid'); if(!grid) return;
-    // En full mening — inte fragment som "fint väder · lunchläge"
     const wk=ctx.code!=null?weatherKind(ctx.code):null;
     const hot=isHotSwimWeather(ctx.temp, ctx.code);
     let picksWhy=picksWhyForWeather({
@@ -2358,16 +2362,16 @@ import {
       weatherLabel:wk?.t,
       hot,
     });
+    // Editorial voice — not a mirror of "öppet nu"
     if(!picksWhy){
-      if(holidayToday) picksWhy=holidayToday+" — handplockat för dagen.";
-      else if(isWeekend) picksWhy="Helgläge — handplockat för en fin sväng i bygden.";
-      else if(daypart==="morgon") picksWhy="Morgonläge — öppna ställen som passar nu.";
-      else if(daypart==="lunch") picksWhy="Lunchdags — några bra stopp mitt i dagen.";
-      else if(ctx.temp!=null && wk) picksWhy=`${wk.t} · ca ${ctx.temp}° — dagens handplockade stopp.`;
-      else picksWhy="Handplockat just nu — lokala favoriter nära dig.";
-    }
-    if(userPos && ctx.mood!=="nice" && ctx.mood!=="rough" && !hot) {
-      picksWhy=picksWhy.replace(/\.$/, "")+" · nära dig.";
+      if(holidayToday) picksWhy=`Vår röst för ${holidayToday.toLowerCase()} — tre favoriter vi står bakom.`;
+      else if(isWeekend) picksWhy="Redaktionens tre — favoriter för en fin sväng i bygden.";
+      else if(daypart==="morgon") picksWhy="Redaktionens tre — ställen värda en morgonrunda.";
+      else if(daypart==="lunch") picksWhy="Redaktionens tre — bra stopp mitt i dagen.";
+      else if(ctx.temp!=null && wk) picksWhy=`Vår röst just nu — tre favoriter när det är ${wk.t.toLowerCase()}.`;
+      else picksWhy="Redaktionens tre favoriter — inte bara det som råkar vara öppet.";
+    } else {
+      picksWhy=picksWhy.replace(/handplockat/gi,"vår röst").replace(/\.$/, "")+" — tre favoriter vi står bakom.";
     }
     S('picksWhy', picksWhy);
 
@@ -2383,19 +2387,14 @@ import {
     }
     homeShownNames=new Set(pool.map(x=>x.p.name));
 
-    // Skippa status + undvik att upprepa väderfrasen som redan står i sektionsrubriken
     const nonStatus=r=>r && !/^(Öppet|Stänger|Planera kvällen|Kvällsläge)/.test(r);
     const weatherish=r=>/väder|Soligt|ute|Landskapet|utflykt|inomhus|Tak över|Innekos|Varm dryck|Helgläge|Passar morgonen|Bra till lunch|Passar eftermiddagen/i.test(r||"");
     const pickEyebrow=(scored)=>{
-      // Stängning visas i status-pill / badge — undvik dubblett i eyebrow
-      if(scored.open && isTimedVenue(scored.p)) return typeLabel[scored.p.type]||scored.p.cat||"Öppet nu";
+      if(scored.open && isTimedVenue(scored.p)) return typeLabel[scored.p.type]||scored.p.cat||"Favorit";
       const r=scored.reasons.find(x=>nonStatus(x) && !weatherish(x));
-      return r||typeLabel[scored.p.type]||scored.p.cat||scored.p.short||"Tips just nu";
+      return r||typeLabel[scored.p.type]||scored.p.cat||scored.p.short||"Vår favorit";
     };
-    const pickSub=(scored)=>{
-      // Alltid platsens egen text i bröd — inte samma automatfras som på andra kort
-      return scored.p.short||scored.p.blurb||scored.p.cat;
-    };
+    const pickSub=(scored)=>scored.p.short||scored.p.blurb||scored.p.cat;
     const featWhy=pickEyebrow(feature)+(feature.p._km!=null?" · "+fmtDist(feature.p._km):"");
     const featSub=pickSub(feature);
     const featHTML=`
@@ -2416,9 +2415,6 @@ import {
       const badges=[`<span class="badge">${typeLabel[p.type]||p.cat}</span>`];
       if(isNewPlace(p)) badges.push(`<span class="badge new">Nytt</span>`);
       if(p._km!=null && p._km<5) badges.push(`<span class="badge near">${fmtDist(p._km)}</span>`);
-      if(scored.soon && scored.mins>0 && scored.mins<=75){
-        badges.push(`<span class="badge soon">Stänger om ${scored.mins} min</span>`);
-      }
       const why=pickSub(scored);
       return `
       <article class="tcard" onclick="openPlace('${jsEsc(p.name)}')">
@@ -2432,18 +2428,8 @@ import {
       </article>`;
     }).join("");
 
-    const quoteHTML=`
-      <aside class="pick-quote">
-        <div>
-          <div class="eyebrow">Om Upptäck ${K}</div>
-          <blockquote>Lokalt, på riktigt.</blockquote>
-          <p>Människorna, platserna och de små verksamheterna som får bygden att blomstra — helt gratis, gjort av kärlek.</p>
-        </div>
-        <button type="button" class="lnk" onclick="event.stopPropagation();showView('om')">Läs vår berättelse →</button>
-        ${manifestoArt}
-      </aside>`;
-
-    grid.innerHTML=featHTML+`<div class="picks-row">${sideHTML}${quoteHTML}</div>`;
+    // No manifesto quote board — Handplockat is the editorial voice itself
+    grid.innerHTML=featHTML+`<div class="picks-row picks-row-solo">${sideHTML}</div>`;
     refreshPulse();
     try{ renderTodayBrief(); }catch(e){}
   }
@@ -2649,20 +2635,28 @@ import {
     box.innerHTML=parts.join("");
   }
 
-  function pickBest(type,except=new Set()){
+  function pickBest(type,except=new Set(),{preferOpen=true}={}){
     const scored=places
       .filter(p=>placeHasType(p,type))
-      .map(p=>({p,s:scorePlace(p).score+(isOpen(p)?8:0)+(hasTag(p,"barn")?2:0)}))
+      .map(p=>{
+        let s=scorePlace(p).score+(hasTag(p,"barn")?2:0);
+        if(preferOpen && isOpen(p)) s+=12;
+        // Timed venues that are closed get pushed down so afternoon routes stay usable
+        if(preferOpen && isTimedVenue(p) && !isOpen(p)) s-=20;
+        return {p,s};
+      })
       .sort((a,b)=>b.s-a.s);
     const fresh=scored.filter(x=>!except.has(x.p.name));
-    return fresh.length?fresh:scored; // fall back only if type is exhausted
+    return fresh.length?fresh:scored;
   }
   function pickFromPool(pool, offset){
     if(!pool.length) return null;
-    return pool[offset%pool.length]?.p || pool[0]?.p || null;
+    // Prefer first open timed (or always-available) stop from rotated window
+    const rotated=[...pool.slice(offset%pool.length), ...pool.slice(0, offset%pool.length)];
+    const openHit=rotated.find(x=>!isTimedVenue(x.p) || isOpen(x.p));
+    return (openHit||rotated[0])?.p || null;
   }
   function buildRoute(){
-    // Skip places already featured in Handplockat so the afternoon feels fresh
     const except=new Set(homeShownNames);
     const fika=pickFromPool(pickBest("fika",except), routeSeed);
     if(fika) except.add(fika.name);
@@ -2671,6 +2665,55 @@ import {
     const natur=pickFromPool(pickBest("natur",except), routeSeed+2);
     return [fika,gard,natur].filter(Boolean);
   }
+  function journeyStepHTML(p, n, kind){
+    const open=isOpen(p);
+    const timed=isTimedVenue(p);
+    const status=!timed
+      ?(open?"Alltid tillgänglig":"Stängt")
+      :(open?(isClosingSoon(p)?"Stänger snart":"Öppet nu"):"Stängt just nu");
+    const km=p._km!=null?` · ${fmtDist(p._km)}`:"";
+    return `<article class="journey-step${timed&&!open?" is-closed":""}" onclick="openPlace('${jsEsc(p.name)}')">
+      <span class="n" aria-hidden="true">${n}</span>
+      <div class="im" style="background-image:url('${p.img}')" role="img" aria-hidden="true"></div>
+      <div class="bd">
+        <div class="kind">${kind}</div>
+        <h3>${p.name}</h3>
+        <p>${p.short||p.blurb}</p>
+        <div class="meta">${status}${km}</div>
+      </div>
+    </article>`;
+  }
+  function renderRoute(){
+    const grid=document.getElementById('routeGrid'); if(!grid) return;
+    const steps=buildRoute();
+    const kinds=["Fika","Gård","Natur"];
+    const why=document.getElementById('routeWhy');
+    const mapsBtn=document.getElementById('routeMapsBtn');
+    const closedN=steps.filter(p=>isTimedVenue(p)&&!isOpen(p)).length;
+    if(why){
+      why.textContent=closedN
+        ?"Tre stopp — byt rutt om något är stängt"
+        :"Tre stopp — fika, gård och natur · öppna när det går";
+    }
+    const parts=[];
+    steps.forEach((p,i)=>{
+      if(i) parts.push(`<div class="journey-arrow" aria-hidden="true"><span class="journey-rail"></span></div>`);
+      parts.push(journeyStepHTML(p, i+1, kinds[i]||typeLabel[p.type]));
+    });
+    grid.innerHTML=parts.join("");
+    const mapsUrl=mapsRouteUrl(steps.filter(p=>p.lat!=null&&p.lng!=null));
+    if(mapsBtn){
+      if(mapsUrl){
+        mapsBtn.hidden=false;
+        mapsBtn.onclick=()=>{ window.open(mapsUrl,"_blank","noopener"); trackEvent("route-maps",""); };
+      } else {
+        mapsBtn.hidden=true;
+        mapsBtn.onclick=null;
+      }
+    }
+  }
+  function reshuffleRoute(){routeSeed++;renderRoute();trackEvent('route-reshuffle','');}
+
   function placeRouteCardHTML(p,stepLabel){
     const step=stepLabel || typeLabel[p.type] || p.cat;
     const open=isOpen(p);
@@ -2687,34 +2730,6 @@ import {
       </div>
     </article>`;
   }
-  function journeyStepHTML(p, n, kind){
-    const open=isOpen(p);
-    const status=!isTimedVenue(p)
-      ?(open?"Alltid tillgänglig":"Stängt")
-      :(open?(isClosingSoon(p)?"Stänger snart":"Öppet nu"):"Stängt");
-    return `<article class="journey-step" onclick="openPlace('${jsEsc(p.name)}')">
-      <span class="n" aria-hidden="true">${n}</span>
-      <div class="im" style="background-image:url('${p.img}')" role="img" aria-hidden="true"></div>
-      <div class="bd">
-        <div class="kind">${kind}</div>
-        <h3>${p.name}</h3>
-        <p>${p.short||p.blurb}</p>
-        <div class="meta" style="margin-top:8px;font-size:12px;color:var(--ink-soft)">${status}</div>
-      </div>
-    </article>`;
-  }
-  function renderRoute(){
-    const grid=document.getElementById('routeGrid'); if(!grid) return;
-    const steps=buildRoute();
-    const kinds=["Fika","Gård","Natur"];
-    const parts=[];
-    steps.forEach((p,i)=>{
-      if(i) parts.push(`<div class="journey-arrow" aria-hidden="true">→</div>`);
-      parts.push(journeyStepHTML(p, i+1, kinds[i]||typeLabel[p.type]));
-    });
-    grid.innerHTML=parts.join("");
-  }
-  function reshuffleRoute(){routeSeed++;renderRoute();trackEvent('route-reshuffle','');}
 
   function placesForCategory(key){
     const cat=CATEGORIES[key]||CATEGORIES.attgora;
@@ -2960,33 +2975,25 @@ import {
     museum:`<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 10.5L12 5l8 5.5M6 10.5V18M10 10.5V18M14 10.5V18M18 10.5V18M4 18h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
     gift:`<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="1.5" stroke="currentColor" stroke-width="1.6"/><path d="M5 14h14M12 10v10M12 10c-2.2 0-4-1.2-4-2.6S10.2 5 12 7.2C13.8 5 16 5.8 16 7.4S14.2 10 12 10z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>`,
   };
-  function renderGuidesHomeFilters(){
-    const el=document.getElementById("guidesHomeFilters");
-    if(!el) return;
-    el.innerHTML=GUIDE_HOME_FILTERS.map(f=>{
-      const on=f.key===guidesHomeFilter;
-      const ico=GUIDE_FILTER_ICONS[f.icon]||"";
-      return `<button type="button" class="guides-home-chip${on?" on":""}" role="tab" aria-selected="${on?"true":"false"}" onclick="setGuidesHomeFilter('${f.key}')">${ico}<span>${escHtml(f.label)}</span></button>`;
-    }).join("");
-  }
+  function renderGuidesHomeFilters(){ /* filters only on guides page */ }
   function setGuidesHomeFilter(key){
     guidesHomeFilter=key||"popular";
-    renderGuidesHomeFilters();
     renderGuidesHomeCards();
   }
   function renderGuidesHomeCards(){
     const wrap=document.getElementById("guidesHomeTeaser");
     if(!wrap) return;
     if(!guides.length){ wrap.innerHTML=""; return; }
-    const ordered=guidesForHomeFilter(guides, guidesHomeFilter, month, 3);
+    const ordered=guidesForHomeFilter(guides, "popular", month, 3);
     if(!ordered.length){
-      wrap.innerHTML=`<p class="guides-home-empty">Inga guider i den här kategorin just nu — prova en annan.</p>`;
+      wrap.innerHTML=`<p class="guides-home-empty">Inga guider just nu — kom tillbaka snart.</p>`;
       return;
     }
-    wrap.innerHTML=ordered.map(g=>{
+    wrap.innerHTML=ordered.map((g,i)=>{
       const img=g.heroImg || guideResolvedStops(g)[0]?.placeObj?.img || "";
       const kicker=g.kicker || seasonLabel(g.season);
-      return `<button type="button" class="guide-card" onclick="openGuide('${g.slug}')">
+      const feat=i===0?" featured":"";
+      return `<button type="button" class="guide-card${feat}" onclick="openGuide('${g.slug}')">
         <div class="im" style="background-image:url('${escHtml(img)}')"></div>
         <div class="bd">
           <div class="tag">${escHtml(kicker)}</div>
@@ -2999,7 +3006,6 @@ import {
   }
   function renderGuidesHome(){
     syncGuidesVisibility();
-    renderGuidesHomeFilters();
     renderGuidesHomeCards();
   }
   function renderGuidesGrid(){
