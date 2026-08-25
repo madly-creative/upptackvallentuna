@@ -2529,6 +2529,9 @@ import {
   function searchPlaceRowHTML(p){
     const tags=placeTags(p).slice(0,4).map(t=>`<span class="tag">${TAG_LABEL[t]||t}</span>`).join("");
     const t=travelEstimate(p);
+    const travel=t
+      ?`${fmtDist(t.km)}<br>Bil ${t.car} min<br>Cykel ${t.bike} min<br>SL ${t.sl} min`
+      :"Bokas<br>Ingen fast adress";
     return `<article class="s-item" onclick="openPlace('${jsEsc(p.name)}')">
       <div class="im" style="background-image:url('${p.img}')"></div>
       <div>
@@ -2536,7 +2539,7 @@ import {
         <div class="meta">${escHtml(p.cat)}${metaOf(p).district?" · "+escHtml(metaOf(p).district):""} · ${openLabelShort(p)}</div>
         <div class="tags"><span class="tag">Plats</span>${tags}</div>
       </div>
-      <div class="travel">${fmtDist(t.km)}<br>Bil ${t.car} min<br>Cykel ${t.bike} min<br>SL ${t.sl} min</div>
+      <div class="travel">${travel}</div>
     </article>`;
   }
   function searchProducerRowHTML(pr){
@@ -2556,9 +2559,14 @@ import {
     const q=searchQuery();
     const placeHits=places.filter(placeMatchesSearch).map(p=>{
       const t=travelEstimate(p);
-      p._km=t.km;
+      p._km=t?t.km:null;
       return p;
-    }).sort((a,b)=>(a._km||99)-(b._km||99));
+    }).sort((a,b)=>{
+      // Unmappable (bokas) after distance-sorted hits
+      const ak=a._km!=null?a._km:1e9;
+      const bk=b._km!=null?b._km:1e9;
+      return ak-bk;
+    });
     // Place-only filters (öppet nu, barn…) apply to places; events/producers match fritext only.
     const eventHits=q ? liveEvents.filter(eventMatchesSearch) : [];
     const recurringHits=q ? recurring.filter(recurringMatchesSearch) : [];

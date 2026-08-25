@@ -57,6 +57,22 @@ describe("searchMatch", () => {
     ).toBe(true);
   });
 
+  it("Sweden History Tours is findable by name and guidning", () => {
+    const p = {
+      name: "Sweden History Tours",
+      cat: "Guidning & historia",
+      type: "guidning",
+      short: "Guidade historieturer och folktro — bokas efter förfrågan.",
+      blurb: "Lokalt guideföretag — bokade turer vid Arkils tingstad.",
+    };
+    for (const q of ["sweden", "history", "sweden history", "guidning", "historia", "folktro"]) {
+      expect(
+        matchesPrimaryOrSecondary(placeSearchPrimary(p), placeSearchSecondary(p), q),
+        q
+      ).toBe(true);
+    }
+  });
+
   it("bada / simma expand to the same bathing places as bad", () => {
     const p = { name: "Kvarnbadet", cat: "Bad & Utomhus", type: "natur", blurb: "Utomhusbad." };
     const p2 = { name: "Bergsjöns badplats", cat: "Bad & Natur", type: "natur", blurb: "Skogsbad." };
