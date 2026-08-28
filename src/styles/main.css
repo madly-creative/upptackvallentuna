@@ -474,7 +474,7 @@
     font-weight:500;line-height:1.1;margin-bottom:8px;
   }
   .ev-feature .meta{font-size:14px;color:rgba(255,255,255,.88);line-height:1.4}
-  .happen-more{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  .happen-more{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
 
   /* Journey — numbered afternoon path */
   .route-actions{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:flex-end}
@@ -1751,7 +1751,10 @@
     display:grid;gap:14px;margin-bottom:14px;
   }
   .today-brief-grid{
-    display:grid;grid-template-columns:repeat(2,1fr);gap:12px;
+    display:grid;grid-template-columns:1fr;gap:12px;
+  }
+  .today-card-open .tc-list{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px 16px;
   }
   .today-card{
     display:flex;flex-direction:column;gap:10px;min-height:100%;

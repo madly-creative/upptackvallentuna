@@ -35,7 +35,6 @@ import {
   isOutdoorBathPlace,
   isHotSwimWeather,
   picksWhyForWeather,
-  pickWeatherFitPlace,
 } from "../lib/picksFit.js";
 import {
   matchesPrimaryOrSecondary,
@@ -1939,7 +1938,7 @@ import {
     </article>`;
   }
   /** Homepage events live in todayBrief — keep helper for featured pool only. */
-  function happenHomePool(limit=3){
+  function happenHomePool(limit=4){
     const pool=[];
     const seen=new Set();
     for(const e of [...eventsToday, ...liveEvents]){
@@ -1948,6 +1947,19 @@ import {
       seen.add(k);
       pool.push(e);
       if(pool.length>=limit) break;
+    }
+    // If we cut mid-day, pull remaining same-date siblings so co-events (e.g. Smaka + Naturen) both show
+    if(pool.length>=limit){
+      const lastDate=pool[pool.length-1].date;
+      const cap=limit+2;
+      for(const e of liveEvents){
+        if(e.date!==lastDate) continue;
+        const k=e.title+"|"+e.date;
+        if(seen.has(k)) continue;
+        seen.add(k);
+        pool.push(e);
+        if(pool.length>=cap) break;
+      }
     }
     return pool;
   }
@@ -2128,51 +2140,6 @@ import {
     if(n===1) return tm?`Imorgon kl. ${tm[1]}`:"Imorgon";
     return e.when||e.date;
   }
-  function weatherFitBundle(){
-    const ranked=rankedPlaces();
-    const wk=ctx.code!=null?weatherKind(ctx.code):null;
-    const hot=isHotSwimWeather(ctx.temp, ctx.code);
-    const mood=ctx.mood||"mild";
-    const hit=pickWeatherFitPlace(ranked, {
-      mood,
-      temp:ctx.temp,
-      code:ctx.code,
-      isTimedVenue,
-    });
-    const place=hit?.p||null;
-    const why=place?.short||place?.blurb||"Handplockat tips";
-    // Underrubrik = platsens egen text — inte samma väderfras som på korten.
-    if(hot){
-      return {
-        label: ctx.temp!=null?`${wk?.t||"Varmt"} · ${ctx.temp}°`:"Stekhett",
-        hint:"Dags att bada",
-        place,
-        why:why==="Handplockat tips"?"Svalka i bygden":why
-      };
-    }
-    if(mood==="nice"){
-      return {
-        label: ctx.temp!=null?`${wk?.t||"Fint"} · ${ctx.temp}°`:"Fint väder",
-        hint:"Passar uteliv",
-        place,
-        why:why==="Handplockat tips"?"Ut och njut i bygden":why
-      };
-    }
-    if(mood==="rough"){
-      return {
-        label: ctx.temp!=null?`${wk?.t||"Mulet"} · ${ctx.temp}°`:"Inomhusväder",
-        hint:"Mysigt inomhus",
-        place,
-        why:why==="Handplockat tips"?"Varm dryck under tak":why
-      };
-    }
-    return {
-      label: ctx.temp!=null?`${wk?.t||"Lokalt"} · ${ctx.temp}°`:`Just nu i ${K}`,
-      hint:"Passar läget",
-      place,
-      why
-    };
-  }
   function todayBriefItem(thumb, name, sub, onclick){
     return `<button type="button" class="tc-item" onclick="${onclick}">
       <span class="tc-thumb" style="background-image:url('${thumb}')" aria-hidden="true"></span>
@@ -2207,8 +2174,8 @@ import {
       metaEl.textContent=bits.join(" · ");
     }
 
-    // Featured event spine (replaces the old separate "Händer i bygden" block)
-    const pool=happenHomePool(3);
+    // Featured event spine — more room for events now that Passar vädret is gone
+    const pool=happenHomePool(4);
     if(featureEl){
       if(pool.length){
         const [feat, ...rest]=pool;
@@ -2242,29 +2209,12 @@ import {
     } else {
       openBody=`<p class="tc-empty">Få ställen har öppet i just den här stunden — planera med kartan eller kom tillbaka senare.</p>`;
     }
-    const openCard=`<article class="today-card">
+    // Single utility card — Passar vädret removed (often duplicated Öppet nu; events need the space)
+    grid.innerHTML=`<article class="today-card today-card-open">
       <p class="tc-label">Öppet nu${openN?` · ${openN}`:""}</p>
       ${openBody}
       <button type="button" class="tc-foot" onclick="showOpenNowOnMap()">Visa på karta →</button>
     </article>`;
-
-    const wx=weatherFitBundle();
-    let wxBody="";
-    if(wx.place){
-      wxBody=`<div class="tc-list">${todayBriefItem(
-        wx.place.img, escHtml(wx.place.name), escHtml(wx.why), `openPlace('${jsEsc(wx.place.name)}')`
-      )}<p class="tc-empty" style="flex:0">${escHtml(wx.hint)}</p></div>`;
-    } else {
-      wxBody=`<p class="tc-empty">${escHtml(wx.hint)}. Tipsen uppdateras när vädret hämtats.</p>`;
-    }
-    const wxCard=`<article class="today-card">
-      <p class="tc-label">Passar vädret</p>
-      <p class="tc-sub" style="margin:0;font-weight:600;color:var(--moss-deep)">${escHtml(wx.label)}</p>
-      ${wxBody}
-      <button type="button" class="tc-foot" onclick="document.getElementById('naraDig')?.scrollIntoView({behavior:'smooth',block:'start'})">Utforska runt hörnet →</button>
-    </article>`;
-
-    grid.innerHTML=openCard+wxCard;
   }
   function showOpenNowOnMap(){
     openNowOnly=true;

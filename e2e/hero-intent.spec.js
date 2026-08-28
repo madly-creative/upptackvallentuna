@@ -10,7 +10,7 @@ test.describe("Classic hero with search", () => {
     await expect(page.locator("#heroSearch")).toBeVisible();
     await expect(page.getByRole("button", { name: "Öppna kartan" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Se vad som händer" })).toBeVisible();
-    await expect(page.locator("#todayBriefGrid .today-card")).toHaveCount(3);
+    await expect(page.locator("#todayBriefGrid .today-card")).toHaveCount(1);
     await expect(page.locator(".hero-chip")).toHaveCount(0);
     await expect(page.locator(".hero-rail-cell")).toHaveCount(0);
   });
