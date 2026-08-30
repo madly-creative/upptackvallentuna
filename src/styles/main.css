@@ -474,13 +474,16 @@
     font-weight:500;line-height:1.1;margin-bottom:8px;
   }
   .ev-feature .meta{font-size:14px;color:rgba(255,255,255,.88);line-height:1.4}
+  .happen-scroll{
+    position:relative;
+  }
   .happen-more{
     display:flex;gap:14px;align-items:stretch;
     overflow-x:auto;overflow-y:hidden;
     scroll-snap-type:x mandatory;
     -webkit-overflow-scrolling:touch;
     overscroll-behavior-x:contain;
-    padding:2px 2px 10px;
+    padding:2px 44px 12px 2px;
     margin:0 -2px;
     scrollbar-width:thin;
     scrollbar-color:rgba(61,79,58,.35) transparent;
@@ -497,6 +500,36 @@
     min-height:148px;
   }
   .happen-more > .ev .media{min-height:148px}
+  .happen-scroll-fade{
+    position:absolute;inset:0 0 12px auto;width:min(88px,22%);
+    pointer-events:none;z-index:1;
+    background:linear-gradient(90deg,rgba(255,255,255,0),var(--card) 72%);
+    opacity:1;transition:opacity .22s ease;
+  }
+  .happen-scroll-next{
+    position:absolute;right:6px;top:50%;transform:translateY(calc(-50% - 4px));
+    z-index:2;
+    width:40px;height:40px;border-radius:999px;
+    display:grid;place-items:center;
+    border:1.5px solid var(--moss-deep);background:var(--card);
+    color:var(--moss-deep);cursor:pointer;
+    box-shadow:0 6px 18px rgba(47,61,46,.14);
+    transition:opacity .22s ease,transform .15s ease,background .15s,color .15s;
+  }
+  .happen-scroll-next:hover{background:var(--moss-deep);color:var(--paper)}
+  .happen-scroll-next:focus-visible{outline:2px solid var(--rust);outline-offset:3px}
+  .happen-scroll-hint{
+    margin:2px 0 0;font-size:12px;color:var(--ink-soft);font-weight:500;
+    display:flex;align-items:center;gap:6px;
+  }
+  .happen-scroll-hint[hidden],
+  .happen-scroll.is-end .happen-scroll-fade,
+  .happen-scroll.is-end .happen-scroll-next,
+  .happen-scroll:not(.is-overflow) .happen-scroll-fade,
+  .happen-scroll:not(.is-overflow) .happen-scroll-next,
+  .happen-scroll:not(.is-overflow) .happen-scroll-hint{opacity:0;pointer-events:none}
+  .happen-scroll:not(.is-overflow) .happen-scroll-hint{display:none}
+  .happen-scroll.is-end .happen-scroll-hint{visibility:hidden}
 
   /* Journey — numbered afternoon path */
   .route-actions{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:flex-end}

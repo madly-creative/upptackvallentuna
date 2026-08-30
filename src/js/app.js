@@ -2141,6 +2141,35 @@ import {
     if(n===1) return tm?`Imorgon kl. ${tm[1]}`:"Imorgon";
     return e.when||e.date;
   }
+  function happenScrollHTML(inner, ariaLabel){
+    return `<div class="happen-scroll">
+      <div class="happen-more" role="region" aria-label="${escHtml(ariaLabel||"Fler evenemang")}">${inner}</div>
+      <div class="happen-scroll-fade" aria-hidden="true"></div>
+      <button type="button" class="happen-scroll-next" aria-label="Visa fler evenemang">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <p class="happen-scroll-hint">Fler evenemang — scrolla eller tryck pilen →</p>
+    </div>`;
+  }
+  function wireHappenScroll(scope){
+    const wrap=scope?.querySelector?.(".happen-scroll");
+    const scroller=wrap?.querySelector?.(".happen-more");
+    const next=wrap?.querySelector?.(".happen-scroll-next");
+    if(!wrap||!scroller) return;
+    const sync=()=>{
+      const max=scroller.scrollWidth-scroller.clientWidth;
+      const overflow=max>8;
+      wrap.classList.toggle("is-overflow", overflow);
+      wrap.classList.toggle("is-end", !overflow || scroller.scrollLeft>=max-8);
+    };
+    next?.addEventListener("click",()=>{
+      const step=Math.max(220, Math.round(scroller.clientWidth*0.72));
+      scroller.scrollBy({left:step, behavior:"smooth"});
+    });
+    scroller.addEventListener("scroll", sync, {passive:true});
+    window.addEventListener("resize", sync, {passive:true});
+    requestAnimationFrame(sync);
+  }
   function todayBriefItem(thumb, name, sub, onclick){
     return `<button type="button" class="tc-item" onclick="${onclick}">
       <span class="tc-thumb" style="background-image:url('${thumb}')" aria-hidden="true"></span>
@@ -2181,10 +2210,11 @@ import {
       if(pool.length){
         const [feat, ...rest]=pool;
         const more=rest.map(e=>eventCard(e,true)).join("");
-        featureEl.innerHTML=eventFeatureHTML(feat)+(more?`<div class="happen-more" role="region" aria-label="Fler evenemang">${more}</div>`:"");
+        featureEl.innerHTML=eventFeatureHTML(feat)+(more?happenScrollHTML(more,"Fler evenemang"):"");
         featureEl.hidden=false;
+        if(more) wireHappenScroll(featureEl);
       } else if(recurringTodayList.length){
-        featureEl.innerHTML=`<div class="happen-more" role="region" aria-label="Återkommande aktiviteter">${recurringTodayList.slice(0,2).map(r=>`
+        const more=recurringTodayList.slice(0,2).map(r=>`
           <article class="ev compact" onclick="showView('hander')" role="button" tabindex="0">
             <div class="media"><div class="thumb" style="background-image:url('${r.img}')"></div></div>
             <div class="bd">
@@ -2192,8 +2222,10 @@ import {
               <h3>${escHtml(r.title)}</h3>
               <p class="meta">Återkommande · varje vecka</p>
             </div>
-          </article>`).join("")}</div>`;
+          </article>`).join("");
+        featureEl.innerHTML=happenScrollHTML(more,"Återkommande aktiviteter");
         featureEl.hidden=false;
+        wireHappenScroll(featureEl);
       } else {
         featureEl.innerHTML=`<p class="tc-empty" style="margin:0 0 4px">Inga inplanerade evenemang just nu — kika in snart igen.</p>`;
         featureEl.hidden=false;
