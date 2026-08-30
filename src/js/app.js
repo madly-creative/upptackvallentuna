@@ -67,6 +67,19 @@ import {
 
   const CONFIG = { kommun: SITE.kommun, region: SITE.region, center: SITE.center, zoom: SITE.zoom };
   const K = CONFIG.kommun;
+  // Carto Voyager now watermarks without an API key — use OSM until we have a CARTO key.
+  const MAP_TILE={
+    url:"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    opts:{
+      attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      subdomains:"abc",
+      maxZoom:19,
+    },
+  };
+  function addBasemap(mapInst, Lref=window.L){
+    if(!mapInst||!Lref) return null;
+    return Lref.tileLayer(MAP_TILE.url, MAP_TILE.opts).addTo(mapInst);
+  }
 
   const places = PLACES_SEED;
   const guides = GUIDES_SEED;
@@ -1531,9 +1544,7 @@ import {
       scrollWheelZoom:true,
       attributionControl:false,
     }).setView(CONFIG.center, CONFIG.zoom || 12);
-    Lref.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",{
-      subdomains:"abcd", maxZoom:20,
-    }).addTo(nearDigMap);
+    addBasemap(nearDigMap, Lref);
     refreshNearDigMapMarkers();
     setTimeout(()=>{
       nearDigMap?.invalidateSize();
@@ -3439,7 +3450,7 @@ import {
     try{ await ensureLeaflet(); }catch(e){ console.warn(e); return; }
     map=L.map('map',{zoomControl:false,scrollWheelZoom:true}).setView(CONFIG.center,CONFIG.zoom);
     L.control.zoom({position:'bottomright'}).addTo(map);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap, © CARTO',subdomains:'abcd',maxZoom:20}).addTo(map);
+    addBasemap(map);
     places.filter(isMappablePlace).forEach((p)=>{
       const open=isOpen(p);
       const tag=!isTimedVenue(p)
@@ -3813,7 +3824,7 @@ import {
       try{ await ensureLeaflet(); }catch(e){ console.warn(e); return; }
       if(!miniMap){
         miniMap=L.map('miniMap',{zoomControl:false,scrollWheelZoom:false,dragging:true,attributionControl:false}).setView([p.lat,p.lng],15);
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{subdomains:'abcd',maxZoom:20}).addTo(miniMap);
+        addBasemap(miniMap);
       } else { miniMap.setView([p.lat,p.lng],15); miniMap.eachLayer(l=>{if(l instanceof L.Marker)miniMap.removeLayer(l);}); }
       L.marker([p.lat,p.lng],{icon:pinIcon(p.color,'')}).addTo(miniMap);
       miniMap.invalidateSize();
