@@ -212,6 +212,7 @@ const seoCss =
 .seo-hero-img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:18px;margin:0 0 22px;background:#e8e0d4}
 .seo-meta{font-size:13px;color:var(--ink-soft,#5c5648);margin-bottom:18px}
 .seo-meta span+span::before{content:" · "}
+.tipsare-credit{margin:6px 0 0;font-size:13px;font-style:italic;color:var(--ink-soft,#5c5648)}
 .hours-table{width:100%;border-collapse:collapse;font-size:14px;margin:16px 0 24px}
 .hours-table td{padding:8px 0;border-bottom:1px solid rgba(40,34,24,.08)}
 .hours-table td:last-child{text-align:right;font-variant-numeric:tabular-nums}
@@ -317,7 +318,8 @@ ${atPlace
     <img class="seo-hero-img" src="${esc(p.img)}" alt="${esc(p.name)}" width="1200" height="675" loading="eager">
     <p class="seo-meta"><span>${esc(p.cat)}</span>${meta.district ? `<span>${esc(meta.district)}</span>` : ""}<span>${esc(SITE.kommun)}</span></p>
     <h1>${esc(p.name)}</h1>
-    <p class="lede">${esc(p.blurb)}</p>
+    <p class="lede">${esc(p.blurb)}</p>${p.tipsare ? `
+    <p class="tipsare-credit"><em>Tipsat av ${esc(p.tipsare)}</em></p>` : ""}
     ${p.short && p.short !== p.blurb ? `<p>${esc(p.short)}</p>` : ""}
     <h2>Öppettider</h2>
     <table class="hours-table"><tbody>${hoursRows(p)}</tbody></table>

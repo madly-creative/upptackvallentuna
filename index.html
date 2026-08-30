@@ -87,6 +87,7 @@
         <button type="button" role="menuitem" id="nav-cat-gard" onclick="openCategory('gard')">Handla lokalt</button>
         <button type="button" role="menuitem" id="nav-cat-loppis" onclick="openCategory('loppis')">Loppis</button>
         <button type="button" role="menuitem" id="nav-cat-natur" onclick="openCategory('natur')">Natur &amp; uteliv</button>
+        <button type="button" role="menuitem" id="nav-cat-smultronstalle" data-smultron-nav hidden onclick="openCategory('smultronstalle')">Smultronställen</button>
         <button type="button" role="menuitem" id="nav-cat-guidning" onclick="openCategory('guidning')">Guidning</button>
         <button type="button" role="menuitem" id="nav-cat-producent" onclick="openCategory('producent')">Producenter</button>
       </div>
@@ -133,6 +134,7 @@
       <button type="button" onclick="mobileGo(()=>openCategory('gard'))">Handla lokalt</button>
       <button type="button" onclick="mobileGo(()=>openCategory('loppis'))">Loppis</button>
       <button type="button" onclick="mobileGo(()=>openCategory('natur'))">Natur &amp; uteliv</button>
+      <button type="button" data-smultron-nav hidden onclick="mobileGo(()=>openCategory('smultronstalle'))">Smultronställen</button>
       <button type="button" onclick="mobileGo(()=>openCategory('guidning'))">Guidning</button>
     </div>
     <button type="button" onclick="mobileGo(()=>showView('hander'))">Evenemang</button>
@@ -294,6 +296,21 @@
       <button type="button" id="returnBtn">Öppna igen →</button>
     </div>
   </div>
+
+  <aside class="smultron-banner" id="smultronBanner" hidden aria-labelledby="smultronBannerTitle">
+    <div class="inner">
+      <img class="smultron-banner-sprig" src="/assets/shared/botanical-sprig.webp" alt="" width="200" height="300" decoding="async" aria-hidden="true">
+      <div class="smultron-banner-copy">
+        <p class="smultron-banner-eyebrow">Nytt</p>
+        <h2 id="smultronBannerTitle">Tipsa om era smultronställen</h2>
+        <p>Ja, vi vet — ett smultronställe vill man helst hålla för sig själv. Men har du ett guldkorn du ändå vill dela — en utsikt, en picknickplats, en fridfull bänk under ett pilträd — hör av dig. Vi kikar på det, och du blir krediterad om det hamnar på kartan.</p>
+      </div>
+      <div class="smultron-banner-actions">
+        <button type="button" class="smultron-banner-cta" id="smultronBannerCta">Tipsa oss →</button>
+        <button type="button" class="smultron-banner-dismiss" id="smultronBannerDismiss" aria-label="Stäng notisen">Stäng</button>
+      </div>
+    </div>
+  </aside>
 
   <!-- 3. Upptäck runt hörnet — karta -->
   <div id="naraDigRoot"></div>
@@ -511,6 +528,7 @@
   <div class="plats-wrap">
     <div class="plats-main">
       <p class="lead" id="platsLead"></p>
+      <p class="tipsare-credit" id="platsTipsare" hidden></p>
       <div class="plats-facts" id="platsFacts"></div>
       <div class="plats-gallery" id="platsGallery"></div>
       <div class="body-rich" id="platsBody"></div>
@@ -567,10 +585,11 @@
 <section class="view" id="view-skicka">
   <div class="panel">
     <h1>Tipsa oss</h1>
-    <p class="lede">Sett ett ställe vi missat, eller ett loppis, marknad eller konsert? Skicka tipset — vi granskar innan det syns publikt. Allt går till <a href="mailto:info@upptackvallentuna.se">info@upptackvallentuna.se</a>.</p>
+    <p class="lede">Sett ett ställe vi missat, ett smultronställe värt att dela, eller ett loppis, marknad eller konsert? Skicka tipset — vi granskar innan det syns publikt. Allt går till <a href="mailto:info@upptackvallentuna.se">info@upptackvallentuna.se</a>.</p>
     <div class="tip-tabs" role="tablist" aria-label="Typ av tips">
       <button type="button" class="tip-tab on" role="tab" id="tipTabPlace" aria-selected="true" aria-controls="tipPanelPlace" onclick="setTipKind('place')">Plats</button>
       <button type="button" class="tip-tab" role="tab" id="tipTabEvent" aria-selected="false" aria-controls="tipPanelEvent" onclick="setTipKind('event')">Evenemang</button>
+      <button type="button" class="tip-tab" role="tab" id="tipTabSmultron" aria-selected="false" aria-controls="tipPanelSmultron" onclick="setTipKind('smultron')">Smultronställe</button>
     </div>
     <div class="form-card">
       <div id="tipPanelPlace" role="tabpanel" aria-labelledby="tipTabPlace">
@@ -600,6 +619,18 @@
         <textarea id="evNote" placeholder="Vad händer, för vem, entré?"></textarea>
         <label for="evEmail">Din e-post (för uppföljning)</label>
         <input id="evEmail" type="email" placeholder="du@exempel.se" autocomplete="email" />
+      </div>
+      <div id="tipPanelSmultron" role="tabpanel" aria-labelledby="tipTabSmultron" hidden>
+        <label for="smName">Vad kallas platsen?</label>
+        <input id="smName" placeholder="T.ex. Bänken under pilträdet vid …" autocomplete="off" />
+        <label for="smWhere">Var ligger den?</label>
+        <input id="smWhere" placeholder="Område, vägbeskrivning eller hur man hittar dit" autocomplete="off" />
+        <label for="smNote">Vad gör den speciell?</label>
+        <textarea id="smNote" placeholder="Utsikt, stillhet, picknick, hemlighet — berätta kort varför den är ett guldkorn."></textarea>
+        <label for="smTipsare">Ditt namn (för kredit på kartan)</label>
+        <input id="smTipsare" placeholder="T.ex. Anna i Brottby" autocomplete="name" />
+        <label for="smEmail">Din e-post (för uppföljning)</label>
+        <input id="smEmail" type="email" placeholder="du@exempel.se" autocomplete="email" />
       </div>
       <button type="button" class="submit" onclick="submitTipForm()">Skicka tips</button>
       <p id="evFormMsg" style="margin-top:12px;font-size:13px;color:var(--ink-soft)"></p>
@@ -647,7 +678,7 @@
   <div class="events-page">
     <h1>Händer i <em id="handerKommun">Vallentuna</em></h1>
     <p class="lede">Marknader, loppisar, konserter och små lokala händelser — allt som gör bygden levande. Passerade datum försvinner av sig själva.</p>
-    <p class="events-tip-cta">Vill du tipsa om en plats eller ett evenemang? <button type="button" class="lnk" onclick="setTipKind('event');showView('skicka')">Hör av dig!</button></p>
+    <p class="events-tip-cta">Vill du tipsa om en plats, ett evenemang eller ett smultronställe? <button type="button" class="lnk" onclick="setTipKind('event');showView('skicka')">Hör av dig!</button></p>
     <div id="recurringSection" class="recurring-sec" hidden>
       <h2 class="recurring-h">Varje vecka i bygden</h2>
       <p class="lede" style="margin-top:0">Återkommande aktiviteter — en post per aktivitet, inte per tillfälle.</p>
@@ -702,6 +733,7 @@
         <li><button type="button" onclick="openCategory('gard')">Handla lokalt</button></li>
         <li><button type="button" onclick="openCategory('loppis')">Loppis</button></li>
         <li><button type="button" onclick="openCategory('natur')">Natur &amp; uteliv</button></li>
+        <li data-smultron-nav hidden><button type="button" onclick="openCategory('smultronstalle')">Smultronställen</button></li>
         <li><button type="button" onclick="openCategory('guidning')">Guidning</button></li>
         <li><button type="button" onclick="openCategory('producent')">Producenter</button></li>
       </ul>

@@ -92,6 +92,7 @@
 .seo-hero-img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:18px;margin:0 0 22px;background:#e8e0d4}
 .seo-meta{font-size:13px;color:var(--ink-soft,#5c5648);margin-bottom:18px}
 .seo-meta span+span::before{content:" · "}
+.tipsare-credit{margin:6px 0 0;font-size:13px;font-style:italic;color:var(--ink-soft,#5c5648)}
 .hours-table{width:100%;border-collapse:collapse;font-size:14px;margin:16px 0 24px}
 .hours-table td{padding:8px 0;border-bottom:1px solid rgba(40,34,24,.08)}
 .hours-table td:last-child{text-align:right;font-variant-numeric:tabular-nums}

@@ -1,4 +1,13 @@
-/** Places catalog — source of truth for SPA + SEO pages */
+/**
+ * Places catalog — source of truth for SPA + SEO pages.
+ *
+ * Optional fields used by the UI:
+ * - `tipsare` (string) — credit line, e.g. "Anna i Brottby" → "Tipsat av …"
+ * - `types` (string[]) — multi-category membership (else single `type`)
+ *
+ * Category `smultronstalle`: prefer pin `color:"#c4454a"` (matches Nära dig).
+ * Filter/nav for that category stays hidden until ≥ SMULTRON_FILTER_MIN places exist.
+ */
 const PLACES_RAW = [
     {name:"Vallentuna Stenugnsbageri",cat:"Bageri & Fika",type:"fika",lat:59.5344263,lng:18.0772938,color:"#c8912f",oh:8,ch:19,web:true,url:"https://www.vsbageri.se/",phone:"+46 8 511 705 70",blurb:"Kanelbullar med en nästan seg, mochig lyster — av många kallade de bästa i landet. Surdegsbröd, semlor och pizza ur ugnen, gott om plats både inne och ute, och filtar när det nyper.",short:"Kanelbullar i särklass och surdeg ur stenugnen.",img:"/assets/upplev/vallentuna-stenugnsbageri/cover.webp"},
     {name:"Café Valkyria",cat:"Café & Fika",type:"fika",lat:59.5455361,lng:18.128901,color:"#a85a3a",oh:11,ch:16,web:false,url:"",blurb:"Ett mysigt lantkafé utanför Vallentuna med hembakat, god caffè latte och ett vänligt välkomnande. Barn och hundar trivs, det finns spel att låna och en loppis intill — värt turen ut på landet.",short:"Hembakat lantkafé på landet, med loppis intill.",img:"/assets/upplev/cafe-valkyria/cover.webp"},
@@ -113,12 +122,24 @@ export function schemaTypeFor(place) {
     case "loppis":
       return "Store";
     case "natur":
+    case "smultronstalle":
       return "TouristAttraction";
     case "guidning":
       return "TouristInformationCenter";
     default:
       return "LocalBusiness";
   }
+}
+
+/** Hide Smultronställen filter/nav until enough places exist (no empty tab). */
+export const SMULTRON_FILTER_MIN = 5;
+
+export function countPlacesOfType(list, typeKey) {
+  return (list || []).filter((p) => placeHasType(p, typeKey)).length;
+}
+
+export function isSmultronFilterVisible(list, min = SMULTRON_FILTER_MIN) {
+  return countPlacesOfType(list, "smultronstalle") >= min;
 }
 
 /** Category keys a place belongs to (`types` array, else single `type`). */

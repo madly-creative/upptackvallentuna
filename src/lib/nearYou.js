@@ -13,6 +13,8 @@ export const NEAR_PIN_COLORS = {
   butik: "#2a3228",
   gard: "#c4a882",
   loppis: "#c4a882",
+  /** Berry red — reads as its own “hidden gem” layer on the map. */
+  smultronstalle: "#c4454a",
 };
 
 /** Inline SVG glyphs for map pins (white on colored circle). */
@@ -22,6 +24,7 @@ export const NEAR_PIN_ICONS = {
   butik: `<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="#fff" d="M6 8V6a6 6 0 1 1 12 0v2h2v14H4V8h2zm2 0h8V6a4 4 0 1 0-8 0v2z"/></svg>`,
   gard: `<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="#fff" d="M12 2.5l2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 14.8 7.2 17.4l.9-5.4-3.9-3.8 5.4-.8L12 2.5z"/></svg>`,
   loppis: `<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="#fff" d="M12 2.5l2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 14.8 7.2 17.4l.9-5.4-3.9-3.8 5.4-.8L12 2.5z"/></svg>`,
+  smultronstalle: `<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="#fff" d="M12 3.2c1.1 1.6 2.6 2.4 4.2 2.6-.8 1-2.3 1.5-4.2 1.5S8.6 6.8 7.8 5.8C9.4 5.6 10.9 4.8 12 3.2zm0 5c3.3 0 6 2 6 5.7 0 3.4-2.7 6.3-6 6.3s-6-2.9-6-6.3c0-3.7 2.7-5.7 6-5.7z"/></svg>`,
 };
 
 /** Category chips (Öppet nu is a separate additive toggle). */
@@ -30,6 +33,7 @@ export const NEAR_FILTERS = [
   { key: "fika", label: "Fika & mat" },
   { key: "natur", label: "Natur" },
   { key: "butik", label: "Butiker" },
+  { key: "smultronstalle", label: "Smultronställen" },
   { key: "mer", label: "Mer" },
 ];
 
@@ -38,6 +42,7 @@ export const NEAR_SUMMARY_GROUPS = [
   { key: "fika", label: "Fika & mat", types: ["fika"], color: NEAR_PIN_COLORS.fika },
   { key: "natur", label: "Natur & bad", types: ["natur"], color: NEAR_PIN_COLORS.natur },
   { key: "butik", label: "Butiker", types: ["butik"], color: NEAR_PIN_COLORS.butik },
+  { key: "smultronstalle", label: "Smultronställen", types: ["smultronstalle"], color: NEAR_PIN_COLORS.smultronstalle },
   { key: "mer", label: "Mer", types: ["gard", "loppis"], color: NEAR_PIN_COLORS.loppis },
 ];
 
@@ -57,7 +62,12 @@ export function pinIconSvgForType(type) {
 /** @returns {string[]|null} null = all types */
 export function nearFilterTypes(filterKey) {
   if (filterKey === "mer") return ["gard", "loppis"];
-  if (filterKey === "fika" || filterKey === "natur" || filterKey === "butik") {
+  if (
+    filterKey === "fika" ||
+    filterKey === "natur" ||
+    filterKey === "butik" ||
+    filterKey === "smultronstalle"
+  ) {
     return [filterKey];
   }
   return null;
