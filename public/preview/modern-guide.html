@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Layout-preview · Modern lokal guide — Upptäck Vallentuna</title>
+<!--
+  THESIS: Discovery OS — map + intent + dense nearby rails; refuses the editorial magazine column.
+  OWN-WORLD: Cool stone paper, committed moss chrome, berry smultron accent; product UI type (not display-serif essay).
+  STORY: Visitor opens, sees map of the bygd, filters by intent, picks a place in seconds.
+  FIRST VIEWPORT: Utility bar + intent chips + split (list 38% / map 62%); CTA = explore the map.
+  FORM: Modern local-guide shell (AllTrails/Citymapper energy, Vallentuna soul) — exploration preview only.
+  FINISH: Preview artifact; not production. Ship decision waits on user lock.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+  :root{
+    --ink:#1c241c;
+    --ink-soft:#5a6558;
+    --paper:#f4f5f2;
+    --paper-2:#e8ebe4;
+    --card:#ffffff;
+    --moss:#2f3d2e;
+    --moss-mid:#3d4f3a;
+    --berry:#c4454a;
+    --line:rgba(28,36,28,.1);
+    --shadow:0 10px 30px rgba(28,36,28,.08);
+    --r:14px;
+    --font-ui:"Bricolage Grotesque",system-ui,sans-serif;
+    --font-body:"Source Sans 3",system-ui,sans-serif;
+    --bar-h:58px;
+    --intent-h:52px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:var(--font-body);color:var(--ink);background:var(--paper);
+    -webkit-font-smoothing:antialiased;line-height:1.45;
+  }
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  img{display:block;max-width:100%}
+
+  /* Preview ribbon */
+  .preview-ribbon{
+    position:sticky;top:0;z-index:2000;
+    display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+    padding:8px 16px;background:#1a1f1a;color:#e8ebe4;font-size:13px;
+  }
+  .preview-ribbon strong{font-family:var(--font-ui);font-weight:600}
+  .preview-ribbon a{
+    display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;
+    background:rgba(255,255,255,.1);font-weight:600;font-size:12px;
+  }
+  .preview-ribbon a:hover{background:rgba(255,255,255,.16)}
+  .preview-ribbon .pill{
+    font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    color:#9fd0a0;border:1px solid rgba(159,208,160,.35);padding:3px 8px;border-radius:999px;
+  }
+
+  /* Shell */
+  .shell{min-height:calc(100vh - 40px);display:flex;flex-direction:column}
+
+  .topbar{
+    height:var(--bar-h);display:flex;align-items:center;gap:16px;
+    padding:0 18px;background:var(--card);border-bottom:1px solid var(--line);
+    position:sticky;top:40px;z-index:100;
+  }
+  .brand{
+    display:flex;align-items:center;gap:10px;flex-shrink:0;
+    font-family:var(--font-ui);font-weight:700;font-size:15px;letter-spacing:-.02em;
+  }
+  .brand img{width:28px;height:28px}
+  .search{
+    flex:1;max-width:480px;display:flex;align-items:center;gap:10px;
+    background:var(--paper);border:1px solid var(--line);border-radius:999px;
+    padding:0 14px;height:40px;
+  }
+  .search input{
+    flex:1;border:0;background:transparent;outline:none;font:inherit;font-size:14px;
+  }
+  .search svg{flex-shrink:0;opacity:.55}
+  .top-actions{margin-left:auto;display:flex;align-items:center;gap:8px}
+  .ghost{
+    height:36px;padding:0 12px;border-radius:999px;font-size:13px;font-weight:600;
+    color:var(--ink-soft);
+  }
+  .ghost:hover{background:var(--paper-2);color:var(--ink)}
+  .cta{
+    height:36px;padding:0 14px;border-radius:999px;font-size:13px;font-weight:700;
+    background:var(--moss);color:#fff;
+  }
+  .cta:hover{background:var(--moss-mid)}
+
+  .intent{
+    height:var(--intent-h);display:flex;align-items:center;gap:8px;
+    padding:0 18px;background:var(--card);border-bottom:1px solid var(--line);
+    overflow-x:auto;scrollbar-width:none;position:sticky;top:calc(40px + var(--bar-h));z-index:90;
+  }
+  .intent::-webkit-scrollbar{display:none}
+  .chip{
+    flex-shrink:0;height:34px;padding:0 14px;border-radius:999px;
+    border:1px solid var(--line);background:var(--paper);font-size:13px;font-weight:600;
+    color:var(--ink-soft);display:inline-flex;align-items:center;gap:6px;
+    transition:background .15s,color .15s,border-color .15s;
+  }
+  .chip:hover{border-color:rgba(47,61,46,.28);color:var(--ink)}
+  .chip.on{background:var(--moss);border-color:var(--moss);color:#fff}
+  .chip .dot{width:7px;height:7px;border-radius:50%}
+
+  /* Discovery split — the thesis */
+  .discover{
+    flex:1;display:grid;grid-template-columns:minmax(300px,380px) 1fr;
+    min-height:min(68vh,720px);background:var(--paper);
+  }
+  .rail{
+    border-right:1px solid var(--line);background:var(--card);
+    display:flex;flex-direction:column;min-height:0;
+  }
+  .rail-head{
+    padding:16px 16px 10px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+  }
+  .rail-head h1{
+    font-family:var(--font-ui);font-size:22px;font-weight:700;letter-spacing:-.03em;line-height:1.15;
+  }
+  .rail-head p{font-size:13px;color:var(--ink-soft);margin-top:4px}
+  .wx{
+    flex-shrink:0;text-align:right;font-size:12px;color:var(--ink-soft);line-height:1.3;
+  }
+  .wx strong{display:block;font-size:18px;font-family:var(--font-ui);color:var(--ink);font-weight:700}
+  .rail-meta{
+    padding:0 16px 12px;display:flex;gap:8px;flex-wrap:wrap;
+  }
+  .tag{
+    font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+    padding:5px 9px;border-radius:8px;background:var(--paper-2);color:var(--moss);
+  }
+  .tag.open{background:rgba(61,107,50,.12);color:#2f6b28}
+  .list{flex:1;overflow:auto;padding:0 8px 16px}
+  .row{
+    display:grid;grid-template-columns:56px 1fr auto;gap:12px;align-items:center;
+    padding:10px;border-radius:12px;cursor:pointer;border:1px solid transparent;
+  }
+  .row:hover,.row.on{background:var(--paper);border-color:var(--line)}
+  .row .thumb{
+    width:56px;height:56px;border-radius:10px;background-size:cover;background-position:center;
+  }
+  .row h3{font-family:var(--font-ui);font-size:14px;font-weight:650;letter-spacing:-.01em;line-height:1.2}
+  .row .sub{font-size:12px;color:var(--ink-soft);margin-top:3px}
+  .row .km{font-size:12px;font-weight:600;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+  .pin-swatch{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:5px;vertical-align:-1px}
+
+  .map-pane{position:relative;min-height:420px;background:#d9ddd4}
+  #map{position:absolute;inset:0}
+  .map-float{
+    position:absolute;left:14px;bottom:14px;z-index:500;
+    display:flex;gap:8px;flex-wrap:wrap;
+  }
+  .map-float button,.map-float .note{
+    background:var(--card);border:1px solid var(--line);border-radius:999px;
+    padding:9px 14px;font-size:12px;font-weight:700;box-shadow:var(--shadow);
+  }
+  .map-float .note{color:var(--ink-soft);font-weight:600}
+
+  /* Below-fold: dense product sections, not magazine essays */
+  .below{padding:28px 18px 64px;max-width:1440px;margin:0 auto;width:100%}
+  .sec-h{
+    display:flex;align-items:end;justify-content:space-between;gap:12px;margin:0 0 14px;
+  }
+  .sec-h h2{
+    font-family:var(--font-ui);font-size:20px;font-weight:700;letter-spacing:-.02em;
+  }
+  .sec-h a{font-size:13px;font-weight:700;color:var(--moss)}
+
+  .happening{
+    display:grid;grid-auto-flow:column;grid-auto-columns:minmax(240px,280px);
+    gap:12px;overflow-x:auto;padding-bottom:6px;scrollbar-width:thin;margin-bottom:36px;
+  }
+  .ev{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+    padding:14px;min-height:132px;display:flex;flex-direction:column;gap:8px;
+    transition:transform .18s,box-shadow .18s;
+  }
+  .ev:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+  .ev .when{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--berry)}
+  .ev h3{font-family:var(--font-ui);font-size:16px;font-weight:650;letter-spacing:-.02em;line-height:1.2}
+  .ev p{font-size:13px;color:var(--ink-soft);line-height:1.4}
+
+  .picks{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:36px;
+  }
+  .card{
+    border-radius:var(--r);overflow:hidden;background:var(--card);border:1px solid var(--line);
+    transition:transform .18s,box-shadow .18s;
+  }
+  .card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+  .card .im{aspect-ratio:4/3;background-size:cover;background-position:center}
+  .card .bd{padding:12px 14px 14px}
+  .card .cat{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--moss);margin-bottom:4px}
+  .card h3{font-family:var(--font-ui);font-size:16px;font-weight:650;letter-spacing:-.02em;line-height:1.2}
+  .card p{font-size:13px;color:var(--ink-soft);margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+  .guides{
+    display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:12px;
+  }
+  .guide{
+    position:relative;border-radius:var(--r);overflow:hidden;min-height:180px;
+    background-size:cover;background-position:center;color:#fff;
+  }
+  .guide::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,rgba(20,28,20,.78))}
+  .guide .bd{position:absolute;left:0;right:0;bottom:0;z-index:1;padding:16px}
+  .guide .lbl{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.85;margin-bottom:6px}
+  .guide h3{font-family:var(--font-ui);font-size:20px;font-weight:700;letter-spacing:-.02em}
+
+  .compare{
+    margin-top:48px;padding:20px;border-radius:16px;background:var(--moss);color:#f4f5f2;
+  }
+  .compare h2{font-family:var(--font-ui);font-size:18px;font-weight:700;margin-bottom:10px}
+  .compare ul{display:grid;grid-template-columns:1fr 1fr;gap:8px 24px;font-size:14px;line-height:1.45;opacity:.92}
+  .compare li{list-style:none;padding-left:0}
+  .compare li::before{content:"→ ";opacity:.55}
+
+  .leaflet-container{font:inherit}
+  .uv-pin{
+    width:28px;height:28px;border-radius:50%;border:2.5px solid #fff;
+    box-shadow:0 4px 12px rgba(0,0,0,.25);
+  }
+
+  @media (max-width:980px){
+    .discover{grid-template-columns:1fr;min-height:auto}
+    .rail{border-right:0;border-bottom:1px solid var(--line);max-height:42vh}
+    .map-pane{min-height:48vh}
+    .picks{grid-template-columns:repeat(2,1fr)}
+    .guides{grid-template-columns:1fr}
+    .compare ul{grid-template-columns:1fr}
+    .topbar{gap:10px}
+    .search{max-width:none}
+    .ghost.hide-sm{display:none}
+  }
+  @media (max-width:560px){
+    .picks{grid-template-columns:1fr 1fr}
+    .brand span{display:none}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .ev,.card{transition:none}
+  }
+</style>
+</head>
+<body>
+  <div class="preview-ribbon">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span class="pill">Preview</span>
+      <strong>Modern lokal guide — layout-exploration</strong>
+      <span style="opacity:.7">Inte produktion · map-led discovery istället för editorial-kolumn</span>
+    </div>
+    <a href="/">← Tillbaka till live-sajten</a>
+  </div>
+
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="/">
+        <img src="/assets/shared/logo.svg" alt="">
+        <span>Upptäck Vallentuna</span>
+      </a>
+      <label class="search" aria-label="Sök">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3.2-3.2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input type="search" placeholder="Fika, bad, loppis, smultronställe…" value="">
+      </label>
+      <div class="top-actions">
+        <button type="button" class="ghost hide-sm">Favoriter</button>
+        <button type="button" class="ghost hide-sm">Guider</button>
+        <button type="button" class="cta">Tipsa oss</button>
+      </div>
+    </header>
+
+    <nav class="intent" aria-label="Vad vill du göra?">
+      <button type="button" class="chip on">Allt nära</button>
+      <button type="button" class="chip">Öppet nu</button>
+      <button type="button" class="chip"><span class="dot" style="background:#a85a3a"></span>Fika &amp; mat</button>
+      <button type="button" class="chip"><span class="dot" style="background:#3d4f3a"></span>Natur</button>
+      <button type="button" class="chip"><span class="dot" style="background:#2a3228"></span>Butiker</button>
+      <button type="button" class="chip"><span class="dot" style="background:#c4454a"></span>Smultronställen</button>
+      <button type="button" class="chip"><span class="dot" style="background:#c4a882"></span>Mer</button>
+    </nav>
+
+    <section class="discover" aria-label="Upptäck runt dig">
+      <aside class="rail">
+        <div class="rail-head">
+          <div>
+            <h1>Runt dig just nu</h1>
+            <p>Zooma, filtrera, öppna — kartan är guiden.</p>
+          </div>
+          <div class="wx"><strong>17°</strong>Mulet</div>
+        </div>
+        <div class="rail-meta">
+          <span class="tag open">2 öppna</span>
+          <span class="tag">12 inom 5 km</span>
+          <span class="tag">1 event idag</span>
+        </div>
+        <div class="list" id="placeList">
+          <button type="button" class="row on" data-lat="59.5344" data-lng="18.0773">
+            <span class="thumb" style="background-image:url('/assets/upplev/vallentuna-stenugnsbageri/cover.webp')"></span>
+            <span>
+              <h3>Vallentuna Stenugnsbageri</h3>
+              <div class="sub"><span class="pin-swatch" style="background:#c8912f"></span>Fika · Öppet nu</div>
+            </span>
+            <span class="km">0,3 km</span>
+          </button>
+          <button type="button" class="row" data-lat="59.5339" data-lng="18.0783">
+            <span class="thumb" style="background-image:url('/assets/upplev/gastis-kok-och-bar/cover.webp')"></span>
+            <span>
+              <h3>Gästis Kök &amp; Bar</h3>
+              <div class="sub"><span class="pin-swatch" style="background:#a85a3a"></span>Mat · Stänger snart</div>
+            </span>
+            <span class="km">0,4 km</span>
+          </button>
+          <button type="button" class="row" data-lat="59.5431" data-lng="18.1668">
+            <span class="thumb" style="background-image:url('/assets/upplev/angarnsjoangen/cover.webp')"></span>
+            <span>
+              <h3>Angarnssjöängen</h3>
+              <div class="sub"><span class="pin-swatch" style="background:#2f3d2e"></span>Natur · Alltid</div>
+            </span>
+            <span class="km">5,1 km</span>
+          </button>
+          <button type="button" class="row" data-lat="59.5947" data-lng="18.0976">
+            <span class="thumb" style="background-image:url('/assets/upplev/orkesta-granby-gard/cover-garden.webp')"></span>
+            <span>
+              <h3>Orkesta Granby Gård</h3>
+              <div class="sub"><span class="pin-swatch" style="background:#3d4f3a"></span>Gård · Guidning idag</div>
+            </span>
+            <span class="km">7,2 km</span>
+          </button>
+          <button type="button" class="row" data-lat="59.5132" data-lng="18.1643">
+            <span class="thumb" style="background-image:url('/assets/upplev/antikladan/cover.webp')"></span>
+            <span>
+              <h3>Antikladan</h3>
+              <div class="sub"><span class="pin-swatch" style="background:#7a5a4a"></span>Loppis</div>
+            </span>
+            <span class="km">6,8 km</span>
+          </button>
+          <button type="button" class="row" data-lat="59.51596" data-lng="18.0533">
+            <span class="thumb" style="background-image:url('/assets/upplev/arkils-tingstad/cover.webp')"></span>
+            <span>
+              <h3>Arkils Tingstad</h3>
+              <div class="sub"><span class="pin-swatch" style="background:#2f3d2e"></span>Historia</div>
+            </span>
+            <span class="km">2,9 km</span>
+          </button>
+        </div>
+      </aside>
+
+      <div class="map-pane">
+        <div id="map" role="img" aria-label="Karta över Vallentuna"></div>
+        <div class="map-float">
+          <button type="button" id="locateBtn">📍 Nära mig</button>
+          <span class="note">Öppen karta · ingen API-nyckel</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="below">
+      <div class="sec-h">
+        <h2>Händer i bygden</h2>
+        <a href="/?view=hander">Alla evenemang</a>
+      </div>
+      <div class="happening">
+        <article class="ev">
+          <div class="when">Idag · 14:00</div>
+          <h3>Granby Vikingagård — guidad visning</h3>
+          <p>Orkesta Granby Gård · historia på plats</p>
+        </article>
+        <article class="ev">
+          <div class="when">Tor 3 sep</div>
+          <h3>Hembygdstorsdag</h3>
+          <p>Porkalaparentesen · Vallentuna Hembygdsförening</p>
+        </article>
+        <article class="ev">
+          <div class="when">Lör 6 sep</div>
+          <h3>Höstfest / Skördefest</h3>
+          <p>Lindholmen · Orkesta hembygdsförening</p>
+        </article>
+        <article class="ev">
+          <div class="when">Sön 7 sep</div>
+          <h3>Bakluckeloppis</h3>
+          <p>Roslagsstoppet · fri entré</p>
+        </article>
+      </div>
+
+      <div class="sec-h">
+        <h2>Handplockat</h2>
+        <a href="/">Se mer</a>
+      </div>
+      <div class="picks">
+        <a class="card" href="/?plats=vallentuna-stenugnsbageri">
+          <div class="im" style="background-image:url('/assets/upplev/vallentuna-stenugnsbageri/cover.webp')"></div>
+          <div class="bd"><div class="cat">Fika</div><h3>Stenugnsbageri</h3><p>Kanelbullar i särklass och surdeg ur stenugnen.</p></div>
+        </a>
+        <a class="card" href="/?plats=angarnsjoangen">
+          <div class="im" style="background-image:url('/assets/upplev/angarnsjoangen/cover.webp')"></div>
+          <div class="bd"><div class="cat">Natur</div><h3>Angarnssjöängen</h3><p>Fågelliv, spänger och öppna vyer.</p></div>
+        </a>
+        <a class="card" href="/?plats=antikladan">
+          <div class="im" style="background-image:url('/assets/upplev/antikladan/cover.webp')"></div>
+          <div class="bd"><div class="cat">Loppis</div><h3>Antikladan</h3><p>Antik-lada full av kuriosa, med fika på plats.</p></div>
+        </a>
+        <a class="card" href="/?plats=toftesta-holme">
+          <div class="im" style="background-image:url('/assets/upplev/toftesta-holme/cover.webp')"></div>
+          <div class="bd"><div class="cat">Bad</div><h3>Toftesta Holme</h3><p>Stilla badsjö med sandbotten, lite avsides.</p></div>
+        </a>
+      </div>
+
+      <div class="sec-h">
+        <h2>Färdiga guider</h2>
+        <a href="/?view=guider">Alla guider</a>
+      </div>
+      <div class="guides">
+        <a class="guide" href="/guide/loppisrundan.html" style="background-image:url('/assets/upplev/antikladan/cover.webp')">
+          <div class="bd"><div class="lbl">Runda</div><h3>Loppisrundan</h3></div>
+        </a>
+        <a class="guide" href="/guide/fika-och-natur.html" style="background-image:url('/assets/hero/2.webp')">
+          <div class="bd"><div class="lbl">Halvdag</div><h3>Fika &amp; natur</h3></div>
+        </a>
+        <a class="guide" href="/guide/runriket.html" style="background-image:url('/assets/upplev/arkils-tingstad/cover.webp')">
+          <div class="bd"><div class="lbl">Historia</div><h3>Runriket</h3></div>
+        </a>
+      </div>
+
+      <aside class="compare" aria-label="Vad den här previewen förändrar">
+        <h2>Vad den här strukturen gör annorlunda</h2>
+        <ul>
+          <li><strong>Bort:</strong> medelsmal editorial-kolumn (~1180px) och magazine-scroll som första upplevelse</li>
+          <li><strong>Till:</strong> fullbredd discovery-shell där kartan äger första vyn</li>
+          <li><strong>Bort:</strong> hero-essä + många sektioner i samma rytm</li>
+          <li><strong>Till:</strong> intent-chips + tät platslista + karta som ett verktyg</li>
+          <li><strong>Behåller:</strong> Vallentunas moss, platser, svenska ton — men i produkt-UI, inte tidning</li>
+          <li><strong>Nästa:</strong> om du gillar riktningen, låser vi den och bygger om live-startsida stegvis</li>
+        </ul>
+      </aside>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const center = [59.534, 18.077];
+    const map = L.map("map", { zoomControl: false, scrollWheelZoom: false }).setView(center, 12);
+    L.control.zoom({ position: "bottomright" }).addTo(map);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "&copy; OpenStreetMap",
+      maxZoom: 19,
+    }).addTo(map);
+
+    const pins = [
+      { lat: 59.5344, lng: 18.0773, color: "#c8912f" },
+      { lat: 59.5339, lng: 18.0783, color: "#a85a3a" },
+      { lat: 59.5431, lng: 18.1668, color: "#2f3d2e" },
+      { lat: 59.5947, lng: 18.0976, color: "#3d4f3a" },
+      { lat: 59.5132, lng: 18.1643, color: "#7a5a4a" },
+      { lat: 59.51596, lng: 18.0533, color: "#2f3d2e" },
+    ];
+    const markers = pins.map((p) =>
+      L.marker([p.lat, p.lng], {
+        icon: L.divIcon({
+          className: "",
+          html: `<div class="uv-pin" style="background:${p.color}"></div>`,
+          iconSize: [28, 28],
+          iconAnchor: [14, 14],
+        }),
+      }).addTo(map)
+    );
+
+    document.querySelectorAll("#placeList .row").forEach((row, i) => {
+      row.addEventListener("click", () => {
+        document.querySelectorAll("#placeList .row").forEach((r) => r.classList.remove("on"));
+        row.classList.add("on");
+        const lat = +row.dataset.lat;
+        const lng = +row.dataset.lng;
+        map.flyTo([lat, lng], 14, { duration: 0.55 });
+        markers[i]?.openPopup?.();
+      });
+    });
+
+    document.querySelectorAll(".intent .chip").forEach((chip) => {
+      chip.addEventListener("click", () => {
+        document.querySelectorAll(".intent .chip").forEach((c) => c.classList.remove("on"));
+        chip.classList.add("on");
+      });
+    });
+
+    document.getElementById("locateBtn")?.addEventListener("click", () => {
+      map.flyTo(center, 13, { duration: 0.5 });
+    });
+
+    // Enable wheel zoom after user interacts with map
+    map.once("click", () => map.scrollWheelZoom.enable());
+  </script>
+</body>
+</html>
