@@ -86,5 +86,13 @@ describe("pinColorForType", () => {
     expect(pinColorForType("fika")).not.toBe(pinColorForType("natur"));
     expect(pinColorForType("butik")).toBe("#2a3228");
     expect(pinColorForType("loppis")).toBe(pinColorForType("gard"));
+    expect(pinColorForType("smultronstalle")).toBe("#c4454a");
+    expect(pinColorForType("smultronstalle")).not.toBe(pinColorForType("fika"));
+  });
+});
+
+describe("nearFilterTypes smultronstalle", () => {
+  it("maps smultronstalle 1:1", () => {
+    expect(nearFilterTypes("smultronstalle")).toEqual(["smultronstalle"]);
   });
 });

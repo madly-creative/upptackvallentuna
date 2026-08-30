@@ -1091,7 +1091,7 @@
   .popup-more{display:block;width:100%;text-align:center;margin-top:8px;font-family:var(--font-sans);font-size:12px;font-weight:700;color:var(--rust);background:none;border:none;cursor:pointer;padding:4px}
 
   /* ---------- LIVE / SMART ---------- */
-  .fav-count[hidden],.return-banner[hidden],.hero-today [hidden]{display:none!important}
+  .fav-count[hidden],.return-banner[hidden],.hero-today [hidden],.smultron-banner[hidden]{display:none!important}
   .return-banner{
     max-width:var(--max);margin:18px auto 0;padding:0 28px;
   }
@@ -1103,6 +1103,64 @@
   .return-banner .inner button{
     font-size:13px;font-weight:600;color:var(--rust);background:none;border:none;cursor:pointer;
   }
+  .smultron-banner{
+    max-width:var(--max);margin:18px auto 0;padding:0 28px;
+  }
+  .smultron-banner .inner{
+    position:relative;overflow:hidden;
+    display:flex;align-items:flex-start;justify-content:space-between;gap:22px;flex-wrap:wrap;
+    background:linear-gradient(135deg,var(--moss-deep) 0%,#3a4a37 48%,var(--moss) 100%);
+    border:1px solid color-mix(in srgb,var(--moss-deep) 80%,#000);
+    border-radius:16px;padding:22px 24px 22px 26px;
+    color:rgba(249,247,243,.92);
+    box-shadow:0 12px 28px rgba(47,61,46,.14);
+  }
+  .smultron-banner-sprig{
+    position:absolute;right:-18px;bottom:-36px;
+    width:min(42%,220px);height:auto;
+    opacity:.22;pointer-events:none;user-select:none;
+    filter:brightness(1.35) contrast(.95);
+  }
+  .smultron-banner-copy{
+    position:relative;z-index:1;flex:1 1 280px;max-width:54ch;
+  }
+  .smultron-banner-eyebrow{
+    margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+    color:#e8b4a0;
+  }
+  .smultron-banner-copy h2{
+    margin:0 0 10px;font-family:var(--font-serif);font-size:clamp(22px,2.6vw,30px);font-weight:500;
+    color:#f9f7f3;line-height:1.18;
+  }
+  .smultron-banner-copy p:last-child{
+    margin:0;font-size:14px;line-height:1.55;color:rgba(249,247,243,.82);
+  }
+  .smultron-banner-actions{
+    position:relative;z-index:1;
+    display:flex;flex-direction:column;align-items:stretch;gap:8px;min-width:148px;
+  }
+  .smultron-banner-cta{
+    display:inline-flex;align-items:center;justify-content:center;text-align:center;
+    padding:11px 16px;border-radius:999px;border:none;cursor:pointer;
+    background:var(--paper);color:var(--moss-deep);
+    font-size:13px;font-weight:700;font-family:inherit;
+  }
+  .smultron-banner-cta:hover{background:#fff}
+  .smultron-banner-dismiss{
+    font-size:12px;font-weight:600;color:rgba(249,247,243,.72);background:none;border:none;cursor:pointer;padding:4px;
+    font-family:inherit;
+  }
+  .smultron-banner-dismiss:hover{color:#f9f7f3}
+  @media (max-width:640px){
+    .smultron-banner-sprig{width:min(58%,180px);opacity:.18}
+    .smultron-banner-actions{width:100%}
+  }
+  .tipsare-credit{
+    margin:6px 0 0;font-size:12px;font-style:italic;line-height:1.4;color:var(--ink-soft);
+  }
+  .card-body .tipsare-credit{margin:4px 0 8px}
+  .route-card .tipsare-credit{margin:4px 0 0}
+  .pick-feature .tipsare-credit,.tcard .tipsare-credit{color:rgba(255,255,255,.78)}
   .status-pill{
     display:inline-flex;align-items:center;gap:5px;margin-top:8px;
     font-size:11px;font-weight:700;letter-spacing:.02em;
@@ -1240,7 +1298,7 @@
   .notify .ok{background:var(--moss-deep);color:var(--paper)}
   .notify .no{background:transparent;color:var(--ink-soft);border:1px solid var(--line)!important}
   .tip-tabs{
-    display:inline-flex;gap:4px;padding:4px;margin:0 0 16px;
+    display:inline-flex;flex-wrap:wrap;gap:4px;padding:4px;margin:0 0 16px;
     background:var(--paper-2);border:1px solid var(--line-soft);border-radius:999px;
   }
   .tip-tab{

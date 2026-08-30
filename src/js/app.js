@@ -8,7 +8,7 @@ import {
   isOpenAt,
   addDays,
 } from "../lib/hours.js";
-import { places as PLACES_SEED, placeSlug, placeBySlug, resolvePlaceRef, isMappablePlace, placeHasType, placeTypes } from "../data/places.js";
+import { places as PLACES_SEED, placeSlug, placeBySlug, resolvePlaceRef, isMappablePlace, placeHasType, placeTypes, isSmultronFilterVisible } from "../data/places.js";
 import { PLACE_META, A } from "../data/placeMeta.js";
 import {
   guides as GUIDES_SEED,
@@ -743,11 +743,11 @@ import {
     },
   };
 
-    const cats=[{key:"alla",label:"Allt"},{key:"fika",label:"Fika & Mat"},{key:"gard",label:"Gård & Handelsträdgård"},{key:"natur",label:"Natur & Historia"},{key:"butik",label:"Butik & Kultur"},{key:"loppis",label:"Loppis"},{key:"guidning",label:"Guidning"}];
+    const cats=[{key:"alla",label:"Allt"},{key:"fika",label:"Fika & Mat"},{key:"gard",label:"Gård & Handelsträdgård"},{key:"natur",label:"Natur & Historia"},{key:"butik",label:"Butik & Kultur"},{key:"loppis",label:"Loppis"},{key:"smultronstalle",label:"Smultronställen"},{key:"guidning",label:"Guidning"}];
 
   const DOW=["SÖN","MÅN","TIS","ONS","TOR","FRE","LÖR"];
   const MON=["JAN","FEB","MAR","APR","MAJ","JUN","JUL","AUG","SEP","OKT","NOV","DEC"];
-  const typeLabel={fika:"FIKA",gard:"HANDLA LOKALT",butik:"BUTIK",loppis:"LOPPIS",natur:"NATUR",guidning:"GUIDNING"};
+  const typeLabel={fika:"FIKA",gard:"HANDLA LOKALT",butik:"BUTIK",loppis:"LOPPIS",natur:"NATUR",smultronstalle:"SMULTRONSTÄLLE",guidning:"GUIDNING"};
 
   // Editorial category landings (nav + view-kategori)
   const CATEGORIES={
@@ -775,6 +775,11 @@ import {
       key:"natur", nav:"Natur & uteliv", title:"Natur & uteliv",
       lede:"Spänger, bad, runstenar och öppna landskap — utflykter nära dig när du vill andas ut.",
       types:["natur"], mapKey:"natur"
+    },
+    smultronstalle:{
+      key:"smultronstalle", nav:"Smultronställen", title:"Smultronställen",
+      lede:"Guldkorn tippade av lokalbor — utsikter, bänkar och små hemligheter du inte nödvändigtvis kände till.",
+      types:["smultronstalle"], mapKey:"smultronstalle"
     },
     guidning:{
       key:"guidning", nav:"Guidning", title:"Guidning & historia",
@@ -952,6 +957,7 @@ import {
   // ---- localStorage: favorites, last visit, soft interest ----
   const LS_FAV="vii_favs_v1", LS_LAST="vii_last_place_v1", LS_INTEREST="vii_interest_v1", LS_GEO_ASKED="vii_geo_asked_v1";
   const LS_LISTS="uv_lists_v1", LS_PENDING="uv_pending_events_v1", LS_REPORTS="uv_reports_v1", LS_NOTIFY="uv_notify_seen_v1";
+  const LS_SMULTRON_BANNER="uv_smultron_banner_dismissed";
   function loadJSON(k,fb){try{return JSON.parse(localStorage.getItem(k))??fb;}catch(e){return fb;}}
   function saveJSON(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
   let favorites=new Set(loadJSON(LS_FAV,[]));
@@ -1369,14 +1375,20 @@ import {
   function renderNearDigFilters(){
     const bar=document.getElementById("naraDigFilters");
     if(!bar) return;
+    const showSmultron=isSmultronFilterVisible(places);
     const chips=[
       { key:"alla", label:"Allt", kind:"cat" },
       { key:"open", label:"Öppet nu", kind:"open" },
-      ...NEAR_FILTERS.filter(f=>f.key!=="alla").map(f=>({ key:f.key, label:f.label, kind:"cat" })),
+      ...NEAR_FILTERS.filter(f=>{
+        if(f.key==="alla") return false;
+        if(f.key==="smultronstalle") return showSmultron;
+        return true;
+      }).map(f=>({ key:f.key, label:f.label, kind:"cat" })),
     ];
+    if(nearDigFilter==="smultronstalle" && !showSmultron) nearDigFilter="alla";
     bar.innerHTML=chips.map(c=>{
       const on=c.kind==="open" ? nearDigOpenNow : nearDigFilter===c.key;
-      const ico=c.key==="open"?"🕒 ":c.key==="fika"?"🍴 ":c.key==="natur"?"🌲 ":c.key==="butik"?"🛍️ ":c.key==="mer"?"··· ":"";
+      const ico=c.key==="open"?"🕒 ":c.key==="fika"?"🍴 ":c.key==="natur"?"🌲 ":c.key==="butik"?"🛍️ ":c.key==="smultronstalle"?"✨ ":c.key==="mer"?"··· ":"";
       const label=c.key==="alla"?(on?"● Allt":"Allt"):ico+c.label;
       return `<button type="button" class="nara-dig-chip${on?" on":""}" data-kind="${c.kind}" data-key="${c.key}" aria-pressed="${on?"true":"false"}">${label}</button>`;
     }).join("");
@@ -2380,6 +2392,7 @@ import {
           <div class="why">${featWhy}</div>
           <h3>${feature.p.name}</h3>
           <p>${featSub}</p>
+          ${tipsareCreditHTML(feature.p)}
         </div>
       </article>`;
 
@@ -2397,6 +2410,7 @@ import {
         <div class="bd">
           <h3>${p.name}</h3>
           <p>${why}</p>
+          ${tipsareCreditHTML(p)}
         </div>
       </article>`;
     }).join("");
@@ -2706,12 +2720,14 @@ import {
     const status=!isTimedVenue(p)
       ?(open?"Alltid tillgänglig":"Stängt")
       :(open?(isClosingSoon(p)?"Stänger snart":"Öppet nu"):"Stängt");
+    const credit=tipsareCreditHTML(p);
     return `<article class="route-card" onclick="openPlace('${jsEsc(p.name)}')">
       <div class="step">${step}</div>
       <div class="im" style="background-image:url('${p.img}')"></div>
       <div class="bd">
         <h3>${p.name}</h3>
         <p>${p.short||p.blurb}</p>
+        ${credit}
         <div class="meta" style="margin-top:8px;font-size:12px;color:var(--ink-soft)">${status} · ${travelHTML(p).replace(/<br>/g," · ")}</div>
       </div>
     </article>`;
@@ -2797,7 +2813,10 @@ import {
     S('catLede', cat.lede);
     const pills=document.getElementById('catPills');
     if(pills){
-      pills.innerHTML=Object.values(CATEGORIES).map(c=>
+      const showSmultron=isSmultronFilterVisible(places);
+      pills.innerHTML=Object.values(CATEGORIES)
+        .filter(c=>c.key!=="smultronstalle" || showSmultron)
+        .map(c=>
         `<button type="button" class="chip${c.key===cat.key?" on":""}" aria-pressed="${c.key===cat.key?"true":"false"}" onclick="openCategory('${c.key}')">${c.nav}</button>`
       ).join('');
     }
@@ -3185,16 +3204,22 @@ import {
 
   let tipKind="place";
   function setTipKind(kind){
-    tipKind=kind==="event"?"event":"place";
-    const place=tipKind==="place";
-    const tabP=document.getElementById("tipTabPlace");
-    const tabE=document.getElementById("tipTabEvent");
-    const panelP=document.getElementById("tipPanelPlace");
-    const panelE=document.getElementById("tipPanelEvent");
-    if(tabP){ tabP.classList.toggle("on",place); tabP.setAttribute("aria-selected",place?"true":"false"); }
-    if(tabE){ tabE.classList.toggle("on",!place); tabE.setAttribute("aria-selected",place?"false":"true"); }
-    if(panelP) panelP.hidden=!place;
-    if(panelE) panelE.hidden=place;
+    tipKind=kind==="event"?"event":kind==="smultron"?"smultron":"place";
+    const tabs={
+      place:document.getElementById("tipTabPlace"),
+      event:document.getElementById("tipTabEvent"),
+      smultron:document.getElementById("tipTabSmultron"),
+    };
+    const panels={
+      place:document.getElementById("tipPanelPlace"),
+      event:document.getElementById("tipPanelEvent"),
+      smultron:document.getElementById("tipPanelSmultron"),
+    };
+    Object.keys(tabs).forEach(k=>{
+      const on=tipKind===k;
+      if(tabs[k]){ tabs[k].classList.toggle("on",on); tabs[k].setAttribute("aria-selected",on?"true":"false"); }
+      if(panels[k]) panels[k].hidden=!on;
+    });
     const msg=document.getElementById("evFormMsg");
     if(msg) msg.textContent="";
   }
@@ -3219,6 +3244,34 @@ import {
           : "Tack! Tipset är skickat till info@upptackvallentuna.se — syns inte publikt förrän det godkänts.";
         ["plName","plKind","plWhere","plNote","plWeb","plEmail"].forEach(id=>{const el=document.getElementById(id);if(el) el.value="";});
         trackEvent("place-submit",name);
+      }catch(err){
+        const mailto=buildMailtoUrl(subject,fields);
+        if(msg){
+          msg.innerHTML=err.code==="NOT_DEPLOYED"
+            ? `Lokalt läge — <a href="${mailto}">skicka tipset via e-post till info@</a> i stället.`
+            : `Kunde inte skicka automatiskt. <a href="${mailto}">Öppna e-post till info@upptackvallentuna.se</a> och skicka manuellt.`;
+        }
+      }
+      return;
+    }
+    if(tipKind==="smultron"){
+      const name=document.getElementById("smName")?.value.trim();
+      const where=document.getElementById("smWhere")?.value.trim();
+      const note=document.getElementById("smNote")?.value.trim();
+      const tipsare=document.getElementById("smTipsare")?.value.trim();
+      const email=document.getElementById("smEmail")?.value.trim();
+      if(!name||!where){ if(msg) msg.textContent="Fyll i vad platsen kallas och var den ligger."; return; }
+      const fields={tipType:"smultronstalle",name,where,note,tipsare,email,source:location.href};
+      const subject=`Smultronställe-tips: ${name}`;
+      if(msg) msg.textContent="Skickar…";
+      try{
+        const result=await deliverForm({ kind:"place", subject, fields });
+        const activate=/activat|confirm|check your email|bekräft/i.test(result.message||"");
+        if(msg) msg.textContent=activate
+          ? "Nästan klart — kolla info@upptackvallentuna.se (även skräppost) och bekräfta aktiveringsmejlet. Sedan fungerar tipsen."
+          : "Tack! Tipset är skickat till info@upptackvallentuna.se — syns inte publikt förrän det godkänts.";
+        ["smName","smWhere","smNote","smTipsare","smEmail"].forEach(id=>{const el=document.getElementById(id);if(el) el.value="";});
+        trackEvent("smultron-submit",name);
       }catch(err){
         const mailto=buildMailtoUrl(subject,fields);
         if(msg){
@@ -3499,7 +3552,7 @@ import {
       const hook=p.url
         ?""
         :`<div class="hook">Äger du den här verksamheten och saknar hemsida? <a href="https://www.fvno.se/" target="_blank" rel="noopener" onclick="trackEvent('hook-formverket','${jsEsc(p.name)}')">Synas bättre →</a></div>`;
-      const html=`<div class="card-img" style="background-image:url('${p.img}')"></div><div class="card-body"><div class="cat">${p.cat}</div><h3>${p.name}</h3><p>${p.blurb}</p>${tag}${evHtml}${webLink?`<div class="card-actions" style="margin-bottom:6px">${webLink}</div>`:""}<div class="card-actions"><a class="btn-dir" href="${dir}" target="_blank" rel="noopener" onclick="trackEvent('hitta-hit','${jsEsc(p.name)}')">📍 Hitta hit</a></div><button class="popup-more" onclick="openPlace('${jsEsc(p.name)}')">Läs mer →</button>${hook}</div>`;
+      const html=`<div class="card-img" style="background-image:url('${p.img}')"></div><div class="card-body"><div class="cat">${p.cat}</div><h3>${p.name}</h3><p>${p.blurb}</p>${tipsareCreditHTML(p)}${tag}${evHtml}${webLink?`<div class="card-actions" style="margin-bottom:6px">${webLink}</div>`:""}<div class="card-actions"><a class="btn-dir" href="${dir}" target="_blank" rel="noopener" onclick="trackEvent('hitta-hit','${jsEsc(p.name)}')">📍 Hitta hit</a></div><button class="popup-more" onclick="openPlace('${jsEsc(p.name)}')">Läs mer →</button>${hook}</div>`;
       markers.push(L.marker([p.lat,p.lng],{icon:pinIcon(p.color,open?'':'closed')}).addTo(map).bindPopup(html,{closeButton:false,maxWidth:262}));
     });
     buildFilters();buildList();renderFilter();
@@ -3507,7 +3560,20 @@ import {
   }
   function pinIcon(color,cls){return L.divIcon({className:'',html:`<div class="pin ${cls||''}"><svg width="26" height="34" viewBox="0 0 26 34" fill="none"><path d="M13 0C5.8 0 0 5.8 0 13c0 9.2 13 21 13 21s13-11.8 13-21C26 5.8 20.2 0 13 0z" fill="${color}"/><circle cx="13" cy="13" r="5" fill="#f9f7f3"/></svg></div>`,iconSize:[26,34],iconAnchor:[13,34],popupAnchor:[0,-32]});}
 
-  function buildFilters(){const bar=document.getElementById('filters');bar.innerHTML='';cats.forEach(c=>{const b=document.createElement('div');b.className='chip'+(c.key==="alla"?' on':'');b.textContent=c.label;b.dataset.key=c.key;b.onclick=()=>{active=c.key;document.getElementById('search').value='';renderFilter();};bar.appendChild(b);});}
+  function buildFilters(){
+    const bar=document.getElementById('filters');
+    bar.innerHTML='';
+    const showSmultron=isSmultronFilterVisible(places);
+    cats.filter(c=>c.key!=="smultronstalle" || showSmultron).forEach(c=>{
+      const b=document.createElement('div');
+      b.className='chip'+(c.key==="alla"?' on':'');
+      b.textContent=c.label;
+      b.dataset.key=c.key;
+      b.onclick=()=>{active=c.key;document.getElementById('search').value='';renderFilter();};
+      bar.appendChild(b);
+    });
+    if(active==="smultronstalle" && !showSmultron){ active="alla"; }
+  }
   function buildList(){
     const list=document.getElementById('mlist');list.innerHTML='';
     // Sort by score — only mappable places get pins (markers[] index matches mappable order)
@@ -3740,6 +3806,12 @@ import {
     document.getElementById('platsHero').style.backgroundImage=`url('${p.img}')`;
     S('platsCat',p.cat); S('platsName',p.name);
     S('platsLead',p.blurb);
+    const tipsareEl=document.getElementById('platsTipsare');
+    if(tipsareEl){
+      const tip=(p.tipsare||"").trim();
+      if(tip){ tipsareEl.hidden=false; tipsareEl.textContent=`Tipsat av ${tip}`; }
+      else { tipsareEl.hidden=true; tipsareEl.textContent=""; }
+    }
     const rich=CONTENT[p.name]||{};
     const factsEl=document.getElementById('platsFacts');
     if(factsEl){
@@ -4195,6 +4267,12 @@ import {
   function escHtml(s){
     return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
   }
+  /** Optional credit under place copy — empty when `tipsare` is missing. */
+  function tipsareCreditHTML(p){
+    const tip=(p?.tipsare||"").trim();
+    if(!tip) return "";
+    return `<p class="tipsare-credit">Tipsat av ${escHtml(tip)}</p>`;
+  }
   function momentBodyHTML(body){
     const parts=String(body||"").trim().split(/\n+/).filter(Boolean);
     if(!parts.length) return "";
@@ -4500,10 +4578,38 @@ import {
     }
   }catch(e){}
   viewHistoryReady=true;
+  function syncSmultronNav(){
+    const show=isSmultronFilterVisible(places);
+    document.querySelectorAll("[data-smultron-nav]").forEach(el=>{
+      el.hidden=!show;
+    });
+  }
+
+  function bootSmultronBanner(){
+    const banner=document.getElementById("smultronBanner");
+    if(!banner) return;
+    let dismissed=false;
+    try{ dismissed=localStorage.getItem(LS_SMULTRON_BANNER)==="1"; }catch(e){}
+    if(dismissed){ banner.hidden=true; return; }
+    banner.hidden=false;
+    document.getElementById("smultronBannerCta")?.addEventListener("click",()=>{
+      setTipKind("smultron");
+      showView("skicka");
+      trackEvent("smultron-banner-cta","");
+    });
+    document.getElementById("smultronBannerDismiss")?.addEventListener("click",()=>{
+      banner.hidden=true;
+      try{ localStorage.setItem(LS_SMULTRON_BANNER,"1"); }catch(e){}
+      trackEvent("smultron-banner-dismiss","");
+    });
+  }
+
   setTimeout(bootSmartPack, 0);
   setTimeout(()=>{ try{ applyLevererarHash(); }catch(e){} }, 20);
   setTimeout(bootPlaceDeepLink, 30);
   setTimeout(bootProducerDeepLink, 35);
+  try{ syncSmultronNav(); }catch(e){}
+  setTimeout(bootSmultronBanner, 0);
 
 // --- window exports (HTML onclick / SPA nav) ---
 Object.assign(window, {
