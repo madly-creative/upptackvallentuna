@@ -2181,10 +2181,10 @@ import {
       if(pool.length){
         const [feat, ...rest]=pool;
         const more=rest.map(e=>eventCard(e,true)).join("");
-        featureEl.innerHTML=eventFeatureHTML(feat)+(more?`<div class="happen-more">${more}</div>`:"");
+        featureEl.innerHTML=eventFeatureHTML(feat)+(more?`<div class="happen-more" role="region" aria-label="Fler evenemang">${more}</div>`:"");
         featureEl.hidden=false;
       } else if(recurringTodayList.length){
-        featureEl.innerHTML=`<div class="happen-more">${recurringTodayList.slice(0,2).map(r=>`
+        featureEl.innerHTML=`<div class="happen-more" role="region" aria-label="Återkommande aktiviteter">${recurringTodayList.slice(0,2).map(r=>`
           <article class="ev compact" onclick="showView('hander')" role="button" tabindex="0">
             <div class="media"><div class="thumb" style="background-image:url('${r.img}')"></div></div>
             <div class="bd">
