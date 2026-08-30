@@ -474,7 +474,29 @@
     font-weight:500;line-height:1.1;margin-bottom:8px;
   }
   .ev-feature .meta{font-size:14px;color:rgba(255,255,255,.88);line-height:1.4}
-  .happen-more{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+  .happen-more{
+    display:flex;gap:14px;align-items:stretch;
+    overflow-x:auto;overflow-y:hidden;
+    scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior-x:contain;
+    padding:2px 2px 10px;
+    margin:0 -2px;
+    scrollbar-width:thin;
+    scrollbar-color:rgba(61,79,58,.35) transparent;
+  }
+  .happen-more::-webkit-scrollbar{height:6px}
+  .happen-more::-webkit-scrollbar-thumb{
+    background:rgba(61,79,58,.3);border-radius:999px;
+  }
+  .happen-more > .ev{
+    flex:0 0 min(300px,78vw);
+    width:min(300px,78vw);
+    max-width:300px;
+    scroll-snap-align:start;
+    min-height:148px;
+  }
+  .happen-more > .ev .media{min-height:148px}
 
   /* Journey — numbered afternoon path */
   .route-actions{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:flex-end}
@@ -1646,7 +1668,7 @@
     .voice-feature{grid-template-columns:1fr}
     .voice-feature .vf-img{min-height:220px}
     .guides-home-row{grid-template-columns:1fr 1fr}
-    .score-row,.fav-grid,.route-grid,.cat-grid,.list-grid,.wx-share,.picks-row,.happen-more{grid-template-columns:1fr}
+    .score-row,.fav-grid,.route-grid,.cat-grid,.list-grid,.wx-share,.picks-row{grid-template-columns:1fr}
     .journey{grid-template-columns:1fr;gap:12px}
     .journey-arrow{display:none}
     .nara-dig-teasers{grid-template-columns:1fr}
