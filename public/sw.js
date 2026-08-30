@@ -22,7 +22,9 @@ function isLiveOnly(url) {
     h.includes("basemaps.cartocdn.com") ||
     h.includes("cartocdn.com") ||
     h.includes("openstreetmap.org") ||
-    h.includes("tile.openstreetmap")
+    h.includes("tile.openstreetmap") ||
+    h.includes("openfreemap.org") ||
+    h.includes("maplibre")
   );
 }
 

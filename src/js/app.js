@@ -67,8 +67,9 @@ import {
 
   const CONFIG = { kommun: SITE.kommun, region: SITE.region, center: SITE.center, zoom: SITE.zoom };
   const K = CONFIG.kommun;
-  // Carto Voyager now watermarks without an API key — use OSM until we have a CARTO key.
-  const MAP_TILE={
+  // Prefer OpenFreeMap Liberty (Voyager-like, no API key). OSM raster is fallback only.
+  const MAP_STYLE="https://tiles.openfreemap.org/styles/liberty";
+  const MAP_TILE_FALLBACK={
     url:"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
     opts:{
       attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
@@ -78,7 +79,14 @@ import {
   };
   function addBasemap(mapInst, Lref=window.L){
     if(!mapInst||!Lref) return null;
-    return Lref.tileLayer(MAP_TILE.url, MAP_TILE.opts).addTo(mapInst);
+    if(typeof Lref.maplibreGL==="function" && typeof window.maplibregl!=="undefined"){
+      try{
+        return Lref.maplibreGL({ style:MAP_STYLE, interactive:false }).addTo(mapInst);
+      }catch(err){
+        console.warn("OpenFreeMap failed, falling back to OSM tiles", err);
+      }
+    }
+    return Lref.tileLayer(MAP_TILE_FALLBACK.url, MAP_TILE_FALLBACK.opts).addTo(mapInst);
   }
 
   const places = PLACES_SEED;
@@ -3392,22 +3400,50 @@ import {
   // ============================================================
   //  KARTA
   // ============================================================
-  /** Load Leaflet CSS+JS only when a map is actually opened (homepage LCP win). */
+  /** Load Leaflet (+ MapLibre/OpenFreeMap) only when a map is actually opened. */
   let leafletPromise=null;
-  function ensureLeaflet(){
-    if(typeof window.L!=="undefined") return Promise.resolve(window.L);
-    if(leafletPromise) return leafletPromise;
-    leafletPromise=new Promise((resolve,reject)=>{
+  function loadStylesheet(href){
+    if([...document.querySelectorAll("link[rel=stylesheet]")].some(l=>l.href===href||l.getAttribute("href")===href)){
+      return Promise.resolve();
+    }
+    return new Promise((resolve,reject)=>{
       const css=document.createElement("link");
       css.rel="stylesheet";
-      css.href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+      css.href=href;
+      css.onload=()=>resolve();
+      css.onerror=()=>reject(new Error("CSS "+href));
       document.head.appendChild(css);
+    });
+  }
+  function loadScript(src){
+    if([...document.scripts].some(s=>s.src===src||s.getAttribute("src")===src)){
+      return Promise.resolve();
+    }
+    return new Promise((resolve,reject)=>{
       const s=document.createElement("script");
-      s.src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
+      s.src=src;
       s.async=true;
-      s.onload=()=>resolve(window.L);
-      s.onerror=()=>reject(new Error("Leaflet failed to load"));
+      s.onload=()=>resolve();
+      s.onerror=()=>reject(new Error("Script "+src));
       document.body.appendChild(s);
+    });
+  }
+  function ensureLeaflet(){
+    if(leafletPromise) return leafletPromise;
+    leafletPromise=(async()=>{
+      if(typeof window.L==="undefined"){
+        await loadStylesheet("https://unpkg.com/leaflet@1.9.4/dist/leaflet.css");
+        await loadScript("https://unpkg.com/leaflet@1.9.4/dist/leaflet.js");
+      }
+      if(typeof window.maplibregl==="undefined" || typeof window.L.maplibreGL!=="function"){
+        await loadStylesheet("https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css");
+        await loadScript("https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js");
+        await loadScript("https://unpkg.com/@maplibre/maplibre-gl-leaflet@0.1.4/leaflet-maplibre-gl.js");
+      }
+      return window.L;
+    })().catch(err=>{
+      leafletPromise=null;
+      throw err;
     });
     return leafletPromise;
   }
