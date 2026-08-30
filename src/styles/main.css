@@ -474,7 +474,98 @@
     font-weight:500;line-height:1.1;margin-bottom:8px;
   }
   .ev-feature .meta{font-size:14px;color:rgba(255,255,255,.88);line-height:1.4}
-  .happen-more{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+  .happen-scroll{
+    position:relative;
+  }
+  .happen-more{
+    display:flex;gap:14px;align-items:stretch;
+    overflow-x:auto;overflow-y:hidden;
+    scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior-x:contain;
+    padding:2px 48px 12px 2px;
+    margin:0 -2px;
+    scrollbar-width:thin;
+    scrollbar-color:rgba(61,79,58,.35) transparent;
+  }
+  .happen-more::-webkit-scrollbar{height:6px}
+  .happen-more::-webkit-scrollbar-thumb{
+    background:rgba(61,79,58,.3);border-radius:999px;
+  }
+  .happen-more > .ev{
+    flex:0 0 min(248px,72vw);
+    width:min(248px,72vw);
+    max-width:248px;
+    scroll-snap-align:start;
+    display:flex;flex-direction:column;
+    grid-template-columns:none;
+    min-height:0;
+  }
+  .happen-more > .ev .media{
+    flex:0 0 auto;
+    width:100%;
+    min-height:0;
+    height:148px;
+  }
+  .happen-more > .ev .thumb{
+    background-position:center 40%;
+  }
+  .happen-more > .ev .date{
+    width:52px;padding:7px 5px 8px;left:10px;top:10px;
+  }
+  .happen-more > .ev .date .d{font-size:22px;margin:2px 0}
+  .happen-more > .ev .bd{
+    flex:1;justify-content:flex-start;
+    padding:12px 14px 14px;gap:4px;
+  }
+  .happen-more > .ev h3{
+    font-size:17px;line-height:1.2;margin:0 0 4px;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  }
+  .happen-more > .ev .meta{
+    gap:2px;font-size:11px;
+  }
+  .happen-more > .ev .meta span{
+    min-width:0;
+  }
+  .happen-more > .ev .meta span svg{flex-shrink:0}
+  .happen-more > .ev .tag{margin-top:6px}
+  .happen-more > .ev .remind-btn{
+    margin-top:auto;padding-top:10px;
+    width:100%;justify-content:center;
+  }
+  .happen-more > .ev.compact .bd{padding:12px 14px 14px}
+  .happen-more > .ev.compact h3{font-size:17px}
+  .happen-scroll-fade{
+    position:absolute;inset:0 0 28px auto;width:min(72px,24%);
+    pointer-events:none;z-index:1;
+    background:linear-gradient(90deg,rgba(255,255,255,0),var(--card) 68%);
+    opacity:1;transition:opacity .22s ease;
+  }
+  .happen-scroll-next{
+    position:absolute;right:8px;top:74px;transform:none;
+    z-index:2;
+    width:40px;height:40px;border-radius:999px;
+    display:grid;place-items:center;
+    border:1.5px solid var(--moss-deep);background:var(--card);
+    color:var(--moss-deep);cursor:pointer;
+    box-shadow:0 6px 18px rgba(47,61,46,.14);
+    transition:opacity .22s ease,transform .15s ease,background .15s,color .15s;
+  }
+  .happen-scroll-next:hover{background:var(--moss-deep);color:var(--paper)}
+  .happen-scroll-next:focus-visible{outline:2px solid var(--rust);outline-offset:3px}
+  .happen-scroll-hint{
+    margin:2px 0 0;font-size:12px;color:var(--ink-soft);font-weight:500;
+    display:flex;align-items:center;gap:6px;
+  }
+  .happen-scroll-hint[hidden],
+  .happen-scroll.is-end .happen-scroll-fade,
+  .happen-scroll.is-end .happen-scroll-next,
+  .happen-scroll:not(.is-overflow) .happen-scroll-fade,
+  .happen-scroll:not(.is-overflow) .happen-scroll-next,
+  .happen-scroll:not(.is-overflow) .happen-scroll-hint{opacity:0;pointer-events:none}
+  .happen-scroll:not(.is-overflow) .happen-scroll-hint{display:none}
+  .happen-scroll.is-end .happen-scroll-hint{visibility:hidden}
 
   /* Journey — numbered afternoon path */
   .route-actions{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:flex-end}
@@ -1646,7 +1737,7 @@
     .voice-feature{grid-template-columns:1fr}
     .voice-feature .vf-img{min-height:220px}
     .guides-home-row{grid-template-columns:1fr 1fr}
-    .score-row,.fav-grid,.route-grid,.cat-grid,.list-grid,.wx-share,.picks-row,.happen-more{grid-template-columns:1fr}
+    .score-row,.fav-grid,.route-grid,.cat-grid,.list-grid,.wx-share,.picks-row{grid-template-columns:1fr}
     .journey{grid-template-columns:1fr;gap:12px}
     .journey-arrow{display:none}
     .nara-dig-teasers{grid-template-columns:1fr}
