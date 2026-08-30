@@ -201,7 +201,7 @@ import {
     },
     "Orkesta Granby Gård":{
       address:"Orkesta-Granby, 186 94 Vallentuna",
-      facts:["Hökeriet","Granbyhällen","Charolais","Växthus"],
+      facts:["Hökeriet","Granbyhällen","Charolais","Växthus","Arbetslivsmuseum"],
       localPhotos:true,
       photoCredit:"Foto: Orkesta Granby Gård (granbygard.com).",
       images:[
@@ -210,9 +210,10 @@ import {
         {url:"/assets/upplev/orkesta-granby-gard/kor.webp",alt:"Kor i solnedgång på Granby"},
         {url:"/assets/upplev/orkesta-granby-gard/runsten.webp",alt:"Granbyhällen — vikingatida runhäll"}
       ],
-      body:`<p><strong>Orkesta Granby Gård</strong> är det moderna livsmedelsproducerande lantbruket mitt i vikingalandskapet. För dig som besökare är det <strong>Hökeriet</strong> på gården som är mötesplatsen — butik, servering och event med gårdens Charolais-kött, potatis, honung och fika. Växthus ger gurka, tomat och örter till köket.</p>
-      <p>Mitt i betesmarken ligger <strong>Granbyhällen</strong>, en av Sveriges till ytan största vikingatida runhällar. Boka gärna guidad visning av Granby Vikingagård eller hantverkstorpet Granbylund.</p>
-      <p>Sommaröppet med servering lördag–söndag 12–16 (enligt hokeriet.se). Frågor och event: <a href="mailto:info@hokeriet.se">info@hokeriet.se</a> · tel 08-612 30 05 / 076-945 90 10. Besöksdelen: <a href="https://hokeriet.se/" target="_blank" rel="noopener">hokeriet.se</a> · gården: <a href="https://granbygard.com/" target="_blank" rel="noopener">granbygard.com</a>.</p>`
+      body:`<p><strong>Orkesta Granby Gård</strong> är det moderna livsmedelsproducerande lantbruket mitt i vikingalandskapet. För dig som besökare är det <strong>Hökeriet</strong> på gården som är mötesplatsen — butik, servering och event.</p>
+      <p>I butiken hittar du gårdens Charolais-kött, rapsolja, honung och äppelmust tillsammans med utvalda delikatesser, närproducerade samarbeten, vikingatida hantverk och svensk hemslöjd. Växthus ger gurka, tomat och örter till köket.</p>
+      <p>Mitt i betesmarken ligger <strong>Granbyhällen</strong>, en av Sveriges till ytan största vikingatida runhällar. Gården är också listad som <strong>arbetslivsmuseum</strong> (ArbetSam). Boka gärna guidad visning av Granby Vikingagård eller hantverkstorpet Granbylund.</p>
+      <p>Öppet lördag–söndag 12–16 även höst och vinter (till jul enligt ägarna). Event och gruppbokning övriga tider. Frågor: <a href="mailto:info@hokeriet.se">info@hokeriet.se</a> · tel 08-612 30 05 / 076-945 90 10. Besök: <a href="https://hokeriet.se/" target="_blank" rel="noopener">hokeriet.se</a> · gården: <a href="https://granbygard.com/" target="_blank" rel="noopener">granbygard.com</a> · arbetslivsmuseum: <a href="https://arbetsam.com/sok-arbetslivsmuseum/?museum_id=4996" target="_blank" rel="noopener">ArbetSam</a>.</p>`
     },
     "Tarby Gårdsbutik":{
       address:"Tarbyvägen / Tarby gård, Frösunda",

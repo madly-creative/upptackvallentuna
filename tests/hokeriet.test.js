@@ -18,4 +18,9 @@ describe("Orkesta Granby Gård / Hökeriet", () => {
     expect(primary.toLowerCase()).toContain("hökeriet");
     expect(matchesPrimaryOrSecondary(primary, "", "hökeriet")).toBe(true);
   });
+
+  it("uses a broader category label than just café", () => {
+    expect(g.cat).toMatch(/gård/i);
+    expect(g.cat.toLowerCase()).not.toContain("kafé");
+  });
 });
