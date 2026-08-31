@@ -13,14 +13,15 @@ import { guides, seasonLabel } from "../src/data/guides.js";
 import { SITE } from "../src/data/site.js";
 import { producers, producersAtPlaceSlug, producerSlug } from "../src/data/producers.js";
 import { recurring, recurringSlug, recurringWhenLine } from "../src/data/recurring.js";
-import { formatWeekday, schemaWeekday } from "../src/data/stockholm.js";
+import { formatWeekday, schemaWeekday, WEEKDAY_ORDER_MON_FIRST } from "../src/data/stockholm.js";
 import { factSlug, isSagen } from "../src/lib/factsWeek.js";
 import { printUnmatchedLinks } from "./report-unmatched-links.mjs";
 
 const __dir = dirname(fileURLToPath(import.meta.url));
 const root = join(__dir, "..");
 const base = SITE.url.replace(/\/$/, "");
-const DOW = [0, 1, 2, 3, 4, 5, 6].map((n) => formatWeekday(n));
+/** Display Mon→Sun; PLACE_META.hours index is still 0 = Sunday. */
+const DOW = WEEKDAY_ORDER_MON_FIRST.map((n) => formatWeekday(n, { capitalize: true }));
 /** Index matches PLACE_META.hours (0 = Sunday). */
 const SCHEMA_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const umamiScript = SITE.umamiWebsiteId
@@ -59,7 +60,7 @@ function hoursRows(place) {
     }
     return DOW.map((d) => `<tr><td>${d}</td><td>${fmtSlot({ o: place.oh, c: place.ch })}</td></tr>`).join("");
   }
-  return DOW.map((d, i) => `<tr><td>${d}</td><td>${fmtSlot(hours[i])}</td></tr>`).join("");
+  return WEEKDAY_ORDER_MON_FIRST.map((i, row) => `<tr><td>${DOW[row]}</td><td>${fmtSlot(hours[i])}</td></tr>`).join("");
 }
 
 function absImg(img) {

@@ -4,6 +4,7 @@ import {
   schemaWeekday,
   stockholmWeekday,
   stockholmTodayISO,
+  WEEKDAY_ORDER_MON_FIRST,
 } from "../src/data/stockholm.js";
 
 describe("stockholm weekday helpers", () => {
@@ -15,6 +16,19 @@ describe("stockholm weekday helpers", () => {
 
   it("maps schema.org weekday URLs", () => {
     expect(schemaWeekday(2)).toBe("https://schema.org/Tuesday");
+  });
+
+  it("orders hours display Monday → Sunday", () => {
+    expect(WEEKDAY_ORDER_MON_FIRST).toEqual([1, 2, 3, 4, 5, 6, 0]);
+    expect(WEEKDAY_ORDER_MON_FIRST.map((n) => formatWeekday(n, { capitalize: true }))).toEqual([
+      "Måndag",
+      "Tisdag",
+      "Onsdag",
+      "Torsdag",
+      "Fredag",
+      "Lördag",
+      "Söndag",
+    ]);
   });
 
   it("computes today ISO in Europe/Stockholm", () => {
