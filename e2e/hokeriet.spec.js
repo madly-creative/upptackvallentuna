@@ -4,6 +4,13 @@ test("Hökeriet appears under Handla lokalt", async ({ page }) => {
   await page.goto("/");
   await page.locator(".quick-paths").getByRole("button", { name: "Handla lokalt" }).click();
   await expect(page.locator("#view-kategori")).toHaveClass(/on/);
+  await expect(page.locator("#view-kategori")).toContainText("Hökeriet");
+});
+
+test("Orkesta Granby Gård also appears under Handla lokalt", async ({ page }) => {
+  await page.goto("/");
+  await page.locator(".quick-paths").getByRole("button", { name: "Handla lokalt" }).click();
+  await expect(page.locator("#view-kategori")).toHaveClass(/on/);
   await expect(page.locator("#view-kategori")).toContainText("Orkesta Granby Gård");
 });
 

@@ -36,6 +36,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://upptackvallentuna.se/plats/hokeriet.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://upptackvallentuna.se/plats/tarby-gardsbutik.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
