@@ -15,6 +15,9 @@ const WEEKDAY_SCHEMA = [
   "Saturday",
 ];
 
+/** Display order for hours tables: Monday → Sunday (Swedish convention). */
+export const WEEKDAY_ORDER_MON_FIRST = [1, 2, 3, 4, 5, 6, 0];
+
 /** Single formatter for stored weekday numbers 0–6. */
 export function formatWeekday(n, { capitalize = false } = {}) {
   const i = Number(n);

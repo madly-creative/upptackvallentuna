@@ -22,6 +22,7 @@ import { producers as PRODUCERS_SEED, producerBySlug, producersAtPlaceSlug, prod
 import { recurring as RECURRING_SEED, recurringSlug, recurringToday, recurringWhenLine } from "../data/recurring.js";
 import {
   formatWeekday,
+  WEEKDAY_ORDER_MON_FIRST,
   stockholmWeekday,
   stockholmTodayISO,
   stockholmHourMinute,
@@ -231,9 +232,9 @@ import {
         {url:"/assets/upplev/orkesta-granby-gard/runsten.webp",alt:"Granbyhällen — vikingatida runhäll"},
         {url:"/assets/upplev/orkesta-granby-gard/cover.webp",alt:"Vy mot gården och Hökeriet"}
       ],
-      body:`<p><strong>Orkesta Granby Gård</strong> är det moderna livsmedelsproducerande lantbruket mitt i vikingalandskapet — spannmål, köttproduktion och odling. Gården är ett separat bolag från besöksverksamheten på platsen.</p>
+      body:`<p><strong>Orkesta Granby Gård</strong> är det moderna livsmedelsproducerande lantbruket mitt i vikingalandskapet — spannmål, köttproduktion och odling.</p>
       <p>Mitt i betesmarken ligger <strong>Granbyhällen</strong>, en av Sveriges till ytan största vikingatida runhällar. Gården är också listad som <strong>arbetslivsmuseum</strong> (ArbetSam).</p>
-      <p>För butik, servering, turistinformation, guidade turer och event: se <button type="button" class="place-btn" onclick="openPlace('Hökeriet')">Hökeriet →</button> — ett eget besöksföretag på gården. Mer om lantbruket: <a href="https://granbygard.com/" target="_blank" rel="noopener">granbygard.com</a> · arbetslivsmuseum: <a href="https://arbetsam.com/sok-arbetslivsmuseum/?museum_id=4996" target="_blank" rel="noopener">ArbetSam</a>.</p>`
+      <p>För butik, servering, turistinformation, guidade turer och event: se <button type="button" class="place-btn" onclick="openPlace('Hökeriet')">Hökeriet →</button>. Mer om lantbruket: <a href="https://granbygard.com/" target="_blank" rel="noopener">granbygard.com</a> · arbetslivsmuseum: <a href="https://arbetsam.com/sok-arbetslivsmuseum/?museum_id=4996" target="_blank" rel="noopener">ArbetSam</a>.</p>`
     },
     "Hökeriet":{
       address:"Orkesta-Granby, 186 94 Vallentuna",
@@ -246,7 +247,7 @@ import {
         {url:"/assets/upplev/orkesta-granby-gard/kor.webp",alt:"Kor i solnedgång på Granby"},
         {url:"/assets/upplev/orkesta-granby-gard/runsten.webp",alt:"Granbyhällen — vikingatida runhäll"}
       ],
-      body:`<p><strong>Hökeriet</strong> är besöksföretaget på <button type="button" class="place-btn" onclick="openPlace('Orkesta Granby Gård')">Orkesta Granby Gård →</button> — butik, servering, turistinformation, guidade turer och event. Det är ett separat bolag som gör Granby tillgängligt för dig som besökare.</p>
+      body:`<p><strong>Hökeriet</strong> ligger på <button type="button" class="place-btn" onclick="openPlace('Orkesta Granby Gård')">Orkesta Granby Gård →</button> — butik, servering, turistinformation, guidade turer och event.</p>
       <p>I butiken hittar du gårdens Charolais-kött, rapsolja, honung och äppelmust tillsammans med utvalda delikatesser, närproducerade samarbeten, vikingatida hantverk och svensk hemslöjd. Växthus ger gurka, tomat och örter till köket.</p>
       <p>Boka gärna guidad visning av Granby Vikingagård eller hantverkstorpet Granbylund. Sommaröppet med servering lördag–söndag 12–16. Frågor eller bokning av event: <a href="mailto:info@hokeriet.se">info@hokeriet.se</a> · tel 08-612 30 05 / 076-945 90 10. Webb: <a href="https://hokeriet.se/" target="_blank" rel="noopener">hokeriet.se</a> · gården: <a href="https://granbygard.com/" target="_blank" rel="noopener">granbygard.com</a>.</p>`
     },
@@ -847,7 +848,6 @@ import {
   const recurringTodayList=recurringToday(day, recurring);
 
   const holidayToday=swedishHoliday(now);
-  const DOW_FULL=[0,1,2,3,4,5,6].map(n=>formatWeekday(n));
   const TAG_LABEL={barn:"Barnvänligt",hund:"Hund",rullstol:"Rullstol",ute:"Uteservering",gratis:"Gratis",inomhus:"Inomhus"};
   const SEARCH_FILTERS=[
     {key:"open",label:"Öppet nu"},
@@ -915,7 +915,9 @@ import {
   }
   function hoursTableHTML(p){
     const m=metaOf(p);
-    const rows=DOW_FULL.map((name,i)=>{
+    // Visa mån→sön (data lagras fortfarande sön=0 … lör=6).
+    const rows=WEEKDAY_ORDER_MON_FIRST.map((i)=>{
+      const name=formatWeekday(i,{capitalize:true});
       const slot=daySlot(p,i);
       const cls=[i===day?"today":"",!slot&&slot!==A?"closed":""].filter(Boolean).join(" ");
       return `<tr class="${cls}"><td>${name}</td><td>${fmtHoursSlot(slot)}</td></tr>`;
