@@ -476,6 +476,10 @@
   .ev-feature .meta{font-size:14px;color:rgba(255,255,255,.88);line-height:1.4}
   .happen-scroll{
     position:relative;
+    /* Grid/flex parents default min-width:auto — without this the row
+       expands to fit all cards, so overflow/arrows never kick in. */
+    min-width:0;
+    max-width:100%;
   }
   .happen-more{
     display:flex;gap:14px;align-items:stretch;
@@ -483,8 +487,10 @@
     scroll-snap-type:x mandatory;
     -webkit-overflow-scrolling:touch;
     overscroll-behavior-x:contain;
-    padding:2px 48px 12px 2px;
+    padding:2px 48px 12px 48px;
     margin:0 -2px;
+    min-width:0;
+    max-width:100%;
     scrollbar-width:thin;
     scrollbar-color:rgba(61,79,58,.35) transparent;
   }
@@ -501,6 +507,44 @@
     grid-template-columns:none;
     min-height:0;
   }
+  .happen-more-all{
+    flex:0 0 min(248px,72vw);
+    width:min(248px,72vw);
+    max-width:248px;
+    scroll-snap-align:start;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:12px;min-height:280px;padding:24px 20px;
+    border:1px solid var(--line-soft);border-radius:var(--radius);
+    background:var(--paper-2);color:var(--moss-deep);
+    font:inherit;cursor:pointer;text-align:center;
+    transition:background .15s,border-color .15s,color .15s,transform .15s;
+  }
+  .happen-more-all:hover{
+    background:var(--card);border-color:var(--moss);color:var(--rust);
+    transform:translateY(-2px);
+  }
+  .happen-more-all:focus-visible{outline:2px solid var(--rust);outline-offset:3px}
+  .happen-more-all-label{
+    font-family:var(--font-serif);font-size:22px;font-weight:500;line-height:1.2;
+  }
+  .happen-more-all-arrow{
+    display:grid;place-items:center;
+    width:40px;height:40px;border-radius:999px;
+    border:1.5px solid currentColor;font-size:18px;line-height:1;
+  }
+  /* ≤4 kort: fyll raden jämnt — ingen tom lucka till höger */
+  .happen-scroll.is-fill .happen-more{
+    overflow-x:hidden;
+    padding-left:2px;padding-right:2px;
+    scroll-snap-type:none;
+  }
+  .happen-scroll.is-fill .happen-more > .ev{
+    flex:1 1 0;
+    width:auto;
+    max-width:none;
+    min-width:0;
+  }
+  .happen-scroll.is-fill .happen-more-all{display:none}
   .happen-more > .ev .media{
     flex:0 0 auto;
     width:100%;
@@ -537,13 +581,21 @@
   .happen-more > .ev.compact .bd{padding:12px 14px 14px}
   .happen-more > .ev.compact h3{font-size:17px}
   .happen-scroll-fade{
-    position:absolute;inset:0 0 28px auto;width:min(72px,24%);
+    position:absolute;top:0;bottom:28px;width:min(72px,24%);
     pointer-events:none;z-index:1;
-    background:linear-gradient(90deg,rgba(255,255,255,0),var(--card) 68%);
     opacity:1;transition:opacity .22s ease;
   }
+  .happen-scroll-fade-end{
+    right:0;
+    background:linear-gradient(90deg,rgba(255,255,255,0),var(--card) 68%);
+  }
+  .happen-scroll-fade-start{
+    left:0;
+    background:linear-gradient(270deg,rgba(255,255,255,0),var(--card) 68%);
+  }
+  .happen-scroll-prev,
   .happen-scroll-next{
-    position:absolute;right:8px;top:74px;transform:none;
+    position:absolute;top:74px;transform:none;
     z-index:2;
     width:40px;height:40px;border-radius:999px;
     display:grid;place-items:center;
@@ -552,16 +604,23 @@
     box-shadow:0 6px 18px rgba(47,61,46,.14);
     transition:opacity .22s ease,transform .15s ease,background .15s,color .15s;
   }
+  .happen-scroll-prev{left:8px}
+  .happen-scroll-next{right:8px}
+  .happen-scroll-prev:hover,
   .happen-scroll-next:hover{background:var(--moss-deep);color:var(--paper)}
+  .happen-scroll-prev:focus-visible,
   .happen-scroll-next:focus-visible{outline:2px solid var(--rust);outline-offset:3px}
   .happen-scroll-hint{
     margin:2px 0 0;font-size:12px;color:var(--ink-soft);font-weight:500;
     display:flex;align-items:center;gap:6px;
   }
   .happen-scroll-hint[hidden],
-  .happen-scroll.is-end .happen-scroll-fade,
+  .happen-scroll.is-end .happen-scroll-fade-end,
   .happen-scroll.is-end .happen-scroll-next,
+  .happen-scroll.is-start .happen-scroll-fade-start,
+  .happen-scroll.is-start .happen-scroll-prev,
   .happen-scroll:not(.is-overflow) .happen-scroll-fade,
+  .happen-scroll:not(.is-overflow) .happen-scroll-prev,
   .happen-scroll:not(.is-overflow) .happen-scroll-next,
   .happen-scroll:not(.is-overflow) .happen-scroll-hint{opacity:0;pointer-events:none}
   .happen-scroll:not(.is-overflow) .happen-scroll-hint{display:none}
@@ -1108,7 +1167,7 @@
   }
   .smultron-banner .inner{
     position:relative;overflow:hidden;
-    display:flex;align-items:flex-start;justify-content:space-between;gap:22px;flex-wrap:wrap;
+    display:flex;align-items:center;justify-content:space-between;gap:20px 28px;flex-wrap:wrap;
     background:linear-gradient(135deg,var(--moss-deep) 0%,#3a4a37 48%,var(--moss) 100%);
     border:1px solid color-mix(in srgb,var(--moss-deep) 80%,#000);
     border-radius:16px;padding:22px 24px 22px 26px;
@@ -1116,13 +1175,13 @@
     box-shadow:0 12px 28px rgba(47,61,46,.14);
   }
   .smultron-banner-sprig{
-    position:absolute;right:-18px;bottom:-36px;
-    width:min(42%,220px);height:auto;
-    opacity:.22;pointer-events:none;user-select:none;
-    filter:brightness(1.35) contrast(.95);
+    position:absolute;right:-8px;bottom:-28px;z-index:0;
+    width:min(36%,280px);height:auto;
+    opacity:.5;mix-blend-mode:multiply;
+    pointer-events:none;user-select:none;
   }
   .smultron-banner-copy{
-    position:relative;z-index:1;flex:1 1 280px;max-width:54ch;
+    position:relative;z-index:1;flex:1 1 320px;min-width:0;
   }
   .smultron-banner-eyebrow{
     margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
@@ -1136,8 +1195,7 @@
     margin:0;font-size:14px;line-height:1.55;color:rgba(249,247,243,.82);
   }
   .smultron-banner-actions{
-    position:relative;z-index:1;
-    display:flex;flex-direction:column;align-items:stretch;gap:8px;min-width:148px;
+    position:relative;z-index:1;flex:0 0 auto;
   }
   .smultron-banner-cta{
     display:inline-flex;align-items:center;justify-content:center;text-align:center;
@@ -1146,14 +1204,10 @@
     font-size:13px;font-weight:700;font-family:inherit;
   }
   .smultron-banner-cta:hover{background:#fff}
-  .smultron-banner-dismiss{
-    font-size:12px;font-weight:600;color:rgba(249,247,243,.72);background:none;border:none;cursor:pointer;padding:4px;
-    font-family:inherit;
-  }
-  .smultron-banner-dismiss:hover{color:#f9f7f3}
   @media (max-width:640px){
-    .smultron-banner-sprig{width:min(58%,180px);opacity:.18}
+    .smultron-banner-sprig{width:min(55%,200px);opacity:.4}
     .smultron-banner-actions{width:100%}
+    .smultron-banner-cta{width:100%}
   }
   .tipsare-credit{
     margin:6px 0 0;font-size:12px;font-style:italic;line-height:1.4;color:var(--ink-soft);
@@ -1898,6 +1952,7 @@
   }
   .today-brief-feature{
     display:grid;gap:14px;margin-bottom:14px;
+    min-width:0;
   }
   .today-brief-grid{
     display:grid;grid-template-columns:1fr;gap:12px;

@@ -917,9 +917,8 @@ import {
     return `<div class="source-box">${upd}${src?`Källor: ${src}. `:""}Öppettider kan ändras. Ser du fel? <a href="#" onclick="openReport();return false">Rapportera</a>.</div>`;
   }
   function isNewPlace(p){
-    const s=metaOf(p).addedDate||NEW_SINCE[p.name]; if(!s) return false;
-    const added=new Date(s+"T12:00:00");
-    return (now-added)/(1000*60*60*24) <= 45;
+    // "Nytt"-badges pausade — launch-batchen ligger kvar för länge för att kännas relevant.
+    return false;
   }
   function haversineKm(a,b,c,d){
     const R=6371,toR=x=>x*Math.PI/180;
@@ -957,7 +956,6 @@ import {
   // ---- localStorage: favorites, last visit, soft interest ----
   const LS_FAV="vii_favs_v1", LS_LAST="vii_last_place_v1", LS_INTEREST="vii_interest_v1", LS_GEO_ASKED="vii_geo_asked_v1";
   const LS_LISTS="uv_lists_v1", LS_PENDING="uv_pending_events_v1", LS_REPORTS="uv_reports_v1", LS_NOTIFY="uv_notify_seen_v1";
-  const LS_SMULTRON_BANNER="uv_smultron_banner_dismissed";
   function loadJSON(k,fb){try{return JSON.parse(localStorage.getItem(k))??fb;}catch(e){return fb;}}
   function saveJSON(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
   let favorites=new Set(loadJSON(LS_FAV,[]));
@@ -2173,33 +2171,65 @@ import {
     return e.when||e.date;
   }
   function happenScrollHTML(inner, ariaLabel){
-    return `<div class="happen-scroll">
-      <div class="happen-more" role="region" aria-label="${escHtml(ariaLabel||"Fler evenemang")}">${inner}</div>
-      <div class="happen-scroll-fade" aria-hidden="true"></div>
-      <button type="button" class="happen-scroll-next" aria-label="Visa fler evenemang">
+    const allTile=`<button type="button" class="happen-more-all" onclick="showView('hander')">
+      <span class="happen-more-all-label">Se alla evenemang</span>
+      <span class="happen-more-all-arrow" aria-hidden="true">→</span>
+    </button>`;
+    return `<div class="happen-scroll is-start">
+      <div class="happen-more" role="region" aria-label="${escHtml(ariaLabel||"Fler evenemang")}">${inner}${allTile}</div>
+      <div class="happen-scroll-fade happen-scroll-fade-start" aria-hidden="true"></div>
+      <div class="happen-scroll-fade happen-scroll-fade-end" aria-hidden="true"></div>
+      <button type="button" class="happen-scroll-prev" aria-label="Föregående evenemang">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button type="button" class="happen-scroll-next" aria-label="Nästa evenemang">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <p class="happen-scroll-hint">Fler evenemang — scrolla eller tryck pilen →</p>
+      <p class="happen-scroll-hint">Fler evenemang — scrolla eller använd pilarna</p>
     </div>`;
   }
   function wireHappenScroll(scope){
     const wrap=scope?.querySelector?.(".happen-scroll");
     const scroller=wrap?.querySelector?.(".happen-more");
+    const prev=wrap?.querySelector?.(".happen-scroll-prev");
     const next=wrap?.querySelector?.(".happen-scroll-next");
     if(!wrap||!scroller) return;
+    const cardCount=[...scroller.children].filter(el=>el.classList?.contains("ev")).length;
+    const step=()=>Math.max(220, Math.round(scroller.clientWidth*0.72));
+    let startLeft=null;
     const sync=()=>{
+      // ≤4 kort: fyll raden. Fler → horisontell scroll + pilar/fade.
+      const wantFill=cardCount>0 && cardCount<=4;
+      wrap.classList.toggle("is-fill", wantFill);
       const max=scroller.scrollWidth-scroller.clientWidth;
       const overflow=max>8;
-      wrap.classList.toggle("is-overflow", overflow);
-      wrap.classList.toggle("is-end", !overflow || scroller.scrollLeft>=max-8);
+      if(wantFill && overflow){
+        // Smal viewport: ge upp fill, behåll scroll + pil
+        wrap.classList.remove("is-fill");
+      }
+      const max2=scroller.scrollWidth-scroller.clientWidth;
+      const overflow2=max2>8;
+      // Snap/padding can leave a small non-zero rest offset — track the true start.
+      if(startLeft==null) startLeft=scroller.scrollLeft;
+      startLeft=Math.min(startLeft, scroller.scrollLeft);
+      const atStart=scroller.scrollLeft<=startLeft+8;
+      const atEnd=!overflow2 || scroller.scrollLeft>=max2-8;
+      wrap.classList.toggle("is-overflow", overflow2);
+      wrap.classList.toggle("is-start", atStart);
+      wrap.classList.toggle("is-end", atEnd);
     };
+    prev?.addEventListener("click",()=>{
+      scroller.scrollBy({left:-step(), behavior:"smooth"});
+    });
     next?.addEventListener("click",()=>{
-      const step=Math.max(220, Math.round(scroller.clientWidth*0.72));
-      scroller.scrollBy({left:step, behavior:"smooth"});
+      scroller.scrollBy({left:step(), behavior:"smooth"});
     });
     scroller.addEventListener("scroll", sync, {passive:true});
     window.addEventListener("resize", sync, {passive:true});
-    requestAnimationFrame(sync);
+    requestAnimationFrame(()=>{
+      scroller.scrollLeft=0;
+      requestAnimationFrame(sync);
+    });
   }
   function todayBriefItem(thumb, name, sub, onclick){
     return `<button type="button" class="tc-item" onclick="${onclick}">
@@ -2235,8 +2265,8 @@ import {
       metaEl.textContent=bits.join(" · ");
     }
 
-    // Featured event spine — more room for events now that Passar vädret is gone
-    const pool=happenHomePool(4);
+    // Featured + fler: hämta mer än 4 så scroll/pil kan kicka in när det finns
+    const pool=happenHomePool(9);
     if(featureEl){
       if(pool.length){
         const [feat, ...rest]=pool;
@@ -4588,19 +4618,11 @@ import {
   function bootSmultronBanner(){
     const banner=document.getElementById("smultronBanner");
     if(!banner) return;
-    let dismissed=false;
-    try{ dismissed=localStorage.getItem(LS_SMULTRON_BANNER)==="1"; }catch(e){}
-    if(dismissed){ banner.hidden=true; return; }
     banner.hidden=false;
     document.getElementById("smultronBannerCta")?.addEventListener("click",()=>{
       setTipKind("smultron");
       showView("skicka");
       trackEvent("smultron-banner-cta","");
-    });
-    document.getElementById("smultronBannerDismiss")?.addEventListener("click",()=>{
-      banner.hidden=true;
-      try{ localStorage.setItem(LS_SMULTRON_BANNER,"1"); }catch(e){}
-      trackEvent("smultron-banner-dismiss","");
     });
   }
 
