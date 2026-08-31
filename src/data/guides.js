@@ -20,8 +20,8 @@ export const guides = [
         text: "Gå av dig bullen i det öppna landskapet. Tio minuter bort ligger Angarnssjöängen, och på förmiddagen är luften fortfarande sval. Ta spängerna ut över våtmarken, lyssna på fåglarna, låt barnen springa före. Har du en kikare med — ta den. Det här är Vallentuna när det är som vidast och vackrast.",
       },
       {
-        place: "Orkesta Granby Gård",
-        text: "Fika bland tusenåriga stenar. Vid lunchtid, styr mot Orkesta Granby Gård. Här väntar gårdsfika med egenodlat, helvita kor på ängen — och Sveriges största runsten, mitt i vikingalandskapet. Det är en av de där platserna man knappt tror finns förrän man står där.",
+        place: "Hökeriet",
+        text: "Fika bland tusenåriga stenar. Vid lunchtid, styr mot Hökeriet på Orkesta Granby Gård. Här väntar gårdsfika med egenodlat, helvita kor på ängen — och Granbyhällen mitt i vikingalandskapet. Det är en av de där platserna man knappt tror finns förrän man står där.",
       },
       {
         place: "Kvarnbadet",
@@ -199,8 +199,8 @@ export const guides = [
     lead: "Augusti är gårdarnas generösa månad. Ta vara på den innan tempot förändras.",
     stops: [
       {
-        place: "Orkesta Granby Gård",
-        text: "Börja hos Hökeriet. Gårdens kött, växthusgrönt och fika mitt i vikingalandskapet — ät ute om vädret håller. Granbyhällen ligger i betet; ta er tid mellan tuggorna.",
+        place: "Hökeriet",
+        text: "Börja hos Hökeriet på Orkesta Granby Gård. Gårdens kött, växthusgrönt och fika mitt i vikingalandskapet — ät ute om vädret håller. Granbyhällen ligger i betet; ta er tid mellan tuggorna.",
       },
       {
         place: "Markims Bergby",
@@ -428,7 +428,7 @@ export const guides = [
       },
       {
         place: "Orkesta Granby Gård",
-        text: "Sväng till Granby. Hökeriet, Charolais på ängen och Granbyhällen mitt i betet — vikingalandskap som fortfarande känns nära. Fika eller bara stå en stund vid hällen.",
+        text: "Sväng till Granby. Charolais på ängen, Granbyhällen mitt i betet och Hökeriet för fika — vikingalandskap som fortfarande känns nära. Stanna en stund vid hällen.",
       },
       {
         place: "Ljuvliga Bakverk",

@@ -32,7 +32,7 @@ export const producers = [
     email: "kontakt@mostersgoda.se",
     phone: "073-776 73 96",
     soldAt: [
-      { placeSlug: "orkesta-granby-gard", label: "Hökeriet (Orkesta Granby Gård)" },
+      { placeSlug: "hokeriet", label: "Hökeriet" },
       { placeSlug: "langhard-lantbruk" },
       { placeSlug: "cafe-valkyria" },
       { name: "Marknader i bygden" },

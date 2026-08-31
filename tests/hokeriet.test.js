@@ -3,24 +3,41 @@ import { places, placeBySlug, placeHasType, placeTypes } from "../src/data/place
 import { placeSearchPrimary } from "../src/lib/searchMatch.js";
 import { matchesPrimaryOrSecondary } from "../src/lib/searchMatch.js";
 
-describe("Orkesta Granby Gård / Hökeriet", () => {
-  const g = placeBySlug("orkesta-granby-gard") || places.find((p) => p.name === "Orkesta Granby Gård");
+describe("Hökeriet and Orkesta Granby Gård (split)", () => {
+  const gard = placeBySlug("orkesta-granby-gard") || places.find((p) => p.name === "Orkesta Granby Gård");
+  const hok = placeBySlug("hokeriet") || places.find((p) => p.name === "Hökeriet");
 
-  it("is listed under Handla lokalt and Äta & fika", () => {
-    expect(g).toBeTruthy();
-    expect(placeTypes(g)).toEqual(expect.arrayContaining(["gard", "fika"]));
-    expect(placeHasType(g, "gard")).toBe(true);
-    expect(placeHasType(g, "fika")).toBe(true);
+  it("lists both as separate places", () => {
+    expect(gard).toBeTruthy();
+    expect(hok).toBeTruthy();
+    expect(gard.name).toBe("Orkesta Granby Gård");
+    expect(hok.name).toBe("Hökeriet");
+    expect(gard.slug).not.toBe(hok.slug);
   });
 
-  it("is findable as Hökeriet in primary search", () => {
-    const primary = placeSearchPrimary(g);
+  it("keeps the farm under Handla lokalt without fika alias", () => {
+    expect(placeTypes(gard)).toEqual(["gard"]);
+    expect(placeHasType(gard, "gard")).toBe(true);
+    expect(placeHasType(gard, "fika")).toBe(false);
+    expect(gard.url).toContain("granbygard.com");
+    expect(gard.aka || []).not.toContain("Hökeriet");
+  });
+
+  it("lists Hökeriet under fika and Handla lokalt", () => {
+    expect(placeTypes(hok)).toEqual(expect.arrayContaining(["fika", "gard"]));
+    expect(placeHasType(hok, "fika")).toBe(true);
+    expect(placeHasType(hok, "gard")).toBe(true);
+    expect(hok.url).toContain("hokeriet.se");
+  });
+
+  it("finds Hökeriet by name in primary search", () => {
+    const primary = placeSearchPrimary(hok);
     expect(primary.toLowerCase()).toContain("hökeriet");
     expect(matchesPrimaryOrSecondary(primary, "", "hökeriet")).toBe(true);
   });
 
-  it("uses a broader category label than just café", () => {
-    expect(g.cat).toMatch(/gård/i);
-    expect(g.cat.toLowerCase()).not.toContain("kafé");
+  it("uses a broader category for the farm than café", () => {
+    expect(gard.cat).toMatch(/gård|lantbruk/i);
+    expect(gard.cat.toLowerCase()).not.toContain("kafé");
   });
 });

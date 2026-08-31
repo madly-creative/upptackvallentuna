@@ -7,7 +7,7 @@ const FALLBACK_IMG = "/assets/hero/2.webp";
 
 export const events = [
   {
-    host: "Orkesta Granby Gård / Hökeriet",
+    host: "Hökeriet",
     title: "Sommarkväll med Live-Jazz",
     date: "2026-08-07",
     when: "Fre 7 aug · 19–21",
@@ -87,7 +87,7 @@ export const events = [
     source: "https://www.orkestahembygd.se/event",
   },
   {
-    host: "Orkesta Granby Gård / Hökeriet",
+    host: "Hökeriet",
     title: "Sommarbuffé på Hökeriet",
     date: "2026-08-21",
     when: "Fre 21 aug · 19–21",
@@ -155,7 +155,7 @@ export const events = [
     source: "https://www.nortic.se/ticket/show/353467",
   },
   {
-    host: "Orkesta Granby Gård",
+    host: "Hökeriet",
     title: "Viskväll med Lindar och Liljor",
     date: "2026-08-28",
     when: "Fre 28 aug · 19–21",
@@ -188,7 +188,7 @@ export const events = [
     source: "https://upplandsbygd.se/save-the-date-smaka-pa-vallentuna/",
   },
   {
-    host: "Orkesta Granby Gård / Hökeriet",
+    host: "Hökeriet",
     title: "Granby Vikingagård — guidad visning",
     date: "2026-08-30",
     when: "Sön 30 aug · 14–15",
