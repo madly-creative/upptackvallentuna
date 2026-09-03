@@ -244,6 +244,18 @@ export const events = [
     source: "https://www.orkestahembygd.se/event",
   },
   {
+    host: "Hökeriet",
+    title: "Kokroki",
+    date: "2026-09-19",
+    addedDate: "2026-09-03",
+    when: "Lör 19 sep · 10–14",
+    time: "10:00 – 14:00",
+    cat: "KULTUR",
+    note: "Krokimålning med levande kor som modeller på Orkesta Granby Gård — ledning konstnären Åsa Alneng. Material ingår, lunch serveras. Från 875 kr/person via Hökeriets bokning.",
+    img: "/assets/evenemang/kokroki-hokeriet/cover.webp",
+    source: "https://hokeriet.understory.io/sv/experience/e19426ad-c1a7-4465-8ea8-675c429256d8",
+  },
+  {
     host: "Vallentuna Hembygdsförening",
     title: "Hembygdstorsdag — Porkalaparentesen",
     date: "2026-09-03",
@@ -588,6 +600,11 @@ export const EVENT_CONTENT = {
   "Viskväll med Lindar och Liljor": {
     body: `<p>Fredag 28 augusti kl. 19–21 på <strong>Hökeriet</strong>, Orkesta Granby Gård (Granby, Vallentuna). Musikaliska duon Lindar och Liljor bjuder på visor och folkmusik — tolkningar av Dan Andersson, vallmusik och egna visor. Cirka två timmar.</p>
       <p>Biljetter från 495 kr/person. Boka: <a href="https://hokeriet.understory.io/sv/experience/b49ea0ae822f1cd02f8b2755242700d2" target="_blank" rel="noopener">Hökeriet / Understory</a> · fler bokningar: <a href="https://hokeriet.se/bokningar/" target="_blank" rel="noopener">hokeriet.se/bokningar</a>.</p>`,
+  },
+  "Kokroki": {
+    body: `<p>Lördag 19 september kl. 10–14 på <strong>Hökeriet</strong>, Orkesta Granby Gård — <em>Kokroki</em>: krokimålning med levande kor som modeller under ledning av konstnären och illustratören Åsa Alneng.</p>
+      <p>Samling på Hökeriet kl. 10 för genomgång, sedan ut till kornas. Lunch serveras kl. 12 (vegetariskt alternativ finns — maila särskild kost till <a href="mailto:info@hokeriet.se">info@hokeriet.se</a> senast två dagar innan). Vernissage kl. 14. Material ingår.</p>
+      <p>Från 875 kr/person. Boka: <a href="https://hokeriet.understory.io/sv/experience/e19426ad-c1a7-4465-8ea8-675c429256d8" target="_blank" rel="noopener">Hökeriet / Understory</a>.</p>`,
   },
   "Linedance en-dagskurs": {
     body: `<p>Lördag 22 augusti kl. 10–13 i Orkesta hembygdsgård. Linedance utan partner — enkla danser, inga förkunskaper. Instruktör Linda Blumenthal (<a href="https://baramanvill.se/" target="_blank" rel="noopener">Bara man Vill</a>).</p>
