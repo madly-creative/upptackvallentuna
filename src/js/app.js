@@ -1,4 +1,10 @@
-import { events as EVENTS_SEED, EVENT_CONTENT } from "../data/events.js";
+import {
+  events as EVENTS_SEED,
+  EVENT_CONTENT,
+  addDaysISO,
+  groupEventsByMonth,
+  nearestEvents,
+} from "../data/events.js";
 import { EVENT_FILTERS, eventCatLabel, eventMatchesFilter } from "../data/eventCategories.js";
 import { SITE } from "../data/site.js";
 import { deliverForm, buildMailtoUrl } from "../lib/forms.js";
@@ -3718,12 +3724,103 @@ import {
   document.getElementById('searchClr')?.addEventListener('click',()=>{const s=document.getElementById('search');if(!s)return;s.value='';s.dispatchEvent(new Event('input'));s.focus();});
 
   let activeEventCat="alla";
+  const EV_VIEW_KEY="uv-events-view";
+  function defaultEventView(){
+    try{
+      const saved=localStorage.getItem(EV_VIEW_KEY);
+      if(saved==="list"||saved==="cards") return saved;
+    }catch(e){}
+    return window.matchMedia("(max-width:700px)").matches?"list":"cards";
+  }
+  let eventViewMode=defaultEventView();
+
+  function filteredEventsList(){
+    return liveEvents.filter(e=>eventMatchesFilter(e, activeEventCat));
+  }
   function renderEventChips(){
     const bar=document.getElementById('eventFilters');
     if(!bar) return;
-    bar.innerHTML=EVENT_FILTERS.map(f=>
-      `<button type="button" class="chip${f.key===activeEventCat?" on":""}" data-key="${f.key}" aria-pressed="${f.key===activeEventCat?"true":"false"}" onclick="filterEvents('${f.key}')">${f.label}</button>`
+    bar.innerHTML=EVENT_FILTERS.map(f=>{
+      const n=liveEvents.filter(e=>eventMatchesFilter(e, f.key)).length;
+      const label=f.key==="alla"?`Alla (${n})`:`${f.label} (${n})`;
+      return `<button type="button" class="chip${f.key===activeEventCat?" on":""}" data-key="${f.key}" aria-pressed="${f.key===activeEventCat?"true":"false"}" onclick="filterEvents('${f.key}')">${label}</button>`;
+    }).join("");
+  }
+  function syncEventViewToggle(){
+    const btn=document.getElementById('eventViewToggle');
+    if(!btn) return;
+    const isList=eventViewMode==="list";
+    btn.setAttribute("aria-pressed", isList?"true":"false");
+    btn.textContent=isList?"Visa kort":"Kompakt lista";
+  }
+  function toggleEventView(){
+    eventViewMode=eventViewMode==="list"?"cards":"list";
+    try{ localStorage.setItem(EV_VIEW_KEY, eventViewMode); }catch(e){}
+    renderEventsFull();
+    trackEvent('event-view', eventViewMode);
+  }
+  function eventRow(e){
+    const d=new Date(e.date+"T12:00:00");
+    const keyAttr=eventKeyAttr(e);
+    return `<article class="ev-row" role="button" tabindex="0" onclick="openEvent('${keyAttr}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openEvent('${keyAttr}')}">
+      <div class="ev-row-date" aria-hidden="true">
+        <span class="dow">${DOW[d.getDay()]}</span>
+        <span class="d">${d.getDate()}</span>
+        <span class="m">${MON[d.getMonth()]}</span>
+      </div>
+      <div class="ev-row-bd">
+        <h3>${escHtml(e.title)}</h3>
+        <div class="meta">${escHtml(e.host)} · ${escHtml(e.time||e.when||"")}</div>
+      </div>
+      <span class="ev-row-tag">${e.date===todayISO?"IDAG · ":""}${eventCatLabel(e.cat)}</span>
+    </article>`;
+  }
+  function eventsListHTML(list){
+    if(eventViewMode==="list"){
+      return `<div class="events-list">${list.map(e=>eventRow(e)).join("")}</div>`;
+    }
+    return `<div class="events-grid">${list.map(e=>eventCard(e,true)).join("")}</div>`;
+  }
+  function renderMonthNav(months){
+    const nav=document.getElementById('eventsMonthNav');
+    if(!nav) return;
+    if(!months?.length || months.length < 2){
+      nav.hidden=true;
+      nav.innerHTML="";
+      return;
+    }
+    nav.hidden=false;
+    nav.innerHTML=months.map((g,i)=>
+      `${i?`<span class="events-month-nav-sep" aria-hidden="true">·</span>`:""}<button type="button" class="events-month-nav-btn" onclick="jumpToEventMonth('${escHtml(g.key)}')">${escHtml(g.label)}</button>`
     ).join("");
+  }
+  function jumpToEventMonth(key){
+    const el=document.getElementById(`ev-month-${key}`);
+    if(!el) return;
+    el.scrollIntoView({behavior:"smooth", block:"start"});
+    trackEvent('event-month-jump', key);
+  }
+  function renderEventsNext(list){
+    const wrap=document.getElementById('eventsNext');
+    if(!wrap) return;
+    if(!list.length){
+      wrap.hidden=true;
+      wrap.innerHTML="";
+      return;
+    }
+    const weekEnd=addDaysISO(todayISO, 7);
+    const next=nearestEvents(list, todayISO, {withinDays:7, limit:3});
+    if(!next.length){
+      wrap.hidden=true;
+      wrap.innerHTML="";
+      return;
+    }
+    const allWithinWeek=next.every(e=>e.date<=weekEnd);
+    const heading=allWithinWeek?"Närmast den här veckan":"Närmast";
+    wrap.hidden=false;
+    wrap.innerHTML=`
+      <h2 class="events-next-h">${heading}</h2>
+      <div class="events-grid events-next-grid">${next.map(e=>eventCard(e,true)).join("")}</div>`;
   }
   function recurringCardHTML(r){
     const when=recurringWhenLine(r);
@@ -3759,8 +3856,9 @@ import {
     const evFull=document.getElementById('eventsFull');
     if(!evFull) return;
     renderEventChips();
+    syncEventViewToggle();
     renderRecurringSection();
-    const list=liveEvents.filter(e=>eventMatchesFilter(e, activeEventCat));
+    const list=filteredEventsList();
     const countEl=document.getElementById('eventCount');
     if(countEl){
       if(!liveEvents.length) countEl.textContent="";
@@ -3768,14 +3866,25 @@ import {
       else countEl.textContent=list.length+" av "+liveEvents.length;
     }
     if(!liveEvents.length){
+      renderMonthNav([]);
+      renderEventsNext([]);
       evFull.innerHTML=`<div class="ev-empty">Inga inplanerade evenemang just nu — kika in snart igen.</div>`;
       return;
     }
     if(!list.length){
+      renderMonthNav([]);
+      renderEventsNext([]);
       evFull.innerHTML=`<div class="ev-empty">Inga evenemang i den här kategorin just nu. <button type="button" class="lnk" onclick="filterEvents('alla')">Visa alla</button></div>`;
       return;
     }
-    evFull.innerHTML=list.map(e=>eventCard(e,true)).join('');
+    renderEventsNext(list);
+    const months=groupEventsByMonth(list);
+    renderMonthNav(months);
+    evFull.innerHTML=months.map(g=>`
+      <section class="events-month" aria-labelledby="ev-month-${escHtml(g.key)}">
+        <h2 class="events-month-h" id="ev-month-${escHtml(g.key)}">${escHtml(g.label)}</h2>
+        ${eventsListHTML(g.events)}
+      </section>`).join("");
   }
   function filterEvents(key){
     activeEventCat=EVENT_FILTERS.some(f=>f.key===key)?key:"alla";
@@ -4662,6 +4771,8 @@ Object.assign(window, {
   favorites,
   filterAndMapFromCategory,
   filterEvents,
+  jumpToEventMonth,
+  toggleEventView,
   goBackFromPlats,
   goBackFromPortratt,
   heroTodayOpenEvent,

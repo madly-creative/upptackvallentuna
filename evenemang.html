@@ -58,6 +58,8 @@
     </div>
     <p class="event-count" id="eventCount" aria-live="polite"></p>
     <div class="ev-seo-list" id="evSeoList">
+  <section class="ev-seo-month" data-month="2026-08" aria-labelledby="seo-month-2026-08">
+    <h2 class="ev-seo-month-h" id="seo-month-2026-08">Augusti</h2>
     <article class="ev-seo" data-filter="kultur">
       <time datetime="2026-08-07">Fre 7 aug · 19–21</time>
       <span class="cat">Kultur</span>
@@ -177,6 +179,9 @@
       <p class="host">Hökeriet · 14:00 – 15:00</p>
       <p>Personlig guidning till vikingagården vid Granbyhällen — hallbyggnad, gravar och gårdsliv under yngre järnåldern. Samling vid Hökeriet. Från 200 kr/person.</p>
     </article>
+  </section>
+  <section class="ev-seo-month" data-month="2026-09" aria-labelledby="seo-month-2026-09">
+    <h2 class="ev-seo-month-h" id="seo-month-2026-09">September</h2>
     <article class="ev-seo" data-filter="kultur">
       <time datetime="2026-09-03">Tor 3 sep · 19:00</time>
       <span class="cat">Kultur</span>
@@ -282,6 +287,9 @@
       <p class="host">Vallentuna kommun · 11:00 – 15:00</p>
       <p>Familjedag på Tuna Torg med lokala organisationer, polis och brandförsvar — avslutning på Beredskapsveckan.</p>
     </article>
+  </section>
+  <section class="ev-seo-month" data-month="2026-10" aria-labelledby="seo-month-2026-10">
+    <h2 class="ev-seo-month-h" id="seo-month-2026-10">Oktober</h2>
     <article class="ev-seo" data-filter="kultur">
       <time datetime="2026-10-01">Tor 1 okt · 19:00</time>
       <span class="cat">Kultur</span>
@@ -331,6 +339,9 @@
       <p class="host">Vallentuna Bluesförening / Kultur Vallentuna · 19:00 – 21:00</p>
       <p>Releasegig på Caféscenen i Vallentuna Kulturhus med Mr Bob’s Machinery från södra Uppland. Servering via Café Triften. Biljetter från 150 kr via Nortic eller biblioteket.</p>
     </article>
+  </section>
+  <section class="ev-seo-month" data-month="2026-11" aria-labelledby="seo-month-2026-11">
+    <h2 class="ev-seo-month-h" id="seo-month-2026-11">November</h2>
     <article class="ev-seo" data-filter="kultur">
       <time datetime="2026-11-01">Sön 1 nov · 18:30</time>
       <span class="cat">Kultur</span>
@@ -352,6 +363,9 @@
       <p class="host">Jano / Vallentuna Teater · 18:30</p>
       <p>Vivian Buczek — Le Grand Michel — hos Jano på Vallentuna Teater. Café från 17:30. Biljetter via Nortic eller biblioteket.</p>
     </article>
+  </section>
+  <section class="ev-seo-month" data-month="2026-12" aria-labelledby="seo-month-2026-12">
+    <h2 class="ev-seo-month-h" id="seo-month-2026-12">December</h2>
     <article class="ev-seo" data-filter="marknad">
       <time datetime="2026-12-06">Sön 6 dec · 11–15</time>
       <span class="cat">Marknad</span>
@@ -366,6 +380,7 @@
       <p class="host">Hemmaplan Media / Vallentuna Centrum · 11:00 – 15:00</p>
       <p>Julstämning på Tuna Torg &amp; Torgpassagen — glögg, hantverk och lokala delikatesser. Arrangeras av Hemmaplan Media i samarbete med Vallentuna Centrum och Fastpartner.</p>
     </article>
+  </section>
     </div>
     <p class="ev-empty" id="evSeoEmpty" hidden>Inga evenemang i den här kategorin just nu.</p>
     <p class="seo-cta"><a href="/#hander">Öppna den interaktiva kalendern →</a> · <a href="/#skicka">Tipsa oss</a></p>
@@ -386,6 +401,7 @@
   var list=document.getElementById('evSeoList');
   var count=document.getElementById('eventCount');
   if(!bar||!list) return;
+  var months=[].slice.call(list.querySelectorAll('.ev-seo-month'));
   var items=[].slice.call(list.querySelectorAll('.ev-seo'));
   var empty=document.getElementById('evSeoEmpty');
   function apply(key){
@@ -399,6 +415,10 @@
       var show=key==='alla'||el.getAttribute('data-filter')===key;
       el.hidden=!show;
       if(show) n++;
+    });
+    months.forEach(function(sec){
+      var visible=sec.querySelectorAll('.ev-seo:not([hidden])').length;
+      sec.hidden=visible===0;
     });
     if(count) count.textContent=key==='alla'? (n+' evenemang') : (n+' av '+items.length);
     if(empty) empty.hidden=n>0;

@@ -50,7 +50,12 @@
 }
 .seo-main p{font-size:15px;line-height:1.6;margin-bottom:12px}
 .seo-main a{color:var(--rust, #a85a3a)}
-.ev-seo-list{display:flex;flex-direction:column;gap:18px}
+.ev-seo-list{display:flex;flex-direction:column;gap:28px}
+.ev-seo-month{display:flex;flex-direction:column;gap:18px}
+.ev-seo-month-h{
+  font-family:var(--font-serif, Georgia, serif);font-size:clamp(22px,2.6vw,28px);font-weight:500;
+  color:var(--moss-deep, #2f3d2e);margin:8px 0 0;letter-spacing:-.01em;
+}
 .ev-seo{
   background:rgba(255,255,255,.65);
   border:1px solid rgba(40,34,24,.08);

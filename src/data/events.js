@@ -698,6 +698,76 @@ export function upcomingEvents(todayISO, list = events) {
   return list.filter((e) => e.date >= todayISO).sort((a, b) => a.date.localeCompare(b.date));
 }
 
+/** Add n calendar days to an ISO date (YYYY-MM-DD), local noon to avoid DST edge cases. */
+export function addDaysISO(iso, n) {
+  const d = new Date(`${iso}T12:00:00`);
+  d.setDate(d.getDate() + Number(n || 0));
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+/**
+ * Spotlight: events within `withinDays`, else the next `limit` overall.
+ */
+export function nearestEvents(list, todayISO, { withinDays = 7, limit = 3 } = {}) {
+  const sorted = [...(list || [])]
+    .filter((e) => e.date >= todayISO)
+    .sort((a, b) => a.date.localeCompare(b.date));
+  if (!sorted.length) return [];
+  const end = addDaysISO(todayISO, withinDays);
+  const soon = sorted.filter((e) => e.date <= end);
+  return (soon.length ? soon : sorted).slice(0, limit);
+}
+
+const MONTH_SV = [
+  "Januari",
+  "Februari",
+  "Mars",
+  "April",
+  "Maj",
+  "Juni",
+  "Juli",
+  "Augusti",
+  "September",
+  "Oktober",
+  "November",
+  "December",
+];
+
+/** "2026-09" → "September" (append year when `showYear`). */
+export function eventMonthLabel(ym, { showYear = false } = {}) {
+  const m = Number(String(ym).slice(5, 7));
+  const y = String(ym).slice(0, 4);
+  if (!m || m < 1 || m > 12) return String(ym);
+  const name = MONTH_SV[m - 1];
+  return showYear ? `${name} ${y}` : name;
+}
+
+/**
+ * Group sorted upcoming events into month buckets (YYYY-MM).
+ * @returns {{ key: string, label: string, events: object[] }[]}
+ */
+export function groupEventsByMonth(list) {
+  const sorted = [...(list || [])].sort((a, b) => a.date.localeCompare(b.date));
+  const years = new Set(sorted.map((e) => String(e.date).slice(0, 4)));
+  const showYear = years.size > 1;
+  const groups = [];
+  const byKey = new Map();
+  for (const e of sorted) {
+    const key = String(e.date).slice(0, 7);
+    let g = byKey.get(key);
+    if (!g) {
+      g = { key, label: eventMonthLabel(key, { showYear }), events: [] };
+      byKey.set(key, g);
+      groups.push(g);
+    }
+    g.events.push(e);
+  }
+  return groups;
+}
+
 export function eventSlug(e) {
   return `${e.title}-${e.date}`
     .toLowerCase()

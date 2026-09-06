@@ -866,6 +866,82 @@
   .events-page .event-pills .chip.on{
     background:var(--moss-deep);border-color:var(--moss-deep);color:var(--paper);
   }
+  .event-filters-block{margin:0 0 22px}
+  .event-toolbar-row{
+    display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;
+    gap:8px 16px;margin:4px 0 12px;
+  }
+  .events-page .event-toolbar-row .event-count{margin:0}
+  .event-view-toggle{
+    appearance:none;border:1px solid var(--line);background:var(--card);
+    color:var(--ink-soft);font:inherit;font-size:13px;font-weight:600;
+    padding:7px 12px;border-radius:999px;cursor:pointer;
+  }
+  .event-view-toggle:hover{border-color:var(--moss);color:var(--moss-deep)}
+  .event-view-toggle[aria-pressed="true"]{
+    border-color:var(--moss-deep);background:var(--moss-deep);color:var(--paper);
+  }
+  .events-month-nav{
+    display:flex;flex-wrap:wrap;align-items:center;gap:4px 2px;
+    padding:10px 0 2px;margin:0 0 8px;
+    border-top:1px solid var(--line-soft);
+  }
+  .events-month-nav-btn{
+    appearance:none;border:none;background:none;padding:4px 6px;
+    font:inherit;font-size:14px;font-weight:600;color:var(--moss);
+    cursor:pointer;text-decoration:underline;text-underline-offset:3px;
+    text-decoration-thickness:1px;
+  }
+  .events-month-nav-btn:hover{color:var(--moss-deep)}
+  .events-month-nav-sep{color:var(--ink-soft);padding:0 2px;user-select:none;opacity:.55}
+  .events-next{margin:0 0 36px;padding-bottom:28px;border-bottom:1px solid var(--line-soft)}
+  .events-next-h{
+    font-family:var(--font-serif);font-size:1.45rem;font-weight:600;
+    margin:0 0 14px;color:var(--moss-deep);
+  }
+  .events-next-grid{margin:0}
+  .events-list{display:flex;flex-direction:column;gap:8px}
+  .ev-row{
+    display:grid;grid-template-columns:64px minmax(0,1fr) auto;
+    gap:12px 14px;align-items:center;
+    padding:12px 14px;border:1px solid var(--line);border-radius:14px;
+    background:var(--card);cursor:pointer;transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .ev-row:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+  .ev-row:focus-visible{outline:2px solid var(--moss);outline-offset:2px}
+  .ev-row-date{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;line-height:1.05;color:var(--moss-deep);
+  }
+  .ev-row-date .dow{
+    font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+    opacity:.75;
+  }
+  .ev-row-date .d{
+    font-family:var(--font-serif);font-size:24px;font-weight:600;margin:2px 0;
+  }
+  .ev-row-date .m{
+    font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    opacity:.75;
+  }
+  .ev-row-bd{min-width:0}
+  .ev-row-bd h3{
+    font-family:var(--font-serif);font-size:18px;font-weight:500;
+    line-height:1.2;margin:0 0 4px;color:var(--moss-deep);
+  }
+  .ev-row-bd .meta{
+    font-size:12.5px;color:var(--ink-soft);font-weight:500;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .ev-row-tag{
+    font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+    color:var(--ink-soft);white-space:nowrap;
+  }
+  @media (max-width:560px){
+    .ev-row{grid-template-columns:56px minmax(0,1fr);gap:8px 12px}
+    .ev-row-tag{grid-column:2;margin-top:-4px}
+    .ev-row-bd h3{font-size:17px}
+  }
   .recurring-sec{margin:0 0 36px;padding-bottom:28px;border-bottom:1px solid var(--line-soft)}
   .recurring-h{
     font-family:var(--font-serif,Georgia,serif);font-size:1.45rem;font-weight:600;margin:8px 0 6px;color:var(--ink)
@@ -956,6 +1032,13 @@
   .events-page .event-count{
     font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
     color:var(--ink-soft);margin:0 0 16px;min-height:1.2em;
+  }
+  .events-by-month{display:flex;flex-direction:column;gap:36px}
+  .events-month{min-width:0}
+  .events-month-h{
+    font-family:var(--font-serif);font-size:clamp(22px,2.6vw,28px);font-weight:500;
+    color:var(--moss-deep);margin:0 0 14px;letter-spacing:-.01em;
+    scroll-margin-top:96px;
   }
   .events-page .ev-empty .lnk{
     background:none;border:none;padding:0;font:inherit;font-weight:600;

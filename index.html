@@ -683,9 +683,16 @@
       <p class="lede" style="margin-top:0">Återkommande aktiviteter — en post per aktivitet, inte per tillfälle.</p>
       <div class="events-grid" id="recurringGrid"></div>
     </div>
-    <div class="filter-row event-pills" id="eventFilters" role="navigation" aria-label="Evenemangskategorier"></div>
-    <p class="event-count" id="eventCount" aria-live="polite"></p>
-    <div class="events-grid" id="eventsFull"></div>
+    <div class="event-filters-block">
+      <div class="filter-row event-pills" id="eventFilters" role="navigation" aria-label="Evenemangskategorier"></div>
+      <div class="event-toolbar-row">
+        <p class="event-count" id="eventCount" aria-live="polite"></p>
+        <button type="button" class="event-view-toggle" id="eventViewToggle" aria-pressed="false" onclick="toggleEventView()">Kompakt lista</button>
+      </div>
+    </div>
+    <section class="events-next" id="eventsNext" hidden></section>
+    <nav class="events-month-nav" id="eventsMonthNav" aria-label="Hoppa till månad" hidden></nav>
+    <div class="events-by-month" id="eventsFull"></div>
   </div>
 </section>
 
