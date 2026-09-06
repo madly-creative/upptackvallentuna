@@ -7,7 +7,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { places, placeSlug, schemaTypeFor, resolvePlaceRef } from "../src/data/places.js";
 import { PLACE_META } from "../src/data/placeMeta.js";
-import { events, eventSlug } from "../src/data/events.js";
+import { events, eventSlug, groupEventsByMonth } from "../src/data/events.js";
 import { EVENT_FILTERS, eventCatLabel, filterKeyForCat } from "../src/data/eventCategories.js";
 import { guides, seasonLabel } from "../src/data/guides.js";
 import { SITE } from "../src/data/site.js";
@@ -707,19 +707,27 @@ const evFilterChips = EVENT_FILTERS.map(
   (f, i) =>
     `      <button type="button" class="chip${i === 0 ? " on" : ""}" data-filter="${esc(f.key)}" aria-pressed="${i === 0 ? "true" : "false"}">${esc(f.label)}</button>`
 ).join("\n");
-const evArticles = events
-  .slice()
-  .sort((a, b) => a.date.localeCompare(b.date))
-  .map((e) => {
-    const slug = eventSlug(e);
-    const fk = filterKeyForCat(e.cat);
-    return `    <article class="ev-seo" data-filter="${esc(fk)}">
+const evArticles = groupEventsByMonth(
+  events.slice().sort((a, b) => a.date.localeCompare(b.date))
+)
+  .map((g) => {
+    const articles = g.events
+      .map((e) => {
+        const slug = eventSlug(e);
+        const fk = filterKeyForCat(e.cat);
+        return `    <article class="ev-seo" data-filter="${esc(fk)}">
       <time datetime="${esc(e.date)}">${esc(e.when)}</time>
       <span class="cat">${esc(eventCatLabel(e.cat))}</span>
       <h2><a href="/evenemang/${slug}.html">${esc(e.title)}</a></h2>
       <p class="host">${esc(e.host)}${e.time ? ` · ${esc(e.time)}` : ""}</p>
       <p>${esc(e.note)}</p>
     </article>`;
+      })
+      .join("\n");
+    return `  <section class="ev-seo-month" data-month="${esc(g.key)}" aria-labelledby="seo-month-${esc(g.key)}">
+    <h2 class="ev-seo-month-h" id="seo-month-${esc(g.key)}">${esc(g.label)}</h2>
+${articles}
+  </section>`;
   })
   .join("\n");
 const evFilterScript = `<script>
@@ -728,6 +736,7 @@ const evFilterScript = `<script>
   var list=document.getElementById('evSeoList');
   var count=document.getElementById('eventCount');
   if(!bar||!list) return;
+  var months=[].slice.call(list.querySelectorAll('.ev-seo-month'));
   var items=[].slice.call(list.querySelectorAll('.ev-seo'));
   var empty=document.getElementById('evSeoEmpty');
   function apply(key){
@@ -741,6 +750,10 @@ const evFilterScript = `<script>
       var show=key==='alla'||el.getAttribute('data-filter')===key;
       el.hidden=!show;
       if(show) n++;
+    });
+    months.forEach(function(sec){
+      var visible=sec.querySelectorAll('.ev-seo:not([hidden])').length;
+      sec.hidden=visible===0;
     });
     if(count) count.textContent=key==='alla'? (n+' evenemang') : (n+' av '+items.length);
     if(empty) empty.hidden=n>0;

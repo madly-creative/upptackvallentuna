@@ -1,4 +1,4 @@
-import { events as EVENTS_SEED, EVENT_CONTENT } from "../data/events.js";
+import { events as EVENTS_SEED, EVENT_CONTENT, groupEventsByMonth } from "../data/events.js";
 import { EVENT_FILTERS, eventCatLabel, eventMatchesFilter } from "../data/eventCategories.js";
 import { SITE } from "../data/site.js";
 import { deliverForm, buildMailtoUrl } from "../lib/forms.js";
@@ -3775,7 +3775,12 @@ import {
       evFull.innerHTML=`<div class="ev-empty">Inga evenemang i den här kategorin just nu. <button type="button" class="lnk" onclick="filterEvents('alla')">Visa alla</button></div>`;
       return;
     }
-    evFull.innerHTML=list.map(e=>eventCard(e,true)).join('');
+    const months=groupEventsByMonth(list);
+    evFull.innerHTML=months.map(g=>`
+      <section class="events-month" aria-labelledby="ev-month-${escHtml(g.key)}">
+        <h2 class="events-month-h" id="ev-month-${escHtml(g.key)}">${escHtml(g.label)}</h2>
+        <div class="events-grid">${g.events.map(e=>eventCard(e,true)).join("")}</div>
+      </section>`).join("");
   }
   function filterEvents(key){
     activeEventCat=EVENT_FILTERS.some(f=>f.key===key)?key:"alla";

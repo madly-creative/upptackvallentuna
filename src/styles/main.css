@@ -957,6 +957,12 @@
     font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
     color:var(--ink-soft);margin:0 0 16px;min-height:1.2em;
   }
+  .events-by-month{display:flex;flex-direction:column;gap:36px}
+  .events-month{min-width:0}
+  .events-month-h{
+    font-family:var(--font-serif);font-size:clamp(22px,2.6vw,28px);font-weight:500;
+    color:var(--moss-deep);margin:0 0 14px;letter-spacing:-.01em;
+  }
   .events-page .ev-empty .lnk{
     background:none;border:none;padding:0;font:inherit;font-weight:600;
     color:var(--moss);cursor:pointer;text-decoration:underline;text-underline-offset:2px;

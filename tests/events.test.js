@@ -1,5 +1,12 @@
 import { describe, it, expect } from "vitest";
-import { events, upcomingEvents, eventSlug, EVENT_CONTENT } from "../src/data/events.js";
+import {
+  events,
+  upcomingEvents,
+  eventSlug,
+  EVENT_CONTENT,
+  groupEventsByMonth,
+  eventMonthLabel,
+} from "../src/data/events.js";
 
 describe("events calendar", () => {
   it("has a filled calendar (10+ events)", () => {
@@ -26,6 +33,16 @@ describe("events calendar", () => {
     expect(live.every((e) => e.date >= "2026-09-01")).toBe(true);
     expect(live.some((e) => e.title.includes("Smaka"))).toBe(false);
     expect(live.some((e) => e.title === "Vallentuna Höstmarknad")).toBe(true);
+  });
+
+  it("groups upcoming events by month in order", () => {
+    expect(eventMonthLabel("2026-09")).toBe("September");
+    expect(eventMonthLabel("2026-12", { showYear: true })).toBe("December 2026");
+    const groups = groupEventsByMonth(upcomingEvents("2026-09-01"));
+    expect(groups.length).toBeGreaterThanOrEqual(2);
+    expect(groups[0].label).toBe("September");
+    expect(groups.every((g, i) => i === 0 || g.key >= groups[i - 1].key)).toBe(true);
+    expect(groups.flatMap((g) => g.events).length).toBe(upcomingEvents("2026-09-01").length);
   });
 
   it("has EVENT_CONTENT for flagship events", () => {
