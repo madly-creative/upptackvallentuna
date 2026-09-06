@@ -867,10 +867,6 @@
     background:var(--moss-deep);border-color:var(--moss-deep);color:var(--paper);
   }
   .event-filters-block{margin:0 0 22px}
-  .event-time-pills{margin-bottom:8px}
-  .event-time-pills .chip{
-    font-size:12.5px;padding:7px 12px;border-style:dashed;
-  }
   .event-toolbar-row{
     display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;
     gap:8px 16px;margin:4px 0 12px;

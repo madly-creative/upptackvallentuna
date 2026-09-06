@@ -698,14 +698,6 @@ export function upcomingEvents(todayISO, list = events) {
   return list.filter((e) => e.date >= todayISO).sort((a, b) => a.date.localeCompare(b.date));
 }
 
-/** Tidsfilterchips på evenemangssidan. */
-export const EVENT_TIME_FILTERS = [
-  { key: "alla", label: "Alla datum" },
-  { key: "helg", label: "I helgen" },
-  { key: "manad", label: "Denna månad" },
-  { key: "senare", label: "Senare" },
-];
-
 /** Add n calendar days to an ISO date (YYYY-MM-DD), local noon to avoid DST edge cases. */
 export function addDaysISO(iso, n) {
   const d = new Date(`${iso}T12:00:00`);
@@ -714,53 +706,6 @@ export function addDaysISO(iso, n) {
   const m = String(d.getMonth() + 1).padStart(2, "0");
   const day = String(d.getDate()).padStart(2, "0");
   return `${y}-${m}-${day}`;
-}
-
-/**
- * Upcoming Fri–Sun window relative to today.
- * On Fri/Sat/Sun: remaining days of this weekend (from max(today, Fri)).
- * On Mon–Thu: next Fri–Sun.
- */
-export function weekendRangeISO(todayISO) {
-  const d = new Date(`${todayISO}T12:00:00`);
-  const dow = d.getDay(); // 0 Sun … 6 Sat
-  let start;
-  let end;
-  if (dow === 0) {
-    start = addDaysISO(todayISO, -2);
-    end = todayISO;
-  } else if (dow === 6) {
-    start = todayISO;
-    end = addDaysISO(todayISO, 1);
-  } else if (dow === 5) {
-    start = todayISO;
-    end = addDaysISO(todayISO, 2);
-  } else {
-    const toFri = 5 - dow;
-    start = addDaysISO(todayISO, toFri);
-    end = addDaysISO(todayISO, toFri + 2);
-  }
-  if (start < todayISO) start = todayISO;
-  return { start, end };
-}
-
-export function eventMatchesTimeFilter(event, timeKey, todayISO) {
-  const key = timeKey || "alla";
-  const date = event?.date;
-  if (!date) return false;
-  if (date < todayISO) return false;
-  if (key === "alla") return true;
-  if (key === "helg") {
-    const { start, end } = weekendRangeISO(todayISO);
-    return date >= start && date <= end;
-  }
-  if (key === "manad") {
-    return String(date).slice(0, 7) === String(todayISO).slice(0, 7);
-  }
-  if (key === "senare") {
-    return String(date).slice(0, 7) > String(todayISO).slice(0, 7);
-  }
-  return true;
 }
 
 /**

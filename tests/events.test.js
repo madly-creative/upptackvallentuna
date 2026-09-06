@@ -7,8 +7,6 @@ import {
   groupEventsByMonth,
   eventMonthLabel,
   addDaysISO,
-  weekendRangeISO,
-  eventMatchesTimeFilter,
   nearestEvents,
 } from "../src/data/events.js";
 
@@ -49,25 +47,8 @@ describe("events calendar", () => {
     expect(groups.flatMap((g) => g.events).length).toBe(upcomingEvents("2026-09-01").length);
   });
 
-  it("weekend and time filters work", () => {
-    expect(addDaysISO("2026-09-04", 1)).toBe("2026-09-05");
-    // Friday 4 Sep 2026
-    expect(weekendRangeISO("2026-09-04")).toEqual({ start: "2026-09-04", end: "2026-09-06" });
-    // Wednesday 2 Sep → upcoming Fri–Sun
-    expect(weekendRangeISO("2026-09-02")).toEqual({ start: "2026-09-04", end: "2026-09-06" });
-    // Sunday clips start to today
-    expect(weekendRangeISO("2026-09-06")).toEqual({ start: "2026-09-06", end: "2026-09-06" });
-
-    const host = { date: "2026-09-19", title: "Vallentuna Höstmarknad" };
-    const jul = { date: "2026-12-12", title: "Jul" };
-    expect(eventMatchesTimeFilter(host, "manad", "2026-09-01")).toBe(true);
-    expect(eventMatchesTimeFilter(jul, "manad", "2026-09-01")).toBe(false);
-    expect(eventMatchesTimeFilter(jul, "senare", "2026-09-01")).toBe(true);
-    expect(eventMatchesTimeFilter(host, "helg", "2026-09-18")).toBe(true);
-    expect(eventMatchesTimeFilter(host, "helg", "2026-09-04")).toBe(false);
-  });
-
   it("nearestEvents prefers the coming week", () => {
+    expect(addDaysISO("2026-09-04", 1)).toBe("2026-09-05");
     const live = upcomingEvents("2026-09-01");
     const next = nearestEvents(live, "2026-09-01", { withinDays: 7, limit: 3 });
     expect(next.length).toBeGreaterThan(0);

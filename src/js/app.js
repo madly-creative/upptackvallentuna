@@ -1,10 +1,8 @@
 import {
   events as EVENTS_SEED,
   EVENT_CONTENT,
-  EVENT_TIME_FILTERS,
   addDaysISO,
   groupEventsByMonth,
-  eventMatchesTimeFilter,
   nearestEvents,
 } from "../data/events.js";
 import { EVENT_FILTERS, eventCatLabel, eventMatchesFilter } from "../data/eventCategories.js";
@@ -3726,7 +3724,6 @@ import {
   document.getElementById('searchClr')?.addEventListener('click',()=>{const s=document.getElementById('search');if(!s)return;s.value='';s.dispatchEvent(new Event('input'));s.focus();});
 
   let activeEventCat="alla";
-  let activeEventTime="alla";
   const EV_VIEW_KEY="uv-events-view";
   function defaultEventView(){
     try{
@@ -3738,28 +3735,13 @@ import {
   let eventViewMode=defaultEventView();
 
   function filteredEventsList(){
-    return liveEvents
-      .filter(e=>eventMatchesFilter(e, activeEventCat))
-      .filter(e=>eventMatchesTimeFilter(e, activeEventTime, todayISO));
-  }
-  function renderEventTimeChips(){
-    const bar=document.getElementById('eventTimeFilters');
-    if(!bar) return;
-    bar.innerHTML=EVENT_TIME_FILTERS.map(f=>{
-      const n=liveEvents.filter(e=>
-        eventMatchesFilter(e, activeEventCat) && eventMatchesTimeFilter(e, f.key, todayISO)
-      ).length;
-      const label=`${f.label} (${n})`;
-      return `<button type="button" class="chip${f.key===activeEventTime?" on":""}" data-key="${f.key}" aria-pressed="${f.key===activeEventTime?"true":"false"}" onclick="filterEventsTime('${f.key}')">${label}</button>`;
-    }).join("");
+    return liveEvents.filter(e=>eventMatchesFilter(e, activeEventCat));
   }
   function renderEventChips(){
     const bar=document.getElementById('eventFilters');
     if(!bar) return;
     bar.innerHTML=EVENT_FILTERS.map(f=>{
-      const n=liveEvents.filter(e=>
-        eventMatchesFilter(e, f.key) && eventMatchesTimeFilter(e, activeEventTime, todayISO)
-      ).length;
+      const n=liveEvents.filter(e=>eventMatchesFilter(e, f.key)).length;
       const label=f.key==="alla"?`Alla (${n})`:`${f.label} (${n})`;
       return `<button type="button" class="chip${f.key===activeEventCat?" on":""}" data-key="${f.key}" aria-pressed="${f.key===activeEventCat?"true":"false"}" onclick="filterEvents('${f.key}')">${label}</button>`;
     }).join("");
@@ -3821,8 +3803,7 @@ import {
   function renderEventsNext(list){
     const wrap=document.getElementById('eventsNext');
     if(!wrap) return;
-    // Spotlight only when browsing the full calendar (no time filter).
-    if(activeEventTime!=="alla" || !list.length){
+    if(!list.length){
       wrap.hidden=true;
       wrap.innerHTML="";
       return;
@@ -3874,7 +3855,6 @@ import {
   function renderEventsFull(){
     const evFull=document.getElementById('eventsFull');
     if(!evFull) return;
-    renderEventTimeChips();
     renderEventChips();
     syncEventViewToggle();
     renderRecurringSection();
@@ -3882,7 +3862,7 @@ import {
     const countEl=document.getElementById('eventCount');
     if(countEl){
       if(!liveEvents.length) countEl.textContent="";
-      else if(activeEventCat==="alla" && activeEventTime==="alla") countEl.textContent=list.length+" evenemang";
+      else if(activeEventCat==="alla") countEl.textContent=list.length+" evenemang";
       else countEl.textContent=list.length+" av "+liveEvents.length;
     }
     if(!liveEvents.length){
@@ -3894,10 +3874,7 @@ import {
     if(!list.length){
       renderMonthNav([]);
       renderEventsNext([]);
-      const resetBits=[];
-      if(activeEventTime!=="alla") resetBits.push(`<button type="button" class="lnk" onclick="filterEventsTime('alla')">Alla datum</button>`);
-      if(activeEventCat!=="alla") resetBits.push(`<button type="button" class="lnk" onclick="filterEvents('alla')">Alla kategorier</button>`);
-      evFull.innerHTML=`<div class="ev-empty">Inga evenemang med de filtren just nu.${resetBits.length?` ${resetBits.join(" · ")}`:""}</div>`;
+      evFull.innerHTML=`<div class="ev-empty">Inga evenemang i den här kategorin just nu. <button type="button" class="lnk" onclick="filterEvents('alla')">Visa alla</button></div>`;
       return;
     }
     renderEventsNext(list);
@@ -3913,11 +3890,6 @@ import {
     activeEventCat=EVENT_FILTERS.some(f=>f.key===key)?key:"alla";
     renderEventsFull();
     trackEvent('event-filter', activeEventCat);
-  }
-  function filterEventsTime(key){
-    activeEventTime=EVENT_TIME_FILTERS.some(f=>f.key===key)?key:"alla";
-    renderEventsFull();
-    trackEvent('event-time-filter', activeEventTime);
   }
   renderEventsFull();
 
@@ -4799,7 +4771,6 @@ Object.assign(window, {
   favorites,
   filterAndMapFromCategory,
   filterEvents,
-  filterEventsTime,
   jumpToEventMonth,
   toggleEventView,
   goBackFromPlats,
