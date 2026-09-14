@@ -78,6 +78,15 @@ describe("events calendar", () => {
     );
   });
 
+  it("Tema MAT & Smakresan matches kommunens kalender", () => {
+    const e = events.find((x) => x.title === "Tema MAT & Smakresan Vallentuna");
+    expect(e?.date).toBe("2026-10-10");
+    expect(e?.host).toContain("Kultur Vallentuna");
+    expect(e?.cat).toBe("MAT");
+    expect(e?.source).toContain("tema-mat--smakresan-vallentuna");
+    expect(EVENT_CONTENT["Tema MAT & Smakresan Vallentuna"]).toBeTruthy();
+  });
+
   it("eventSlug is url-safe", () => {
     const s = eventSlug(events[0]);
     expect(s).toMatch(/^[a-z0-9-]+$/);

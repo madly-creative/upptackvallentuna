@@ -326,6 +326,19 @@ export const events = [
     source: "https://nortic.se/ticket/event/81913",
   },
   {
+    host: "Kultur Vallentuna / Smakresan Vallentuna",
+    title: "Tema MAT & Smakresan Vallentuna",
+    date: "2026-10-10",
+    addedDate: "2026-09-14",
+    when: "Lör 10 okt · 10–15",
+    time: "10:00 – 15:00",
+    cat: "MAT",
+    note: "Matfest i Vallentuna Kulturhus — utställare, smakprover, film, presentationer och föredrag. Fri entré. Förboka kostnadsfri Vallentunatallrik senast 5/10 via Smakresan.",
+    img: "/assets/evenemang/tema-mat-smakresan/cover.webp",
+    source:
+      "https://www.vallentuna.se/evenemang-och-upplevelser/evenemangskalender/2026/10/tema-mat--smakresan-vallentuna/",
+  },
+  {
     host: "Orkesta Bygdegård Lindholmen",
     title: "Pub & musikquiz",
     date: "2026-10-17",
@@ -524,6 +537,11 @@ export const EVENT_CONTENT = {
   "Smaka på Vallentuna": {
     body: `<p>Lokal matdag på <strong>Langhard Lantbruk</strong> i Markim (Lena 50) lördag 29 augusti kl. 11–14 — matmakare, föreläsning och smakprover.</p>
       <p>För att smaka lokal mat krävs anmälan enligt arrangören. Info: <a href="https://upplandsbygd.se/save-the-date-smaka-pa-vallentuna/" target="_blank" rel="noopener">upplandsbygd.se</a>.</p>`,
+  },
+  "Tema MAT & Smakresan Vallentuna": {
+    body: `<p>Lördag 10 oktober kl. 10–15 i <strong>Vallentuna Kulturhus</strong> — matfest med utställare, smakprover, film, presentationer och föredrag. Fri entré till allt.</p>
+      <p>Bland annat: utställningen <em>MAT – mer än en måltid</em>, lokala producenter (t.ex. Surgubbens, Bällsta Trädgård Musteri, Ljuvliga bakverk), barnKUL Råttatoullie, förbokade Vallentunatallrikar och föredrag med Johan Jörgensen (“Mr Foodtech”).</p>
+      <p>Förboka kostnadsfri Vallentunatallrik senast 5/10: <a href="https://upplandsbygd.se/smakresan/" target="_blank" rel="noopener">upplandsbygd.se/smakresan</a>. Arrangör: Kultur Vallentuna i samarbete med Studiefrämjandet Mälardalen och Smakresan Vallentuna. Källa: <a href="https://www.vallentuna.se/evenemang-och-upplevelser/evenemangskalender/2026/10/tema-mat--smakresan-vallentuna/" target="_blank" rel="noopener">vallentuna.se</a>.</p>`,
   },
   "Naturen och idrottens dag": {
     body: `<p>Lördag 29 augusti kl. 11–14 på <strong>Vallentuna IP</strong>. Prova aktiviteter med föreningar och aktörer — en familjedag kring idrott, fritid och natur. Fri entré.</p>
