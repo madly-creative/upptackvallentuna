@@ -391,7 +391,7 @@ export const events = [
     when: "Lör 7 nov · 10–15",
     time: "10:00 – 15:00",
     cat: "KULTUR",
-    note: "Inspirationsdag på Angarns Bio med föreläsningar, samtal och reflektioner om livets ups and downs. Arrangör Linda Blumenthal (Bara man Vill). Anmälan senast 5 oktober via baramanvill.se.",
+    note: "Föreläsningar, samtal och reflektioner om livets ups and downs — gemenskap, igenkänning och skratt. Anmälan senast 5 oktober.",
     img: "/assets/evenemang/inspirationsdag-angarns-bio/cover.webp",
     source: "https://baramanvill.se/vara_nyfiken_angarn/",
   },
@@ -641,8 +641,8 @@ export const EVENT_CONTENT = {
       <p>Se <a href="https://www.orkestahembygd.se/event" target="_blank" rel="noopener">orkestahembygd.se/event</a> för pris och anmälan. Dagen efter: gratis <em>Kickoff &amp; prova på</em> hos Bara man Vill (23 aug).</p>`,
   },
   "Inspirationsdag om det här med Livet!": {
-    body: `<p>Lördag 7 november kl. 10–15 på <strong>Angarns Bio</strong> i Angarn — en inspirationsdag om livets ups and downs med föreläsningar, samtal och reflektioner. Arrangör: Linda Blumenthal (<a href="https://baramanvill.se/" target="_blank" rel="noopener">Bara man Vill</a>).</p>
-      <p>Anmälan senast 5 oktober (minst antal deltagare krävs). Efter antagningsbesked är anmälan bindande. Info och formulär: <a href="https://baramanvill.se/vara_nyfiken_angarn/" target="_blank" rel="noopener">baramanvill.se/vara_nyfiken_angarn</a> · kontakt <a href="mailto:info@baramanvill.se">info@baramanvill.se</a>.</p>`,
+    body: `<p>En dag för dig mitt i livet — om stress, glädje, frihet och allt som ska få plats på 24 timmar. Föreläsningar, samtal och reflektioner med plats för igenkänning och skratt.</p>
+      <p>Anmälan senast <strong>5 oktober</strong> (minst antal deltagare krävs; bindande efter antagningsbesked). Formulär: <a href="https://baramanvill.se/vara_nyfiken_angarn/" target="_blank" rel="noopener">baramanvill.se/vara_nyfiken_angarn</a> · <a href="mailto:info@baramanvill.se">info@baramanvill.se</a>.</p>`,
   },
   "Linedance — Kickoff & gratis prova på": {
     body: `<p>Söndag 23 augusti i <strong>Rosendalsskolan Södras matsal</strong>, Teknikvägen 25 i Vallentuna — gratis kickoff inför höstens linedance-terminer med <a href="https://baramanvill.se/" target="_blank" rel="noopener">Bara man Vill</a>.</p>
