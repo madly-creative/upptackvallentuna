@@ -87,6 +87,15 @@ describe("events calendar", () => {
     expect(EVENT_CONTENT["Tema MAT & Smakresan Vallentuna"]).toBeTruthy();
   });
 
+  it("Inspirationsdag Angarns Bio matches tip", () => {
+    const e = events.find((x) => x.title === "Inspirationsdag om det här med Livet!");
+    expect(e?.date).toBe("2026-11-07");
+    expect(e?.host).toMatch(/Angarns Bio/);
+    expect(e?.cat).toBe("KULTUR");
+    expect(e?.source).toContain("baramanvill.se");
+    expect(EVENT_CONTENT["Inspirationsdag om det här med Livet!"]).toBeTruthy();
+  });
+
   it("eventSlug is url-safe", () => {
     const s = eventSlug(events[0]);
     expect(s).toMatch(/^[a-z0-9-]+$/);
