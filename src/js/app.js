@@ -34,6 +34,12 @@ import {
   stockholmHourMinute,
   stockholmMonth,
 } from "../data/stockholm.js";
+import {
+  resolveHomeHeroMode,
+  resolvePreviewTodayISO,
+  resolveHeroPad,
+  homeHeroCarouselEvents,
+} from "../lib/homeHeroMode.js";
 import { picksRotationSeed, selectRotatedDiversePicks, hashStr } from "../lib/picksRotate.js";
 import {
   daypartTypesForMood,
@@ -844,11 +850,20 @@ import {
     "Hökeriet":"2026-08-31"
   };
 
-  const now=new Date();
-  const {hour, minute}=stockholmHourMinute(now);
-  const month=stockholmMonth(now);
-  const day=stockholmWeekday(now); // 0=Sun, Europe/Stockholm
-  const todayISO=stockholmTodayISO(now);
+  const previewTodayISO=resolvePreviewTodayISO();
+  // Sparse-day QA: when previewing another "today", pad hero to 3 slides if URL didn't set heroPad.
+  const heroPad=resolveHeroPad() || (previewTodayISO ? 3 : 0);
+  const now=previewTodayISO?new Date(previewTodayISO+"T12:00:00"):new Date();
+  const {hour, minute}=previewTodayISO
+    ? {hour:12, minute:0}
+    : stockholmHourMinute(new Date());
+  const month=previewTodayISO
+    ? Number(previewTodayISO.slice(5,7))
+    : stockholmMonth(new Date());
+  const day=previewTodayISO
+    ? new Date(previewTodayISO+"T12:00:00").getDay()
+    : stockholmWeekday(new Date()); // 0=Sun, Europe/Stockholm
+  const todayISO=previewTodayISO||stockholmTodayISO(new Date());
   const isWeekend=day===0||day===6;
   const daypart=hour<10?"morgon":hour<14?"lunch":hour<18?"eftermiddag":"kvall";
   const recurringTodayList=recurringToday(day, recurring);
@@ -1201,6 +1216,21 @@ import {
     <p class="om-sign">— Juha</p>
     <p class="om-pwa" data-pwa-install-entry><button type="button" class="lnk" onclick="promptPwaInstall()">Lägg till på hemskärmen</button> — snabbare öppning, utan appbutik.</p>`;}
 
+  const homeHeroMode=resolveHomeHeroMode();
+  try{ document.documentElement.dataset.homeHero=homeHeroMode; }catch(e){}
+
+  function applyHomeHeroLayout(){
+    const classic=document.getElementById('heroFull');
+    const eventHero=document.getElementById('homeEventHero');
+    const discover=document.getElementById('homeDiscover');
+    const isEvents=homeHeroMode==="events";
+    try{ document.documentElement.dataset.homeHero=homeHeroMode; }catch(e){}
+    if(classic) classic.hidden=isEvents;
+    if(eventHero) eventHero.hidden=!isEvents;
+    if(discover) discover.hidden=!isEvents;
+  }
+  applyHomeHeroLayout();
+
   function refreshHeroGreet(){
     let greet;
     const sunsetH=ctx.sunset?Number(String(ctx.sunset).slice(0,2)):null;
@@ -1214,6 +1244,7 @@ import {
     else if(hour<21){greet="Kvällsljus i "+K;}
     else {greet="God kväll, "+K;}
     S('heroGreet',greet);
+    S('homeDiscoverGreet',greet);
   }
   refreshHeroGreet();
   const heroTitleEl=document.getElementById('heroTitle');
@@ -1936,6 +1967,7 @@ import {
     "/assets/hero/4.webp"
   ];
   function bootHeroCarousel(){
+    if(homeHeroMode==="events") return;
     const host=document.getElementById('heroSlides'); if(!host) return;
     const urls=heroImages.map(u=>(u&&String(u).trim())?u:HERO_FALLBACK);
     // Ensure LCP slide exists without wiping a server-rendered first frame
@@ -2151,6 +2183,12 @@ import {
     heroGoSearch(q);
     return false;
   }
+  function discoverSubmitSearch(ev){
+    ev?.preventDefault?.();
+    const q=(document.getElementById("discoverSearch")?.value||"").trim();
+    heroGoSearch(q);
+    return false;
+  }
   function heroGoSearch(q, filterKey){
     searchFilters.clear();
     if(filterKey) searchFilters.add(filterKey);
@@ -2263,6 +2301,136 @@ import {
       </span>
     </button>`;
   }
+  let homeHeroCarouselTimer=null;
+  let homeHeroCarouselIndex=0;
+  let homeHeroCarouselList=[];
+
+  function homeEventWhenBits(e){
+    const tm=(e.time||e.when||"").match(/(\d{1,2}:\d{2})/);
+    let eyebrow="Kommande";
+    let whenLine=e.when||e.date;
+    if(e.date===todayISO){
+      eyebrow="Idag";
+      whenLine=tm?`Idag kl. ${tm[1]}`:"Idag";
+    } else {
+      const n=daysUntil(e.date);
+      if(n===1){ eyebrow="Imorgon"; whenLine=tm?`Imorgon kl. ${tm[1]}`:"Imorgon"; }
+      else if(n>1 && n<=7) eyebrow="Den här veckan";
+    }
+    return {eyebrow, whenLine};
+  }
+
+  function homeHeroSlideHTML(e, i, total){
+    const key=eventKeyAttr(e);
+    const {eyebrow, whenLine}=homeEventWhenBits(e);
+    return `<div class="home-event-slide${i===0?" on":""}" data-hero-slide="${i}" data-event-key="${key}">
+      <div class="home-event-bleed-bg" style="background-image:url('${e.img}')" aria-hidden="true"></div>
+      <div class="home-event-bleed-shade" aria-hidden="true"></div>
+      <div class="home-event-bleed-inner">
+        <div class="home-event-card">
+          <p class="home-event-eyebrow">${eyebrow} · ${eventCatLabel(e.cat)}${total>1?` · ${i+1}/${total}`:""}</p>
+          <h1>${escHtml(e.title)}</h1>
+          <p class="home-event-when">${escHtml(whenLine)}</p>
+          <p class="home-event-host">${escHtml(e.host||"")}</p>
+          ${e.note?`<p class="home-event-note">${escHtml(e.note)}</p>`:""}
+          <span class="home-event-go">Läs mer →</span>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function stopHomeHeroCarousel(){
+    if(homeHeroCarouselTimer){ clearInterval(homeHeroCarouselTimer); homeHeroCarouselTimer=null; }
+  }
+
+  function showHomeHeroSlide(i){
+    const wrap=document.getElementById('homeEventHero');
+    if(!wrap||!homeHeroCarouselList.length) return;
+    const n=homeHeroCarouselList.length;
+    homeHeroCarouselIndex=((i%n)+n)%n;
+    wrap.querySelectorAll('.home-event-slide').forEach((el,idx)=>{
+      el.classList.toggle('on', idx===homeHeroCarouselIndex);
+    });
+    wrap.querySelectorAll('.home-event-dot').forEach((el,idx)=>{
+      el.classList.toggle('on', idx===homeHeroCarouselIndex);
+      el.setAttribute('aria-current', idx===homeHeroCarouselIndex?'true':'false');
+    });
+  }
+
+  function startHomeHeroCarousel(){
+    stopHomeHeroCarousel();
+    if(homeHeroCarouselList.length<2) return;
+    const reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if(reduce) return;
+    homeHeroCarouselTimer=setInterval(()=>showHomeHeroSlide(homeHeroCarouselIndex+1), 5500);
+  }
+
+  function openHomeHeroCurrent(){
+    const e=homeHeroCarouselList[homeHeroCarouselIndex];
+    if(e) openEvent(eventKeyAttr(e));
+    else showView('hander');
+  }
+
+  function renderHomeEventHero(){
+    const wrap=document.getElementById('homeEventHero');
+    if(!wrap || homeHeroMode!=="events") return;
+    stopHomeHeroCarousel();
+    homeHeroCarouselList=homeHeroCarouselEvents(liveEvents, todayISO, {padTo:heroPad});
+    if(!homeHeroCarouselList.length){
+      wrap.innerHTML=`<div class="home-event-empty">
+        <p>Inga inplanerade evenemang just nu.</p>
+        <button type="button" class="btn-ghost" style="color:#f7f3eb;border-color:rgba(247,243,235,.45)" onclick="showView('hander')">Se kalendern →</button>
+      </div>`;
+      return;
+    }
+    const total=homeHeroCarouselList.length;
+    const slides=homeHeroCarouselList.map((e,i)=>homeHeroSlideHTML(e,i,total)).join("");
+    const dots=total>1
+      ? `<div class="home-event-dots" role="tablist" aria-label="Evenemang i heron">${homeHeroCarouselList.map((e,i)=>
+          `<button type="button" class="home-event-dot${i===0?" on":""}" role="tab" aria-label="${escHtml(e.title)}" aria-current="${i===0?"true":"false"}" data-hero-dot="${i}"></button>`
+        ).join("")}</div>`
+      : "";
+    const nav=total>1
+      ? `<button type="button" class="home-event-nav prev" aria-label="Föregående evenemang" data-hero-nav="-1">‹</button>
+         <button type="button" class="home-event-nav next" aria-label="Nästa evenemang" data-hero-nav="1">›</button>`
+      : "";
+    wrap.innerHTML=`<div class="home-event-carousel" data-count="${total}">
+      <div class="home-event-slides">${slides}</div>
+      ${nav}
+      ${dots}
+    </div>`;
+    homeHeroCarouselIndex=0;
+    const openCurrent=()=>openHomeHeroCurrent();
+    wrap.querySelectorAll('.home-event-slide').forEach(el=>{
+      el.addEventListener('click', (ev)=>{
+        if(ev.target.closest('.home-event-nav, .home-event-dot')) return;
+        openCurrent();
+      });
+      el.addEventListener('keydown', (ev)=>{
+        if(ev.key==='Enter'||ev.key===' '){ ev.preventDefault(); openCurrent(); }
+      });
+      el.tabIndex=0;
+      el.setAttribute('role','button');
+    });
+    wrap.querySelectorAll('[data-hero-nav]').forEach(btn=>{
+      btn.addEventListener('click', (ev)=>{
+        ev.stopPropagation();
+        showHomeHeroSlide(homeHeroCarouselIndex+Number(btn.getAttribute('data-hero-nav')));
+        startHomeHeroCarousel();
+      });
+    });
+    wrap.querySelectorAll('[data-hero-dot]').forEach(btn=>{
+      btn.addEventListener('click', (ev)=>{
+        ev.stopPropagation();
+        showHomeHeroSlide(Number(btn.getAttribute('data-hero-dot')));
+        startHomeHeroCarousel();
+      });
+    });
+    wrap.addEventListener('mouseenter', stopHomeHeroCarousel);
+    wrap.addEventListener('mouseleave', startHomeHeroCarousel);
+    startHomeHeroCarousel();
+  }
+
   function renderTodayBrief(){
     const grid=document.getElementById('todayBriefGrid');
     const featureEl=document.getElementById('todayBriefFeature');
@@ -2271,7 +2439,12 @@ import {
     const titleEl=document.getElementById('todayBriefTitle');
     const metaEl=document.getElementById('todayBriefMeta');
     const weekend=isWeekendWindow();
-    if(titleEl) titleEl.textContent=weekend?`Helgen i ${K}`:`Händer i ${K}`;
+    const eventsMode=homeHeroMode==="events";
+    if(titleEl){
+      titleEl.textContent=eventsMode
+        ? "Nästkommande"
+        : (weekend?`Helgen i ${K}`:`Händer i ${K}`);
+    }
 
     const openRanked=rankedPlaces().filter(x=>x.open && isTimedVenue(x.p)).slice(0,3);
     const openN=openVenueCount();
@@ -2292,11 +2465,27 @@ import {
     const pool=happenHomePool(9);
     if(featureEl){
       if(pool.length){
-        const [feat, ...rest]=pool;
-        const more=rest.map(e=>eventCard(e,true)).join("");
-        featureEl.innerHTML=eventFeatureHTML(feat)+(more?happenScrollHTML(more,"Fler evenemang"):"");
-        featureEl.hidden=false;
-        if(more) wireHappenScroll(featureEl);
+        // In events-hero mode: skip same-day hero events (they're already in the carousel).
+        const heroSameDay=homeHeroCarouselEvents(liveEvents, todayISO, {padTo:0});
+        const heroKeys=new Set(heroSameDay.map(e=>`${e.title}|${e.date}`));
+        const list=eventsMode
+          ? pool.filter(e=>!heroKeys.has(`${e.title}|${e.date}`))
+          : pool;
+        if(!list.length){
+          featureEl.innerHTML="";
+          featureEl.hidden=true;
+        } else if(eventsMode){
+          const more=list.map(e=>eventCard(e,true)).join("");
+          featureEl.innerHTML=happenScrollHTML(more,"Fler evenemang");
+          featureEl.hidden=false;
+          wireHappenScroll(featureEl);
+        } else {
+          const [feat, ...rest]=list;
+          const more=rest.map(e=>eventCard(e,true)).join("");
+          featureEl.innerHTML=eventFeatureHTML(feat)+(more?happenScrollHTML(more,"Fler evenemang"):"");
+          featureEl.hidden=false;
+          if(more) wireHappenScroll(featureEl);
+        }
       } else if(recurringTodayList.length){
         const more=recurringTodayList.slice(0,2).map(r=>`
           <article class="ev compact" onclick="showView('hander')" role="button" tabindex="0">
@@ -2311,8 +2500,10 @@ import {
         featureEl.hidden=false;
         wireHappenScroll(featureEl);
       } else {
-        featureEl.innerHTML=`<p class="tc-empty" style="margin:0 0 4px">Inga inplanerade evenemang just nu — kika in snart igen.</p>`;
-        featureEl.hidden=false;
+        featureEl.innerHTML=eventsMode
+          ? ``
+          : `<p class="tc-empty" style="margin:0 0 4px">Inga inplanerade evenemang just nu — kika in snart igen.</p>`;
+        featureEl.hidden=eventsMode;
       }
     }
 
@@ -2332,6 +2523,8 @@ import {
       ${openBody}
       <button type="button" class="tc-foot" onclick="showOpenNowOnMap()">Visa på karta →</button>
     </article>`;
+
+    try{ renderHomeEventHero(); }catch(e){}
   }
   function showOpenNowOnMap(){
     openNowOnly=true;
@@ -3520,6 +3713,11 @@ import {
       document.getElementById('wPlace').textContent=K;
       document.getElementById('wText').textContent=wk.t;
       document.getElementById('wSub').textContent=`känns som ${feels}°`;
+      const discWx=document.getElementById('homeDiscoverWx');
+      if(discWx){
+        discWx.hidden=false;
+        discWx.textContent=`Just nu i ${K}: ${temp}° · ${wk.t}`;
+      }
       try{ refreshHeroGreet(); }catch(e){ console.warn('refreshHeroGreet', e); }
       try{ refreshHeroToday(); }catch(e){ console.warn('refreshHeroToday', e); }
       try{ renderTodayBrief(); }catch(e){ console.warn('renderTodayBrief after weather', e); }
@@ -3533,6 +3731,7 @@ import {
     }
   }
   try{ refreshHeroToday(); }catch(e){}
+  try{ renderHomeEventHero(); }catch(e){}
   try{ renderTodayBrief(); }catch(e){}
   loadWeather();
 
@@ -4779,6 +4978,7 @@ Object.assign(window, {
   heroTodayOpenSeason,
   heroTodaySeeMore,
   heroSubmitSearch,
+  discoverSubmitSearch,
   heroGoSearch,
   mobileGo,
   showOpenNowOnMap,
