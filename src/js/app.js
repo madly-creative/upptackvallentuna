@@ -34,6 +34,7 @@ import {
   stockholmHourMinute,
   stockholmMonth,
 } from "../data/stockholm.js";
+import { resolveHomeHeroMode } from "../lib/homeHeroMode.js";
 import { picksRotationSeed, selectRotatedDiversePicks, hashStr } from "../lib/picksRotate.js";
 import {
   daypartTypesForMood,
@@ -1201,6 +1202,20 @@ import {
     <p class="om-sign">— Juha</p>
     <p class="om-pwa" data-pwa-install-entry><button type="button" class="lnk" onclick="promptPwaInstall()">Lägg till på hemskärmen</button> — snabbare öppning, utan appbutik.</p>`;}
 
+  const homeHeroMode=resolveHomeHeroMode();
+  try{ document.documentElement.dataset.homeHero=homeHeroMode; }catch(e){}
+
+  function applyHomeHeroLayout(){
+    const classic=document.getElementById('heroFull');
+    const eventHero=document.getElementById('homeEventHero');
+    const discover=document.getElementById('homeDiscover');
+    const isEvents=homeHeroMode==="events";
+    if(classic) classic.hidden=isEvents;
+    if(eventHero) eventHero.hidden=!isEvents;
+    if(discover) discover.hidden=!isEvents;
+  }
+  applyHomeHeroLayout();
+
   function refreshHeroGreet(){
     let greet;
     const sunsetH=ctx.sunset?Number(String(ctx.sunset).slice(0,2)):null;
@@ -1214,6 +1229,7 @@ import {
     else if(hour<21){greet="Kvällsljus i "+K;}
     else {greet="God kväll, "+K;}
     S('heroGreet',greet);
+    S('homeDiscoverGreet',greet);
   }
   refreshHeroGreet();
   const heroTitleEl=document.getElementById('heroTitle');
@@ -1936,6 +1952,7 @@ import {
     "/assets/hero/4.webp"
   ];
   function bootHeroCarousel(){
+    if(homeHeroMode==="events") return;
     const host=document.getElementById('heroSlides'); if(!host) return;
     const urls=heroImages.map(u=>(u&&String(u).trim())?u:HERO_FALLBACK);
     // Ensure LCP slide exists without wiping a server-rendered first frame
@@ -2151,6 +2168,12 @@ import {
     heroGoSearch(q);
     return false;
   }
+  function discoverSubmitSearch(ev){
+    ev?.preventDefault?.();
+    const q=(document.getElementById("discoverSearch")?.value||"").trim();
+    heroGoSearch(q);
+    return false;
+  }
   function heroGoSearch(q, filterKey){
     searchFilters.clear();
     if(filterKey) searchFilters.add(filterKey);
@@ -2263,6 +2286,44 @@ import {
       </span>
     </button>`;
   }
+  function renderHomeEventHero(){
+    const wrap=document.getElementById('homeEventHero');
+    if(!wrap || homeHeroMode!=="events") return;
+    const e=eventsToday[0]||liveEvents[0]||null;
+    if(!e){
+      wrap.innerHTML=`<div class="home-event-empty">
+        <p>Inga inplanerade evenemang just nu.</p>
+        <button type="button" class="btn-secondary" onclick="showView('hander')">Se kalendern →</button>
+      </div>`;
+      return;
+    }
+    const key=eventKeyAttr(e);
+    const tm=(e.time||e.when||"").match(/(\d{1,2}:\d{2})/);
+    let eyebrow="Kommande";
+    let whenLine=e.when||e.date;
+    if(e.date===todayISO){
+      eyebrow="Idag";
+      whenLine=tm?`Idag kl. ${tm[1]}`:"Idag";
+    } else {
+      const n=daysUntil(e.date);
+      if(n===1){ eyebrow="Imorgon"; whenLine=tm?`Imorgon kl. ${tm[1]}`:"Imorgon"; }
+      else if(n>1 && n<=7) eyebrow="Den här veckan";
+    }
+    wrap.innerHTML=`<article class="home-event-split" role="button" tabindex="0"
+      onclick="openEvent('${key}')"
+      onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openEvent('${key}')}">
+      <div class="home-event-media" style="background-image:url('${e.img}')" role="img" aria-label="${escHtml(e.title)}"></div>
+      <div class="home-event-panel">
+        <p class="home-event-eyebrow">${eyebrow} · ${eventCatLabel(e.cat)}</p>
+        <h1>${escHtml(e.title)}</h1>
+        <p class="home-event-when">${escHtml(whenLine)}</p>
+        <p class="home-event-host">${escHtml(e.host||"")}</p>
+        ${e.note?`<p class="home-event-note">${escHtml(e.note)}</p>`:""}
+        <span class="home-event-go">Läs mer →</span>
+      </div>
+    </article>`;
+  }
+
   function renderTodayBrief(){
     const grid=document.getElementById('todayBriefGrid');
     const featureEl=document.getElementById('todayBriefFeature');
@@ -2271,7 +2332,12 @@ import {
     const titleEl=document.getElementById('todayBriefTitle');
     const metaEl=document.getElementById('todayBriefMeta');
     const weekend=isWeekendWindow();
-    if(titleEl) titleEl.textContent=weekend?`Helgen i ${K}`:`Händer i ${K}`;
+    const eventsMode=homeHeroMode==="events";
+    if(titleEl){
+      titleEl.textContent=eventsMode
+        ? "Nästkommande"
+        : (weekend?`Helgen i ${K}`:`Händer i ${K}`);
+    }
 
     const openRanked=rankedPlaces().filter(x=>x.open && isTimedVenue(x.p)).slice(0,3);
     const openN=openVenueCount();
@@ -2292,11 +2358,23 @@ import {
     const pool=happenHomePool(9);
     if(featureEl){
       if(pool.length){
-        const [feat, ...rest]=pool;
-        const more=rest.map(e=>eventCard(e,true)).join("");
-        featureEl.innerHTML=eventFeatureHTML(feat)+(more?happenScrollHTML(more,"Fler evenemang"):"");
-        featureEl.hidden=false;
-        if(more) wireHappenScroll(featureEl);
+        // In events-hero mode the first event is already the page hero — show the rest.
+        const list=eventsMode ? pool.slice(1) : pool;
+        if(!list.length){
+          featureEl.innerHTML="";
+          featureEl.hidden=true;
+        } else if(eventsMode){
+          const more=list.map(e=>eventCard(e,true)).join("");
+          featureEl.innerHTML=happenScrollHTML(more,"Fler evenemang");
+          featureEl.hidden=false;
+          wireHappenScroll(featureEl);
+        } else {
+          const [feat, ...rest]=list;
+          const more=rest.map(e=>eventCard(e,true)).join("");
+          featureEl.innerHTML=eventFeatureHTML(feat)+(more?happenScrollHTML(more,"Fler evenemang"):"");
+          featureEl.hidden=false;
+          if(more) wireHappenScroll(featureEl);
+        }
       } else if(recurringTodayList.length){
         const more=recurringTodayList.slice(0,2).map(r=>`
           <article class="ev compact" onclick="showView('hander')" role="button" tabindex="0">
@@ -2311,8 +2389,10 @@ import {
         featureEl.hidden=false;
         wireHappenScroll(featureEl);
       } else {
-        featureEl.innerHTML=`<p class="tc-empty" style="margin:0 0 4px">Inga inplanerade evenemang just nu — kika in snart igen.</p>`;
-        featureEl.hidden=false;
+        featureEl.innerHTML=eventsMode
+          ? ``
+          : `<p class="tc-empty" style="margin:0 0 4px">Inga inplanerade evenemang just nu — kika in snart igen.</p>`;
+        featureEl.hidden=eventsMode;
       }
     }
 
@@ -2332,6 +2412,8 @@ import {
       ${openBody}
       <button type="button" class="tc-foot" onclick="showOpenNowOnMap()">Visa på karta →</button>
     </article>`;
+
+    try{ renderHomeEventHero(); }catch(e){}
   }
   function showOpenNowOnMap(){
     openNowOnly=true;
@@ -3520,6 +3602,11 @@ import {
       document.getElementById('wPlace').textContent=K;
       document.getElementById('wText').textContent=wk.t;
       document.getElementById('wSub').textContent=`känns som ${feels}°`;
+      const discWx=document.getElementById('homeDiscoverWx');
+      if(discWx){
+        discWx.hidden=false;
+        discWx.textContent=`Just nu i ${K}: ${temp}° · ${wk.t}`;
+      }
       try{ refreshHeroGreet(); }catch(e){ console.warn('refreshHeroGreet', e); }
       try{ refreshHeroToday(); }catch(e){ console.warn('refreshHeroToday', e); }
       try{ renderTodayBrief(); }catch(e){ console.warn('renderTodayBrief after weather', e); }
@@ -4779,6 +4866,7 @@ Object.assign(window, {
   heroTodayOpenSeason,
   heroTodaySeeMore,
   heroSubmitSearch,
+  discoverSubmitSearch,
   heroGoSearch,
   mobileGo,
   showOpenNowOnMap,

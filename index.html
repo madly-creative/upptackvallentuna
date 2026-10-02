@@ -275,6 +275,9 @@
     </div>
   </div>
 
+  <!-- Event-first hero (experiment; toggle via ?hero=classic|events) -->
+  <section class="home-event-hero" id="homeEventHero" hidden aria-label="Aktuellt evenemang"></section>
+
   <!-- 2. Helgen / Just nu (evenemang + öppet + väder i ett) -->
   <section class="today-brief" id="todayBrief" aria-label="Helgen i Vallentuna">
     <div class="inner">
@@ -287,6 +290,31 @@
       </header>
       <div class="today-brief-feature" id="todayBriefFeature"></div>
       <div class="today-brief-grid" id="todayBriefGrid"></div>
+    </div>
+  </section>
+
+  <!-- Discover / search — shown under events when home hero mode is "events" -->
+  <section class="home-discover" id="homeDiscover" hidden aria-labelledby="homeDiscoverTitle">
+    <div class="home-discover-inner">
+      <p class="home-discover-greet" id="homeDiscoverGreet"></p>
+      <h2 id="homeDiscoverTitle">Vad vill du göra idag?</h2>
+      <p class="home-discover-lede">Sök fik, natur, loppis — eller öppna kartan.</p>
+      <form class="home-discover-search" id="discoverSearchForm" role="search" action="#" onsubmit="return discoverSubmitSearch(event)">
+        <span class="hero-search-ico" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3.2-3.2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </span>
+        <label class="sr-only" for="discoverSearch">Sök i Vallentuna</label>
+        <input id="discoverSearch" type="search" name="q" autocomplete="off" enterkeyhint="search"
+          placeholder="T.ex. fika, bad, loppis, något ikväll…" />
+        <button type="submit" class="hero-search-go" aria-label="Sök">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </form>
+      <div class="home-discover-cta">
+        <button type="button" class="btn-primary" onclick="showView('karta')">Öppna kartan</button>
+        <button type="button" class="btn-secondary" onclick="showView('hander')">Alla evenemang →</button>
+      </div>
+      <p class="home-discover-wx" id="homeDiscoverWx" hidden></p>
     </div>
   </section>
 
