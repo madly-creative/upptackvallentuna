@@ -301,62 +301,62 @@
     </div>
   </section>
 
-  <!-- Discover — inviting place paths under event-first home -->
+  <!-- Discover — photo doorways into place -->
   <section class="home-discover" id="homeDiscover" aria-labelledby="homeDiscoverTitle">
-    <div class="home-discover-band">
-      <div class="home-discover-inner">
-        <header class="home-discover-head">
+    <div class="home-discover-shell">
+      <header class="home-discover-head">
+        <div class="home-discover-titles">
           <h2 id="homeDiscoverTitle">Hitta en plats</h2>
-          <p class="home-discover-lede">Kanelbullar, spänger eller en loppis — välj riktning, eller sök rakt in.</p>
-        </header>
-        <form class="home-discover-search" id="discoverSearchForm" role="search" action="#" onsubmit="return discoverSubmitSearch(event)">
-          <span class="hero-search-ico" aria-hidden="true">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3.2-3.2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <p class="home-discover-lede">Steg in där doften, landskapet eller fynden tar dig.</p>
+        </div>
+        <div class="home-discover-actions">
+          <button type="button" class="home-discover-live" onclick="showOpenNowOnMap()">
+            <span class="home-discover-live-dot" aria-hidden="true"></span>
+            Öppet nu
+          </button>
+          <button type="button" class="home-discover-map" onclick="showView('karta')">Hela kartan →</button>
+          <p class="home-discover-wx" id="homeDiscoverWx" hidden></p>
+        </div>
+      </header>
+
+      <div class="home-discover-doors" role="navigation" aria-label="Utforska platser">
+        <button type="button" class="home-discover-door" onclick="openCategory('fika')">
+          <span class="home-discover-door-img" style="background-image:url('/assets/upplev/vallentuna-stenugnsbageri/cover.webp')" role="img" aria-hidden="true"></span>
+          <span class="home-discover-door-shade" aria-hidden="true"></span>
+          <span class="home-discover-door-copy">
+            <span class="home-discover-door-label">Fika</span>
+            <span class="home-discover-door-hint">Caféer &amp; bagerier</span>
           </span>
-          <label class="sr-only" for="discoverSearch">Sök platser i Vallentuna</label>
-          <input id="discoverSearch" type="search" name="q" autocomplete="off" enterkeyhint="search"
-            placeholder="Sök plats, bad eller café…" />
-          <button type="submit" class="hero-search-go" aria-label="Sök">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
-        </form>
-        <div class="home-discover-paths" role="navigation" aria-label="Utforska platser">
-          <button type="button" class="home-discover-path" onclick="openCategory('fika')">
-            <span class="home-discover-path-media" style="background-image:url('/assets/upplev/vallentuna-stenugnsbageri/cover.webp')" role="img" aria-hidden="true"></span>
-            <span class="home-discover-path-copy">
-              <span class="home-discover-path-label">Fika</span>
-              <span class="home-discover-path-hint">Caféer &amp; bagerier</span>
-            </span>
-          </button>
-          <button type="button" class="home-discover-path" onclick="openCategory('natur')">
-            <span class="home-discover-path-media" style="background-image:url('/assets/upplev/angarnsjoangen/cover.webp')" role="img" aria-hidden="true"></span>
-            <span class="home-discover-path-copy">
-              <span class="home-discover-path-label">Natur</span>
-              <span class="home-discover-path-hint">Spänger &amp; bad</span>
-            </span>
-          </button>
-          <button type="button" class="home-discover-path" onclick="openCategory('loppis')">
-            <span class="home-discover-path-media" style="background-image:url('/assets/upplev/antikladan/cover.webp')" role="img" aria-hidden="true"></span>
-            <span class="home-discover-path-copy">
-              <span class="home-discover-path-label">Loppis</span>
-              <span class="home-discover-path-hint">Antik &amp; fynd</span>
-            </span>
-          </button>
-          <button type="button" class="home-discover-path home-discover-path--live" onclick="showOpenNowOnMap()">
-            <span class="home-discover-path-media home-discover-path-media--live" aria-hidden="true">
-              <span class="home-discover-live-dot"></span>
-            </span>
-            <span class="home-discover-path-copy">
-              <span class="home-discover-path-label">Öppet nu</span>
-              <span class="home-discover-path-hint">Visa på kartan</span>
-            </span>
-          </button>
-        </div>
-        <div class="home-discover-cta">
-          <button type="button" class="home-discover-map" onclick="showView('karta')">Se allt på kartan →</button>
-        </div>
-        <p class="home-discover-wx" id="homeDiscoverWx" hidden></p>
+        </button>
+        <button type="button" class="home-discover-door" onclick="openCategory('natur')">
+          <span class="home-discover-door-img" style="background-image:url('/assets/upplev/angarnsjoangen/cover.webp')" role="img" aria-hidden="true"></span>
+          <span class="home-discover-door-shade" aria-hidden="true"></span>
+          <span class="home-discover-door-copy">
+            <span class="home-discover-door-label">Natur</span>
+            <span class="home-discover-door-hint">Spänger, bad &amp; utsikt</span>
+          </span>
+        </button>
+        <button type="button" class="home-discover-door" onclick="openCategory('loppis')">
+          <span class="home-discover-door-img" style="background-image:url('/assets/upplev/antikladan/cover.webp')" role="img" aria-hidden="true"></span>
+          <span class="home-discover-door-shade" aria-hidden="true"></span>
+          <span class="home-discover-door-copy">
+            <span class="home-discover-door-label">Loppis</span>
+            <span class="home-discover-door-hint">Antik &amp; second hand</span>
+          </span>
+        </button>
       </div>
+
+      <form class="home-discover-search" id="discoverSearchForm" role="search" action="#" onsubmit="return discoverSubmitSearch(event)">
+        <span class="hero-search-ico" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3.2-3.2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </span>
+        <label class="sr-only" for="discoverSearch">Sök platser i Vallentuna</label>
+        <input id="discoverSearch" type="search" name="q" autocomplete="off" enterkeyhint="search"
+          placeholder="Eller sök en plats, bad eller café…" />
+        <button type="submit" class="hero-search-go" aria-label="Sök">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </form>
     </div>
   </section>
 
