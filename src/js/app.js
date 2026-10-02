@@ -1244,7 +1244,6 @@ import {
     else if(hour<21){greet="Kvällsljus i "+K;}
     else {greet="God kväll, "+K;}
     S('heroGreet',greet);
-    S('homeDiscoverGreet',greet);
   }
   refreshHeroGreet();
   const heroTitleEl=document.getElementById('heroTitle');
