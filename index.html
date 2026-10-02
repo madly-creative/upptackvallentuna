@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="sv">
+<html lang="sv" data-home-hero="events">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,8 +28,16 @@
   <meta name="twitter:image" content="https://upptackvallentuna.se/assets/og.jpg">
   <link rel="icon" href="/icons/mark.svg" type="image/svg+xml">
   <link rel="icon" href="/icons/icon-192.png" type="image/png" sizes="192x192">
-  <!-- LCP: discover hero image early (not via JS background-image alone) -->
-  <link rel="preload" as="image" href="/assets/hero/1.webp" fetchpriority="high">
+  <script>
+    (function(){
+      try{
+        var q=new URLSearchParams(location.search).get("hero");
+        var s=q||localStorage.getItem("uv-home-hero")||"events";
+        if(s!=="classic"&&s!=="events") s="events";
+        document.documentElement.setAttribute("data-home-hero", s);
+      }catch(e){ document.documentElement.setAttribute("data-home-hero","events"); }
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <!-- Non-blocking fonts (system stack paints first) -->
@@ -196,7 +204,10 @@
 <main id="main">
 <!-- ===================== START ===================== -->
 <section class="view on" id="view-start">
-  <div class="hero-full" id="heroFull">
+  <!-- EVENT HERO first (classic landscape kept below for ?hero=classic) -->
+  <!-- Event-first hero (experiment; toggle via ?hero=classic|events) -->
+  <section class="home-event-hero" id="homeEventHero" aria-label="Aktuellt evenemang"></section>
+  <div class="hero-full" id="heroFull" hidden>
     <div class="hero-slides" id="heroSlides" aria-hidden="true">
       <div class="hero-slide on" style="background-image:url('/assets/hero/1.webp')"></div>
     </div>
@@ -275,9 +286,6 @@
     </div>
   </div>
 
-  <!-- Event-first hero (experiment; toggle via ?hero=classic|events) -->
-  <section class="home-event-hero" id="homeEventHero" hidden aria-label="Aktuellt evenemang"></section>
-
   <!-- 2. Helgen / Just nu (evenemang + öppet + väder i ett) -->
   <section class="today-brief" id="todayBrief" aria-label="Helgen i Vallentuna">
     <div class="inner">
@@ -294,7 +302,7 @@
   </section>
 
   <!-- Discover / search — shown under events when home hero mode is "events" -->
-  <section class="home-discover" id="homeDiscover" hidden aria-labelledby="homeDiscoverTitle">
+  <section class="home-discover" id="homeDiscover" aria-labelledby="homeDiscoverTitle">
     <div class="home-discover-inner">
       <p class="home-discover-greet" id="homeDiscoverGreet"></p>
       <h2 id="homeDiscoverTitle">Vad vill du göra idag?</h2>

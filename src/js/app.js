@@ -1210,6 +1210,7 @@ import {
     const eventHero=document.getElementById('homeEventHero');
     const discover=document.getElementById('homeDiscover');
     const isEvents=homeHeroMode==="events";
+    try{ document.documentElement.dataset.homeHero=homeHeroMode; }catch(e){}
     if(classic) classic.hidden=isEvents;
     if(eventHero) eventHero.hidden=!isEvents;
     if(discover) discover.hidden=!isEvents;
@@ -2293,7 +2294,7 @@ import {
     if(!e){
       wrap.innerHTML=`<div class="home-event-empty">
         <p>Inga inplanerade evenemang just nu.</p>
-        <button type="button" class="btn-secondary" onclick="showView('hander')">Se kalendern →</button>
+        <button type="button" class="btn-ghost" style="color:#f7f3eb;border-color:rgba(247,243,235,.45)" onclick="showView('hander')">Se kalendern →</button>
       </div>`;
       return;
     }
@@ -2309,19 +2310,21 @@ import {
       if(n===1){ eyebrow="Imorgon"; whenLine=tm?`Imorgon kl. ${tm[1]}`:"Imorgon"; }
       else if(n>1 && n<=7) eyebrow="Den här veckan";
     }
-    wrap.innerHTML=`<article class="home-event-split" role="button" tabindex="0"
-      onclick="openEvent('${key}')"
-      onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openEvent('${key}')}">
-      <div class="home-event-media" style="background-image:url('${e.img}')" role="img" aria-label="${escHtml(e.title)}"></div>
-      <div class="home-event-panel">
-        <p class="home-event-eyebrow">${eyebrow} · ${eventCatLabel(e.cat)}</p>
-        <h1>${escHtml(e.title)}</h1>
-        <p class="home-event-when">${escHtml(whenLine)}</p>
-        <p class="home-event-host">${escHtml(e.host||"")}</p>
-        ${e.note?`<p class="home-event-note">${escHtml(e.note)}</p>`:""}
-        <span class="home-event-go">Läs mer →</span>
+    // Full-bleed event photo replaces the landscape carousel; details live in the right-hand card.
+    wrap.innerHTML=`<button type="button" class="home-event-bleed" onclick="openEvent('${key}')" aria-label="${escHtml(e.title)}">
+      <div class="home-event-bleed-bg" style="background-image:url('${e.img}')" aria-hidden="true"></div>
+      <div class="home-event-bleed-shade" aria-hidden="true"></div>
+      <div class="home-event-bleed-inner">
+        <div class="home-event-card">
+          <p class="home-event-eyebrow">${eyebrow} · ${eventCatLabel(e.cat)}</p>
+          <h1>${escHtml(e.title)}</h1>
+          <p class="home-event-when">${escHtml(whenLine)}</p>
+          <p class="home-event-host">${escHtml(e.host||"")}</p>
+          ${e.note?`<p class="home-event-note">${escHtml(e.note)}</p>`:""}
+          <span class="home-event-go">Läs mer →</span>
+        </div>
       </div>
-    </article>`;
+    </button>`;
   }
 
   function renderTodayBrief(){
@@ -3620,6 +3623,7 @@ import {
     }
   }
   try{ refreshHeroToday(); }catch(e){}
+  try{ renderHomeEventHero(); }catch(e){}
   try{ renderTodayBrief(); }catch(e){}
   loadWeather();
 
