@@ -34,7 +34,12 @@ import {
   stockholmHourMinute,
   stockholmMonth,
 } from "../data/stockholm.js";
-import { resolveHomeHeroMode } from "../lib/homeHeroMode.js";
+import {
+  resolveHomeHeroMode,
+  resolvePreviewTodayISO,
+  resolveHeroPad,
+  homeHeroCarouselEvents,
+} from "../lib/homeHeroMode.js";
 import { picksRotationSeed, selectRotatedDiversePicks, hashStr } from "../lib/picksRotate.js";
 import {
   daypartTypesForMood,
@@ -845,11 +850,20 @@ import {
     "Hökeriet":"2026-08-31"
   };
 
-  const now=new Date();
-  const {hour, minute}=stockholmHourMinute(now);
-  const month=stockholmMonth(now);
-  const day=stockholmWeekday(now); // 0=Sun, Europe/Stockholm
-  const todayISO=stockholmTodayISO(now);
+  const previewTodayISO=resolvePreviewTodayISO();
+  // Sparse-day QA: when previewing another "today", pad hero to 3 slides if URL didn't set heroPad.
+  const heroPad=resolveHeroPad() || (previewTodayISO ? 3 : 0);
+  const now=previewTodayISO?new Date(previewTodayISO+"T12:00:00"):new Date();
+  const {hour, minute}=previewTodayISO
+    ? {hour:12, minute:0}
+    : stockholmHourMinute(new Date());
+  const month=previewTodayISO
+    ? Number(previewTodayISO.slice(5,7))
+    : stockholmMonth(new Date());
+  const day=previewTodayISO
+    ? new Date(previewTodayISO+"T12:00:00").getDay()
+    : stockholmWeekday(new Date()); // 0=Sun, Europe/Stockholm
+  const todayISO=previewTodayISO||stockholmTodayISO(new Date());
   const isWeekend=day===0||day===6;
   const daypart=hour<10?"morgon":hour<14?"lunch":hour<18?"eftermiddag":"kvall";
   const recurringTodayList=recurringToday(day, recurring);
@@ -2287,18 +2301,11 @@ import {
       </span>
     </button>`;
   }
-  function renderHomeEventHero(){
-    const wrap=document.getElementById('homeEventHero');
-    if(!wrap || homeHeroMode!=="events") return;
-    const e=eventsToday[0]||liveEvents[0]||null;
-    if(!e){
-      wrap.innerHTML=`<div class="home-event-empty">
-        <p>Inga inplanerade evenemang just nu.</p>
-        <button type="button" class="btn-ghost" style="color:#f7f3eb;border-color:rgba(247,243,235,.45)" onclick="showView('hander')">Se kalendern →</button>
-      </div>`;
-      return;
-    }
-    const key=eventKeyAttr(e);
+  let homeHeroCarouselTimer=null;
+  let homeHeroCarouselIndex=0;
+  let homeHeroCarouselList=[];
+
+  function homeEventWhenBits(e){
     const tm=(e.time||e.when||"").match(/(\d{1,2}:\d{2})/);
     let eyebrow="Kommande";
     let whenLine=e.when||e.date;
@@ -2310,13 +2317,18 @@ import {
       if(n===1){ eyebrow="Imorgon"; whenLine=tm?`Imorgon kl. ${tm[1]}`:"Imorgon"; }
       else if(n>1 && n<=7) eyebrow="Den här veckan";
     }
-    // Full-bleed event photo replaces the landscape carousel; details live in the right-hand card.
-    wrap.innerHTML=`<button type="button" class="home-event-bleed" onclick="openEvent('${key}')" aria-label="${escHtml(e.title)}">
+    return {eyebrow, whenLine};
+  }
+
+  function homeHeroSlideHTML(e, i, total){
+    const key=eventKeyAttr(e);
+    const {eyebrow, whenLine}=homeEventWhenBits(e);
+    return `<div class="home-event-slide${i===0?" on":""}" data-hero-slide="${i}" data-event-key="${key}">
       <div class="home-event-bleed-bg" style="background-image:url('${e.img}')" aria-hidden="true"></div>
       <div class="home-event-bleed-shade" aria-hidden="true"></div>
       <div class="home-event-bleed-inner">
         <div class="home-event-card">
-          <p class="home-event-eyebrow">${eyebrow} · ${eventCatLabel(e.cat)}</p>
+          <p class="home-event-eyebrow">${eyebrow} · ${eventCatLabel(e.cat)}${total>1?` · ${i+1}/${total}`:""}</p>
           <h1>${escHtml(e.title)}</h1>
           <p class="home-event-when">${escHtml(whenLine)}</p>
           <p class="home-event-host">${escHtml(e.host||"")}</p>
@@ -2324,7 +2336,99 @@ import {
           <span class="home-event-go">Läs mer →</span>
         </div>
       </div>
-    </button>`;
+    </div>`;
+  }
+
+  function stopHomeHeroCarousel(){
+    if(homeHeroCarouselTimer){ clearInterval(homeHeroCarouselTimer); homeHeroCarouselTimer=null; }
+  }
+
+  function showHomeHeroSlide(i){
+    const wrap=document.getElementById('homeEventHero');
+    if(!wrap||!homeHeroCarouselList.length) return;
+    const n=homeHeroCarouselList.length;
+    homeHeroCarouselIndex=((i%n)+n)%n;
+    wrap.querySelectorAll('.home-event-slide').forEach((el,idx)=>{
+      el.classList.toggle('on', idx===homeHeroCarouselIndex);
+    });
+    wrap.querySelectorAll('.home-event-dot').forEach((el,idx)=>{
+      el.classList.toggle('on', idx===homeHeroCarouselIndex);
+      el.setAttribute('aria-current', idx===homeHeroCarouselIndex?'true':'false');
+    });
+  }
+
+  function startHomeHeroCarousel(){
+    stopHomeHeroCarousel();
+    if(homeHeroCarouselList.length<2) return;
+    const reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if(reduce) return;
+    homeHeroCarouselTimer=setInterval(()=>showHomeHeroSlide(homeHeroCarouselIndex+1), 5500);
+  }
+
+  function openHomeHeroCurrent(){
+    const e=homeHeroCarouselList[homeHeroCarouselIndex];
+    if(e) openEvent(eventKeyAttr(e));
+    else showView('hander');
+  }
+
+  function renderHomeEventHero(){
+    const wrap=document.getElementById('homeEventHero');
+    if(!wrap || homeHeroMode!=="events") return;
+    stopHomeHeroCarousel();
+    homeHeroCarouselList=homeHeroCarouselEvents(liveEvents, todayISO, {padTo:heroPad});
+    if(!homeHeroCarouselList.length){
+      wrap.innerHTML=`<div class="home-event-empty">
+        <p>Inga inplanerade evenemang just nu.</p>
+        <button type="button" class="btn-ghost" style="color:#f7f3eb;border-color:rgba(247,243,235,.45)" onclick="showView('hander')">Se kalendern →</button>
+      </div>`;
+      return;
+    }
+    const total=homeHeroCarouselList.length;
+    const slides=homeHeroCarouselList.map((e,i)=>homeHeroSlideHTML(e,i,total)).join("");
+    const dots=total>1
+      ? `<div class="home-event-dots" role="tablist" aria-label="Evenemang i heron">${homeHeroCarouselList.map((e,i)=>
+          `<button type="button" class="home-event-dot${i===0?" on":""}" role="tab" aria-label="${escHtml(e.title)}" aria-current="${i===0?"true":"false"}" data-hero-dot="${i}"></button>`
+        ).join("")}</div>`
+      : "";
+    const nav=total>1
+      ? `<button type="button" class="home-event-nav prev" aria-label="Föregående evenemang" data-hero-nav="-1">‹</button>
+         <button type="button" class="home-event-nav next" aria-label="Nästa evenemang" data-hero-nav="1">›</button>`
+      : "";
+    wrap.innerHTML=`<div class="home-event-carousel" data-count="${total}">
+      <div class="home-event-slides">${slides}</div>
+      ${nav}
+      ${dots}
+    </div>`;
+    homeHeroCarouselIndex=0;
+    const openCurrent=()=>openHomeHeroCurrent();
+    wrap.querySelectorAll('.home-event-slide').forEach(el=>{
+      el.addEventListener('click', (ev)=>{
+        if(ev.target.closest('.home-event-nav, .home-event-dot')) return;
+        openCurrent();
+      });
+      el.addEventListener('keydown', (ev)=>{
+        if(ev.key==='Enter'||ev.key===' '){ ev.preventDefault(); openCurrent(); }
+      });
+      el.tabIndex=0;
+      el.setAttribute('role','button');
+    });
+    wrap.querySelectorAll('[data-hero-nav]').forEach(btn=>{
+      btn.addEventListener('click', (ev)=>{
+        ev.stopPropagation();
+        showHomeHeroSlide(homeHeroCarouselIndex+Number(btn.getAttribute('data-hero-nav')));
+        startHomeHeroCarousel();
+      });
+    });
+    wrap.querySelectorAll('[data-hero-dot]').forEach(btn=>{
+      btn.addEventListener('click', (ev)=>{
+        ev.stopPropagation();
+        showHomeHeroSlide(Number(btn.getAttribute('data-hero-dot')));
+        startHomeHeroCarousel();
+      });
+    });
+    wrap.addEventListener('mouseenter', stopHomeHeroCarousel);
+    wrap.addEventListener('mouseleave', startHomeHeroCarousel);
+    startHomeHeroCarousel();
   }
 
   function renderTodayBrief(){
@@ -2361,8 +2465,12 @@ import {
     const pool=happenHomePool(9);
     if(featureEl){
       if(pool.length){
-        // In events-hero mode the first event is already the page hero — show the rest.
-        const list=eventsMode ? pool.slice(1) : pool;
+        // In events-hero mode: skip same-day hero events (they're already in the carousel).
+        const heroSameDay=homeHeroCarouselEvents(liveEvents, todayISO, {padTo:0});
+        const heroKeys=new Set(heroSameDay.map(e=>`${e.title}|${e.date}`));
+        const list=eventsMode
+          ? pool.filter(e=>!heroKeys.has(`${e.title}|${e.date}`))
+          : pool;
         if(!list.length){
           featureEl.innerHTML="";
           featureEl.hidden=true;
