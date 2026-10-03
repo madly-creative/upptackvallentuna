@@ -311,6 +311,7 @@ export const events = [
     cat: "KULTUR",
     note: "Jazzkväll med Hans Backenroth Quartet på Vallentuna Teater. Café från 17:30. Biljetter via Nortic eller biblioteket.",
     img: "/assets/evenemang/jano-hans-backenroth/cover.webp",
+    heroPos: "82% 48%",
     source: "https://www.nortic.se/ticket/show/344820",
   },
   {

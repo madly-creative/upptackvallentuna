@@ -2322,8 +2322,13 @@ import {
   function homeHeroSlideHTML(e, i, total){
     const key=eventKeyAttr(e);
     const {eyebrow, whenLine}=homeEventWhenBits(e);
+    const customPos=(typeof e.heroPos==="string" && e.heroPos.trim())?e.heroPos.trim():"";
+    // Cover alone can't crop horizontally on square→wide heroes; oversized size lets heroPos bite.
+    const bgStyle=customPos
+      ? `background-image:url('${e.img}');background-position:${customPos};background-size:145% auto`
+      : `background-image:url('${e.img}')`;
     return `<div class="home-event-slide${i===0?" on":""}" data-hero-slide="${i}" data-event-key="${key}">
-      <div class="home-event-bleed-bg" style="background-image:url('${e.img}')" aria-hidden="true"></div>
+      <div class="home-event-bleed-bg" style="${bgStyle}" aria-hidden="true"></div>
       <div class="home-event-bleed-shade" aria-hidden="true"></div>
       <div class="home-event-bleed-inner">
         <div class="home-event-card">
