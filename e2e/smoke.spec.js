@@ -62,7 +62,7 @@ test("guides section and summer guide open", async ({ page }) => {
   await expect(page.getByRole("button", { name: "Planera rutten" }).first()).toBeVisible();
 });
 
-test("event remind pop and place name with apostrophe", async ({ page }) => {
+test("event remind pop and place with special characters", async ({ page }) => {
   await page.goto("/");
   await page.getByText("Gravröset Festival", { exact: true }).first().click();
   await expect(page.locator("#eventModal")).toHaveClass(/on/);
@@ -72,9 +72,9 @@ test("event remind pop and place name with apostrophe", async ({ page }) => {
   await page.locator("#eventModal .em-close").click();
 
   await page.locator(".quick-paths").getByRole("button", { name: "Handla lokalt" }).click();
-  await page.getByText("Ellen's Corner", { exact: true }).first().click();
+  await page.getByText("Silver & Sånt", { exact: true }).first().click();
   await expect(page.locator("#view-plats")).toHaveClass(/on/);
-  await expect(page.locator("#platsName")).toHaveText("Ellen's Corner");
+  await expect(page.locator("#platsName")).toHaveText("Silver & Sånt");
 });
 
 test("browser back closes place without leaving to integritet", async ({ page }) => {

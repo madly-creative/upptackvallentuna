@@ -393,18 +393,6 @@ import {
       body:`<p>Hos Lejonkulan Foto &amp; Interiör hittar du inredning, presenter, kläder, smycken — och personlig hjälp med fotoframkallning, ramar och album. Studentplakat och andra trycksaker går också att ordna.</p>
       <p>Öppet mån–fre 10–18, lör 10–15 enligt Vallentuna Centrum. Tel 08-511 807 30. Mer: <a href="https://vallentunacentrum.se/butik/lejonkulan-trend-interior/" target="_blank" rel="noopener">vallentunacentrum.se</a>.</p>`
     },
-    "Ellen's Corner":{
-      address:"Mörbyvägen 1a, 186 32 Vallentuna",
-      facts:["Mode","Inredning","Personlig service"],
-      localPhotos:true,
-      images:[
-        {url:"/assets/upplev/ellens-corner/cover.webp",alt:"Kläder på Ellen's Corner"},
-        {url:"/assets/upplev/ellens-corner/accessoarer.webp",alt:"Accessoarer i butiken"},
-        {url:"/assets/upplev/ellens-corner/inredning.webp",alt:"Inredning hos Ellen's Corner"}
-      ],
-      body:`<p>När du kommer till Ellen’s ska du känna dig sedd och unik — butiken utstrålar charm, glädje och inspiration. Personlig service och omsorg om att hitta det perfekta för just dig ligger i fokus.</p>
-      <p>Kläder, accessoarer och inredning. Aktuella öppettider via Instagram/Facebook. Mail: <a href="mailto:info@ellenscorner.se">info@ellenscorner.se</a>. Webb: <a href="https://ellenscorner.se/" target="_blank" rel="noopener">ellenscorner.se</a>.</p>`
-    },
     "Silver & Sånt":{
       address:"Torggatan 19A / centrumpassagen, Vallentuna",
       facts:["Smycken","Klockor","Rozaro Jewelry"],
@@ -731,17 +719,6 @@ import {
       body:`<p><strong>Roslagsloppis</strong> är den stora bakluckeloppisen bakom Roslagsstoppet vid Söderhalls trafikplats — halvvägs ut i Roslagen, i Vallentuna kommun. Sälj direkt från bilen eller kom och fynda; fri entré och parkering för besökare.</p>
       <p>Öppet <strong>söndagar 11–15</strong> under säsongen <strong>31 maj–13 september 2026</strong> (stängt 21 juni). Åk runt den långa röda byggnaden till baksidan. Vill du sälja? Plats online från 175 kr via <a href="https://www.roslagsloppis.se/salja/" target="_blank" rel="noopener">roslagsloppis.se</a>, eller Swish på plats om det finns rum. Frågor: <a href="mailto:info@stockholmsmarknader.se">info@stockholmsmarknader.se</a>. Psst: fabriksförsäljning av cocosbollar finns intill.</p>`
     },
-    "Lilla Cirkeln Secondhand":{
-      address:"Tuna Torg 2, 186 39 Vallentuna",
-      facts:["Second hand","Kommission","Barn & dam","Centrum"],
-      localPhotos:false,
-      photoCredit:"Stämningsbild (Unsplash) — byt gärna mot eget butiksfoto.",
-      images:[
-        {url:"/assets/upplev/lilla-cirkeln-secondhand/cover.webp",alt:"Second hand-fynd i butiksmiljö"}
-      ],
-      body:`<p><strong>Lilla Cirkeln Secondhand</strong> ligger mitt på Tuna Torg — en liten kommissionsbaserad butik med fokus på kläder, barnprylar och märkesfynd. Klimatsmart shopping utan att lämna centrum.</p>
-      <p>Öppet mån–fre 10–18, lör 10–15 (avvikelser på storhelger). Inlämning enligt <a href="https://www.lillacirkeln.se/" target="_blank" rel="noopener">lillacirkeln.se</a> · även listad på <a href="https://vallentunacentrum.se/butik/lillacirkeln-secondhand/" target="_blank" rel="noopener">vallentunacentrum.se</a>.</p>`
-    },
     "Vallentuna skolmuseum":{
       address:"Lilla Garn 32, Brottby (vid Össeby-Garns kyrka)",
       facts:["Museum","1910-tal","Fri entré","Kultur Vallentuna"],
@@ -824,7 +801,6 @@ import {
   // Newer listings get a "Nytt"-badge for ~45 days from this date
   const NEW_SINCE={
     "Ljuvliga Bakverk":"2026-07-10",
-    "Ellen's Corner":"2026-07-18",
     "Antikladan":"2026-06-28",
     "Grävelsta Gård":"2026-08-02",
     "Röda Magasinet":"2026-08-02",
@@ -844,7 +820,6 @@ import {
     "Vallentuna Konditori":"2026-08-14",
     "Äppellundens Café":"2026-08-14",
     "Roslagsloppis":"2026-08-15",
-    "Lilla Cirkeln Secondhand":"2026-08-20",
     "Vallentuna skolmuseum":"2026-08-20",
     "Sweden History Tours":"2026-08-25",
     "Hökeriet":"2026-08-31"

@@ -91,11 +91,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://upptackvallentuna.se/plats/ellen-s-corner.html</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://upptackvallentuna.se/plats/silver-och-sant.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -232,11 +227,6 @@
   </url>
   <url>
     <loc>https://upptackvallentuna.se/plats/roslagsloppis.html</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://upptackvallentuna.se/plats/lilla-cirkeln-secondhand.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>

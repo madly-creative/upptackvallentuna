@@ -8,7 +8,7 @@ import {
 
 describe("picksRotate", () => {
   it("hashStr is stable", () => {
-    expect(hashStr("Ellen's Corner|2026-08-07")).toBe(hashStr("Ellen's Corner|2026-08-07"));
+    expect(hashStr("Silver & Sånt|2026-08-07")).toBe(hashStr("Silver & Sånt|2026-08-07"));
     expect(hashStr("a")).not.toBe(hashStr("b"));
   });
 
@@ -45,7 +45,7 @@ describe("picksRotate", () => {
   it("rotatePoolOrder ignores score and sorts by seed hash", () => {
     const pool = [
       { p: { name: "Gästis Kök & Bar", type: "fika" }, score: 90 },
-      { p: { name: "Ellen's Corner", type: "butik" }, score: 55 },
+      { p: { name: "Silver & Sånt", type: "butik" }, score: 55 },
       { p: { name: "Vallboden", type: "butik" }, score: 54 },
     ];
     const a = rotatePoolOrder(pool, "2026-08-07|eftermiddag|mild|");
@@ -58,9 +58,9 @@ describe("picksRotate", () => {
   it("high scorer alone in score band still shares feature slot across days", () => {
     const ranked = [
       { p: { name: "Gästis Kök & Bar", type: "fika" }, score: 90, open: true },
-      { p: { name: "Ellen's Corner", type: "butik" }, score: 55, open: true },
-      { p: { name: "Silver & Sånt", type: "butik" }, score: 54, open: true },
-      { p: { name: "Vallboden", type: "butik" }, score: 53, open: true },
+      { p: { name: "Silver & Sånt", type: "butik" }, score: 55, open: true },
+      { p: { name: "Vallboden", type: "butik" }, score: 54, open: true },
+      { p: { name: "Lejonkulan Presenter & Inredning", type: "butik" }, score: 53, open: true },
       { p: { name: "Tarby Gårdsbutik", type: "gard" }, score: 52, open: true },
       { p: { name: "Lindra Second Hand", type: "loppis" }, score: 51, open: true },
       { p: { name: "Langhard Lantbruk", type: "gard" }, score: 50, open: true },
@@ -89,9 +89,9 @@ describe("picksRotate", () => {
 
   it("different days rotate among near-tied open places", () => {
     const ranked = [
-      { p: { name: "Ellen's Corner", type: "butik" }, score: 66, open: true },
+      { p: { name: "Silver & Sånt", type: "butik" }, score: 66, open: true },
       { p: { name: "Gästis Kök & Bar", type: "fika" }, score: 64, open: true },
-      { p: { name: "Silver & Sånt", type: "butik" }, score: 62, open: true },
+      { p: { name: "Lejonkulan Presenter & Inredning", type: "butik" }, score: 62, open: true },
       { p: { name: "Vallboden", type: "butik" }, score: 61, open: true },
       { p: { name: "Tarby Gårdsbutik", type: "gard" }, score: 60, open: true },
       { p: { name: "Lindra Second Hand", type: "loppis" }, score: 59, open: true },

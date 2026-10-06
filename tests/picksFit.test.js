@@ -122,7 +122,7 @@ describe("picksFit weather", () => {
       { p: { name: "Lindra Second Hand", cat: "Second Hand", type: "loppis", short: "Fynd" }, score: 66, open: true },
       { p: bageri, score: 64, open: true },
       { p: angarn, score: 50, open: true },
-      { p: { name: "Ellen's Corner", cat: "Mode", type: "butik", short: "Boutique" }, score: 62, open: true },
+      { p: { name: "Silver & Sånt", cat: "Mode", type: "butik", short: "Smycken" }, score: 62, open: true },
     ];
     const filtered = filterRankedForWeather(ranked, "rough");
     const picks = selectRotatedDiversePicks(filtered, {
