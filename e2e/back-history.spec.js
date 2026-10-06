@@ -82,8 +82,8 @@ test("in-app ← from place→place returns to category in one tap", async ({ pa
   await page.locator(".quick-paths").getByRole("button", { name: "Handla lokalt" }).click();
   await page.getByText("Jano", { exact: true }).first().click();
   await expect(page.locator("#platsName")).toHaveText("Jano");
-  await page.evaluate(() => openPlace("Ellen's Corner"));
-  await expect(page.locator("#platsName")).toHaveText("Ellen's Corner");
+  await page.evaluate(() => openPlace("Silver & Sånt"));
+  await expect(page.locator("#platsName")).toHaveText("Silver & Sånt");
   await page.locator("#view-plats button.back").click();
   await expect(page.locator("#view-plats")).not.toHaveClass(/on/);
   await expect(page.locator("#view-kategori")).toHaveClass(/on/);
@@ -151,8 +151,8 @@ test("browser back place→place restores previous place then category", async (
   await page.locator(".quick-paths").getByRole("button", { name: "Handla lokalt" }).click();
   await page.getByText("Jano", { exact: true }).first().click();
   await expect(page.locator("#platsName")).toHaveText("Jano");
-  await page.evaluate(() => openPlace("Ellen's Corner"));
-  await expect(page.locator("#platsName")).toHaveText("Ellen's Corner");
+  await page.evaluate(() => openPlace("Silver & Sånt"));
+  await expect(page.locator("#platsName")).toHaveText("Silver & Sånt");
   await page.goBack();
   await expect(page.locator("#platsName")).toHaveText("Jano");
   await page.goBack();

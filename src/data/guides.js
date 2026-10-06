@@ -98,8 +98,8 @@ export const guides = [
         text: "Tillbaka mot byn, titta in på Vallboden. Keramik och hantverk i liten skala, personligt urval, lokala händer bakom hyllorna. Det är den sortens butik man går in i utan lista — och kommer ut med något man faktiskt vill ha.",
       },
       {
-        place: "Ellen's Corner",
-        text: "Ett stenkast bort ligger Ellen's Corner. En boutique där tempot går ner av sig själv: utvalda plagg, mest från Europa, och tid att prova utan brådska. Handla långsamt, eller bara titta — det räknas också.",
+        place: "Silver & Sånt",
+        text: "Ett stenkast bort i centrumpassagen: Silver & Sånt. Smycken och klockor, eget och utvalt — ett litet glimtstopp innan maten. Titta runt, fråga, eller bara njut av lugnet mellan hyllorna.",
       },
       {
         place: "Gästis Kök & Bar",
@@ -337,9 +337,9 @@ export const guides = [
     season: "sommar",
     kicker: "I centrum",
     themes: ["fika","gratis"],
-    heroImg: "/assets/upplev/ellens-corner/cover.webp",
+    heroImg: "/assets/upplev/vallboden/cover.webp",
     intro:
-      "En sensommareftermiddag utan bil. Sex stopp runt Tuna Torg och Centralvägen — fika, kultur, hantverk, mode och mat medan uteserveringarna fortfarande är igång.",
+      "En sensommareftermiddag utan bil. Fem stopp runt Tuna Torg och Centralvägen — fika, kultur, hantverk och mat medan uteserveringarna fortfarande är igång.",
     lead: "Ibland är den bästa utflykten den som börjar med att man parkerar bilen och glömmer den.",
     stops: [
       {
@@ -355,12 +355,8 @@ export const guides = [
         text: "På Centralvägen: Vallboden. Keramik och hantverk i liten skala. Gå in utan lista. Kom ut med något ni faktiskt vill ha — eller bara med en trevlig stund.",
       },
       {
-        place: "Ellen's Corner",
-        text: "Ett stenkast bort: Ellen's. Boutique där tempot går ner. Prova, titta, fråga. Shopping utan köphets är också ett stopp.",
-      },
-      {
         place: "Silver & Sånt",
-        text: "Genom centrumpassagen till Silver & Sånt. Smycken och klockor, eget och utvalt — ett litet glimtstopp mellan kläder och mat.",
+        text: "Genom centrumpassagen till Silver & Sånt. Smycken och klockor, eget och utvalt — ett litet glimtstopp mellan hantverk och mat.",
       },
       {
         place: "Gästis Kök & Bar",
