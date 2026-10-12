@@ -96,6 +96,15 @@ describe("events calendar", () => {
     expect(EVENT_CONTENT["Inspirationsdag om det här med Livet!"]).toBeTruthy();
   });
 
+  it("barnKUL MusikMums Höstlek matches tip", () => {
+    const e = events.find((x) => x.title === "barnKUL: MusikMums — Höstlek");
+    expect(e?.date).toBe("2026-10-17");
+    expect(e?.host).toMatch(/Kulturhus/);
+    expect(e?.cat).toBe("KULTUR");
+    expect(e?.time).toMatch(/11:00/);
+    expect(EVENT_CONTENT["barnKUL: MusikMums — Höstlek"]).toBeTruthy();
+  });
+
   it("eventSlug is url-safe", () => {
     const s = eventSlug(events[0]);
     expect(s).toMatch(/^[a-z0-9-]+$/);
