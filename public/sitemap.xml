@@ -386,6 +386,16 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://upptackvallentuna.se/evenemang/kulturlunch-jag-har-ett-abnormt-konstbegar-2026-10-14.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/evenemang/forestallning-under-ytan-2026-10-16.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://upptackvallentuna.se/evenemang/barnkul-musikmums-2026-10-17.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -412,6 +422,11 @@
   </url>
   <url>
     <loc>https://upptackvallentuna.se/evenemang/inspirationsdag-om-det-har-med-livet-2026-11-07.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/evenemang/samtal-i-samtiden-hopp-2026-11-10.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>

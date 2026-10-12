@@ -106,6 +106,21 @@ describe("events calendar", () => {
     expect(EVENT_CONTENT["barnKUL: Musikmums"]).toBeTruthy();
   });
 
+  it("kommun Kulturhus-program okt–nov matches sources", () => {
+    const lunch = events.find((x) => x.title === "Kulturlunch: Jag har ett abnormt konstbegär");
+    const under = events.find((x) => x.title === "Föreställning: Under ytan");
+    const hopp = events.find((x) => x.title === "Samtal i samtiden: Hopp!");
+    expect(lunch?.date).toBe("2026-10-14");
+    expect(lunch?.time).toBe("12:00 – 13:00");
+    expect(under?.date).toBe("2026-10-16");
+    expect(under?.source).toContain("nortic");
+    expect(hopp?.date).toBe("2026-11-10");
+    expect(hopp?.host).toMatch(/Åbybergskyrkan/);
+    expect(EVENT_CONTENT[lunch.title]).toBeTruthy();
+    expect(EVENT_CONTENT[under.title]).toBeTruthy();
+    expect(EVENT_CONTENT[hopp.title]).toBeTruthy();
+  });
+
   it("eventSlug is url-safe", () => {
     const s = eventSlug(events[0]);
     expect(s).toMatch(/^[a-z0-9-]+$/);
