@@ -339,6 +339,19 @@ export const events = [
       "https://www.vallentuna.se/evenemang-och-upplevelser/evenemangskalender/2026/10/tema-mat--smakresan-vallentuna/",
   },
   {
+    host: "Kultur Vallentuna",
+    title: "barnKUL: Musikmums",
+    date: "2026-10-17",
+    addedDate: "2026-10-12",
+    when: "Lör 17 okt · 11–12",
+    time: "11:00 – 12:00",
+    cat: "KULTUR",
+    note: "Ramsor, sång och rörelse för barn 3–5 år med vuxen — tema höst, under ledning av musikpedagog Paula Ekström. Kulturrummet, Vallentuna Kulturhus. Gratis, ingen föranmälan.",
+    img: "/assets/evenemang/barnkul-musikmums-hostlek/cover.webp",
+    source:
+      "https://www.vallentuna.se/uppleva-och-gora/evenemang-och-motesplatser/evenemang/evenemang/2026-10-08-barnkul-musikmums",
+  },
+  {
     host: "Orkesta Bygdegård Lindholmen",
     title: "Pub & musikquiz",
     date: "2026-10-17",
@@ -643,6 +656,11 @@ export const EVENT_CONTENT = {
   "Inspirationsdag om det här med Livet!": {
     body: `<p>En dag för dig mitt i livet — om stress, glädje, frihet och allt som ska få plats på 24 timmar. Föreläsningar, samtal och reflektioner med plats för igenkänning och skratt.</p>
       <p>Anmälan senast <strong>5 oktober</strong> (minst antal deltagare krävs; bindande efter antagningsbesked). Formulär: <a href="https://baramanvill.se/vara_nyfiken_angarn/" target="_blank" rel="noopener">baramanvill.se/vara_nyfiken_angarn</a> · <a href="mailto:info@baramanvill.se">info@baramanvill.se</a>.</p>`,
+  },
+  "barnKUL: Musikmums": {
+    body: `<p>Lördag 17 oktober kl. 11–12 i <strong>Kulturrummet</strong>, Vallentuna Kulturhus (Allévägen 1) — <em>barnKUL: Musikmums</em> med tema höst.</p>
+      <p>Med ramsor, sång och rörelse leker vi musik under ledning av musikpedagog Paula Ekström. För barn 3–5 år och medföljande vuxen. <strong>Gratis</strong>, ingen föranmälan.</p>
+      <p>Källa: <a href="https://www.vallentuna.se/uppleva-och-gora/evenemang-och-motesplatser/evenemang/evenemang/2026-10-08-barnkul-musikmums" target="_blank" rel="noopener">vallentuna.se / barnKUL: Musikmums</a>.</p>`,
   },
   "Linedance — Kickoff & gratis prova på": {
     body: `<p>Söndag 23 augusti i <strong>Rosendalsskolan Södras matsal</strong>, Teknikvägen 25 i Vallentuna — gratis kickoff inför höstens linedance-terminer med <a href="https://baramanvill.se/" target="_blank" rel="noopener">Bara man Vill</a>.</p>

@@ -96,6 +96,16 @@ describe("events calendar", () => {
     expect(EVENT_CONTENT["Inspirationsdag om det här med Livet!"]).toBeTruthy();
   });
 
+  it("barnKUL Musikmums matches kommunens kalender", () => {
+    const e = events.find((x) => x.title === "barnKUL: Musikmums");
+    expect(e?.date).toBe("2026-10-17");
+    expect(e?.host).toBe("Kultur Vallentuna");
+    expect(e?.cat).toBe("KULTUR");
+    expect(e?.time).toBe("11:00 – 12:00");
+    expect(e?.source).toContain("2026-10-08-barnkul-musikmums");
+    expect(EVENT_CONTENT["barnKUL: Musikmums"]).toBeTruthy();
+  });
+
   it("eventSlug is url-safe", () => {
     const s = eventSlug(events[0]);
     expect(s).toMatch(/^[a-z0-9-]+$/);
