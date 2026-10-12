@@ -444,7 +444,7 @@ export const events = [
     note: "Per Wirtén samtalar utifrån boken Hopp – Mot frihetens fiender. Kulturrummet, Vallentuna Kulturhus. Arrangörer: Åbybergskyrkan, Kultur Vallentuna, Bilda och Bibliotek Vallentuna.",
     img: "/assets/evenemang/samtal-i-samtiden-hopp/cover.webp",
     source:
-      "https://www.vallentuna.se/evenemang-och-upplevelser/evenemangskalender/2026/11/samtal-i-samtiden-hopp/",
+      "https://www.vallentuna.se/uppleva-och-gora/evenemang-och-motesplatser/evenemang/evenemang/2026-09-22-samtal-i-samtiden-hopp",
   },
   {
     host: "Jano / Vallentuna Teater",
@@ -711,7 +711,7 @@ export const EVENT_CONTENT = {
   },
   "Samtal i samtiden: Hopp!": {
     body: `<p>Tisdag 10 november kl. 19–20 i <strong>Kulturrummet</strong>, Vallentuna Kulturhus — Per Wirtén samtalar utifrån boken <em>Hopp – Mot frihetens fiender</em>.</p>
-      <p>Arrangörer: Åbybergskyrkans församling, Kultur Vallentuna, Studieförbundet Bilda och Bibliotek Vallentuna. Källa: <a href="https://www.vallentuna.se/evenemang-och-upplevelser/evenemangskalender/2026/11/samtal-i-samtiden-hopp/" target="_blank" rel="noopener">vallentuna.se</a>.</p>`,
+      <p>Arrangörer: Åbybergskyrkans församling, Kultur Vallentuna, Studieförbundet Bilda och Bibliotek Vallentuna. Källa: <a href="https://www.vallentuna.se/uppleva-och-gora/evenemang-och-motesplatser/evenemang/evenemang/2026-09-22-samtal-i-samtiden-hopp" target="_blank" rel="noopener">vallentuna.se</a>.</p>`,
   },
   "Linedance — Kickoff & gratis prova på": {
     body: `<p>Söndag 23 augusti i <strong>Rosendalsskolan Södras matsal</strong>, Teknikvägen 25 i Vallentuna — gratis kickoff inför höstens linedance-terminer med <a href="https://baramanvill.se/" target="_blank" rel="noopener">Bara man Vill</a>.</p>
