@@ -340,6 +340,31 @@ export const events = [
   },
   {
     host: "Kultur Vallentuna",
+    title: "Kulturlunch: Jag har ett abnormt konstbegär",
+    date: "2026-10-14",
+    addedDate: "2026-10-12",
+    when: "Ons 14 okt · 12–13",
+    time: "12:00 – 13:00",
+    cat: "KULTUR",
+    note: "Teatermonolog med Peter Perski som Isaac Grünewald — Kulturrummet, Vallentuna Kulturhus. Biljett med lunchwrap och dryck 130 kr, utan mat 100 kr.",
+    img: "/assets/evenemang/kulturlunch-konstbegar/cover.webp",
+    source:
+      "https://www.vallentuna.se/uppleva-och-gora/evenemang-och-motesplatser/evenemang/evenemang/2026-09-22-kulturlunch-jag-har-ett-abnormt-konstbegar",
+  },
+  {
+    host: "Kultur Vallentuna",
+    title: "Föreställning: Under ytan",
+    date: "2026-10-16",
+    addedDate: "2026-10-12",
+    when: "Fre 16 okt · 19–21",
+    time: "19:00 – 21:00",
+    cat: "KULTUR",
+    note: "Svart humor och smärtsamma sanningar med Lars Bethke och Dag Andersson — Kulturrummet, Vallentuna Kulturhus. Biljetter från 150 kr via Nortic.",
+    img: "/assets/evenemang/under-ytan/cover.webp",
+    source: "https://www.nortic.se/ticket/show/356901",
+  },
+  {
+    host: "Kultur Vallentuna",
     title: "barnKUL: Musikmums",
     date: "2026-10-17",
     addedDate: "2026-10-12",
@@ -407,6 +432,19 @@ export const events = [
     note: "Föreläsningar, samtal och reflektioner om livets ups and downs — gemenskap, igenkänning och skratt. Anmälan senast 5 oktober.",
     img: "/assets/evenemang/inspirationsdag-angarns-bio/cover.webp",
     source: "https://baramanvill.se/vara_nyfiken_angarn/",
+  },
+  {
+    host: "Åbybergskyrkan / Kultur Vallentuna",
+    title: "Samtal i samtiden: Hopp!",
+    date: "2026-11-10",
+    addedDate: "2026-10-12",
+    when: "Tis 10 nov · 19–20",
+    time: "19:00 – 20:00",
+    cat: "KULTUR",
+    note: "Per Wirtén samtalar utifrån boken Hopp – Mot frihetens fiender. Kulturrummet, Vallentuna Kulturhus. Arrangörer: Åbybergskyrkan, Kultur Vallentuna, Bilda och Bibliotek Vallentuna.",
+    img: "/assets/evenemang/samtal-i-samtiden-hopp/cover.webp",
+    source:
+      "https://www.vallentuna.se/evenemang-och-upplevelser/evenemangskalender/2026/11/samtal-i-samtiden-hopp/",
   },
   {
     host: "Jano / Vallentuna Teater",
@@ -661,6 +699,19 @@ export const EVENT_CONTENT = {
     body: `<p>Lördag 17 oktober kl. 11–12 i <strong>Kulturrummet</strong>, Vallentuna Kulturhus (Allévägen 1) — <em>barnKUL: Musikmums</em> med tema höst.</p>
       <p>Med ramsor, sång och rörelse leker vi musik under ledning av musikpedagog Paula Ekström. För barn 3–5 år och medföljande vuxen. <strong>Gratis</strong>, ingen föranmälan.</p>
       <p>Källa: <a href="https://www.vallentuna.se/uppleva-och-gora/evenemang-och-motesplatser/evenemang/evenemang/2026-10-08-barnkul-musikmums" target="_blank" rel="noopener">vallentuna.se / barnKUL: Musikmums</a>.</p>`,
+  },
+  "Kulturlunch: Jag har ett abnormt konstbegär": {
+    body: `<p>Onsdag 14 oktober kl. 12–13 i <strong>Kulturrummet</strong>, Vallentuna Kulturhus — teatermonolog där Peter Perski gestaltar Isaac Grünewald under en månad på Långholmen 1926. Av Klaus Fischer.</p>
+      <p>Biljett med lunchwrap och dryck 130 kr, utan mat 100 kr. Boka via kommunens evenemangssida / Nortic.</p>
+      <p>Källa: <a href="https://www.vallentuna.se/uppleva-och-gora/evenemang-och-motesplatser/evenemang/evenemang/2026-09-22-kulturlunch-jag-har-ett-abnormt-konstbegar" target="_blank" rel="noopener">vallentuna.se</a>.</p>`,
+  },
+  "Föreställning: Under ytan": {
+    body: `<p>Fredag 16 oktober kl. 19–21 i <strong>Kulturrummet</strong>, Vallentuna Kulturhus — <em>Under ytan</em> med Lars Bethke och Dag Andersson. Svart humor och smärtsamma sanningar om anpassning i en omskakad värld.</p>
+      <p>Biljetter från 150 kr: <a href="https://www.nortic.se/ticket/show/356901" target="_blank" rel="noopener">Nortic</a>.</p>`,
+  },
+  "Samtal i samtiden: Hopp!": {
+    body: `<p>Tisdag 10 november kl. 19–20 i <strong>Kulturrummet</strong>, Vallentuna Kulturhus — Per Wirtén samtalar utifrån boken <em>Hopp – Mot frihetens fiender</em>.</p>
+      <p>Arrangörer: Åbybergskyrkans församling, Kultur Vallentuna, Studieförbundet Bilda och Bibliotek Vallentuna. Källa: <a href="https://www.vallentuna.se/evenemang-och-upplevelser/evenemangskalender/2026/11/samtal-i-samtiden-hopp/" target="_blank" rel="noopener">vallentuna.se</a>.</p>`,
   },
   "Linedance — Kickoff & gratis prova på": {
     body: `<p>Söndag 23 augusti i <strong>Rosendalsskolan Södras matsal</strong>, Teknikvägen 25 i Vallentuna — gratis kickoff inför höstens linedance-terminer med <a href="https://baramanvill.se/" target="_blank" rel="noopener">Bara man Vill</a>.</p>
