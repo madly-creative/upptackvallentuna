@@ -205,8 +205,11 @@
   .home-event-slide{
     position:absolute;inset:0;opacity:0;pointer-events:none;
     transition:opacity 1s ease;cursor:pointer;
+    /* Own backdrop root so the frosted card cannot sample a sibling slide. */
+    isolation:isolate;
   }
   .home-event-slide.on{opacity:1;pointer-events:auto;z-index:1}
+  .home-event-slide:not(.on) .home-event-card{visibility:hidden}
   .home-event-bleed-bg{
     position:absolute;inset:0;z-index:0;
     background-size:cover;background-position:center 30%;
