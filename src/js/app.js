@@ -1746,6 +1746,10 @@ import {
   function eventUsesNativeFit(e){
     return e && e.imgFit==="native";
   }
+  function nativeCoverHTML(src){
+    const safe=String(src||"").replace(/"/g,"&quot;");
+    return `<span class="native-blur" style="background-image:url('${safe}')" aria-hidden="true"></span><img class="native-fit" alt="" src="${safe}">`;
+  }
   function fitNativeImages(root){
     const scope=root&&root.querySelectorAll?root:document;
     scope.querySelectorAll("img.native-fit").forEach((img)=>{
@@ -1754,8 +1758,6 @@ import {
         const dpr=window.devicePixelRatio||1;
         img.style.width=(img.naturalWidth/dpr)+"px";
         img.style.height="auto";
-        img.style.maxWidth="100%";
-        img.style.maxHeight="100%";
       };
       if(img.complete&&img.naturalWidth) apply();
       else img.addEventListener("load", apply, {once:true});
@@ -1771,7 +1773,7 @@ import {
     const native=eventUsesNativeFit(e);
     const alt=e.title.replace(/"/g,"&quot;");
     const thumb=native
-      ? `<div class="thumb is-native" role="img" aria-label="${alt}"><img class="native-fit" alt="" src="${e.img}"></div>`
+      ? `<div class="thumb is-native" role="img" aria-label="${alt}">${nativeCoverHTML(e.img)}</div>`
       : `<div class="thumb" style="background-image:url('${e.img}')" role="img" aria-label="${alt}"></div>`;
     return `<article class="ev" role="button" tabindex="0" onclick="openEvent('${keyAttr}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openEvent('${keyAttr}')}">
       <div class="media">
@@ -1803,15 +1805,11 @@ import {
     const rich=EVENT_CONTENT[e.title];
     const hostPlace=resolveHostPlace(e.host);
     if(hero){
-      hero.querySelectorAll("img.native-fit").forEach((node)=>node.remove());
+      hero.querySelectorAll("img.native-fit, .native-blur").forEach((node)=>node.remove());
       if(eventUsesNativeFit(e)){
         hero.style.backgroundImage="none";
         hero.classList.add("is-native");
-        const img=document.createElement("img");
-        img.className="native-fit";
-        img.alt="";
-        img.src=e.img;
-        hero.appendChild(img);
+        hero.insertAdjacentHTML("afterbegin", nativeCoverHTML(e.img));
         fitNativeImages(hero);
       }else{
         hero.classList.remove("is-native");
@@ -2025,7 +2023,7 @@ import {
       : (e.when||e.date);
     const native=eventUsesNativeFit(e);
     const im=native
-      ? `<div class="im is-native" role="img" aria-hidden="true"><img class="native-fit" alt="" src="${e.img}"></div>`
+      ? `<div class="im is-native" role="img" aria-hidden="true">${nativeCoverHTML(e.img)}</div>`
       : `<div class="im" style="background-image:url('${e.img}')" role="img" aria-hidden="true"></div>`;
     return `<article class="ev-feature" onclick="openEvent('${key}')" role="button" tabindex="0"
       onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openEvent('${key}')}">
@@ -2340,12 +2338,15 @@ import {
     const key=eventKeyAttr(e);
     const {eyebrow, whenLine}=homeEventWhenBits(e);
     const native=eventUsesNativeFit(e);
+    const safeImg=String(e.img||"").replace(/"/g,"&quot;");
     const bleed=native
-      ? `<div class="home-event-bleed-bg is-native" aria-hidden="true"><img class="native-fit" alt="" src="${e.img}"></div>`
-      : `<div class="home-event-bleed-bg" style="background-image:url('${e.img}')" aria-hidden="true"></div>`;
+      ? `<div class="home-event-bleed-bg is-native" aria-hidden="true"><span class="native-blur" style="background-image:url('${safeImg}')"></span></div>`
+      : `<div class="home-event-bleed-bg" style="background-image:url('${safeImg}')" aria-hidden="true"></div>`;
+    const poster=native?`<img class="native-fit" alt="" src="${safeImg}">`:"";
     return `<div class="home-event-slide${i===0?" on":""}" data-hero-slide="${i}" data-event-key="${key}">
       ${bleed}
       <div class="home-event-bleed-shade" aria-hidden="true"></div>
+      ${poster}
       <div class="home-event-bleed-inner">
         <div class="home-event-card">
           <p class="home-event-eyebrow">${eyebrow} · ${eventCatLabel(e.cat)}${total>1?` · ${i+1}/${total}`:""}</p>
