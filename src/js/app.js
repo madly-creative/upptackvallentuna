@@ -2346,8 +2346,8 @@ import {
     return `<div class="home-event-slide${i===0?" on":""}" data-hero-slide="${i}" data-event-key="${key}">
       ${bleed}
       <div class="home-event-bleed-shade" aria-hidden="true"></div>
-      ${poster}
-      <div class="home-event-bleed-inner">
+      <div class="home-event-bleed-inner${native?" is-pair":""}">
+        ${poster}
         <div class="home-event-card">
           <p class="home-event-eyebrow">${eyebrow} · ${eventCatLabel(e.cat)}${total>1?` · ${i+1}/${total}`:""}</p>
           <h1>${escHtml(e.title)}</h1>
