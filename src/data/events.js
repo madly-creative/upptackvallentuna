@@ -411,6 +411,32 @@ export const events = [
     source: "https://nortic.se/ticket/show/353483",
   },
   {
+    host: "Tuna Bio / Kultur Vallentuna",
+    title: "Lovbio: Nelly Rapp – Porten till underjorden",
+    date: "2026-10-29",
+    addedDate: "2026-10-28",
+    when: "Tor 29 okt · 14:00",
+    time: "14:00 – 15:30",
+    cat: "KULTUR",
+    note: "Lovbio på Vallentuna Teater — äventyrsfilm efter Martin Widmarks böcker om Nelly Rapp.",
+    img: "/assets/evenemang/lovbio-nelly-rapp/cover.webp",
+    source:
+      "https://www.vallentuna.se/uppleva-och-gora/evenemang-och-motesplatser/evenemang/evenemang/2026-09-22-lovbio-nelly-rapp---porten-till-underjorden",
+  },
+  {
+    host: "Tuna Bio / Kultur Vallentuna",
+    title: "Bio Halvåtta: Arkipelag",
+    date: "2026-10-29",
+    addedDate: "2026-10-28",
+    when: "Tor 29 okt · 19:30",
+    time: "19:30 – 21:30",
+    cat: "KULTUR",
+    note: "Alex Schulmans regidebut på Vallentuna Teater. Tre pappor följer med på en skolresa som spårar ur. Biljetter via Nortic.",
+    img: "/assets/evenemang/bio-halvatta-arkipelag/cover.webp",
+    source:
+      "https://www.vallentuna.se/uppleva-och-gora/evenemang-och-motesplatser/evenemang/evenemang/2026-09-22-bio-halvatta-arkipelag",
+  },
+  {
     host: "Jano / Vallentuna Teater",
     title: "Jano — Johan Stengård Big Band",
     date: "2026-11-01",
@@ -420,6 +446,30 @@ export const events = [
     note: "Johan Stengård Big Band på Vallentuna Teater — Jano-konsert. Café från 17:30. Biljetter via Nortic eller biblioteket.",
     img: "/assets/evenemang/jano-johan-stengard/cover.webp",
     source: "https://www.nortic.se/ticket/show/344862",
+  },
+  {
+    host: "Kultur Vallentuna",
+    title: "Kulturlunch: Washoku med Yukiko Duke",
+    date: "2026-11-04",
+    addedDate: "2026-10-28",
+    when: "Ons 4 nov · 12–13",
+    time: "12:00 – 13:00",
+    cat: "KULTUR",
+    note: "Yukiko Duke berättar om washoku, den traditionella japanska maten, och hur den speglar Japans historia. Kulturrummet, Vallentuna Kulturhus.",
+    img: "/assets/evenemang/kulturlunch-washoku/cover.webp",
+    source: "https://www.vallentuna.info/event/kulturlunch-washoku-den-traditionella-japanska-mat-20261104",
+  },
+  {
+    host: "Vallentuna Hembygdsförening / Kultur Vallentuna",
+    title: "Hembygdstorsdag — Flygande tunnan",
+    date: "2026-11-05",
+    addedDate: "2026-10-28",
+    when: "Tor 5 nov · 19–20",
+    time: "19:00 – 20:00",
+    cat: "KULTUR",
+    note: "Lennart Berns berättar om SAAB:s flygplan 29, Flygande tunnan. Kulturrummet, Vallentuna Kulturhus. Fri entré, ingen anmälan.",
+    img: "/assets/evenemang/hembygdstorsdag-flygande-tunnan/cover.webp",
+    source: "https://www.hembygd.se/vallentuna/activities/57330",
   },
   {
     host: "Bara man Vill / Angarns Bio",
@@ -458,6 +508,78 @@ export const events = [
     source: "https://www.nortic.se/ticket/show/344915",
   },
   {
+    host: "Orkesta Bygdegård Lindholmen",
+    title: "Filmvisning: Shrek",
+    date: "2026-11-19",
+    addedDate: "2026-10-28",
+    when: "Tor 19 nov · 17–19",
+    time: "17:00 – 19:00",
+    cat: "KULTUR",
+    note: "Orkesta hembygdsförening visar den animerade filmen från 2001. Biljett 50 kr. Kiosk med korv, popcorn och dryck. Lindholmsvägen 245.",
+    img: "/assets/evenemang/filmvisning-shrek/cover.webp",
+    source: "https://www.orkestahembygd.se/event/filmvisning",
+  },
+  {
+    host: "Tuna Bio / Kultur Vallentuna",
+    title: "Bio Halvåtta: Jävla karlar",
+    date: "2026-11-19",
+    addedDate: "2026-10-28",
+    when: "Tor 19 nov · 19:30",
+    time: "19:30",
+    cat: "KULTUR",
+    note: "Uppväxtfilm på Vallentuna Teater, regi Jens Sjögren efter Andrev Waldens roman. Biljetter från 120 kr via Nortic.",
+    img: "/assets/evenemang/bio-halvatta-javla-karlar/cover.webp",
+    source: "https://nortic.se/ticket/event/85724",
+  },
+  {
+    host: "Kultur Vallentuna",
+    title: "barnKUL: Hoppsan! med Teater Pero",
+    date: "2026-11-21",
+    addedDate: "2026-10-28",
+    when: "Lör 21 nov · 11:00",
+    time: "11:00 – 11:40",
+    cat: "KULTUR",
+    note: "Familjeföreställning från 4 år med komik och musik, Teater Pero. Kulturrummet, Vallentuna Kulturhus.",
+    img: "/assets/evenemang/barnkul-hoppsan/cover.webp",
+    source: "https://www.vallentuna.info/event/barnkul-hoppsan-med-teater-pero-20261121",
+  },
+  {
+    host: "The Family Jukebox / Vallentuna Teater",
+    title: "The Family Jukebox – Varieté",
+    date: "2026-11-21",
+    addedDate: "2026-10-28",
+    when: "Lör 21 nov · 19–21:30",
+    time: "19:00 – 21:30",
+    cat: "KULTUR",
+    note: "Varieté som börjar i 1900-talets Oslo och landar i Telemark och på en kyrkogård i Vallentuna socken. Biljetter från 220 kr.",
+    img: "/assets/evenemang/family-jukebox-variete/cover.webp",
+    source: "https://nortic.se/ticket/event/85768",
+  },
+  {
+    host: "Orkesta Bygdegård Lindholmen",
+    title: "Barnteater: Den fula ankungen",
+    date: "2026-11-22",
+    addedDate: "2026-10-28",
+    when: "Sön 22 nov · 14:00",
+    time: "14:00 – 14:30",
+    cat: "KULTUR",
+    note: "Dramalek och dockteater för barn 3–6 år i vuxet sällskap. Entré 50 kr. Orkesta hembygdsförening, Lindholmsvägen 245.",
+    img: "/assets/evenemang/barnteater-den-fula-ankungen/cover.webp",
+    source: "https://www.orkestahembygd.se/event/barnteater-bockarna-bruse-pagta",
+  },
+  {
+    host: "Vallentuna Bluesförening / Kultur Vallentuna",
+    title: "Scenfredag – Lowdown Saints",
+    date: "2026-11-27",
+    addedDate: "2026-10-28",
+    when: "Fre 27 nov · 19–21",
+    time: "19:00 – 21:00",
+    cat: "KULTUR",
+    note: "Scenfredag med Lowdown Saints på Caféscenen i Vallentuna Kulturhus. Ordinarie biljett 200 kr, medlem 150 kr.",
+    img: "/assets/evenemang/scenfredag-lowdown-saints/cover.webp",
+    source: "https://nortic.se/ticket/show/353484",
+  },
+  {
     host: "Jano / Vallentuna Teater",
     title: "Jano — Vivian Buczek",
     date: "2026-11-29",
@@ -467,6 +589,18 @@ export const events = [
     note: "Vivian Buczek — Le Grand Michel — hos Jano på Vallentuna Teater. Café från 17:30. Biljetter via Nortic eller biblioteket.",
     img: "/assets/evenemang/jano-vivian-buczek/cover.webp",
     source: "https://www.nortic.se/ticket/show/344918",
+  },
+  {
+    host: "Teater Bristol",
+    title: "Saffransmysteriet",
+    date: "2026-11-29",
+    addedDate: "2026-10-28",
+    when: "Sön 29 nov · 13:00",
+    time: "13:00 – 13:45",
+    cat: "KULTUR",
+    note: "Familjeföreställning med LasseMajas detektivbyrå i Vallentuna Kulturhus, från 4 år. Saffranet är stulet inför jul. Arrangör Teater Bristol. Biljett 195 kr.",
+    img: "/assets/evenemang/saffransmysteriet/cover.webp",
+    source: "https://www.mynewsdesk.com/se/teater-bristol/events/saffransmysteriet-vallentuna-111121",
   },
   {
     host: "Hemmaplan Media / Vallentuna Centrum",
@@ -561,6 +695,18 @@ export const events = [
     source: "https://www.vallentuna.se/evenemang-och-upplevelser/beredskapsveckan/",
   },
   {
+    host: "Vallentuna Hembygdsförening / Kultur Vallentuna",
+    title: "Hembygdstorsdag — Vallentuna på 60-talet",
+    date: "2026-12-03",
+    addedDate: "2026-10-28",
+    when: "Tor 3 dec · 18:30",
+    time: "18:30 – 20:00",
+    cat: "KULTUR",
+    note: "Bengt Rundqvist presenterar sin bok om Vallentuna på 60-talet. Eight Balls of Fire spelar från 18:30, föredraget börjar 19:00. Kulturrummet. Fri entré.",
+    img: "/assets/evenemang/hembygdstorsdag-60-talet/cover.webp",
+    source: "https://www.hembygd.se/vallentuna/activities/57331",
+  },
+  {
     host: "Orkesta Bygdegård Lindholmen",
     title: "Julmarknad i Lindholmen",
     date: "2026-12-06",
@@ -570,6 +716,18 @@ export const events = [
     note: "Julmarknad i bygdegården med hantverk, lokala smaker, fika och (enligt arrangören) ponnyridning. Utställare bokar bord via julmarknad@orkestahembygd.se.",
     img: "/assets/evenemang/julmarknad-lindholmen/cover.webp",
     source: "https://www.orkestahembygd.se/event",
+  },
+  {
+    host: "Tuna Bio / Kultur Vallentuna",
+    title: "Bio Halvåtta: Wild Horse Nine",
+    date: "2026-12-10",
+    addedDate: "2026-10-28",
+    when: "Tor 10 dec · 19:30",
+    time: "19:30",
+    cat: "KULTUR",
+    note: "Dramakomedi av Martin McDonagh på Vallentuna Teater, under militärkuppen i Chile 1973. Biljetter från 120 kr via Nortic.",
+    img: "/assets/evenemang/bio-halvatta-wild-horse-nine/cover.webp",
+    source: "https://nortic.se/ticket/event/85726",
   },
   {
     host: "Hemmaplan Media / Vallentuna Centrum",
@@ -582,6 +740,30 @@ export const events = [
     note: "Julstämning på Tuna Torg & Torgpassagen — glögg, hantverk och lokala delikatesser. Arrangeras av Hemmaplan Media i samarbete med Vallentuna Centrum och Fastpartner.",
     img: "/assets/evenemang/julmarknad-centrum/cover.webp",
     source: "https://hemmaplanmedia.se/event",
+  },
+  {
+    host: "Össeby församling",
+    title: "Julkonsert med Össeby kyrkokör",
+    date: "2026-12-19",
+    addedDate: "2026-10-28",
+    when: "Lör 19 dec · 18–19",
+    time: "18:00 – 19:00",
+    cat: "KULTUR",
+    note: "Össeby kyrkokörs årliga julkonsert i Kårsta kyrka. Fri entré.",
+    img: "/assets/evenemang/julkonsert-osseby/cover.webp",
+    source: "https://www.vallentuna.info/event/julkonsert-med-osseby-kyrkokor-20261219",
+  },
+  {
+    host: "Vallentuna Bluesförening",
+    title: "Mellandagsblues 2026",
+    date: "2026-12-27",
+    addedDate: "2026-10-28",
+    when: "Sön 27 dec · 19–23",
+    time: "19:00 – 23:00",
+    cat: "KULTUR",
+    note: "Bluesfest på Vallentuna Teater med Bluetonics, BB King Tribute, Bill Öhrström, Kenny Håkansson och Mikael Rickfors. Biljetter från 350 kr.",
+    img: "/assets/evenemang/mellandagsblues/cover.webp",
+    source: "https://nortic.se/ticket/event/86685",
   },
 ].map((e) => ({
   img: FALLBACK_IMG,
@@ -794,6 +976,66 @@ export const EVENT_CONTENT = {
   },
   "Pub & musikquiz": {
     body: `<p>Lördag 17 oktober kl. 19–22 i Orkesta Bygdegård. Pub- och musikquiz — se <a href="https://www.orkestahembygd.se/event" target="_blank" rel="noopener">orkestahembygd.se/event</a>.</p>`,
+  },
+  "Lovbio: Nelly Rapp – Porten till underjorden": {
+    body: `<p>Torsdag 29 oktober kl. 14:00–15:30 på <strong>Vallentuna Teater</strong> — lovbio med <em>Nelly Rapp – Porten till underjorden</em>, efter Martin Widmarks böcker.</p>
+      <p>Arrangör: Tuna Bio / Kultur Vallentuna. Info: <a href="https://www.vallentuna.se/uppleva-och-gora/evenemang-och-motesplatser/evenemang/evenemang/2026-09-22-lovbio-nelly-rapp---porten-till-underjorden" target="_blank" rel="noopener">vallentuna.se</a>.</p>`,
+  },
+  "Bio Halvåtta: Arkipelag": {
+    body: `<p>Torsdag 29 oktober kl. 19:30–21:30 på <strong>Vallentuna Teater</strong> — <em>Arkipelag</em>, Alex Schulmans regidebut. Tre pappor följer med sina döttrar på en skolresa som spårar ur.</p>
+      <p>Info: <a href="https://www.vallentuna.se/uppleva-och-gora/evenemang-och-motesplatser/evenemang/evenemang/2026-09-22-bio-halvatta-arkipelag" target="_blank" rel="noopener">vallentuna.se</a>.</p>`,
+  },
+  "Kulturlunch: Washoku med Yukiko Duke": {
+    body: `<p>Onsdag 4 november kl. 12–13 i <strong>Kulturrummet</strong>, Vallentuna Kulturhus — Yukiko Duke om washoku, den traditionella japanska maten, och hur den speglar Japans historia.</p>
+      <p>Källa: <a href="https://www.vallentuna.info/event/kulturlunch-washoku-den-traditionella-japanska-mat-20261104" target="_blank" rel="noopener">vallentuna.info</a>.</p>`,
+  },
+  "Hembygdstorsdag — Flygande tunnan": {
+    body: `<p>Torsdag 5 november kl. 19–20 i <strong>Kulturrummet</strong>, Vallentuna Kulturhus. Lennart Berns berättar om SAAB:s flygplan 29, Flygande tunnan. Fri entré, ingen anmälan.</p>
+      <p>Arrangör: Vallentuna Hembygdsförening och Kultur Vallentuna. <a href="https://www.hembygd.se/vallentuna/activities/57330" target="_blank" rel="noopener">hembygd.se</a>.</p>`,
+  },
+  "Filmvisning: Shrek": {
+    body: `<p>Torsdag 19 november kl. 17–19 hos <strong>Orkesta hembygdsförening</strong>, Lindholmsvägen 245. Visning av den animerade filmen från 2001. Biljett 50 kr. Kiosk med korv, popcorn och dryck.</p>
+      <p><a href="https://www.orkestahembygd.se/event/filmvisning" target="_blank" rel="noopener">orkestahembygd.se</a>.</p>`,
+  },
+  "Bio Halvåtta: Jävla karlar": {
+    body: `<p>Torsdag 19 november kl. 19:30 på <strong>Vallentuna Teater</strong> — uppväxtfilm i regi av Jens Sjögren, efter Andrev Waldens roman. Biljetter från 120 kr.</p>
+      <p><a href="https://nortic.se/ticket/event/85724" target="_blank" rel="noopener">Nortic</a>.</p>`,
+  },
+  "barnKUL: Hoppsan! med Teater Pero": {
+    body: `<p>Lördag 21 november kl. 11:00–11:40 i <strong>Kulturrummet</strong>, Vallentuna Kulturhus. Familjeföreställning från 4 år med Teater Pero: komiska situationer och musik.</p>
+      <p>Källa: <a href="https://www.vallentuna.info/event/barnkul-hoppsan-med-teater-pero-20261121" target="_blank" rel="noopener">vallentuna.info</a>.</p>`,
+  },
+  "The Family Jukebox – Varieté": {
+    body: `<p>Lördag 21 november kl. 19:00–21:30 på <strong>Vallentuna Teater</strong>. Varieté som börjar i 1900-talets Oslo och landar i Telemark och på en kyrkogård i Vallentuna socken. Biljetter från 220 kr.</p>
+      <p><a href="https://nortic.se/ticket/event/85768" target="_blank" rel="noopener">Nortic</a>.</p>`,
+  },
+  "Barnteater: Den fula ankungen": {
+    body: `<p>Söndag 22 november kl. 14:00–14:30 hos <strong>Orkesta hembygdsförening</strong>, Lindholmsvägen 245. Dramalek och dockteater för barn 3–6 år i vuxet sällskap. Entré 50 kr.</p>
+      <p><a href="https://www.orkestahembygd.se/event/barnteater-bockarna-bruse-pagta" target="_blank" rel="noopener">orkestahembygd.se</a>.</p>`,
+  },
+  "Scenfredag – Lowdown Saints": {
+    body: `<p>Fredag 27 november kl. 19–21 på <strong>Caféscenen</strong> i Vallentuna Kulturhus — Scenfredag med Lowdown Saints. Ordinarie biljett 200 kr, medlem 150 kr.</p>
+      <p>Arrangör: Vallentuna Bluesförening / Kultur Vallentuna. <a href="https://nortic.se/ticket/show/353484" target="_blank" rel="noopener">Nortic</a>.</p>`,
+  },
+  "Saffransmysteriet": {
+    body: `<p>Söndag 29 november kl. 13:00–13:45 i <strong>Vallentuna Kulturhus</strong>. Familjeföreställning från 4 år med LasseMajas detektivbyrå: saffranet till julen är stulet. Speltid cirka 45 minuter. Biljett 195 kr enligt arrangören.</p>
+      <p>Arrangör: Teater Bristol. <a href="https://www.mynewsdesk.com/se/teater-bristol/events/saffransmysteriet-vallentuna-111121" target="_blank" rel="noopener">Teater Bristol</a>.</p>`,
+  },
+  "Hembygdstorsdag — Vallentuna på 60-talet": {
+    body: `<p>Torsdag 3 december i <strong>Kulturrummet</strong>, Vallentuna Kulturhus. Eight Balls of Fire spelar 60-talslåtar från 18:30. Kl. 19 berättar Bengt Rundqvist om Vallentuna på 60-talet, utifrån sin nya bok. Fri entré.</p>
+      <p><a href="https://www.hembygd.se/vallentuna/activities/57331" target="_blank" rel="noopener">hembygd.se</a>.</p>`,
+  },
+  "Bio Halvåtta: Wild Horse Nine": {
+    body: `<p>Torsdag 10 december kl. 19:30 på <strong>Vallentuna Teater</strong> — dramakomedi av Martin McDonagh som utspelar sig under militärkuppen i Chile 1973. Biljetter från 120 kr.</p>
+      <p><a href="https://nortic.se/ticket/event/85726" target="_blank" rel="noopener">Nortic</a>.</p>`,
+  },
+  "Julkonsert med Össeby kyrkokör": {
+    body: `<p>Lördag 19 december kl. 18–19 i <strong>Kårsta kyrka</strong>. Össeby kyrkokörs årliga julkonsert. Fri entré.</p>
+      <p>Arrangör: Össeby församling. <a href="https://www.vallentuna.info/event/julkonsert-med-osseby-kyrkokor-20261219" target="_blank" rel="noopener">vallentuna.info</a>.</p>`,
+  },
+  "Mellandagsblues 2026": {
+    body: `<p>Söndag 27 december kl. 19–23 på <strong>Vallentuna Teater</strong>. Vallentuna bluesförening med Bluetonics, BB King Tribute, Bill Öhrström, Kenny Håkansson och Mikael Rickfors. Biljetter från 350 kr.</p>
+      <p><a href="https://nortic.se/ticket/event/86685" target="_blank" rel="noopener">Nortic</a>.</p>`,
   },
 };
 
