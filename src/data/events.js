@@ -420,6 +420,7 @@ export const events = [
     cat: "KULTUR",
     note: "Lovbio på Vallentuna Teater — äventyrsfilm efter Martin Widmarks böcker om Nelly Rapp.",
     img: "/assets/evenemang/lovbio-nelly-rapp/cover.webp",
+    imgFit: "native",
     source:
       "https://www.vallentuna.se/uppleva-och-gora/evenemang-och-motesplatser/evenemang/evenemang/2026-09-22-lovbio-nelly-rapp---porten-till-underjorden",
   },
@@ -433,6 +434,7 @@ export const events = [
     cat: "KULTUR",
     note: "Alex Schulmans regidebut på Vallentuna Teater. Tre pappor följer med på en skolresa som spårar ur. Biljetter via Nortic.",
     img: "/assets/evenemang/bio-halvatta-arkipelag/cover.webp",
+    imgFit: "native",
     source:
       "https://www.vallentuna.se/uppleva-och-gora/evenemang-och-motesplatser/evenemang/evenemang/2026-09-22-bio-halvatta-arkipelag",
   },
@@ -457,6 +459,7 @@ export const events = [
     cat: "KULTUR",
     note: "Yukiko Duke berättar om washoku, den traditionella japanska maten, och hur den speglar Japans historia. Kulturrummet, Vallentuna Kulturhus.",
     img: "/assets/evenemang/kulturlunch-washoku/cover.webp",
+    imgFit: "native",
     source: "https://www.vallentuna.info/event/kulturlunch-washoku-den-traditionella-japanska-mat-20261104",
   },
   {
@@ -541,6 +544,7 @@ export const events = [
     cat: "KULTUR",
     note: "Familjeföreställning från 4 år med komik och musik, Teater Pero. Kulturrummet, Vallentuna Kulturhus.",
     img: "/assets/evenemang/barnkul-hoppsan/cover.webp",
+    imgFit: "native",
     source: "https://www.vallentuna.info/event/barnkul-hoppsan-med-teater-pero-20261121",
   },
   {
@@ -565,6 +569,7 @@ export const events = [
     cat: "KULTUR",
     note: "Dramalek och dockteater för barn 3–6 år i vuxet sällskap. Entré 50 kr. Orkesta hembygdsförening, Lindholmsvägen 245.",
     img: "/assets/evenemang/barnteater-den-fula-ankungen/cover.webp",
+    imgFit: "native",
     source: "https://www.orkestahembygd.se/event/barnteater-bockarna-bruse-pagta",
   },
   {
@@ -704,6 +709,7 @@ export const events = [
     cat: "KULTUR",
     note: "Bengt Rundqvist presenterar sin bok om Vallentuna på 60-talet. Eight Balls of Fire spelar från 18:30, föredraget börjar 19:00. Kulturrummet. Fri entré.",
     img: "/assets/evenemang/hembygdstorsdag-60-talet/cover.webp",
+    imgFit: "native",
     source: "https://www.hembygd.se/vallentuna/activities/57331",
   },
   {
@@ -751,6 +757,7 @@ export const events = [
     cat: "KULTUR",
     note: "Össeby kyrkokörs årliga julkonsert i Kårsta kyrka. Fri entré.",
     img: "/assets/evenemang/julkonsert-osseby/cover.webp",
+    imgFit: "native",
     source: "https://www.vallentuna.info/event/julkonsert-med-osseby-kyrkokor-20261219",
   },
   {

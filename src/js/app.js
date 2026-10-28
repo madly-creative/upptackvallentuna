@@ -1743,6 +1743,26 @@ import {
   function remindBtnHTML(e){
     return `<button type="button" class="remind-btn" data-remind onclick="event.stopPropagation();openRemindChooser(event,'${eventKeyAttr(e)}')">Påminn mig</button>`;
   }
+  function eventUsesNativeFit(e){
+    return e && e.imgFit==="native";
+  }
+  function nativeCoverHTML(src){
+    const safe=String(src||"").replace(/"/g,"&quot;");
+    return `<span class="native-blur" style="background-image:url('${safe}')" aria-hidden="true"></span><img class="native-fit" alt="" src="${safe}">`;
+  }
+  function fitNativeImages(root){
+    const scope=root&&root.querySelectorAll?root:document;
+    scope.querySelectorAll("img.native-fit").forEach((img)=>{
+      const apply=()=>{
+        if(!img.naturalWidth) return;
+        const dpr=window.devicePixelRatio||1;
+        img.style.width=(img.naturalWidth/dpr)+"px";
+        img.style.height="auto";
+      };
+      if(img.complete&&img.naturalWidth) apply();
+      else img.addEventListener("load", apply, {once:true});
+    });
+  }
   function eventCard(e,withFav){
     const d=new Date(e.date+"T12:00:00");
     const favKey=favoriteKeyFromHost(e.host);
@@ -1750,9 +1770,14 @@ import {
     const favKeyEsc=jsEsc(favKey);
     const keyAttr=eventKeyAttr(e);
     const fav=withFav?`<button class="fav ${isFavHost?'on':''}" type="button" aria-label="${isFavHost?"Ta bort favorit":"Spara favorit"}" onclick="event.stopPropagation();const on=toggleFavorite('${favKeyEsc}');this.classList.toggle('on',on);this.setAttribute('aria-label',on?'Ta bort favorit':'Spara favorit')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 20s-7-4.35-7-9.2A3.8 3.8 0 0 1 12 7.1a3.8 3.8 0 0 1 7 3.7C19 15.65 12 20 12 20z" stroke="currentColor" stroke-width="1.7"/></svg></button>`:"";
+    const native=eventUsesNativeFit(e);
+    const alt=e.title.replace(/"/g,"&quot;");
+    const thumb=native
+      ? `<div class="thumb is-native" role="img" aria-label="${alt}">${nativeCoverHTML(e.img)}</div>`
+      : `<div class="thumb" style="background-image:url('${e.img}')" role="img" aria-label="${alt}"></div>`;
     return `<article class="ev" role="button" tabindex="0" onclick="openEvent('${keyAttr}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openEvent('${keyAttr}')}">
       <div class="media">
-        <div class="thumb" style="background-image:url('${e.img}')" role="img" aria-label="${e.title.replace(/"/g,"&quot;")}"></div>
+        ${thumb}
         <div class="date"><span class="dow">${DOW[d.getDay()]}</span><span class="d">${d.getDate()}</span><span class="m">${MON[d.getMonth()]}</span></div>
         ${fav}
       </div>
@@ -1779,7 +1804,18 @@ import {
     const dateEl=document.getElementById('eventModalDate');
     const rich=EVENT_CONTENT[e.title];
     const hostPlace=resolveHostPlace(e.host);
-    if(hero) hero.style.backgroundImage=`url('${e.img}')`;
+    if(hero){
+      hero.querySelectorAll("img.native-fit, .native-blur").forEach((node)=>node.remove());
+      if(eventUsesNativeFit(e)){
+        hero.style.backgroundImage="none";
+        hero.classList.add("is-native");
+        hero.insertAdjacentHTML("afterbegin", nativeCoverHTML(e.img));
+        fitNativeImages(hero);
+      }else{
+        hero.classList.remove("is-native");
+        hero.style.backgroundImage=`url('${e.img}')`;
+      }
+    }
     if(dateEl) dateEl.innerHTML=`<span class="dow">${DOW[d.getDay()]}</span><span class="d">${d.getDate()}</span><span class="m">${MON[d.getMonth()]}</span>`;
     const cat=document.getElementById('eventModalCat');
     if(cat) cat.textContent=(e.date===todayISO?"IDAG · ":"")+eventCatLabel(e.cat);
@@ -1985,9 +2021,13 @@ import {
     const when=e.date===todayISO
       ? (tm ? `Idag kl. ${tm[1]}` : "Idag")
       : (e.when||e.date);
+    const native=eventUsesNativeFit(e);
+    const im=native
+      ? `<div class="im is-native" role="img" aria-hidden="true">${nativeCoverHTML(e.img)}</div>`
+      : `<div class="im" style="background-image:url('${e.img}')" role="img" aria-hidden="true"></div>`;
     return `<article class="ev-feature" onclick="openEvent('${key}')" role="button" tabindex="0"
       onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openEvent('${key}')}">
-      <div class="im" style="background-image:url('${e.img}')" role="img" aria-hidden="true"></div>
+      ${im}
       <div class="shade"></div>
       <div class="bd">
         <div class="when">${when} · ${eventCatLabel(e.cat)}</div>
@@ -2297,10 +2337,17 @@ import {
   function homeHeroSlideHTML(e, i, total){
     const key=eventKeyAttr(e);
     const {eyebrow, whenLine}=homeEventWhenBits(e);
+    const native=eventUsesNativeFit(e);
+    const safeImg=String(e.img||"").replace(/"/g,"&quot;");
+    const bleed=native
+      ? `<div class="home-event-bleed-bg is-native" aria-hidden="true"><span class="native-blur" style="background-image:url('${safeImg}')"></span></div>`
+      : `<div class="home-event-bleed-bg" style="background-image:url('${safeImg}')" aria-hidden="true"></div>`;
+    const poster=native?`<img class="native-fit" alt="" src="${safeImg}">`:"";
     return `<div class="home-event-slide${i===0?" on":""}" data-hero-slide="${i}" data-event-key="${key}">
-      <div class="home-event-bleed-bg" style="background-image:url('${e.img}')" aria-hidden="true"></div>
+      ${bleed}
       <div class="home-event-bleed-shade" aria-hidden="true"></div>
-      <div class="home-event-bleed-inner">
+      <div class="home-event-bleed-inner${native?" is-pair":""}">
+        ${poster}
         <div class="home-event-card">
           <p class="home-event-eyebrow">${eyebrow} · ${eventCatLabel(e.cat)}${total>1?` · ${i+1}/${total}`:""}</p>
           <h1>${escHtml(e.title)}</h1>
@@ -2402,6 +2449,7 @@ import {
     });
     wrap.addEventListener('mouseenter', stopHomeHeroCarousel);
     wrap.addEventListener('mouseleave', startHomeHeroCarousel);
+    fitNativeImages(wrap);
     startHomeHeroCarousel();
   }
 
@@ -2453,12 +2501,14 @@ import {
           featureEl.innerHTML=happenScrollHTML(more,"Fler evenemang");
           featureEl.hidden=false;
           wireHappenScroll(featureEl);
+          fitNativeImages(featureEl);
         } else {
           const [feat, ...rest]=list;
           const more=rest.map(e=>eventCard(e,true)).join("");
           featureEl.innerHTML=eventFeatureHTML(feat)+(more?happenScrollHTML(more,"Fler evenemang"):"");
           featureEl.hidden=false;
           if(more) wireHappenScroll(featureEl);
+          fitNativeImages(featureEl);
         }
       } else if(recurringTodayList.length){
         const more=recurringTodayList.slice(0,2).map(r=>`
@@ -4058,6 +4108,7 @@ import {
         <h2 class="events-month-h" id="ev-month-${escHtml(g.key)}">${escHtml(g.label)}</h2>
         ${eventsListHTML(g.events)}
       </section>`).join("");
+    fitNativeImages(evFull);
   }
   function filterEvents(key){
     activeEventCat=EVENT_FILTERS.some(f=>f.key===key)?key:"alla";
