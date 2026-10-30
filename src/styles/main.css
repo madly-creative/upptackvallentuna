@@ -2705,3 +2705,205 @@
   }
 
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+  /* ---------- Startsida: bredare yta, bilder till kanten, bruten stapel ----------
+     Bara #view-start. Övriga vyer behåller --max.
+     Text i en vidare kolumn. Kartan och det handplockade omslaget går ut i kanten.
+     Sök + smultron, och levererar + veckans fakta, delar rad på bred skärm. */
+  #view-start{
+    --home:min(1720px, calc(100% - 48px));
+    --home-pad:8px;
+  }
+  #view-start .home-event-bleed-inner,
+  #view-start .hero-inner,
+  #view-start .today-brief,
+  #view-start .since-last,
+  #view-start .return-banner,
+  #view-start .smultron-banner,
+  #view-start .sec:not(.guides-sec):not(.picks-sec),
+  #view-start .guides-sec-inner,
+  #view-start .home-discover-shell{
+    max-width:var(--home);
+  }
+  #view-start .today-brief,
+  #view-start .since-last,
+  #view-start .return-banner,
+  #view-start .smultron-banner,
+  #view-start .sec:not(.guides-sec):not(.picks-sec){
+    padding-left:var(--home-pad);
+    padding-right:var(--home-pad);
+  }
+  #view-start .home-discover{
+    padding-left:0;
+    padding-right:0;
+  }
+  #view-start .journey-step .im{height:220px}
+  #view-start .weekly-fact-card{
+    grid-template-columns:minmax(0,1.35fr) minmax(200px,.72fr);
+  }
+  #view-start .weekly-fact-media{min-height:100%}
+  #view-start .weekly-fact-art,
+  #view-start .weekly-fact-ph{min-height:320px;height:100%}
+
+  /* Sök och smultron bredvid varandra — inte två smala band under varandra */
+  #view-start .home-invite{display:block;width:100%}
+  @media (min-width:1100px){
+    #view-start .home-invite:has(.smultron-banner:not([hidden])){
+      display:grid;
+      grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);
+      gap:12px 32px;
+      align-items:center;
+      max-width:min(1760px, calc(100% - 32px));
+      margin:8px auto 4px;
+      padding:28px 16px 8px;
+    }
+    #view-start .home-invite:has(.smultron-banner:not([hidden])) > .home-discover{
+      grid-column:1;
+      grid-row:1;
+      margin:0;
+      padding:4px 0;
+      background:transparent;
+      border-top:none;
+    }
+    #view-start .home-invite:has(.smultron-banner:not([hidden])) .home-discover-shell{
+      max-width:none;
+    }
+    #view-start .home-invite:has(.smultron-banner:not([hidden])) > .return-banner:not([hidden]){
+      grid-column:1 / -1;
+      grid-row:2;
+      max-width:none;
+      margin:0;
+      padding:0;
+    }
+    #view-start .home-invite:has(.smultron-banner:not([hidden])) > .smultron-banner{
+      grid-column:2;
+      grid-row:1;
+      max-width:none;
+      width:auto;
+      margin:0;
+      padding:0;
+    }
+  }
+
+  /* Kartan går ut i kanten. Rubrik och filter stannar i kolumnen. */
+  #view-start .nara-dig{
+    max-width:none;
+    width:100%;
+    margin-top:28px;
+    padding:0;
+  }
+  #view-start .nara-dig-head,
+  #view-start .nara-dig-toolbar{
+    width:var(--home);
+    max-width:100%;
+    margin-left:auto;
+    margin-right:auto;
+    padding-left:var(--home-pad);
+    padding-right:var(--home-pad);
+    box-sizing:border-box;
+  }
+  #view-start .nara-dig-map-wrap{
+    border-radius:0;
+    border-left:none;
+    border-right:none;
+  }
+  #view-start .nara-dig-map{height:min(68vh,640px)}
+  #view-start .nara-dig-panel{
+    left:max(16px, calc((100% - var(--home)) / 2 + 16px));
+  }
+  #view-start .nara-dig-controls{
+    right:max(14px, calc((100% - var(--home)) / 2 + 14px));
+  }
+  #view-start .nara-dig-list{
+    width:var(--home);
+    max-width:calc(100% - 32px);
+    margin:12px auto 0;
+  }
+
+  /* Handplockat: omslagsbilden bryter ut, korten under stannar i kolumnen */
+  #view-start .picks-sec{
+    max-width:none;
+    width:100%;
+    padding-left:0;
+    padding-right:0;
+  }
+  #view-start .picks-sec .sec-head,
+  #view-start .picks-sec .picks-row{
+    width:var(--home);
+    max-width:100%;
+    margin-left:auto;
+    margin-right:auto;
+    padding-left:var(--home-pad);
+    padding-right:var(--home-pad);
+    box-sizing:border-box;
+  }
+  #view-start .pick-feature{
+    border-radius:0;
+    min-height:min(64vh,640px);
+  }
+  #view-start .pick-feature .bd{
+    max-width:520px;
+    min-height:min(64vh,640px);
+    margin-left:max(0px, calc((100% - var(--home)) / 2));
+    padding:clamp(32px,5vw,56px) 28px clamp(32px,5vw,56px) var(--home-pad);
+  }
+  #view-start .pick-feature .pick-status{
+    top:28px;
+    left:calc(max(0px, (100% - var(--home)) / 2) + var(--home-pad));
+  }
+
+  /* Levererar och veckans fakta sida vid sida */
+  #view-start .home-spread{display:block;width:100%}
+  #view-start .home-spread > .levererar-sec{container-type:inline-size;container-name:levererar}
+  @container levererar (max-width:560px){
+    .levererar-latest{grid-template-columns:1fr}
+    .levererar-latest .ll-img{min-height:220px}
+  }
+  @media (min-width:1200px){
+    #view-start .home-spread:has(#levererarSec:not([hidden])){
+      display:grid;
+      grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);
+      gap:8px 28px;
+      align-items:stretch;
+      max-width:min(1760px, calc(100% - 32px));
+      margin:12px auto 8px;
+      padding:20px 16px 8px;
+    }
+    #view-start .home-spread:has(#levererarSec:not([hidden])) > .sec{
+      max-width:none;
+      width:auto;
+      margin:0;
+      padding:8px 0 12px;
+      display:flex;
+      flex-direction:column;
+    }
+    #view-start .home-spread:has(#levererarSec:not([hidden])) .levererar-latest,
+    #view-start .home-spread:has(#levererarSec:not([hidden])) .weekly-fact-card{
+      flex:1;
+    }
+  }
+
+  @media (max-width:1100px){
+    #view-start{
+      --home:100%;
+      --home-pad:16px;
+    }
+  }
+  @media (max-width:720px){
+    #view-start .journey-step .im{height:180px}
+    #view-start .weekly-fact-card{grid-template-columns:1fr}
+    #view-start .weekly-fact-media{
+      border-left:none;
+      border-top:1px solid rgba(247,243,235,.06);
+      order:-1;
+    }
+    #view-start .weekly-fact-art,
+    #view-start .weekly-fact-ph{min-height:200px;max-height:240px;height:220px}
+    #view-start .pick-feature,
+    #view-start .pick-feature .bd{min-height:min(52vh,420px)}
+    #view-start .nara-dig-map{height:52vh;min-height:320px}
+  }
+  @media (max-width:560px){
+    #view-start .nara-dig-panel{left:auto}
+    #view-start .nara-dig-controls{right:14px}
+  }
