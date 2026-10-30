@@ -2706,12 +2706,13 @@
 
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
-  /* ---------- Startsida: bredare yta, bilder till kanten, bruten stapel ----------
+  /* ---------- Startsida: mitt emellan 1180 och kant i kant ----------
      Bara #view-start. Övriga vyer behåller --max.
-     Text i en vidare kolumn. Kartan och det handplockade omslaget går ut i kanten.
-     Sök + smultron, och levererar + veckans fakta, delar rad på bred skärm. */
+     (100% + 1180px) / 2 = 50% + 590px, tak 1450px så stora skärmar inte växer igen.
+     Kartan och omslaget ligger i samma mått, indragna från kanten.
+     Sök + smultron, och levererar + veckans fakta, delar fortfarande rad. */
   #view-start{
-    --home:min(1720px, calc(100% - 48px));
+    --home:min(1450px, calc(50% + 590px));
     --home-pad:8px;
   }
   #view-start .home-event-bleed-inner,
@@ -2753,9 +2754,9 @@
       grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);
       gap:12px 32px;
       align-items:center;
-      max-width:min(1760px, calc(100% - 32px));
+      max-width:var(--home);
       margin:8px auto 4px;
-      padding:28px 16px 8px;
+      padding:28px 0 8px;
     }
     #view-start .home-invite:has(.smultron-banner:not([hidden])) > .home-discover{
       grid-column:1;
@@ -2785,71 +2786,39 @@
     }
   }
 
-  /* Kartan går ut i kanten. Rubrik och filter stannar i kolumnen. */
+  /* Kartan är bredare än den gamla kolumnen, men dras in från kanten. */
   #view-start .nara-dig{
-    max-width:none;
+    max-width:var(--home);
     width:100%;
-    margin-top:28px;
-    padding:0;
+    margin:28px auto 0;
+    padding:0 var(--home-pad);
   }
   #view-start .nara-dig-head,
   #view-start .nara-dig-toolbar{
-    width:var(--home);
-    max-width:100%;
-    margin-left:auto;
-    margin-right:auto;
-    padding-left:var(--home-pad);
-    padding-right:var(--home-pad);
-    box-sizing:border-box;
-  }
-  #view-start .nara-dig-map-wrap{
-    border-radius:0;
-    border-left:none;
-    border-right:none;
-  }
-  #view-start .nara-dig-map{height:min(68vh,640px)}
-  #view-start .nara-dig-panel{
-    left:max(16px, calc((100% - var(--home)) / 2 + 16px));
-  }
-  #view-start .nara-dig-controls{
-    right:max(14px, calc((100% - var(--home)) / 2 + 14px));
-  }
-  #view-start .nara-dig-list{
-    width:var(--home);
-    max-width:calc(100% - 32px);
-    margin:12px auto 0;
-  }
-
-  /* Handplockat: omslagsbilden bryter ut, korten under stannar i kolumnen */
-  #view-start .picks-sec{
-    max-width:none;
     width:100%;
+    max-width:none;
+    margin:0;
     padding-left:0;
     padding-right:0;
   }
-  #view-start .picks-sec .sec-head,
-  #view-start .picks-sec .picks-row{
-    width:var(--home);
-    max-width:100%;
-    margin-left:auto;
-    margin-right:auto;
+  #view-start .nara-dig-map{height:min(62vh,560px)}
+  #view-start .nara-dig-list{
+    width:auto;
+    max-width:none;
+    margin:12px 0 0;
+  }
+
+  /* Omslaget är samma mått som kolumnen — indraget, inte kant i kant. */
+  #view-start .picks-sec{
+    max-width:var(--home);
     padding-left:var(--home-pad);
     padding-right:var(--home-pad);
-    box-sizing:border-box;
   }
   #view-start .pick-feature{
-    border-radius:0;
-    min-height:min(64vh,640px);
+    min-height:min(56vh,520px);
   }
   #view-start .pick-feature .bd{
-    max-width:520px;
-    min-height:min(64vh,640px);
-    margin-left:max(0px, calc((100% - var(--home)) / 2));
-    padding:clamp(32px,5vw,56px) 28px clamp(32px,5vw,56px) var(--home-pad);
-  }
-  #view-start .pick-feature .pick-status{
-    top:28px;
-    left:calc(max(0px, (100% - var(--home)) / 2) + var(--home-pad));
+    min-height:min(56vh,520px);
   }
 
   /* Levererar och veckans fakta sida vid sida */
@@ -2865,9 +2834,9 @@
       grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);
       gap:8px 28px;
       align-items:stretch;
-      max-width:min(1760px, calc(100% - 32px));
+      max-width:var(--home);
       margin:12px auto 8px;
-      padding:20px 16px 8px;
+      padding:20px 0 8px;
     }
     #view-start .home-spread:has(#levererarSec:not([hidden])) > .sec{
       max-width:none;
@@ -2900,7 +2869,7 @@
     #view-start .weekly-fact-art,
     #view-start .weekly-fact-ph{min-height:200px;max-height:240px;height:220px}
     #view-start .pick-feature,
-    #view-start .pick-feature .bd{min-height:min(52vh,420px)}
+    #view-start .pick-feature .bd{min-height:min(48vh,380px)}
     #view-start .nara-dig-map{height:52vh;min-height:320px}
   }
   @media (max-width:560px){
