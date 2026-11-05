@@ -88,16 +88,46 @@ describe("isOpenAt", () => {
     expect(isOpenAt(gravelsta, PLACE_META["Grävelsta Gård"], satSep5)).toBe(true);
   });
 
-  it("Kvarnbadet closes 19:00 Mon–Thu during v.33–35", () => {
+  it("Kvarnbadet is closed; season is June–August", () => {
     const bad = places.find((p) => p.name === "Kvarnbadet");
     const meta = PLACE_META.Kvarnbadet;
-    const monAug10 = new Date(2026, 7, 10, 20, 0); // Mon 20:00 — closed under override
-    expect(monAug10.getDay()).toBe(1);
-    expect(isOpenAt(bad, meta, monAug10)).toBe(false);
-    expect(daySlot(bad, meta, 1, monAug10).c).toBe(19);
-    // Before override window: Mon 3 Aug 20:00 still open until 21
-    const monAug3 = new Date(2026, 7, 3, 20, 0);
-    expect(isOpenAt(bad, meta, monAug3)).toBe(true);
-    expect(daySlot(bad, meta, 1, monAug3).c).toBe(21);
+    expect(meta.hours.every((slot) => slot == null)).toBe(true);
+    expect(meta.seasonNote).toMatch(/juni–augusti/);
+    const thuNov5 = new Date(2026, 10, 5, 12, 0);
+    expect(thuNov5.getDay()).toBe(4);
+    expect(isOpenAt(bad, meta, thuNov5)).toBe(false);
+    expect(daySlot(bad, meta, 4, thuNov5)).toBe(null);
+  });
+
+  it("Gästis, Kristorante, Jano, Hökeriet and Roslagsloppis match November 2026 hours", () => {
+    const gastis = places.find((p) => p.name === "Gästis Kök & Bar");
+    const kristo = places.find((p) => p.name === "Kristorante");
+    const jano = places.find((p) => p.name === "Jano");
+    const hok = places.find((p) => p.name === "Hökeriet");
+    const loppis = places.find((p) => p.name === "Roslagsloppis");
+    const thuNov5 = new Date(2026, 10, 5, 12, 0);
+    const friLate = new Date(2026, 10, 7, 2, 0); // Saturday 02:00, still Friday's 10–03
+    const monLunch = new Date(2026, 10, 2, 13, 0);
+    const monAfter = new Date(2026, 10, 2, 15, 0);
+    const sunNov8 = new Date(2026, 10, 8, 12, 0);
+    const satNov7 = new Date(2026, 10, 7, 13, 0);
+
+    expect(isOpenAt(gastis, PLACE_META["Gästis Kök & Bar"], thuNov5)).toBe(true);
+    expect(isOpenAt(gastis, PLACE_META["Gästis Kök & Bar"], friLate)).toBe(true);
+    expect(daySlot(gastis, PLACE_META["Gästis Kök & Bar"], 5).c).toBe(27);
+
+    expect(isOpenAt(kristo, PLACE_META.Kristorante, monLunch)).toBe(true);
+    expect(isOpenAt(kristo, PLACE_META.Kristorante, monAfter)).toBe(false);
+    expect(daySlot(kristo, PLACE_META.Kristorante, 0)).toEqual(H(11, 21));
+
+    expect(isOpenAt(jano, PLACE_META.Jano, sunNov8)).toBe(false);
+    expect(PLACE_META.Jano.hours.every((slot) => slot == null)).toBe(true);
+
+    expect(isOpenAt(hok, PLACE_META.Hökeriet, satNov7)).toBe(true);
+    expect(isOpenAt(hok, PLACE_META.Hökeriet, thuNov5)).toBe(false);
+    expect(PLACE_META.Hökeriet.seasonNote).not.toMatch(/sommar/i);
+
+    expect(isOpenAt(loppis, PLACE_META.Roslagsloppis, sunNov8)).toBe(false);
+    expect(PLACE_META.Roslagsloppis.hours[0]).toBe(null);
   });
 });

@@ -261,7 +261,7 @@ import {
       ],
       body:`<p><strong>Hökeriet</strong> ligger på <button type="button" class="place-btn" onclick="openPlace('Orkesta Granby Gård')">Orkesta Granby Gård →</button> — butik, servering, turistinformation, guidade turer och event.</p>
       <p>I butiken hittar du gårdens Charolais-kött, rapsolja, honung och äppelmust tillsammans med utvalda delikatesser, närproducerade samarbeten, vikingatida hantverk och svensk hemslöjd. Växthus ger gurka, tomat och örter till köket.</p>
-      <p>Boka gärna guidad visning av Granby Vikingagård eller hantverkstorpet Granbylund. Sommaröppet med servering lördag–söndag 12–16. Frågor eller bokning av event: <a href="mailto:info@hokeriet.se">info@hokeriet.se</a> · tel 08-612 30 05 / 076-945 90 10. Webb: <a href="https://hokeriet.se/" target="_blank" rel="noopener">hokeriet.se</a> · gården: <a href="https://granbygard.com/" target="_blank" rel="noopener">granbygard.com</a>.</p>`
+      <p>Boka gärna guidad visning av Granby Vikingagård eller hantverkstorpet Granbylund. Servering lördag–söndag 12–16. Julbord bokas torsdag–lördag 19 november–19 december. Frågor eller bokning av event: <a href="mailto:info@hokeriet.se">info@hokeriet.se</a> · tel 08-612 30 05 / 076-945 90 10. Webb: <a href="https://hokeriet.se/" target="_blank" rel="noopener">hokeriet.se</a> · gården: <a href="https://granbygard.com/" target="_blank" rel="noopener">granbygard.com</a>.</p>`
     },
     "Tarby Gårdsbutik":{
       address:"Tarbyvägen / Tarby gård, Frösunda",
@@ -332,8 +332,8 @@ import {
         {url:"/assets/upplev/kvarnbadet/skylt.webp",alt:"Välkommen till Kvarnbadet — kartskylt med badets faciliteter"}
       ],
       body:`<p>Kommunalt utomhusbad vid Vallentunasjöns norra ände: tempererad 50-metersbassäng (djup 120–180 cm), grundare bassäng (80 cm) och plaskdamm (30 cm). På området finns kiosk &amp; grill, omklädning, lekplats, soldäck, beachvolley, fotbollsplan — och den röda kvarnen i bakgrunden.</p>
-      <p>Säsong 2026: öppet 1 juni–30 augusti. Ordinarie tider mån–tors 09–21, fre 09–19, lör–sön 10–19. Midsommarafton stängt; v.33–35 stänger badet 19:00 alla dagar. För att bada utan vuxen: minst 12 år och simkunnig.</p>
-      <p>Tillgänglighet: RWC, lyft till bassäng och ramper. Info: <a href="https://www.vallentuna.se/fritid-och-kultur/idrott-och-motion/simhallar-badhus-utomhusbad-och-simskola/" target="_blank" rel="noopener">vallentuna.se</a>.</p>`
+      <p>Stängt nu. Säsongen är juni–augusti. För att bada utan vuxen: minst 12 år och simkunnig.</p>
+      <p>Tillgänglighet: RWC, lyft till bassäng och ramper. Info: <a href="https://www.vallentuna.se/uppleva-och-gora/idrott-motion-och-anlaggningar/utebad-kvarnbadet" target="_blank" rel="noopener">vallentuna.se</a>.</p>`
     },
     "Toftesta Holme":{
       address:"Lilla Garn / väster om Össeby-Garns kyrka",
@@ -497,7 +497,7 @@ import {
         {url:"/assets/upplev/kristorante/pizza.webp",alt:"Pizza från Kristorante"}
       ],
       body:`<p>Trivsam kvarterskrog i Bällstaberg med uteservering, italiensk pizza, burgare och husmansidéer. Vällagat och omtyckt av många i bygden.</p>
-      <p>Enligt kristorante.se: måndag 10–14 (lunch), tisdag–fredag 10–21, lördag–söndag 11–21. Tel 08-511 772 20. Webb: <a href="https://kristorante.se/" target="_blank" rel="noopener">kristorante.se</a>.</p>`
+      <p>Enligt kristorante.se: måndag 10–14, tisdag–fredag 10–21, lördag–söndag 11–21. Lunch mån–fre 11–14. Stängt 23, 24, 25 och 31 december; nyårsdagen 11–21. Tel 08-511 772 20. Webb: <a href="https://kristorante.se/" target="_blank" rel="noopener">kristorante.se</a>.</p>`
     },
     "Presto Grillen":{
       address:"Tuna Torg 6, Vallentuna centrum",
@@ -520,8 +520,8 @@ import {
       images:[
         {url:"/assets/upplev/gravelsta-gard/cover.webp",alt:"Angus-kor i bete — stämningsbild för Grävelsta Gård"}
       ],
-      body:`<p>Familjegård med KRAV-inriktning — nötkött, lamm, ägg, honung och mer från egna djur. Ägg finns i skåp bakom butiken alla dagar (Swish). Själva gårdsbutiken har sommaruppehåll och öppnar igen 29 augusti 2026 enligt gravelsta.se; hör av dig för avhämtning av övriga varor.</p>
-      <p>Kontakt via <a href="https://gravelsta.se/" target="_blank" rel="noopener">gravelsta.se</a>.</p>`
+      body:`<p>Familjegård med KRAV-inriktning — nötkött, lamm, ägg, honung och mer från egna djur. Öppet lördagar 11–14 under hösten. Ägg säljs i butiken de tiderna.</p>
+      <p>Kontakt via <a href="https://www.gravelsta.se/" target="_blank" rel="noopener">gravelsta.se</a>.</p>`
     },
     "Röda Magasinet":{
       address:"Lindholmen, Vallentuna kommun",
@@ -530,7 +530,7 @@ import {
       images:[
         {url:"/assets/upplev/roda-magasinet/cover.webp",alt:"Röda Magasinet i Lindholmen"}
       ],
-      body:`<p>Antikaffär i Lindholmen, strax bakom Lindholmens gård — glas, porslin, möbler, lampor och fynd i lantlig miljö. Öppet maj–september (perfekt söndagsutflykt); kan även öppna utanför säsong.</p>
+      body:`<p>Antikaffär i Lindholmen, strax bakom Lindholmens gård — glas, porslin, möbler, lampor och fynd i lantlig miljö. Stängt till maj. Säsongen är söndagar 11–16 från 2 maj till och med 30 september.</p>
       <p>Mer: <a href="https://rodamagasinet.se/" target="_blank" rel="noopener">rodamagasinet.se</a>.</p>`
     },
     "Novaretro":{
@@ -628,8 +628,8 @@ import {
       images:[
         {url:"/assets/upplev/gastis-kok-och-bar/cover.webp",alt:"Gästis Kök & Bar"}
       ],
-      body:`<p>Kök och bar vid Tuna Torg — mat och dryck mitt i centrum, med lokal kvarterskänsla. Lunch mån–fre 09–14, helg 12–15; köket stänger 21:00. Fre–lör nattklubb till 01:00.</p>
-      <p>Öppet mån–tors 09–22, fre 09–01, lör 12–01, sön 12–22 enligt gastiskokochbar.se. Tel 08-511 793 40. Webb: <a href="https://gastiskokochbar.se/" target="_blank" rel="noopener">gastiskokochbar.se</a>.</p>`
+      body:`<p>Kök och bar vid Tuna Torg — mat och dryck mitt i centrum, med lokal kvarterskänsla. Lunch mån–fre 10–15.</p>
+      <p>Öppet mån–tors 10–22, fre–lör 10–03, sön 12–22 enligt gastiskokbar.se. Tel 08-511 793 40. Webb: <a href="https://www.gastiskokbar.se/" target="_blank" rel="noopener">gastiskokbar.se</a>.</p>`
     },
     "Langhard Lantbruk":{
       address:"Lena 50, 186 93 Vallentuna",
@@ -668,7 +668,7 @@ import {
         {url:"/assets/upplev/jano/konsert.webp",alt:"Artistporträtt från Jano"},
         {url:"/assets/upplev/jano/servering.webp",alt:"Stina Wallster — servering via Triften på Janos jazzkvällar"}
       ],
-      body:`<p><strong>Jazzklubb Nordost (Jano)</strong> arrangerar jazzkonserter på Vallentuna Teater i centrum — ca 100 m från stationen, 320 sittplatser, hörslinga och rullstolsanpassat. Caféet öppnar kl. 17:30; musiken startar kl. 18:30 (om inte annat anges). Servering sköts av Triften.</p>
+      body:`<p><strong>Jazzklubb Nordost (Jano)</strong> arrangerar jazzkonserter på Vallentuna Teater i centrum — ca 100 m från stationen, 320 sittplatser, hörslinga och rullstolsanpassat. Ingen fast veckoöppning. Caféet öppnar kl. 17:30 på konsertkvällar; musiken startar kl. 18:30 (om inte annat anges). Hösten 2026 kvar: Miriam Aida 15 november och Vivian Buczek 29 november. Servering sköts av Triften.</p>
       <p>Biljetter via <a href="https://jano.nu/biljetter-29542633" target="_blank" rel="noopener">Nortic</a> eller över disk på Vallentuna bibliotek. Medlemskap 200 kr / VIP 800 kr (halvår) via Plusgiro 19 25 83-3 eller Swish 123 494 71 72. Program och mer: <a href="https://jano.nu/" target="_blank" rel="noopener">jano.nu</a>.</p>`
     },
     "Vasakullen":{
@@ -717,7 +717,7 @@ import {
         {url:"/assets/upplev/roslagsloppis/folkfest.webp",alt:"Folkfeststämning på Roslagsloppis"}
       ],
       body:`<p><strong>Roslagsloppis</strong> är den stora bakluckeloppisen bakom Roslagsstoppet vid Söderhalls trafikplats — halvvägs ut i Roslagen, i Vallentuna kommun. Sälj direkt från bilen eller kom och fynda; fri entré och parkering för besökare.</p>
-      <p>Öppet <strong>söndagar 11–15</strong> under säsongen <strong>31 maj–13 september 2026</strong> (stängt 21 juni). Åk runt den långa röda byggnaden till baksidan. Vill du sälja? Plats online från 175 kr via <a href="https://www.roslagsloppis.se/salja/" target="_blank" rel="noopener">roslagsloppis.se</a>, eller Swish på plats om det finns rum. Frågor: <a href="mailto:info@stockholmsmarknader.se">info@stockholmsmarknader.se</a>. Psst: fabriksförsäljning av cocosbollar finns intill.</p>`
+      <p><strong>Slut för säsongen 2026.</strong> Söndagar 11–15 gällde 31 maj–13 september (stängt 21 juni). Åk runt den långa röda byggnaden till baksidan. Vill du sälja? Plats online från 175 kr via <a href="https://www.roslagsloppis.se/salja/" target="_blank" rel="noopener">roslagsloppis.se</a>, eller Swish på plats om det finns rum. Frågor: <a href="mailto:info@stockholmsmarknader.se">info@stockholmsmarknader.se</a>. Psst: fabriksförsäljning av cocosbollar finns intill.</p>`
     },
     "Vallentuna skolmuseum":{
       address:"Lilla Garn 32, Brottby (vid Össeby-Garns kyrka)",
@@ -2087,6 +2087,15 @@ import {
     // Alltid-öppna utomhusplatser (kyrka, runsten, natur) är inte "öppet nu" som en butik
     if(!isTimedVenue(p)){
       if(isOpen(p)) return `<span class="status-pill open">Alltid tillgänglig</span>`;
+      const meta=metaOf(p);
+      const note=meta.seasonNote||"";
+      if(meta.hours && meta.hours.every(h=>!h)){
+        if(/bokas|förfrågan|överenskommelse/i.test(note)){
+          const book=/bokas|förfrågan/i.test(note);
+          return `<span class="status-pill closed">${book?"Bokas":"Efter överenskommelse"}</span>`;
+        }
+        return `<span class="status-pill closed">Stängt</span>`;
+      }
       return "";
     }
     if(isOpen(p)){
@@ -4256,8 +4265,10 @@ import {
     const todayHrs=fmtHoursSlot(daySlot(p));
     let statusTxt;
     if(!isTimedVenue(p)){
-      const note=metaOf(p).seasonNote||"";
+      const meta=metaOf(p);
+      const note=meta.seasonNote||"";
       if(/bokas|förfrågan|överenskommelse/i.test(note)) statusTxt=/bokas|förfrågan/i.test(note)?"Bokas efter förfrågan":"Efter överenskommelse";
+      else if(meta.hours && meta.hours.every(h=>!h)) statusTxt="Stängt just nu";
       else statusTxt=open?"Alltid tillgänglig":"Ej tillgänglig just nu";
     } else statusTxt=open?(soon?`Öppet — stänger om ${mins} min`:"Öppet nu"):"Stängt just nu";
     if(holidayToday&&isHolidayClosed(p)) statusTxt=`Stängt (${holidayToday})`;
