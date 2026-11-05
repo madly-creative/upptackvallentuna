@@ -28,14 +28,21 @@ describe("guides", () => {
     }
   });
 
-  it("is late-summer focused for now (all sommar)", () => {
-    expect(guides.every((g) => g.season === "sommar")).toBe(true);
+  it("keeps summer guides and three autumn ones", () => {
+    expect(guides.some((g) => g.season === "sommar")).toBe(true);
+    expect(guides.filter((g) => g.season === "höst").map((g) => g.slug)).toEqual([
+      "vikingasparet",
+      "sensommar-pa-garden",
+      "centrum-pa-foten",
+    ]);
   });
 
-  it("maps months to season keys like the app", () => {
+  it("maps months to season keys", () => {
     expect(currentSeasonKey(5)).toBe("sommar"); // juni
     expect(currentSeasonKey(7)).toBe("sommar"); // augusti
-    expect(currentSeasonKey(8)).toBe("höst");
+    expect(currentSeasonKey(8)).toBe("höst"); // september
+    expect(currentSeasonKey(10)).toBe("höst"); // november
+    expect(currentSeasonKey(11)).toBe("vinter"); // december
     expect(currentSeasonKey(0)).toBe("vinter");
     expect(currentSeasonKey(3)).toBe("vår");
   });
@@ -58,6 +65,17 @@ describe("guides", () => {
     const popular = guidesForHomeFilter(guides, "popular", 7, 3);
     expect(popular).toHaveLength(3);
     expect(popular[0].slug).toBe("perfekt-sommarsondag");
+    const november = guidesForHomeFilter(guides, "popular", 10, 3);
+    expect(november.map((g) => g.slug)).toEqual([
+      "vikingasparet",
+      "sensommar-pa-garden",
+      "centrum-pa-foten",
+    ]);
+    for (const g of november) {
+      expect(g.season).toBe("höst");
+      expect(`${g.title} ${g.kicker} ${g.intro}`.toLowerCase()).not.toMatch(/sommar/);
+    }
+    expect(november[0].kicker).toBe("Höstens vandring");
     const barn = guidesForHomeFilter(guides, "barn", 7, 3);
     expect(barn.some((g) => g.slug === "en-dag-med-barnen")).toBe(true);
     expect(barn.every((g) => g.themes.includes("barn"))).toBe(true);

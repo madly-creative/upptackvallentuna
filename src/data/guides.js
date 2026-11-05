@@ -113,12 +113,12 @@ export const guides = [
   {
     slug: "vikingasparet",
     title: "Vikingaspåret",
-    season: "sommar",
-    kicker: "Historia & kultur",
+    season: "höst",
+    kicker: "Höstens vandring",
     themes: ["historia","gratis","natur"],
     heroImg: "/assets/upplev/arkils-tingstad/cover.webp",
     intro:
-      "Sex stopp genom Runriket — stenar, ting och landskap som burit berättelser i tusen år. En dag där historien ligger i vägen, bokstavligen, och där ni avslutar med mat nära sista hällen.",
+      "Sex stopp genom Runriket när marken är fuktig och luften klar. Stenar, ting och landskap som burit berättelser i tusen år — och mat nära sista hällen.",
     stops: [
       {
         place: "Vallentuna kyrka",
@@ -142,7 +142,7 @@ export const guides = [
       },
       {
         place: "Kristorante",
-        text: "Avsluta i Bällstaberg, några minuter bort. Kristorante tar emot med pizza, uteservering och en vänlig ton — vällagat utan finlir. Historien bakom er, tallriken framför. En bra dag får gärna sluta så.",
+        text: "Avsluta i Bällstaberg, några minuter bort. Kristorante tar emot med pizza och en vänlig ton — vällagat utan finlir. Historien bakom er, tallriken framför. En bra dag får gärna sluta så.",
       },
     ],
     outro:
@@ -150,7 +150,7 @@ export const guides = [
     signature: "Vallentuna levererar.",
   },
 
-  // ——— Sensommar / augusti (fler årstider läggs till senare) ———
+  // Sommarguider. Höst på startsidan: vikingasparet, sensommar-pa-garden, centrum-pa-foten.
   {
     slug: "sista-varma-doppen",
     title: "Sista varma doppen",
@@ -189,18 +189,18 @@ export const guides = [
   },
   {
     slug: "sensommar-pa-garden",
-    title: "Sensommar på gården",
-    season: "sommar",
-    kicker: "Fika & mat",
+    title: "Höst på gården",
+    season: "höst",
+    kicker: "Skördetid",
     themes: ["fika","natur"],
     heroImg: "/assets/upplev/orkesta-granby-gard/cover.webp",
     intro:
-      "När odlingarna fortfarande ger och gårdsbutikerna är mitt i säsongen. Fem stopp för dig som vill fylla korgen — och sitta ute en stund till.",
-    lead: "Augusti är gårdarnas generösa månad. Ta vara på den innan tempot förändras.",
+      "När bodarna fylls med det som håller: kött, ägg, honung och det sista gröna. Fem stopp för dig som vill fylla korgen en höstdag.",
+    lead: "Hösten är gårdarnas tid. Handla direkt av dem som odlar och föder upp, innan året vänder.",
     stops: [
       {
         place: "Hökeriet",
-        text: "Börja hos Hökeriet på Orkesta Granby Gård. Gårdens kött, växthusgrönt och fika mitt i vikingalandskapet — ät ute om vädret håller. Granbyhällen ligger i betet; ta er tid mellan tuggorna.",
+        text: "Börja hos Hökeriet på Orkesta Granby Gård. Gårdens kött, växthusgrönt och fika mitt i vikingalandskapet. Granbyhällen ligger i betet; ta er tid mellan tuggorna. Helgöppet — kolla tiden innan ni åker.",
       },
       {
         place: "Markims Bergby",
@@ -212,7 +212,7 @@ export const guides = [
       },
       {
         place: "Grävelsta Gård",
-        text: "Sväng förbi Grävelsta. KRAV-märkt från familjegården — och på lördagar ofta öppet hus med grillstuga. Sensommarens enklaste lyx är att handla direkt av dem som odlar och föder upp.",
+        text: "Sväng förbi Grävelsta. KRAV-märkt från familjegården, lördagsöppet under hösten. Handla direkt av dem som föder upp.",
       },
       {
         place: "Gårdsbutiken Gamla Mjölkrummet",
@@ -220,7 +220,7 @@ export const guides = [
       },
     ],
     outro:
-      "Hem med en tung kasse, jord under naglarna och en middag som luktar augusti.",
+      "Hem med en tung kasse, jord under naglarna och en middag som luktar höst.",
     signature: "Vallentuna levererar.",
   },
   {
@@ -334,17 +334,17 @@ export const guides = [
   {
     slug: "centrum-pa-foten",
     title: "Centrum på foten",
-    season: "sommar",
-    kicker: "I centrum",
+    season: "höst",
+    kicker: "Inomhus",
     themes: ["fika","gratis"],
     heroImg: "/assets/upplev/vallboden/cover.webp",
     intro:
-      "En sensommareftermiddag utan bil. Fem stopp runt Tuna Torg och Centralvägen — fika, kultur, hantverk och mat medan uteserveringarna fortfarande är igång.",
-    lead: "Ibland är den bästa utflykten den som börjar med att man parkerar bilen och glömmer den.",
+      "En hösteftermiddag utan bil. Fem stopp runt Tuna Torg och Centralvägen — fika, kulturhus, hantverk och mat, mest inne.",
+    lead: "När det blåser räcker centrum. Parkera bilen och gå in.",
     stops: [
       {
         place: "Vallentuna Stenugnsbageri",
-        text: "Börja med bröd och kaffe — gärna ute. Stenugnen sätter tonen; sedan är resten av byn till er.",
+        text: "Börja med bröd och kaffe. Stenugnen sätter tonen; sedan är resten av byn till er.",
       },
       {
         place: "Vallentuna Kulturhus",
@@ -360,7 +360,7 @@ export const guides = [
       },
       {
         place: "Gästis Kök & Bar",
-        text: "Landningen: Gästis vid torget. Mat och dryck — sitt ute så länge augustikvällen tillåter. Låt eftermiddagen bli kväll om den vill.",
+        text: "Landningen: Gästis vid torget. Mat och dryck inne när kvällen är mörk. Låt eftermiddagen bli kväll om den vill.",
       },
     ],
     outro:
@@ -437,11 +437,14 @@ export const guides = [
   },
 ];
 
-/** Matchar seasonCards()-fönstren i appen (0-indexerad månad). */
+/**
+ * Säsong för vilka guider som lyfts (0-indexerad månad).
+ * Höst är september–november. Hjältens säsongskort i appen byter till vinter redan i november.
+ */
 export function currentSeasonKey(monthIndex = new Date().getMonth()) {
   if (monthIndex >= 2 && monthIndex <= 4) return "vår";
   if (monthIndex >= 5 && monthIndex <= 7) return "sommar";
-  if (monthIndex >= 8 && monthIndex <= 9) return "höst";
+  if (monthIndex >= 8 && monthIndex <= 10) return "höst";
   return "vinter";
 }
 
@@ -476,6 +479,9 @@ export function guidesForHomeFilter(list = guides, filterKey = "popular", monthI
   const key = filterKey || "popular";
   let pool;
   if (key === "popular") {
+    const season = currentSeasonKey(monthIndex);
+    const inSeason = list.filter((g) => g.season === season);
+    if (inSeason.length) return inSeason.slice(0, count);
     const featured = featuredGuide(list, monthIndex);
     pool = [];
     if (featured) pool.push(featured);
