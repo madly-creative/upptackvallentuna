@@ -196,4 +196,13 @@ export const PLACE_META = {
         {label:"Tips från verksamheten"},
       ],
       hoursVerified:"2026-08-25"},
+    "Träffpunkten Allévägen 10":{tags:["inomhus"],district:"Centrum",updated:"2026-11-11",addedDate:"2026-11-11",holidayClosed:true,
+      seasonNote:"Café till 14.45. Karby (KUBen, Vadavägen 1C): mån och fre 10–14. Kårsta (Kårstaby 9): tors 12.30–15.30. Allévägen stänger 12.30 tisdag 17 november och 15 december 2026.",
+      hours:[C,H(10,15),H(10,15),H(10,15),H(10,15),H(10,15),C],
+      sources:[
+        {label:"vallentuna.se / Allévägen",url:"https://www.vallentuna.se/uppleva-och-gora/evenemang-och-motesplatser/motesplatser/traffpunkten-allevagen-10"},
+        {label:"vallentuna.se / Karby",url:"https://www.vallentuna.se/uppleva-och-gora/evenemang-och-motesplatser/motesplatser/traffpunkten-karby"},
+        {label:"vallentuna.se / Kårsta",url:"https://www.vallentuna.se/uppleva-och-gora/evenemang-och-motesplatser/motesplatser/traffpunkten-karsta"},
+      ],
+      hoursVerified:"2026-11-11"},
 };

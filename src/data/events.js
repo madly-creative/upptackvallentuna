@@ -585,6 +585,18 @@ export const events = [
     source: "https://nortic.se/ticket/show/353484",
   },
   {
+    host: "Solgläntans kattpensionat och katthem",
+    title: "Solgläntans julmarknad",
+    date: "2026-11-28",
+    addedDate: "2026-11-11",
+    when: "Lör 28 nov · 12–15",
+    time: "12:00 – 15:00",
+    cat: "MARKNAD",
+    note: "Julmarknad hos kattpensionatet och katthemmet i Grävelsta. Butiken är öppen, lokala hantverkare finns på plats, och det serveras glögg. Man kan också hälsa på katterna.",
+    img: "/assets/evenemang/solglantans-julmarknad/cover.webp",
+    source: "https://vallentunakattcenter.se/",
+  },
+  {
     host: "Jano / Vallentuna Teater",
     title: "Jano — Vivian Buczek",
     date: "2026-11-29",
@@ -1023,6 +1035,10 @@ export const EVENT_CONTENT = {
   "Scenfredag – Lowdown Saints": {
     body: `<p>Fredag 27 november kl. 19–21 på <strong>Caféscenen</strong> i Vallentuna Kulturhus — Scenfredag med Lowdown Saints. Ordinarie biljett 200 kr, medlem 150 kr.</p>
       <p>Arrangör: Vallentuna Bluesförening / Kultur Vallentuna. <a href="https://nortic.se/ticket/show/353484" target="_blank" rel="noopener">Nortic</a>.</p>`,
+  },
+  "Solgläntans julmarknad": {
+    body: `<p>Lördag 28 november kl. 12–15 på <strong>Solgläntans kattpensionat och katthem</strong>, Grävelsta 16. Den årliga julmarknaden, lördagen före första advent: butiken Katt!Katt! är öppen, lokala hantverkare finns på plats, och det serveras glögg. Ett bra tillfälle att titta in till katterna också.</p>
+      <p>Katthemmet: <a href="https://vallentunakattcenter.se/" target="_blank" rel="noopener">vallentunakattcenter.se</a>.</p>`,
   },
   "Saffransmysteriet": {
     body: `<p>Söndag 29 november kl. 13:00–13:45 i <strong>Vallentuna Kulturhus</strong>. Familjeföreställning från 4 år med LasseMajas detektivbyrå: saffranet till julen är stulet. Speltid cirka 45 minuter. Biljett 195 kr enligt arrangören.</p>
