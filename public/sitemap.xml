@@ -241,6 +241,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://upptackvallentuna.se/plats/traffpunkten-allevagen-10.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://upptackvallentuna.se/evenemang/sommarkvall-med-live-jazz-2026-08-07.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -482,6 +487,11 @@
   </url>
   <url>
     <loc>https://upptackvallentuna.se/evenemang/scenfredag-lowdown-saints-2026-11-27.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/evenemang/solglantans-julmarknad-2026-11-28.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>

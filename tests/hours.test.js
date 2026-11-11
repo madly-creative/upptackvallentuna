@@ -130,4 +130,18 @@ describe("isOpenAt", () => {
     expect(isOpenAt(loppis, PLACE_META.Roslagsloppis, sunNov8)).toBe(false);
     expect(PLACE_META.Roslagsloppis.hours[0]).toBe(null);
   });
+
+  it("Träffpunkten Allévägen is open weekdays 10–15 and closed Saturday", () => {
+    const p = places.find((x) => x.name === "Träffpunkten Allévägen 10");
+    const meta = PLACE_META["Träffpunkten Allévägen 10"];
+    const wed = new Date(2026, 10, 11, 14, 30);
+    const after = new Date(2026, 10, 11, 15, 0);
+    const sat = new Date(2026, 10, 14, 12, 0);
+    expect(isOpenAt(p, meta, wed)).toBe(true);
+    expect(isOpenAt(p, meta, after)).toBe(false);
+    expect(isOpenAt(p, meta, sat)).toBe(false);
+    expect(daySlot(p, meta, 1)).toEqual(H(10, 15));
+    expect(meta.seasonNote).toMatch(/Karby/);
+    expect(meta.seasonNote).toMatch(/Kårsta/);
+  });
 });

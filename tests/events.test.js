@@ -121,6 +121,17 @@ describe("events calendar", () => {
     expect(EVENT_CONTENT[hopp.title]).toBeTruthy();
   });
 
+  it("Solgläntans julmarknad is the Saturday before first Advent", () => {
+    const e = events.find((x) => x.title === "Solgläntans julmarknad");
+    expect(e?.date).toBe("2026-11-28");
+    expect(e?.time).toBe("12:00 – 15:00");
+    expect(e?.host).toBe("Solgläntans kattpensionat och katthem");
+    expect(e?.cat).toBe("MARKNAD");
+    expect(e?.source).toContain("vallentunakattcenter.se");
+    expect(e?.note).not.toMatch(/\p{Extended_Pictographic}/u);
+    expect(EVENT_CONTENT["Solgläntans julmarknad"]).toBeTruthy();
+  });
+
   it("eventSlug is url-safe", () => {
     const s = eventSlug(events[0]);
     expect(s).toMatch(/^[a-z0-9-]+$/);

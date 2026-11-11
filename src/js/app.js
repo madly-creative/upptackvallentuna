@@ -745,6 +745,20 @@ import {
       <p>Sedan 2015 har guiderna tagit ut mer än 29 000 gäster till historiska platser i landskapet — vid runstenar, medeltidskyrkor och andra fornlämningar, inte inne på museum. Privata turer eller små grupper om högst 16 personer.</p>
       <p>Boka via <a href="https://www.swedenhistorytours.se/" target="_blank" rel="noopener">swedenhistorytours.se</a>.</p>`
     },
+    "Träffpunkten Allévägen 10":{
+      address:"Allévägen 10, Vallentuna",
+      facts:["Café","Vardagar 10–15","Karby & Kårsta","Aktiviteter"],
+      localPhotos:true,
+      photoCredit:"Foto: Victoria Rubinsson, Vallentuna Nya.",
+      images:[
+        {url:"/assets/upplev/traffpunkten-allevagen-10/cover.webp",alt:"Sittgympa på Träffpunkten Allévägen 10"},
+        {url:"/assets/upplev/traffpunkten-allevagen-10/cafe.webp",alt:"Cafédisken på Träffpunkten"},
+        {url:"/assets/upplev/traffpunkten-allevagen-10/mural.webp",alt:"Målningen i träffpunktens träningsrum"}
+      ],
+      body:`<p><strong>Träffpunkten Allévägen 10</strong> är kommunens mötesplats mitt i Vallentuna. Hit kommer man för fika till självkostnadspris, en pratstund eller något av veckans pass: sittgympa, bingo, handarbete, promenad. Öppet helgfria vardagar 10–15. Caféet serverar till 14.45.</p>
+      <p>Samma verksamhet finns på två ställen till. <strong>Träffpunkten Karby</strong> håller till i Mötesplats KUBen, Vadavägen 1C i Brottby, helgfria måndagar och fredagar 10–14 (caféet till 13 på måndagar och till 12.30 på fredagar). <strong>Träffpunkten Kårsta</strong> finns i församlingsgården, Kårstaby 9, helgfria torsdagar 12.30–15.30.</p>
+      <p>Vissa tisdagar stänger Allévägen redan 12.30: 17 november och 15 december 2026. Stängt 24, 25 och 31 december samt 1 och 6 januari. Under öppettid: 08-587 857 60 eller <a href="mailto:traffpunkten@vallentuna.se">traffpunkten@vallentuna.se</a>. Program: <a href="https://www.vallentuna.se/uppleva-och-gora/evenemang-och-motesplatser/motesplatser/traffpunkten-allevagen-10" target="_blank" rel="noopener">vallentuna.se</a>.</p>`
+    },
   };
 
     const cats=[{key:"alla",label:"Allt"},{key:"fika",label:"Fika & Mat"},{key:"gard",label:"Gård & Handelsträdgård"},{key:"natur",label:"Natur & Historia"},{key:"butik",label:"Butik & Kultur"},{key:"loppis",label:"Loppis"},{key:"smultronstalle",label:"Smultronställen"},{key:"guidning",label:"Guidning"}];
@@ -822,7 +836,8 @@ import {
     "Roslagsloppis":"2026-08-15",
     "Vallentuna skolmuseum":"2026-08-20",
     "Sweden History Tours":"2026-08-25",
-    "Hökeriet":"2026-08-31"
+    "Hökeriet":"2026-08-31",
+    "Träffpunkten Allévägen 10":"2026-11-11"
   };
 
   const previewTodayISO=resolvePreviewTodayISO();
