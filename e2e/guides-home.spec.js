@@ -16,6 +16,38 @@ test.describe("Guides home section", () => {
     await expect(sec.locator(".arrow")).toHaveCount(0);
   });
 
+  test("November home cards are autumn guides", async ({ page }) => {
+    await page.goto("/");
+    const cards = page.locator("#guidesHomeTeaser .guide-card");
+    await expect(cards).toHaveCount(3);
+    await expect(cards.nth(0)).toContainText("Höstens vandring");
+    await expect(cards.nth(0)).toContainText("Vikingaspåret");
+    await expect(cards.nth(1)).toContainText("Skördetid");
+    await expect(cards.nth(1)).toContainText("Höst på gården");
+    await expect(cards.nth(2)).toContainText("Inomhus");
+    await expect(cards.nth(2)).toContainText("Centrum på foten");
+    await expect(page.locator("#guidesHomeTeaser")).not.toContainText(/sommar/i);
+
+    await cards.nth(0).click();
+    await expect(page.locator("#view-guide")).toHaveClass(/on/);
+    await expect(page.locator("#guideSeason")).toContainText("Höst");
+    await expect(page.locator("#guideTitle")).toHaveText("Vikingaspåret");
+    await expect(page.locator("#guideStops")).toContainText("Arkils Tingstad");
+    await expect(page.locator("#guideIntro")).not.toContainText(/sommar/i);
+
+    await page.goto("/");
+    await page.locator("#guidesHomeTeaser .guide-card").nth(1).click();
+    await expect(page.locator("#guideTitle")).toHaveText("Höst på gården");
+    await expect(page.locator("#guideStops")).toContainText("Hökeriet");
+    await expect(page.locator("#guideStops")).toContainText("Grävelsta Gård");
+
+    await page.goto("/");
+    await page.locator("#guidesHomeTeaser .guide-card").nth(2).click();
+    await expect(page.locator("#guideTitle")).toHaveText("Centrum på foten");
+    await expect(page.locator("#guideStops")).toContainText("Vallentuna Kulturhus");
+    await expect(page.locator("#guideIntro")).not.toContainText(/sommar/i);
+  });
+
   test("theme filter updates cards", async ({ page }) => {
     await page.goto("/");
     await page.locator("#guidesHomeFilters").getByRole("tab", { name: "Med barn" }).click();
