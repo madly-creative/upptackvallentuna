@@ -130,4 +130,17 @@ describe("isOpenAt", () => {
     expect(isOpenAt(loppis, PLACE_META.Roslagsloppis, sunNov8)).toBe(false);
     expect(PLACE_META.Roslagsloppis.hours[0]).toBe(null);
   });
+
+  it("Träffpunkten Allévägen follows the municipal weekday hours", () => {
+    const p = places.find((x) => x.name === "Träffpunkten Allévägen 10");
+    const meta = PLACE_META["Träffpunkten Allévägen 10"];
+    const wed = new Date(2026, 10, 11, 11, 0);
+    const sat = new Date(2026, 10, 14, 11, 0);
+    expect(isOpenAt(p, meta, wed)).toBe(true);
+    expect(isOpenAt(p, meta, sat)).toBe(false);
+    expect(daySlot(p, meta, 1)).toEqual(H(10, 15));
+    expect(meta.seasonNote).toMatch(/Karby/);
+    expect(meta.seasonNote).toMatch(/Kårsta/);
+    expect(meta.seasonNote).toMatch(/traffpunkten@vallentuna\.se/);
+  });
 });

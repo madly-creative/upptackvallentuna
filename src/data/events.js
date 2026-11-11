@@ -585,6 +585,18 @@ export const events = [
     source: "https://nortic.se/ticket/show/353484",
   },
   {
+    host: "Solgläntans kattpensionat och katthem",
+    title: "Solgläntans julmarknad",
+    date: "2026-11-28",
+    addedDate: "2026-11-11",
+    when: "Lör 28 nov · 12–15",
+    time: "12:00 – 15:00",
+    cat: "MARKNAD",
+    note: "Julmarknad hos katthemmet i Grävelsta. Katter att hälsa på, butiken öppen, lokala hantverkare och glögg. Grävelsta 16.",
+    img: "/assets/evenemang/solglantans-julmarknad/cover.webp",
+    source: "https://vallentunakattcenter.se/",
+  },
+  {
     host: "Jano / Vallentuna Teater",
     title: "Jano — Vivian Buczek",
     date: "2026-11-29",
@@ -958,6 +970,10 @@ export const EVENT_CONTENT = {
   "Vallentuna Höstmarknad": {
     body: `<p>Lördag 19 september kl. 11–15 på <strong>Tuna Torg</strong> — säsongens skörd, lokala företag och höstmys i centrum.</p>
       <p>Arrangeras av Hemmaplan Media i samarbete med Vallentuna Centrum och Fastpartner. Info: <a href="https://hemmaplanmedia.se/event" target="_blank" rel="noopener">hemmaplanmedia.se/event</a>.</p>`,
+  },
+  "Solgläntans julmarknad": {
+    body: `<p>Lördag 28 november kl. 12–15 på Solgläntans kattpensionat och katthem, Grävelsta 16. Katter att hälsa på, butiken öppen, lokala hantverkare och en kopp glögg.</p>
+      <p>Det är lördagen före första advent, samma dag som marknaden legat de senaste åren. Mer om stället: <a href="https://vallentunakattcenter.se/" target="_blank" rel="noopener">vallentunakattcenter.se</a>.</p>`,
   },
   "Julmarknad i Lindholmen": {
     body: `<p>Julmarknad i Orkesta Bygdegård 6 december kl. 11–15 med hantverk, lokala smaker och fika.</p>`,

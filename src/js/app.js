@@ -220,6 +220,18 @@ import {
       body:`<p>Mitt i Vallentuna centrum bakas det på riktigt — surdeg, bullar och bröd ur stenugn, ofta omtalade kanelbullar med seg, mochig lyster. Här finns mer än fikadisk: kallkök och lunch, napolitanskt inspirerad pizza, hemgjord gelato och en liten shop med delikatesser.</p>
       <p>Ordinarie öppettider (centrum): mån–fre 07–19, lör–sön 08–18 enligt vsbageri.se. Förbeställning går bra (pizza tidsbokas dock inte). Tel 08-511 705 70 · <a href="https://www.vsbageri.se/" target="_blank" rel="noopener">vsbageri.se</a>.</p>`
     },
+    "Träffpunkten Allévägen 10":{
+      address:"Allévägen 10, Vallentuna",
+      facts:["Vardagar 10–15","Fika till självkostnadspris","Karby mån och fre","Kårsta torsdagar"],
+      localPhotos:true,
+      photoCredit:"Foto: Victoria Rubinsson, Vallentuna Nya. Målningen i träffpunktens träningsrum.",
+      images:[
+        {url:"/assets/upplev/traffpunkten-allevagen-10/cover.webp",alt:"Målning av björkar i träffpunktens träningsrum på Allévägen"}
+      ],
+      body:`<p>Kommunens träffpunkt för den som är senior eller ledig på dagen. Här fikar man till självkostnadspris och kan hänga med på gympa, handarbete, bingo och annat som står på veckans schema.</p>
+      <p>Allévägen 10 har öppet helgfria vardagar 10–15. Caféet serverar till 14.45. Karby håller till i KUBen på Vadavägen 1C i Brottby, måndag och fredag 10–14. Kårsta sitter i församlingsgården på Kårstaby 9, torsdagar 12.30–15.30.</p>
+      <p>Tel 08-587 857 60 · <a href="mailto:traffpunkten@vallentuna.se">traffpunkten@vallentuna.se</a> · <a href="https://www.vallentuna.se/uppleva-och-gora/evenemang-och-motesplatser/motesplatser/traffpunkten-allevagen-10" target="_blank" rel="noopener">vallentuna.se</a>.</p>`
+    },
     "Café Valkyria":{
       address:"Lingsbergsvägen 49, Vallentuna",
       facts:["Helgfik","Hembakat","Barnvänligt","Hundvänligt"],
