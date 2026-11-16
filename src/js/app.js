@@ -1820,6 +1820,7 @@ import {
         ${fav}
       </div>
       <div class="bd">
+        <time class="ev-cal" datetime="${e.date}" aria-hidden="true"><span class="dow">${DOW[d.getDay()]}</span><span class="d">${d.getDate()}</span><span class="m">${MON[d.getMonth()]}</span></time>
         <h3>${e.title}</h3>
         <div class="meta">
           <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s6-5.2 6-10a6 6 0 1 0-12 0c0 4.8 6 10 6 10z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="11" r="2" stroke="currentColor" stroke-width="2"/></svg>${e.host}</span>

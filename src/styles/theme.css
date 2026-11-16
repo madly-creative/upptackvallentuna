@@ -18,7 +18,7 @@
   /* Band: bakgrund + text per sektion på startsidan */
   --band-discover-bg:var(--c-raps);   --band-discover-fg:var(--c-ink);
   --band-events-bg:#DDEFF9;           --band-events-fg:var(--c-ink);
-  --band-picks-bg:var(--c-lake);      --band-picks-fg:#F8F6F0;
+  --band-picks-bg:#1C2B22;            --band-picks-fg:#F8F6F0;
   --band-map-bg:var(--c-chalk);       --band-map-fg:var(--c-ink);
   --band-guides-bg:var(--c-meadow);   --band-guides-fg:#F3F7EE;
   --band-stories-bg:#FBF0CF;          --band-stories-fg:var(--c-ink);
@@ -276,25 +276,78 @@ body{font-family:var(--font-body);font-size:16.5px;background:var(--paper);overf
 }
 .sec-head > div,.guides-home-copy,.nara-dig-titles{flex:1 1 auto;min-width:0}
 
-/* Evenemangskort i bandet: ingen låda, bilden bär kortet, texten står på bandets färg */
+/* Evenemangskort = biljetter: papperskort, kategori på bilden, kalenderdatum i texten,
+   perforerad stubbe med Påminn mig längst ned. Samma höjd i hela raden. */
+.ev-cal{display:none}
+.band .happen-more{align-items:stretch;gap:18px;padding-top:6px;padding-bottom:22px}
+.band .happen-more > .ev,.band .happen-more-all{flex-basis:min(292px,80vw);width:min(292px,80vw);max-width:292px}
 .band .happen-more > .ev{
-  background:transparent;border:0;box-shadow:none;border-radius:0;overflow:visible;
+  --stub:56px;--notch:10px;
+  position:relative;display:flex;flex-direction:column;
+  background:#fff;color:var(--c-ink);border:0;border-radius:22px;overflow:hidden;
+  box-shadow:0 1px 0 rgba(22,36,27,.06),0 18px 34px -24px rgba(22,36,27,.45);
+  -webkit-mask:
+    radial-gradient(circle var(--notch) at left calc(100% - var(--stub)),#0000 98%,#000) left/51% 100% no-repeat,
+    radial-gradient(circle var(--notch) at right calc(100% - var(--stub)),#0000 98%,#000) right/51% 100% no-repeat;
+          mask:
+    radial-gradient(circle var(--notch) at left calc(100% - var(--stub)),#0000 98%,#000) left/51% 100% no-repeat,
+    radial-gradient(circle var(--notch) at right calc(100% - var(--stub)),#0000 98%,#000) right/51% 100% no-repeat;
+  transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s;
 }
-.band .happen-more > .ev:hover{transform:none;box-shadow:none}
-.band .happen-more > .ev .media{border-radius:20px;overflow:hidden;background:color-mix(in srgb,var(--band-fg) 8%,transparent)}
-.band .happen-more > .ev:hover .thumb{transform:scale(1.03)}
-.band .happen-more > .ev .thumb{transition:transform .4s ease}
-.band .happen-more > .ev .bd{padding:14px 2px 0;gap:4px}
-.band .happen-more > .ev h3{font-family:var(--font-display);font-weight:700;font-size:20px;letter-spacing:-.01em;line-height:1.15;color:inherit;margin:0}
-.band .happen-more > .ev .meta{color:inherit;opacity:.72;font-size:13px}
-.band .happen-more > .ev .tag{color:inherit;opacity:.6;margin-top:4px}
-.band .happen-more > .ev .date{background:#fff;color:var(--c-ink);border-radius:14px;box-shadow:none}
-.band .happen-more > .ev .date .d{font-family:var(--font-display);font-weight:800}
+.band .happen-more > .ev:hover{transform:translateY(-4px);box-shadow:0 1px 0 rgba(22,36,27,.06),0 26px 40px -24px rgba(22,36,27,.55)}
+.band .happen-more > .ev:focus-visible{outline:3px solid var(--c-raps);outline-offset:3px}
+.band .happen-more > .ev .media{border-radius:0;aspect-ratio:16/10;height:auto;overflow:hidden;background:var(--c-chalk-2)}
+.band .happen-more > .ev .thumb{transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+.band .happen-more > .ev:hover .thumb{transform:scale(1.04)}
+.band .happen-more > .ev .media .date{display:none}
+.band .happen-more > .ev .fav{top:12px;right:12px}
+
+/* kategori som etikett uppe till vänster på bilden */
+.band .happen-more > .ev .tag{
+  position:absolute;top:12px;left:12px;z-index:2;margin:0;
+  padding:6px 10px;border-radius:999px;background:var(--c-raps);color:var(--c-ink);
+  font:700 10.5px/1 var(--font-body);letter-spacing:.09em;text-transform:uppercase;opacity:1;
+}
+
+.band .happen-more > .ev .bd{
+  flex:1;display:grid;grid-template-columns:52px minmax(0,1fr);grid-template-rows:auto 1fr auto;
+  column-gap:14px;row-gap:6px;padding:18px 18px 0;
+}
+.band .happen-more > .ev .ev-cal{
+  display:flex;flex-direction:column;align-items:center;grid-row:1 / 3;align-self:start;
+  padding:7px 0 8px;border-radius:14px;background:var(--c-chalk);color:var(--c-ink);text-align:center;line-height:1;
+}
+.band .happen-more > .ev .ev-cal .dow{font:700 10px/1 var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--c-meadow)}
+.band .happen-more > .ev .ev-cal .d{font:800 26px/1 var(--font-display);letter-spacing:-.02em;margin:4px 0 3px}
+.band .happen-more > .ev .ev-cal .m{font:600 11px/1 var(--font-body);text-transform:lowercase;opacity:.7}
+.band .happen-more > .ev h3{
+  grid-column:2;font:700 19px/1.18 var(--font-display);letter-spacing:-.01em;color:var(--c-ink);margin:0;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;text-wrap:balance;
+}
+.band .happen-more > .ev .meta{grid-column:2;display:flex;flex-direction:column;gap:3px;color:var(--c-ink);opacity:.68;font-size:13.5px;margin:0}
+.band .happen-more > .ev .meta span{display:flex;align-items:center;gap:6px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* stubben: perforering + påminnelse */
 .band .happen-more > .ev .remind-btn{
-  width:auto;align-self:flex-start;margin-top:10px;padding:8px 14px;
-  background:transparent;border:1.5px solid currentColor;color:inherit;font-size:12px;
+  grid-column:1 / -1;align-self:end;justify-self:stretch;width:auto;
+  height:var(--stub);margin:16px -18px 0;padding:0 18px;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  background:transparent;border:0;border-top:2px dashed color-mix(in srgb,var(--c-ink) 16%,transparent);border-radius:0;
+  color:var(--c-meadow);font:700 13px/1 var(--font-body);letter-spacing:.01em;box-shadow:none;cursor:pointer;
 }
-.band .happen-more > .ev .remind-btn:hover{background:var(--band-fg);color:var(--band-bg);border-color:var(--band-fg)}
+.band .happen-more > .ev .remind-btn::after{
+  content:"";width:18px;height:18px;flex:none;background:currentColor;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9'/%3E%3Cpath d='M10.3 21a1.94 1.94 0 0 0 3.4 0'/%3E%3C/svg%3E") center/contain no-repeat;
+          mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9'/%3E%3Cpath d='M10.3 21a1.94 1.94 0 0 0 3.4 0'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+.band .happen-more > .ev .remind-btn:hover{background:var(--c-chalk);color:var(--c-meadow-deep)}
+
+/* återkommande (compact) kort i samma biljettform */
+.band .happen-more > .ev.compact .bd{display:flex;flex-direction:column;padding:18px}
+.band .happen-more > .ev.compact .when{font:700 11px/1 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--c-meadow)}
+
+/* "Se alla" sist i raden */
+.band .happen-more-all{border-radius:22px;background:var(--c-ink);color:#fff;border:0}
 .band .happen-scroll-hint{color:inherit;opacity:.6}
 
 /* Kantfade i evenemangsraden tonar mot bandets färg, inte mot vitt */
@@ -307,9 +360,20 @@ body{font-family:var(--font-body);font-size:16.5px;background:var(--paper);overf
 .band--picks .picks-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
 .band--picks .picks-row{display:contents}
 .band--picks .pick-feature,.band--picks .tcard{min-height:0;aspect-ratio:4/5;max-width:100%;border-radius:24px}
-.band--picks .pick-feature h3,.band--picks .tcard h3{font-size:clamp(22px,2vw,28px);line-height:1.08}
-.band--picks .pick-feature p{font-size:15px}
-.band--picks .pick-feature .bd{padding:22px}
+/* Samma anatomi i alla tre: etikett uppe till vänster, text förankrad nere till vänster, lika marginaler */
+.band--picks .pick-feature,.band--picks .tcard{--pk-pad:clamp(20px,2vw,28px);position:relative}
+.band--picks .pick-feature .shade,.band--picks .tcard .shade{
+  background:linear-gradient(180deg,rgba(16,24,18,0) 35%,rgba(16,24,18,.35) 60%,rgba(16,24,18,.82) 100%)}
+.band--picks .pick-feature .pick-status,.band--picks .tcard .badge-row{top:var(--pk-pad);left:var(--pk-pad);right:var(--pk-pad)}
+.band--picks .pick-feature .bd,.band--picks .tcard .bd{
+  position:absolute;left:0;right:0;bottom:0;min-height:0;max-width:none;
+  padding:0 var(--pk-pad) var(--pk-pad);display:flex;flex-direction:column;justify-content:flex-end;gap:8px}
+.band--picks .pick-feature .why{display:none}
+.band--picks .pick-feature h3,.band--picks .tcard h3{font-size:clamp(22px,2vw,28px);line-height:1.08;margin:0;text-shadow:none;text-wrap:balance}
+.band--picks .pick-feature p,.band--picks .tcard p{font-size:15px;line-height:1.45;color:rgba(255,255,255,.88);margin:0;max-width:none}
+.band--picks .pick-status .status-pill,.band--picks .tcard .badge{
+  margin:0;padding:7px 12px;border-radius:999px;box-shadow:none;
+  font:700 11px/1 var(--font-body);letter-spacing:.09em;text-transform:uppercase}
 @media (max-width:720px){
   .band--picks .picks-grid{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:78%;
     overflow-x:auto;scroll-snap-type:x mandatory;margin-inline:-18px;padding:0 18px 6px;scrollbar-width:none}
@@ -330,8 +394,13 @@ body{font-family:var(--font-body);font-size:16.5px;background:var(--paper);overf
 .band--stories .weekly-fact-media{display:block;background:#212C20;border-left:0}
 .weekly-fact-copy{padding:clamp(28px,3.4vw,44px)}
 @media (max-width:820px){.band--stories .weekly-fact-card{grid-template-columns:1fr}}
-/* Påminn-knapparna linjerar i nederkant oavsett titellängd */
-.band .happen-more > .ev{display:flex;flex-direction:column}
-.band .happen-more > .ev .bd{flex:1;display:flex;flex-direction:column;justify-content:flex-start}
-.band .happen-more > .ev .remind-btn{margin-top:auto}
-.band .happen-more > .ev .tag{margin-bottom:12px}
+
+/* Designpass: samma typografi i alla kort på startsidan */
+.ev-feature h3{font-family:var(--font-display);font-weight:800;letter-spacing:-.02em}
+.journey-step{border-radius:22px}
+.journey-step h3{font-family:var(--font-display);font-weight:700;font-size:20px;letter-spacing:-.01em;color:var(--c-meadow-deep)}
+.journey-step p{font-size:14px}
+.band--guides .guide-card h3{letter-spacing:-.01em}
+.band--events{padding-bottom:clamp(48px,5vw,72px)}
+.band .happen-scroll-hint{margin-top:4px}
+.journey-step .bd{padding:18px 20px 20px}
