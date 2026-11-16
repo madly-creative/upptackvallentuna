@@ -163,7 +163,7 @@ function chrome({ title, description, canonical, ogImage, jsonLd, body, current 
   <meta name="twitter:title" content="${esc(title)}">
   <meta name="twitter:description" content="${esc(description)}">
   <meta name="twitter:image" content="${esc(ogImage)}">
-  <meta name="theme-color" content="#002868">
+  <meta name="theme-color" content="#37472f">
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -173,7 +173,7 @@ function chrome({ title, description, canonical, ogImage, jsonLd, body, current 
   <link rel="icon" href="/icons/icon-192.png" type="image/png" sizes="192x192">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Raleway:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400;1,9..40,500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/seo.css">
   <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
   <script src="/pwa-boot.js" defer></script>
@@ -221,11 +221,11 @@ const seoCss =
 .built-by a{color:inherit;text-decoration:none;border-bottom:1px solid transparent}
 .built-by a:hover{border-bottom-color:currentColor;opacity:1}
 .seo-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
-.seo-actions a{font-size:14px;font-weight:600;color:#002868}
+.seo-actions a{font-size:14px;font-weight:600;color:var(--rust,#a85a3a)}
 .seo-guide-stops{margin:16px 0 24px;padding-left:1.25em}
 .seo-guide-stops li{margin:0 0 18px}
 .seo-guide-stops h3{font-family:var(--font-serif,Georgia,serif);font-size:1.15rem;font-weight:600;margin:0 0 6px}
-.seo-guide-stops h3 a{color:#002868}
+.seo-guide-stops h3 a{color:var(--rust,#a85a3a)}
 `;
 writeFileSync(join(root, "public/css/seo.css"), seoCss, "utf8");
 
@@ -788,7 +788,7 @@ writeFileSync(
   <meta property="og:image:alt" content="${esc(SITE.defaultOgImageAlt || SITE.name)}">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="${base}${SITE.defaultOgImage}">
-  <meta name="theme-color" content="#002868">
+  <meta name="theme-color" content="#37472f">
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -798,7 +798,7 @@ writeFileSync(
   <link rel="icon" href="/icons/icon-192.png" type="image/png" sizes="192x192">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Raleway:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400;1,9..40,500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/src/styles/main.css">
   <link rel="stylesheet" href="/src/styles/seo-pages.css">
   <script type="application/ld+json">${JSON.stringify(evListJsonLd)}</script>

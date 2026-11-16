@@ -2141,7 +2141,7 @@ import {
   const SEASON_ICO={
     berry:`<svg viewBox="0 0 24 24" fill="none"><path d="M12 20c0-4 3-7 3-11a3 3 0 1 0-6 0c0 4 3 7 3 11z" fill="#c23b3b"/><path d="M12 9c-1.2-2.2-3.5-3.2-5-3.4.8 2.2 2.4 3.4 5 3.4 2.6 0 4.2-1.2 5-3.4-1.5.2-3.8 1.2-5 3.4z" fill="#3d6b32"/></svg>`,
     leaf:`<svg viewBox="0 0 24 24" fill="none"><path d="M5 19c6-1 11-6 13-13-7 2-12 7-13 13z" stroke="#3d6b32" stroke-width="1.6" fill="rgba(61,107,50,.12)"/><path d="M6 18c4-4 8-7 12-9" stroke="#3d6b32" stroke-width="1.4" stroke-linecap="round"/></svg>`,
-    stalk:`<svg viewBox="0 0 24 24" fill="none"><path d="M12 21V8" stroke="#3d6b32" stroke-width="1.6" stroke-linecap="round"/><path d="M12 10c-3-2-5-2.5-7-2 1.5 2.5 4 4 7 4.5 3-.5 5.5-2 7-4.5-2 .5-4 1-7 2z" fill="#fde9a4" stroke="#002868" stroke-width="1"/></svg>`
+    stalk:`<svg viewBox="0 0 24 24" fill="none"><path d="M12 21V8" stroke="#3d6b32" stroke-width="1.6" stroke-linecap="round"/><path d="M12 10c-3-2-5-2.5-7-2 1.5 2.5 4 4 7 4.5 3-.5 5.5-2 7-4.5-2 .5-4 1-7 2z" fill="#c8912f" stroke="#a85a3a" stroke-width="1"/></svg>`
   };
   let heroSeasonAction=null;
   let heroEventKey=null;
