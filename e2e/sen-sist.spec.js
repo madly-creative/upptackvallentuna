@@ -88,7 +88,7 @@ test.describe("Sen sist du var här", () => {
       });
     });
     await page.goto("/");
-    await expect(page.locator("#heroTitle")).toContainText("upptäcka");
+    await expect(page.locator("#heroTitle")).toContainText("Mellan runor");
     await expect(page.locator("#sinceLast")).toHaveCount(0);
   });
 });
