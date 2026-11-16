@@ -982,7 +982,7 @@ import {
   document.addEventListener("keydown",e=>{ if(e.key==="Escape") toggleMobileNav(false); });
 
   // ---- localStorage: favorites, last visit, soft interest ----
-  const LS_FAV="vii_favs_v1", LS_LAST="vii_last_place_v1", LS_INTEREST="vii_interest_v1", LS_GEO_ASKED="vii_geo_asked_v1";
+  const LS_FAV="vii_favs_v1", LS_INTEREST="vii_interest_v1", LS_GEO_ASKED="vii_geo_asked_v1";
   const LS_LISTS="uv_lists_v1", LS_PENDING="uv_pending_events_v1", LS_REPORTS="uv_reports_v1", LS_NOTIFY="uv_notify_seen_v1";
   function loadJSON(k,fb){try{return JSON.parse(localStorage.getItem(k))??fb;}catch(e){return fb;}}
   function saveJSON(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
@@ -1236,11 +1236,6 @@ import {
     S('heroGreet',greet);
   }
   refreshHeroGreet();
-  const heroTitleEl=document.getElementById('heroTitle');
-  if(heroTitleEl) heroTitleEl.textContent="Vad vill du upptäcka idag?";
-  S('heroTagline',"Smultronställen · Fika · Natur · Evenemang");
-  const heroSubBase="Handplockade lokala favoriter — inte kedjorna du redan känner till.";
-  S('heroSub', isWeekend ? "Helgläge: utflykter, fika och det som gör bygden levande — nära dig." : heroSubBase);
   updateFavBadge();
 
   /**
@@ -1652,35 +1647,6 @@ import {
     });
     renderNearDigPanel(hits);
   }
-
-  // Return visit memory
-  (function showReturn(){
-    const last=loadJSON(LS_LAST,null);
-    if(!last?.name) return;
-    const p=places.find(x=>x.name===last.name); if(!p) return;
-    const open=isOpen(p);
-    const banner=document.getElementById('returnBanner');
-    const text=document.getElementById('returnText');
-    const btn=document.getElementById('returnBtn');
-    if(!banner||!text||!btn) return;
-    const when=last.at?new Date(last.at):null;
-    let whenBit="";
-    if(when && !Number.isNaN(when.getTime())){
-      const sameDay=
-        when.getFullYear()===now.getFullYear() &&
-        when.getMonth()===now.getMonth() &&
-        when.getDate()===now.getDate();
-      if(!sameDay){
-        whenBit=" ("+when.toLocaleDateString("sv-SE",{weekday:"short",day:"numeric",month:"short"})+")";
-      }
-    }
-    const openBit=!isTimedVenue(p)
-      ?(open?"alltid tillgänglig":"kolla innan du åker")
-      :(open?"öppet nu":"stängt just nu");
-    text.innerHTML=`Senast tittade du på <strong>${p.name}</strong>${whenBit} — ${openBit}${p.ch&&open&&isTimedVenue(p)?`, till ${String(p.ch).padStart(2,"0")}:00`:""}.`;
-    btn.onclick=()=>openPlace(p.name);
-    banner.hidden=false;
-  })();
 
   // ---- Botanical SVGs for season cards ----
   const BOTANICALS={
@@ -3509,7 +3475,7 @@ import {
       }
     }
     // Event tomorrow
-    const tmrISO=addDaysISO(todayISO,1);
+    const tmrISO=isoPlusDays(1);
     const tomorrow=liveEvents.find(e=>e.date===tmrISO);
     if(tomorrow){
       const key="ev_"+tomorrow.date+"_"+tomorrow.title;
@@ -3794,10 +3760,8 @@ import {
       ctx={mood:weatherMood(code,temp),temp,code,sunrise,sunset,feels,wind};
       const ico=document.getElementById('wIcon');
       if(ico) ico.innerHTML=WEATHER_SVG[wk.k]||WEATHER_SVG.cloud;
-      document.getElementById('wTemp').textContent=temp+"°";
-      document.getElementById('wPlace').textContent=K;
-      document.getElementById('wText').textContent=wk.t;
-      document.getElementById('wSub').textContent=`känns som ${feels}°`;
+      const setTxt=(id,v)=>{const el=document.getElementById(id); if(el) el.textContent=v;};
+      setTxt('wTemp',temp+"°"); setTxt('wPlace',K); setTxt('wText',wk.t); setTxt('wSub',`känns som ${feels}°`);
       const discWx=document.getElementById('homeDiscoverWx');
       if(discWx){
         discWx.hidden=false;
@@ -4243,7 +4207,6 @@ import {
     const mins=minutesUntilClose(p);
     const scored=scorePlace(p);
     bumpInterest(p.name,"views");
-    saveJSON(LS_LAST,{name:p.name,at:new Date().toISOString()});
     document.getElementById('platsHero').style.backgroundImage=`url('${p.img}')`;
     S('platsCat',p.cat); S('platsName',p.name);
     S('platsLead',p.blurb);
