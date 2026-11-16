@@ -72,7 +72,7 @@ body{font-family:var(--font-body);font-size:16.5px;background:var(--paper);overf
 #view-start .band .wtip{
   font-family:var(--font-body);font-style:normal;font-weight:400;
   font-size:clamp(18px,1.7vw,22px)!important;line-height:1.4;letter-spacing:0;
-  color:inherit!important;opacity:.85;margin-top:10px!important;max-width:34ch;
+  color:inherit!important;opacity:.85;margin-top:10px!important;
 }
 
 /* ---------- Band: helbreddsfärgfält ---------- */
@@ -146,7 +146,7 @@ body{font-family:var(--font-body);font-size:16.5px;background:var(--paper);overf
 /* ---------- Berättelser ---------- */
 .levererar-latest{border:0;border-radius:28px;background:#fff;color:var(--c-ink)}
 .levererar-latest h3{font-family:var(--font-display);font-weight:800;font-size:clamp(28px,3vw,40px);letter-spacing:-.02em}
-.weekly-fact-card{border-radius:28px;background:var(--c-ink);min-height:300px}
+.weekly-fact-card{border-radius:28px;background:#212C20;min-height:300px}
 .weekly-fact-card blockquote{font-family:var(--font-display);font-style:normal;font-weight:800;letter-spacing:-.02em;font-size:clamp(28px,3vw,40px);line-height:1.05}
 
 /* ---------- Tipsa-banner ---------- */
@@ -254,25 +254,6 @@ body{font-family:var(--font-body);font-size:16.5px;background:var(--paper);overf
 /* Evenemang: ingen tom rad där "Öppet nu" låg */
 .band--events .today-brief-grid[hidden]{display:none}
 
-/* Berättelser: Vallentuna levererar + Veckans visste du att sida vid sida */
-@media (min-width:900px){
-  .band--stories{
-    display:grid;align-items:stretch;column-gap:24px;
-    grid-template-columns:minmax(28px,1fr) minmax(0,calc(var(--max)/2 - 40px)) minmax(0,calc(var(--max)/2 - 40px)) minmax(28px,1fr);
-  }
-  .band--stories > *{grid-column:2 / 4}
-  .band--stories > .levererar-sec{grid-column:2;padding:0;margin:0;max-width:none;display:flex;flex-direction:column}
-  .band--stories > .weekly-fact-sec{grid-column:3;padding:0;margin:0;max-width:none;display:flex;flex-direction:column;justify-content:flex-end}
-  .band--stories > .levererar-sec #levererarTeaser{flex:1;display:flex}
-  .band--stories .levererar-latest{grid-template-columns:1fr;grid-template-rows:240px auto;flex:1}
-  .band--stories .weekly-fact-card{grid-template-columns:1fr;flex:1}
-  .band--stories .weekly-fact-media{display:none}
-  .band .sec.weekly-fact-sec{margin-top:0}
-}
-/* På dator står rubriken för berättelserna över båda korten */
-@media (min-width:900px){
-  .band--stories > .weekly-fact-sec{padding-top:calc(var(--stories-head,0px))}
-}
 
 /* Ingen serif längre: det som var kursiv serif i main.css blir rak sans */
 .hero-search input::placeholder,.searchbar input::placeholder,.wtip,.pick-quote blockquote,.ev-empty,
@@ -280,3 +261,77 @@ body{font-family:var(--font-body);font-size:16.5px;background:var(--paper);overf
 .om-body p.big,.om-body .om-quote,.om-body .om-sign,.plats-main p.lead,.tipsare-credit,.plats-proof,
 .voice-feature .vf-quote,.guide-outro,.portratt-quote p,.moment .moment-sign,.levererar-empty{font-style:normal}
 .sitefooter .foot-tag{font-family:var(--font-display);font-weight:700;letter-spacing:-.01em}
+
+/* ==========================================================================
+   Justeringar 2026-11-16 (Juhas genomgång)
+   ========================================================================== */
+
+/* Underrubriker och ingresser: inga tvingade radbryt. Bred mått, och
+   text-wrap:pretty undviker ensamma ord på sista raden. Gäller hela sajten. */
+.lede,.wtip,.today-brief-meta,.home-discover-lede,.guides-home-lede,.nara-dig-titles p,
+#heroSub,.hero-tagline,.pick-feature p,.tcard p,.guide-card p,.plats-main p.lead,
+.levererar-latest p,.weekly-fact-copy > p,.smultron-banner-copy p,.journey-step p,
+.home-discover-head,.guides-home-copy,.nara-dig-titles,.sec-head > div{
+  max-width:min(68ch,100%)!important;text-wrap:pretty;
+}
+.sec-head > div,.guides-home-copy,.nara-dig-titles{flex:1 1 auto;min-width:0}
+
+/* Evenemangskort i bandet: ingen låda, bilden bär kortet, texten står på bandets färg */
+.band .happen-more > .ev{
+  background:transparent;border:0;box-shadow:none;border-radius:0;overflow:visible;
+}
+.band .happen-more > .ev:hover{transform:none;box-shadow:none}
+.band .happen-more > .ev .media{border-radius:20px;overflow:hidden;background:color-mix(in srgb,var(--band-fg) 8%,transparent)}
+.band .happen-more > .ev:hover .thumb{transform:scale(1.03)}
+.band .happen-more > .ev .thumb{transition:transform .4s ease}
+.band .happen-more > .ev .bd{padding:14px 2px 0;gap:4px}
+.band .happen-more > .ev h3{font-family:var(--font-display);font-weight:700;font-size:20px;letter-spacing:-.01em;line-height:1.15;color:inherit;margin:0}
+.band .happen-more > .ev .meta{color:inherit;opacity:.72;font-size:13px}
+.band .happen-more > .ev .tag{color:inherit;opacity:.6;margin-top:4px}
+.band .happen-more > .ev .date{background:#fff;color:var(--c-ink);border-radius:14px;box-shadow:none}
+.band .happen-more > .ev .date .d{font-family:var(--font-display);font-weight:800}
+.band .happen-more > .ev .remind-btn{
+  width:auto;align-self:flex-start;margin-top:10px;padding:8px 14px;
+  background:transparent;border:1.5px solid currentColor;color:inherit;font-size:12px;
+}
+.band .happen-more > .ev .remind-btn:hover{background:var(--band-fg);color:var(--band-bg);border-color:var(--band-fg)}
+.band .happen-scroll-hint{color:inherit;opacity:.6}
+
+/* Kantfade i evenemangsraden tonar mot bandets färg, inte mot vitt */
+.band .happen-scroll-fade-end{background:linear-gradient(90deg,transparent,var(--band-bg) 75%)}
+.band .happen-scroll-fade-start{background:linear-gradient(270deg,transparent,var(--band-bg) 75%)}
+.band .happen-scroll-prev,.band .happen-scroll-next{background:#fff;border:0;color:var(--c-ink);box-shadow:0 8px 20px -8px rgba(0,0,0,.35)}
+
+/* Handplockat: tre lika kort på rad i stället för en hög huvudbild */
+.band--picks{padding-block:clamp(56px,6vw,88px)}
+.band--picks .picks-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.band--picks .picks-row{display:contents}
+.band--picks .pick-feature,.band--picks .tcard{min-height:0;aspect-ratio:4/5;max-width:100%;border-radius:24px}
+.band--picks .pick-feature h3,.band--picks .tcard h3{font-size:clamp(22px,2vw,28px);line-height:1.08}
+.band--picks .pick-feature p{font-size:15px}
+.band--picks .pick-feature .bd{padding:22px}
+@media (max-width:720px){
+  .band--picks .picks-grid{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:78%;
+    overflow-x:auto;scroll-snap-type:x mandatory;margin-inline:-18px;padding:0 18px 6px;scrollbar-width:none}
+  .band--picks .picks-grid::-webkit-scrollbar{display:none}
+  .band--picks .pick-feature,.band--picks .tcard{scroll-snap-align:start}
+}
+
+/* Guider: tre kort i samma format */
+.band--guides .guides-home-row{grid-template-columns:repeat(3,minmax(0,1fr))}
+.band--guides .guides-home-row .guide-card.featured{box-shadow:none}
+.band--guides .guides-home-row .guide-card .im,
+.band--guides .guides-home-row .guide-card.featured .im{min-height:0;aspect-ratio:16/10}
+.band--guides .guides-home-row .guide-card{display:flex;flex-direction:column}
+.band--guides .guides-home-row .guide-card .bd{flex:1}
+
+/* Veckans visste du att: tillbaka till det breda formatet med illustrationen */
+.band--stories .weekly-fact-card{grid-template-columns:minmax(0,1fr) minmax(160px,280px);min-height:260px}
+.band--stories .weekly-fact-media{display:block;background:#212C20;border-left:0}
+.weekly-fact-copy{padding:clamp(28px,3.4vw,44px)}
+@media (max-width:820px){.band--stories .weekly-fact-card{grid-template-columns:1fr}}
+/* Påminn-knapparna linjerar i nederkant oavsett titellängd */
+.band .happen-more > .ev{display:flex;flex-direction:column}
+.band .happen-more > .ev .bd{flex:1;display:flex;flex-direction:column;justify-content:flex-start}
+.band .happen-more > .ev .remind-btn{margin-top:auto}
+.band .happen-more > .ev .tag{margin-bottom:12px}
