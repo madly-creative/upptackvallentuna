@@ -602,20 +602,19 @@ h1,h2,h3,h4,.em-title,.ev-seo-month-h{letter-spacing:var(--display-track)!import
 @media (max-width:900px){.hero-full .hero-eyebrow{font-size:26px;margin-bottom:4px}}
 .hero-full #heroSub{margin-top:20px}
 
-/* Hero v3.3: allt centrerat, horisontellt och vertikalt */
+/* Hero v3.3: vänsterställt, vertikalt centrerat */
 .hero-full .hero-overlay{
   background:
-    radial-gradient(ellipse 70% 60% at 50% 52%,rgba(14,18,12,.42) 0%,rgba(14,18,12,.2) 55%,rgba(14,18,12,0) 100%),
+    linear-gradient(to right,rgba(14,18,12,.5) 0%,rgba(14,18,12,.28) 38%,rgba(14,18,12,0) 66%),
     linear-gradient(to top,rgba(14,18,12,.35) 0%,rgba(14,18,12,0) 30%);
 }
-.hero-full .hero-inner{align-items:center;justify-content:center;padding:clamp(48px,8vh,88px) 28px clamp(96px,12vh,128px)}
-.hero-full .hero-copy{display:flex;flex-direction:column;align-items:center;text-align:center;margin:0 auto;flex:0 1 auto}
-.hero-full #heroSub{margin-left:auto;margin-right:auto}
-.hero-full .hero-search{margin-left:auto;margin-right:auto}
-.hero-full .hero-chips{justify-content:center}
+.hero-full .hero-inner{align-items:center;justify-content:flex-start;padding:clamp(48px,8vh,88px) 28px}
+.hero-full .hero-copy{text-align:left;flex:0 1 auto}
 @media (max-width:900px){
-  .hero-full .hero-inner{justify-content:center;align-items:center;padding:40px 18px}
+  .hero-full .hero-inner{justify-content:center;align-items:stretch;padding:40px 18px}
   .hero-full .hero-copy{width:100%}
-  .hero-full .hero-chips{justify-content:flex-start;max-width:100%;margin-right:0;padding-right:0}
 }
-@media (min-width:560px) and (max-width:900px){.hero-full .hero-chips{justify-content:center}}
+@media (min-width:901px){
+  .hero-full{align-items:stretch}
+  .hero-full .hero-inner{align-self:stretch;min-height:inherit}
+}
