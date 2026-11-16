@@ -1,19 +1,26 @@
 .seo-page{
   min-height:100vh;
-  background:var(--paper, #f9f7f3);
-  color:var(--ink, #2a261c);
-  font-family:var(--font-sans, "DM Sans"), system-ui, sans-serif;
+  background:#fef9e2;
+  color:#141820;
+  font-family:Raleway,"Helvetica Neue",Arial,sans-serif;
+  --ink:#141820;
+  --ink-soft:#3e4a5c;
+  --paper:#fef9e2;
+  --card:#ffffff;
+  --moss:#002868;
+  --moss-deep:#002868;
+  --rust:#002868;
   --font-serif:"Playfair Display",Georgia,"Times New Roman",serif;
-  --font-sans:"DM Sans","Helvetica Neue",Arial,sans-serif;
+  --font-sans:Raleway,"Helvetica Neue",Arial,sans-serif;
 }
 .seo-top{
   display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
-  max-width:920px;margin:0 auto;padding:18px 20px;
-  border-bottom:1px solid rgba(40,34,24,.08);
+  max-width:1290px;margin:0 auto;padding:18px 28px;
+  border-bottom:1px solid rgba(0,40,104,.12);
 }
 .seo-brand{
   font-family:var(--font-serif), Georgia, serif;
-  font-size:22px;font-weight:600;color:var(--moss-deep, #3d4f3a);
+  font-size:22px;font-weight:600;color:#002868;
   text-decoration:none;
 }
 .seo-top nav{display:flex;gap:14px;flex-wrap:wrap}
@@ -21,22 +28,23 @@
   font-size:13px;font-weight:600;color:var(--ink-soft, #5c5648);
   text-decoration:none;
 }
-.seo-top nav a[aria-current="page"]{color:var(--rust, #a85a3a)}
-.seo-main{max-width:720px;margin:0 auto;padding:40px 20px 64px}
+.seo-top nav a[aria-current="page"]{color:#002868;font-weight:700}
+.seo-main{max-width:1290px;margin:0 auto;padding:40px 28px 64px}
 .seo-main h1{
   font-family:var(--font-serif), Georgia, serif;
-  font-size:clamp(32px,5vw,44px);font-weight:500;color:var(--moss-deep, #3d4f3a);
+  font-size:clamp(32px,5vw,48px);font-weight:500;color:#002868;
   line-height:1.15;margin-bottom:12px;
 }
-.seo-main .lede{font-size:16px;line-height:1.55;color:var(--ink-soft, #5c5648);margin-bottom:10px}
+.seo-main .lede{font-size:16px;line-height:1.55;color:var(--ink-soft, #3e4a5c);margin-bottom:10px;max-width:68ch}
+.seo-main > p{max-width:68ch}
 .seo-main .events-tip-cta{
   font-size:15px;color:var(--ink-soft, #5c5648);margin:0 0 20px;max-width:560px;line-height:1.5;
 }
 .seo-main .events-tip-cta .lnk{
-  font-weight:600;color:var(--moss, #3d4f3a);text-decoration:underline;
+  font-weight:600;color:#002868;text-decoration:underline;
   text-underline-offset:2px;
 }
-.seo-main .events-tip-cta .lnk:hover{color:var(--moss-deep, #2f3d2e)}
+.seo-main .events-tip-cta .lnk:hover{color:#001a48}
 .seo-main .event-pills{margin:0 0 10px}
 .seo-main .event-pills .chip{background:var(--card, #ffffff)}
 .seo-main .event-count{
@@ -46,30 +54,30 @@
 .seo-main .ev-empty{font-size:15px;color:var(--ink-soft, #5c5648);margin:8px 0 24px}
 .seo-main h2{
   font-family:var(--font-serif), Georgia, serif;
-  font-size:26px;font-weight:500;color:var(--moss-deep, #3d4f3a);margin:28px 0 10px;
+  font-size:26px;font-weight:500;color:#002868;margin:28px 0 10px;
 }
 .seo-main p{font-size:15px;line-height:1.6;margin-bottom:12px}
-.seo-main a{color:var(--rust, #a85a3a)}
+.seo-main a{color:#002868}
 .ev-seo-list{display:flex;flex-direction:column;gap:28px}
 .ev-seo-month{display:flex;flex-direction:column;gap:18px}
 .ev-seo-month-h{
   font-family:var(--font-serif, Georgia, serif);font-size:clamp(22px,2.6vw,28px);font-weight:500;
-  color:var(--moss-deep, #2f3d2e);margin:8px 0 0;letter-spacing:-.01em;
+  color:#002868;margin:8px 0 0;letter-spacing:-.01em;
 }
 .ev-seo{
-  background:rgba(255,255,255,.65);
-  border:1px solid rgba(40,34,24,.08);
-  border-radius:18px;padding:18px 20px;
+  background:#fff;
+  border:1px solid rgba(0,40,104,.1);
+  border-radius:12px;padding:18px 20px;
 }
-.ev-seo time{display:block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--rust, #a85a3a)}
+.ev-seo time{display:block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#002868}
 .ev-seo .cat{display:inline-block;margin-top:6px;font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--ink-soft)}
 .ev-seo h2{font-size:22px;margin:8px 0 6px}
 .ev-seo h2 a{color:inherit;text-decoration:none}
-.ev-seo h2 a:hover{color:var(--rust, #a85a3a)}
+.ev-seo h2 a:hover{color:#001a48}
 .ev-seo .host{font-size:13px;color:var(--ink-soft);margin-bottom:8px}
 .seo-cta{margin-top:36px;font-size:14px;font-weight:600}
 .seo-foot{
-  max-width:920px;margin:0 auto;padding:20px;border-top:1px solid rgba(40,34,24,.08);
+  max-width:1290px;margin:0 auto;padding:20px 28px;border-top:1px solid rgba(0,40,104,.12);
   display:flex;gap:10px;font-size:13px;color:var(--ink-soft);
 }
 .seo-foot a{color:inherit}
@@ -81,14 +89,14 @@
 .built-by a:hover{border-bottom-color:currentColor;opacity:1}
 .seo-fact-art{
   display:block;width:100%;aspect-ratio:16/7;max-height:240px;object-fit:cover;object-position:center;
-  margin:0 0 22px;border-radius:16px;background:#2f3d2e;
+  margin:0 0 22px;border-radius:16px;background:#002868;
 }
 .seo-fact-ph{
   width:100%;aspect-ratio:16/7;max-height:220px;margin:0 0 22px;border-radius:16px;
   display:grid;place-items:center;
   font-family:var(--font-serif),Georgia,serif;font-size:56px;font-weight:500;
   color:rgba(247,243,235,.55);
-  background:linear-gradient(145deg,#2f3d2e 0%,#3d4f3a 100%);
+  background:linear-gradient(145deg,#001a48 0%,#002868 100%);
 }
 .seo-sagen-label{font-size:15px;color:var(--ink-soft,#5c5648);margin:0 0 12px}
 .seo-source{font-size:13px;color:var(--ink-soft,#5c5648);margin:18px 0 8px}
@@ -105,8 +113,8 @@
 .built-by a{color:inherit;text-decoration:none;border-bottom:1px solid transparent}
 .built-by a:hover{border-bottom-color:currentColor;opacity:1}
 .seo-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
-.seo-actions a{font-size:14px;font-weight:600;color:var(--rust,#a85a3a)}
+.seo-actions a{font-size:14px;font-weight:600;color:#002868}
 .seo-guide-stops{margin:16px 0 24px;padding-left:1.25em}
 .seo-guide-stops li{margin:0 0 18px}
 .seo-guide-stops h3{font-family:var(--font-serif,Georgia,serif);font-size:1.15rem;font-weight:600;margin:0 0 6px}
-.seo-guide-stops h3 a{color:var(--rust,#a85a3a)}
+.seo-guide-stops h3 a{color:#002868}

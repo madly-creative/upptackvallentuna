@@ -8,8 +8,8 @@
   "orientation": "portrait-primary",
   "lang": "sv-SE",
   "dir": "ltr",
-  "background_color": "#f5f1e8",
-  "theme_color": "#37472f",
+  "background_color": "#fef9e2",
+  "theme_color": "#002868",
   "icons": [
     {
       "src": "/icons/icon-192.png",
