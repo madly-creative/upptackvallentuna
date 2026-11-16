@@ -122,3 +122,7 @@
 .seo-main .om-sign{font-family:var(--font-display);font-style:normal;font-size:20px}
 body.seo-page{margin:0}
 .seo-hero-img{width:100%;height:auto;object-fit:cover}
+
+/* Rubriker: -4 % spärrning överallt (Juha 2026-11-16) */
+:root{--display-track:-.04em}
+h1,h2,h3,h4,.em-title,.ev-seo-month-h{letter-spacing:var(--display-track)!important}

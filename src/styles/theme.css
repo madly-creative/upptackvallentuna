@@ -468,3 +468,7 @@ body{font-family:var(--font-body);font-size:16.5px;background:var(--paper);overf
 /* Ny liggande logotyp (195×50) */
 .brand .logo{height:40px;max-width:min(195px,46vw)}
 @media (max-width:720px){.brand .logo{height:32px}}
+
+/* Rubriker: -4 % spärrning överallt (Juha 2026-11-16) */
+:root{--display-track:-.04em}
+h1,h2,h3,h4,.em-title,.ev-seo-month-h{letter-spacing:var(--display-track)!important}
