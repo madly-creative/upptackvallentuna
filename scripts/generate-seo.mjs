@@ -173,15 +173,16 @@ function chrome({ title, description, canonical, ogImage, jsonLd, body, current 
   <link rel="icon" href="/icons/icon-192.png" type="image/png" sizes="192x192">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/seo.css">
+  <link rel="stylesheet" href="/css/seo-theme.css">
   <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
   <script src="/pwa-boot.js" defer></script>
   ${umamiScript}
 </head>
 <body class="seo-page">
   <header class="seo-top">
-    <a class="seo-brand" href="/">${esc(SITE.name)}</a>
+    <a class="seo-brand" href="/" aria-label="${esc(SITE.name)} – startsida"><img src="/assets/shared/logo.svg" alt="" width="195" height="50"></a>
     <nav aria-label="Sekundär">
       ${nav}
     </nav>
@@ -798,20 +799,19 @@ writeFileSync(
   <link rel="icon" href="/icons/icon-192.png" type="image/png" sizes="192x192">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/src/styles/main.css">
-  <link rel="stylesheet" href="/src/styles/seo-pages.css">
+  <link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/src/styles/seo-site.css">
   <script type="application/ld+json">${JSON.stringify(evListJsonLd)}</script>
   <script src="/pwa-boot.js" defer></script>
   ${umamiScript}
 </head>
 <body class="seo-page">
   <header class="seo-top">
-    <a class="seo-brand" href="/">${esc(SITE.name)}</a>
+    <a class="seo-brand" href="/" aria-label="${esc(SITE.name)} – startsida"><img src="/assets/shared/logo.svg" alt="" width="195" height="50"></a>
     <nav aria-label="Sekundär">
       <a href="/">Startsida</a>
       <a href="/evenemang.html" aria-current="page">Evenemang</a>
-      <a href="/om.html">Om Upptäck Vallentuna</a>
+      <a href="/om.html">Om</a>
       <a href="/integritet.html">Integritet</a>
     </nav>
   </header>

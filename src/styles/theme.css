@@ -404,3 +404,67 @@ body{font-family:var(--font-body);font-size:16.5px;background:var(--paper);overf
 .band--events{padding-bottom:clamp(48px,5vw,72px)}
 .band .happen-scroll-hint{margin-top:4px}
 .journey-step .bd{padding:18px 20px 20px}
+
+/* ===== Undersidor i appen: samma rubrikskala, kort och knappar som startsidan ===== */
+.cat-page .cat-head h1,.guides-page > h1,.events-page > h1,#view-levererar h1,#view-roester h1,#view-om h1,
+#view-sok h1,#view-listor h1,#view-skicka h1,#view-favoriter h1{
+  font-family:var(--font-display);font-weight:700;color:var(--c-ink);
+  font-size:clamp(44px,6vw,76px);line-height:1;letter-spacing:-.03em;margin-bottom:14px;text-wrap:balance}
+.view h1 em{font-style:normal;color:inherit}
+.view .eyebrow{color:var(--c-meadow);letter-spacing:.12em}
+.view .lede{color:color-mix(in srgb,var(--c-ink) 72%,transparent)}
+.recurring-h,.ev-month-h,.events-page h2{font-family:var(--font-display);font-weight:700;letter-spacing:-.02em;color:var(--c-ink)}
+
+/* Kategorikort: bilden går kant i kant, etikett på bilden */
+.cat-grid .route-card{position:relative;padding:0;border:0;border-radius:22px;overflow:hidden;background:#fff;
+  box-shadow:0 18px 34px -28px rgba(22,36,27,.5);transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s}
+.cat-grid .route-card:hover{transform:translateY(-4px);box-shadow:0 26px 40px -26px rgba(22,36,27,.55)}
+.cat-grid .route-card .im{margin:0;border-radius:0;aspect-ratio:16/10;height:auto}
+.cat-grid .route-card .step{position:absolute;top:12px;left:12px;z-index:2;margin:0;padding:6px 10px;border-radius:999px;
+  background:var(--c-raps);color:var(--c-ink);font:700 10.5px/1 var(--font-body);letter-spacing:.09em}
+.cat-grid .route-card .bd{padding:18px 20px 20px}
+.cat-grid .route-card h3{font:700 20px/1.15 var(--font-display);letter-spacing:-.01em;color:var(--c-ink)}
+
+/* Evenemangssidan: vita kort, vitt datum, samma påminnelseknapp */
+.events-grid .ev{background:#fff;border:0;border-radius:22px;overflow:hidden;box-shadow:0 18px 34px -28px rgba(22,36,27,.5)}
+.events-grid .ev:hover{transform:translateY(-3px)}
+.events-grid .ev .date,.ev .date{background:#fff;color:var(--c-ink);border-radius:14px;box-shadow:0 4px 14px rgba(22,36,27,.18)}
+.events-grid .ev .date .d,.ev .date .d{font-family:var(--font-display);font-weight:700}
+.events-grid .ev .date .dow{color:var(--c-meadow)}
+.events-grid .ev h3{font:700 20px/1.15 var(--font-display);letter-spacing:-.01em;color:var(--c-ink)}
+.events-grid .ev .tag{color:var(--c-meadow)}
+.events-grid .remind-btn,.em-actions .remind-btn{
+  background:transparent;border:1.5px solid var(--c-ink);color:var(--c-ink);border-radius:999px;font-weight:700}
+.events-grid .remind-btn:hover{background:var(--c-ink);color:#fff}
+
+/* Guidesidor och plats: rubriker i nya typsnittet, stoppen som kort */
+.guide-stop h3,.plats-main h2,.plats-main h3{font-family:var(--font-display);font-weight:700;letter-spacing:-.01em}
+.plats-main p.lead{font-family:var(--font-body);font-size:clamp(19px,1.6vw,22px);line-height:1.45;color:var(--c-ink)}
+
+/* Formulär och listor */
+#view-skicka input,#view-skicka textarea,#view-skicka select,#view-listor input{
+  border-radius:14px;border:1.5px solid rgba(22,36,27,.14);background:#fff;font-family:var(--font-body)}
+#view-skicka input:focus,#view-skicka textarea:focus,#view-skicka select:focus,#view-listor input:focus{outline:none;border-color:var(--c-meadow);box-shadow:0 0 0 3px color-mix(in srgb,var(--c-meadow) 18%,transparent)}
+.list-card,.tip-form,.skicka-card{border-radius:22px;border:0;box-shadow:0 18px 34px -28px rgba(22,36,27,.5)}
+/* Primärknappar i hela appen: mörk pill, som "Tipsa oss" i menyn */
+.view .submit,.view .btn-primary,.guide-actions .btn-primary{background:var(--c-ink);border-color:var(--c-ink);color:#fff;border-radius:999px;font-weight:700}
+.view .submit:hover,.view .btn-primary:hover,.guide-actions .btn-primary:hover{background:var(--c-meadow);border-color:var(--c-meadow)}
+.btn-guide.primary{background:var(--c-ink);border-color:var(--c-ink);color:#fff;border-radius:999px}
+.btn-guide.primary:hover{background:var(--c-meadow);border-color:var(--c-meadow)}
+/* Sista röda resterna bort: platsetikett, statuspiller, favoritknapp */
+.plats-hero .hcat{background:var(--c-raps);color:var(--c-ink);border-radius:999px;padding:6px 12px;letter-spacing:.1em}
+.status-pill.soon{color:var(--c-ink);background:color-mix(in srgb,var(--c-raps) 45%,#fff)}
+.plats-side .fav-toggle.on{border-color:var(--c-meadow);color:var(--c-meadow);background:color-mix(in srgb,var(--c-meadow) 8%,#fff)}
+.guide-actions .btn-guide.primary{background:var(--c-ink);border-color:var(--c-ink);color:#fff}
+.guide-actions .btn-guide.primary:hover{background:var(--c-meadow);border-color:var(--c-meadow)}
+/* Evenemangsfönstret i samma språk som korten */
+.event-modal .em-card,.em-card{border-radius:28px}
+.em-date{background:#fff!important;color:var(--c-ink)!important;border-radius:14px;box-shadow:0 4px 14px rgba(22,36,27,.2)}
+.em-date .d{font-family:var(--font-display);font-weight:700}
+.em-date .dow{color:var(--c-meadow)}
+.em-cat{display:inline-block;padding:5px 10px;border-radius:999px;background:var(--c-raps);color:var(--c-ink)!important;letter-spacing:.09em}
+.em-title{font-family:var(--font-display);font-weight:700;letter-spacing:-.02em;color:var(--c-ink)!important}
+.em-body .remind-btn,.em-actions .remind-btn,.em-actions .btn-primary{background:var(--c-ink);border-color:var(--c-ink);color:#fff;border-radius:999px}
+/* Ny liggande logotyp (195×50) */
+.brand .logo{height:40px;max-width:min(195px,46vw)}
+@media (max-width:720px){.brand .logo{height:32px}}
