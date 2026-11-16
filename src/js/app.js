@@ -3475,7 +3475,7 @@ import {
       }
     }
     // Event tomorrow
-    const tmr=addDays(now,1); const tmrISO=iso(tmr);
+    const tmrISO=isoPlusDays(1);
     const tomorrow=liveEvents.find(e=>e.date===tmrISO);
     if(tomorrow){
       const key="ev_"+tomorrow.date+"_"+tomorrow.title;
