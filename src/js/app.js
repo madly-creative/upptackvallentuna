@@ -2010,14 +2010,43 @@ import {
   // Hero image carousel — first slide is in HTML + preload; rest after idle
   const HERO_FALLBACK="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1800&q=80";
   const heroImages=[
+    "/assets/hero/film-poster.webp",
     "/assets/hero/1.webp",
     "/assets/hero/2.webp",
     "/assets/hero/3.webp",
     "/assets/hero/4.webp"
   ];
+  // Herofilm: tyst loop som ersätter bildspelet när förutsättningarna finns.
+  // Stillbilden (film-poster = filmens första bildruta) visas tills filmen faktiskt spelar.
+  function heroFilmAllowed(){
+    try{
+      if(window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
+      const c=navigator.connection;
+      if(c && (c.saveData || /(^|-)2g$/.test(c.effectiveType||""))) return false;
+    }catch(e){}
+    return true;
+  }
+  function bootHeroFilm(){
+    const v=document.getElementById('heroVideo');
+    if(!v || !heroFilmAllowed()) return false;
+    const small=window.matchMedia("(max-width: 760px)").matches;
+    const base=small?"/assets/hero/film-540":"/assets/hero/film-720";
+    v.innerHTML=`<source src="${base}.webm" type="video/webm"><source src="${base}.mp4" type="video/mp4">`;
+    v.addEventListener('playing',()=>v.classList.add('on'),{once:true});
+    v.addEventListener('error',()=>v.remove(),{once:true});
+    v.preload="auto";
+    v.load();
+    const p=v.play(); if(p&&p.catch) p.catch(()=>{});
+    // Pausa när heron inte syns, så att filmen inte drar batteri i onödan
+    if('IntersectionObserver' in window){
+      new IntersectionObserver(([e])=>{ if(e.isIntersecting){ const q=v.play(); if(q&&q.catch) q.catch(()=>{}); } else v.pause(); }).observe(v);
+    }
+    return true;
+  }
   function bootHeroCarousel(){
     if(homeHeroMode==="events") return;
     const host=document.getElementById('heroSlides'); if(!host) return;
+    if(bootHeroFilm()) return;
     const urls=heroImages.map(u=>(u&&String(u).trim())?u:HERO_FALLBACK);
     // Ensure LCP slide exists without wiping a server-rendered first frame
     if(!host.querySelector('.hero-slide')){

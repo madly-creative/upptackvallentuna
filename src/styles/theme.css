@@ -490,3 +490,12 @@ h1,h2,h3,h4,.em-title,.ev-seo-month-h{letter-spacing:var(--display-track)!import
 @media (max-width:380px){
   .hero-full .btn-primary,.hero-full .btn-ghost{padding:11px 14px;font-size:13px}
 }
+
+/* Herofilm — tyst loop ovanpå stillbilden, tonas in först när den spelar */
+.hero-video{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;object-position:center 45%;
+  opacity:0;transition:opacity 1.2s ease;pointer-events:none;
+}
+.hero-video.on{opacity:1}
+@media (prefers-reduced-motion: reduce){ .hero-video{display:none} }
