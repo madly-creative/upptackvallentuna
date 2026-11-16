@@ -590,3 +590,14 @@ h1,h2,h3,h4,.em-title,.ev-seo-month-h{letter-spacing:var(--display-track)!import
   .hero-full .hero-eyebrow{margin-bottom:10px;font-size:13px}
   .hero-full h1{font-size:clamp(40px,12vw,60px)}
 }
+
+/* Hero v3.2: script-välkomst (Yellowtail, bara de tecken som behövs) och tätare rubrik */
+.hero-full .hero-eyebrow{
+  font:400 clamp(26px,2.4vw,36px)/1 "Yellowtail","Brush Script MT",cursive;
+  letter-spacing:0;text-transform:none;color:var(--c-raps,#F3C63F);
+  margin:0 0 6px;text-shadow:0 2px 18px rgba(0,0,0,.4);
+}
+.hero-full .hero-eyebrow::before{display:none}
+#main .hero-full h1,.hero-full h1{line-height:.86}
+@media (max-width:900px){.hero-full .hero-eyebrow{font-size:26px;margin-bottom:4px}}
+.hero-full #heroSub{margin-top:20px}
