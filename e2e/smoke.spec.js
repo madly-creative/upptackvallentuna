@@ -3,9 +3,7 @@ import { test, expect } from "@playwright/test";
 test("home loads with hero and today module", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("#heroTitle")).toContainText("Mellan runor");
-  await expect(page.locator("#heroToday")).toBeVisible();
   await expect(page.locator("#heroSearch")).toBeVisible();
-  await expect(page.locator("#wPlace")).toHaveText("Vallentuna");
   await expect(page.locator("#todayBrief")).toBeVisible();
   await expect(page.locator("#todayBriefGrid .today-card").first()).toBeVisible();
   await expect(page.locator("#picksGrid")).toBeVisible();

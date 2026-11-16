@@ -3760,10 +3760,8 @@ import {
       ctx={mood:weatherMood(code,temp),temp,code,sunrise,sunset,feels,wind};
       const ico=document.getElementById('wIcon');
       if(ico) ico.innerHTML=WEATHER_SVG[wk.k]||WEATHER_SVG.cloud;
-      document.getElementById('wTemp').textContent=temp+"°";
-      document.getElementById('wPlace').textContent=K;
-      document.getElementById('wText').textContent=wk.t;
-      document.getElementById('wSub').textContent=`känns som ${feels}°`;
+      const setTxt=(id,v)=>{const el=document.getElementById(id); if(el) el.textContent=v;};
+      setTxt('wTemp',temp+"°"); setTxt('wPlace',K); setTxt('wText',wk.t); setTxt('wSub',`känns som ${feels}°`);
       const discWx=document.getElementById('homeDiscoverWx');
       if(discWx){
         discWx.hidden=false;

@@ -5,7 +5,6 @@ test.describe("Classic hero with search", () => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto("/");
     await expect(page.locator("#heroTitle")).toContainText("Mellan runor och rapsfält.");
-    await expect(page.locator("#heroToday")).toBeVisible();
     await expect(page.locator("#heroSearch")).toBeVisible();
     await expect(page.locator("#todayBriefGrid .today-card")).toHaveCount(1);
     await expect(page.locator(".hero-chip")).toHaveCount(4);
@@ -16,7 +15,6 @@ test.describe("Classic hero with search", () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/");
     await expect(page.locator("#heroSearch")).toBeVisible();
-    await expect(page.locator("#heroToday")).toBeVisible();
     await page.locator("#heroSearch").fill("loppis");
     await page.locator(".hero-search-go").click();
     await expect(page.locator("#view-sok")).toHaveClass(/on/);
