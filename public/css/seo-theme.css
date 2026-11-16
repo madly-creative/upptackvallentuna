@@ -126,3 +126,9 @@ body.seo-page{margin:0}
 /* Rubriker: -4 % spärrning överallt (Juha 2026-11-16) */
 :root{--display-track:-.04em}
 h1,h2,h3,h4,.em-title,.ev-seo-month-h{letter-spacing:var(--display-track)!important}
+
+/* Mjuka sidbyten mellan sidorna (View Transitions, där webbläsaren stöder det) */
+@media (prefers-reduced-motion: no-preference){
+  @view-transition{navigation:auto}
+  ::view-transition-old(root),::view-transition-new(root){animation-duration:.32s}
+}

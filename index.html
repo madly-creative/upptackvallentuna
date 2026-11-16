@@ -36,6 +36,8 @@
         if(s!=="classic"&&s!=="events") s="classic";
         document.documentElement.setAttribute("data-home-hero", s);
       }catch(e){ document.documentElement.setAttribute("data-home-hero","classic"); }
+      // Heroens intro spelas en gång per sidladdning, aldrig med "reducera rörelse"
+      try{ if(!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentElement.classList.add("intro"); }catch(e){}
     })();
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -216,7 +218,7 @@
     <div class="hero-inner">
       <div class="hero-copy">
         <p class="hero-eyebrow" id="heroEyebrow">Välkommen till Vallentuna</p>
-        <h1 id="heroTitle"><span>Mellan runor</span> <span>och rapsfält.</span></h1>
+        <h1 id="heroTitle"><span><span class="w">Mellan</span> <span class="w">runor</span></span> <span><span class="w">och</span> <span class="w">rapsfält.</span></span></h1>
         <p id="heroSub">Smultronställen, fika och natur, handplockat av oss som bor här.</p>
         <form class="hero-search" id="heroSearchForm" role="search" action="#" onsubmit="return heroSubmitSearch(event)">
           <span class="hero-search-ico" aria-hidden="true">
