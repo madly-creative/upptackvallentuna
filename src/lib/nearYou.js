@@ -10,7 +10,7 @@ export const WALK_KMH = 5;
 export const NEAR_PIN_COLORS = {
   fika: "#1D4766",
   natur: "#2E6A45",
-  butik: "#16241B",
+  butik: "#2a3228",
   gard: "#B8891A",
   loppis: "#B8891A",
   /** Berry red — reads as its own “hidden gem” layer on the map. */
