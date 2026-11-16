@@ -26,7 +26,7 @@
   --foot-bg:#132019;                  --foot-fg:#E7EEE5;
 
   /* Typografi */
-  --font-display:"Bricolage Grotesque","Arial Narrow",system-ui,sans-serif;
+  --font-display:"Familjen Grotesk","Helvetica Neue",Arial,system-ui,sans-serif;
   --font-accent:var(--font-body); /* underrubriker: sans, inte serif */
   --font-body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
 
