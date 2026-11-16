@@ -2330,15 +2330,6 @@ import {
       requestAnimationFrame(sync);
     });
   }
-  function todayBriefItem(thumb, name, sub, onclick){
-    return `<button type="button" class="tc-item" onclick="${onclick}">
-      <span class="tc-thumb" style="background-image:url('${thumb}')" aria-hidden="true"></span>
-      <span>
-        <span class="tc-name">${name}</span>
-        <span class="tc-sub">${sub}</span>
-      </span>
-    </button>`;
-  }
   let homeHeroCarouselTimer=null;
   let homeHeroCarouselIndex=0;
   let homeHeroCarouselList=[];
@@ -2492,7 +2483,6 @@ import {
         : (weekend?`Helgen i ${K}`:`Händer i ${K}`);
     }
 
-    const openRanked=rankedPlaces().filter(x=>x.open && isTimedVenue(x.p)).slice(0,3);
     const openN=openVenueCount();
     if(metaEl){
       const bits=[];
@@ -2555,22 +2545,8 @@ import {
       }
     }
 
-    let openBody="";
-    if(openRanked.length){
-      openBody=`<div class="tc-list">${openRanked.map(({p,reasons,mins})=>{
-        const sub=mins!==Infinity&&mins<=75?`Stänger om ${mins} min`
-          :(p.short||reasons.find(r=>!/^Öppet|väder|Soligt|ute|Landskapet|utflykt|inomhus|Tak över|Innekos|Varm dryck/i.test(r))||p.cat);
-        return todayBriefItem(p.img, escHtml(p.name), escHtml(sub), `openPlace('${jsEsc(p.name)}')`);
-      }).join("")}</div>`;
-    } else {
-      openBody=`<p class="tc-empty">Få ställen har öppet i just den här stunden — planera med kartan eller kom tillbaka senare.</p>`;
-    }
-    // Single utility card — Passar vädret removed (often duplicated Öppet nu; events need the space)
-    grid.innerHTML=`<article class="today-card today-card-open">
-      <p class="tc-label">Öppet nu${openN?` · ${openN}`:""}</p>
-      ${openBody}
-      <button type="button" class="tc-foot" onclick="showOpenNowOnMap()">Visa på karta →</button>
-    </article>`;
+    grid.innerHTML="";
+    grid.hidden=true;
 
     try{ renderHomeEventHero(); }catch(e){}
   }
