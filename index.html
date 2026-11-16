@@ -41,8 +41,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <!-- Non-blocking fonts (system stack paints first) -->
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400;1,9..40,500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400;1,9..40,500&display=swap" rel="stylesheet"></noscript>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Playfair+Display:ital,wght@0,500;1,400;1,500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Playfair+Display:ital,wght@0,500;1,400;1,500&display=swap" rel="stylesheet"></noscript>
   <!-- Leaflet CSS/JS loaded on demand when map opens -->
   <link rel="stylesheet" href="/src/styles/main.css">
   <script type="application/ld+json">
@@ -297,7 +297,7 @@
         <button type="button" class="btn-secondary" onclick="showView('hander')">Alla evenemang →</button>
       </header>
       <div class="today-brief-feature" id="todayBriefFeature"></div>
-      <div class="today-brief-grid" id="todayBriefGrid"></div>
+      <div class="today-brief-grid" id="todayBriefGrid" hidden></div>
     </div>
   </section>
 

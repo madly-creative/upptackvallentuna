@@ -7,7 +7,7 @@ test("home loads with hero and today module", async ({ page }) => {
   await expect(page.locator("#heroSearch")).toBeVisible();
   await expect(page.locator("#wPlace")).toHaveText("Vallentuna");
   await expect(page.locator("#todayBrief")).toBeVisible();
-  await expect(page.locator("#todayBriefGrid .today-card").first()).toBeVisible();
+  await expect(page.locator("#todayBriefGrid .today-card")).toHaveCount(0);
   await expect(page.locator("#picksGrid")).toBeVisible();
 });
 
