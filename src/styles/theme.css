@@ -472,3 +472,21 @@ body{font-family:var(--font-body);font-size:16.5px;background:var(--paper);overf
 /* Rubriker: -4 % spärrning överallt (Juha 2026-11-16) */
 :root{--display-track:-.04em}
 h1,h2,h3,h4,.em-title,.ev-seo-month-h{letter-spacing:var(--display-track)!important}
+
+/* ── Mobilpass: helsidor ───────────────────────────────── */
+.map-summary:empty{display:none}
+@media (max-width:720px){
+  /* Guider: swipe-rad även efter 3-kolumnsregeln ovan */
+  .band--guides .guides-home-row{
+    grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:80%;
+  }
+  /* Hero-knappar: aldrig tvåradiga */
+  .hero-full .btn-primary,.hero-full .btn-ghost{white-space:nowrap;padding:12px 18px;font-size:14px}
+  /* Sökträffar: restider som en kompakt rad under texten */
+  #view-sok .s-item{grid-template-columns:64px minmax(0,1fr)}
+  #view-sok .s-item .travel{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;line-height:1.3;text-align:left;min-width:0;padding-top:8px;border-top:1px dashed var(--line-soft)}
+  #view-sok .s-item .travel br{display:none}
+}
+@media (max-width:380px){
+  .hero-full .btn-primary,.hero-full .btn-ghost{padding:11px 14px;font-size:13px}
+}

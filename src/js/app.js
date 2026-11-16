@@ -2825,7 +2825,7 @@ import {
         <div class="meta">${escHtml(e.host)} · ${escHtml(e.when||e.time||"")}</div>
         <div class="tags"><span class="tag">Evenemang</span><span class="tag">${escHtml(eventCatLabel(e.cat))}</span></div>
       </div>
-      <div class="travel">${escHtml(whenShort)}<br>${escHtml(DOW[d.getDay()])}</div>
+      <div class="travel"><span>${escHtml(whenShort)}</span><br><span>${escHtml(DOW[d.getDay()])}</span></div>
     </article>`;
   }
   function searchRecurringRowHTML(r){
@@ -2848,8 +2848,8 @@ import {
     const tags=placeTags(p).slice(0,4).map(t=>`<span class="tag">${TAG_LABEL[t]||t}</span>`).join("");
     const t=travelEstimate(p);
     const travel=t
-      ?`${fmtDist(t.km)}<br>Bil ${t.car} min<br>Cykel ${t.bike} min<br>SL ${t.sl} min`
-      :"Bokas<br>Ingen fast adress";
+      ?`<span>${fmtDist(t.km)}</span><br><span>Bil ${t.car} min</span><br><span>Cykel ${t.bike} min</span><br><span>SL ${t.sl} min</span>`
+      :"<span>Bokas</span><br><span>Ingen fast adress</span>";
     return `<article class="s-item" onclick="openPlace('${jsEsc(p.name)}')">
       <div class="im" style="background-image:url('${p.img}')"></div>
       <div>
