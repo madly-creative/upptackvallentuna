@@ -35,11 +35,6 @@
         var s=q||localStorage.getItem("uv-home-hero")||"events";
         if(s!=="classic"&&s!=="events") s="events";
         document.documentElement.setAttribute("data-home-hero", s);
-        /* Palett: A (Rapsfält) som standard, B (Runsten & sjö) via ?palett=b */
-        var pq=new URLSearchParams(location.search).get("palett");
-        if(pq==="a"||pq==="b") localStorage.setItem("uv-palette", pq);
-        var pal=localStorage.getItem("uv-palette");
-        document.documentElement.setAttribute("data-palette", pal==="b"?"b":"a");
       }catch(e){ document.documentElement.setAttribute("data-home-hero","events"); }
     })();
   </script>
