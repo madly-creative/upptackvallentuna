@@ -61,7 +61,7 @@ export function pinIconSvgForType(type) {
 
 /** @returns {string[]|null} null = all types */
 export function nearFilterTypes(filterKey) {
-  if (filterKey === "mer") return ["gard", "loppis"];
+  if (filterKey === "mer") return ["gard", "loppis", "kultur"];
   if (
     filterKey === "fika" ||
     filterKey === "natur" ||

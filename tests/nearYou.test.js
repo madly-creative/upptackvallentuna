@@ -39,7 +39,7 @@ describe("walkMinutesFromKm", () => {
 
 describe("nearFilterTypes", () => {
   it("maps Mer to gard+loppis", () => {
-    expect(nearFilterTypes("mer")).toEqual(["gard", "loppis"]);
+    expect(nearFilterTypes("mer")).toEqual(["gard", "loppis", "kultur"]);
   });
   it("maps primary filters 1:1", () => {
     expect(nearFilterTypes("fika")).toEqual(["fika"]);

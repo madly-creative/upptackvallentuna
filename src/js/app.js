@@ -761,11 +761,11 @@ import {
     },
   };
 
-    const cats=[{key:"alla",label:"Allt"},{key:"fika",label:"Fika & Mat"},{key:"gard",label:"Gård & Handelsträdgård"},{key:"natur",label:"Natur & Historia"},{key:"butik",label:"Butik & Kultur"},{key:"loppis",label:"Loppis"},{key:"smultronstalle",label:"Smultronställen"},{key:"guidning",label:"Guidning"}];
+    const cats=[{key:"alla",label:"Allt"},{key:"fika",label:"Fika & Mat"},{key:"gard",label:"Gård & Handelsträdgård"},{key:"natur",label:"Natur & Historia"},{key:"butik",label:"Butiker"},{key:"kultur",label:"Kultur"},{key:"loppis",label:"Loppis"},{key:"smultronstalle",label:"Smultronställen"},{key:"guidning",label:"Guidning"}];
 
   const DOW=["SÖN","MÅN","TIS","ONS","TOR","FRE","LÖR"];
   const MON=["JAN","FEB","MAR","APR","MAJ","JUN","JUL","AUG","SEP","OKT","NOV","DEC"];
-  const typeLabel={fika:"FIKA",gard:"HANDLA LOKALT",butik:"BUTIK",loppis:"LOPPIS",natur:"NATUR",smultronstalle:"SMULTRONSTÄLLE",guidning:"GUIDNING"};
+  const typeLabel={fika:"FIKA",gard:"HANDLA LOKALT",butik:"BUTIK",kultur:"KULTUR",loppis:"LOPPIS",natur:"NATUR",smultronstalle:"SMULTRONSTÄLLE",guidning:"GUIDNING"};
 
   // Editorial category landings (nav + view-kategori)
   const CATEGORIES={
@@ -1147,7 +1147,7 @@ import {
         reasons.push(outdoor[Math.abs([...p.name].reduce((a,c)=>a+c.charCodeAt(0),0))%outdoor.length]);
       }
     }
-    if(ctx.mood==="rough" && (["fika","butik"].includes(p.type) || hasTag(p,"inomhus"))){
+    if(ctx.mood==="rough" && (["fika","butik","kultur"].includes(p.type) || hasTag(p,"inomhus"))){
       const indoor=["Mysigt inomhus","Tak över huvudet","Varm dryck väntar","Innekos"];
       if(!reasons.some(r=>indoor.includes(r))){
         reasons.push(indoor[Math.abs([...p.name].reduce((a,c)=>a+c.charCodeAt(0),0))%indoor.length]);
@@ -3157,7 +3157,7 @@ import {
   }
 
   function indoorCandidates(){
-    return places.filter(p=>hasTag(p,"inomhus")||p.type==="butik"||p.type==="loppis"||p.name.includes("Kulturhus")||p.name.includes("Stenugns"))
+    return places.filter(p=>hasTag(p,"inomhus")||p.type==="butik"||p.type==="kultur"||p.type==="loppis"||p.name.includes("Kulturhus")||p.name.includes("Stenugns"))
       .filter(p=>p.type!=="natur")
       .sort((a,b)=>scorePlace(b).score-scorePlace(a).score);
   }
