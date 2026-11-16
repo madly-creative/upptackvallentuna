@@ -1575,8 +1575,12 @@ import {
       fillOpacity:1,
       className:"nara-dig-you",
     }).addTo(nearDigMap);
-    nearDigMap.setView([nearDigPos.lat, nearDigPos.lng], 13);
+    if(KOMMUN_BOUNDS && KOMMUN_BOUNDS.contains([nearDigPos.lat, nearDigPos.lng])) nearDigMap.setView([nearDigPos.lat, nearDigPos.lng], 13);
   }
+
+  /* Vallentuna kommun, with some margin. Keeps the home map local. */
+  const KOMMUN_MIN_ZOOM=10;
+  let KOMMUN_BOUNDS=null;
 
   function fitNearDigMap(hits){
     const Lref=window.L;
@@ -1586,8 +1590,13 @@ import {
       return;
     }
     const bounds=Lref.latLngBounds(hits.map(h=>[h.place.lat, h.place.lng]));
-    if(nearDigPos) bounds.extend([nearDigPos.lat, nearDigPos.lng]);
-    nearDigMap.fitBounds(bounds.pad(0.18));
+    /* Only pull the visitor into view when they are actually in/near the kommun —
+       otherwise the map zooms out to half of Scandinavia. */
+    if(nearDigPos && KOMMUN_BOUNDS.contains([nearDigPos.lat, nearDigPos.lng])) bounds.extend([nearDigPos.lat, nearDigPos.lng]);
+    const size=nearDigMap.getSize();
+    if(!size.x || !size.y) return; /* container not laid out yet; ResizeObserver refits */
+    nearDigMap.fitBounds(bounds.pad(0.18), { maxZoom:14 });
+    if(nearDigMap.getZoom() < KOMMUN_MIN_ZOOM) nearDigMap.setView(CONFIG.center, KOMMUN_MIN_ZOOM);
   }
 
   async function initNearDigMap(){
@@ -1600,11 +1609,25 @@ import {
       try{ nearDigMap.remove(); }catch(err){}
       nearDigMap=null;
     }
+    KOMMUN_BOUNDS=Lref.latLngBounds([59.40, 17.85], [59.75, 18.50]);
     nearDigMap=Lref.map("naraDigMap",{
       zoomControl:false,
-      scrollWheelZoom:true,
+      scrollWheelZoom:false,
       attributionControl:false,
+      minZoom:KOMMUN_MIN_ZOOM,
+      maxBounds:KOMMUN_BOUNDS.pad(0.15),
+      maxBoundsViscosity:0.8,
     }).setView(CONFIG.center, CONFIG.zoom || 12);
+    if(typeof ResizeObserver==="function"){
+      let lastW=0;
+      new ResizeObserver(([entry])=>{
+        const w=Math.round(entry.contentRect.width);
+        if(!nearDigMap || !w || w===lastW) return;
+        lastW=w;
+        nearDigMap.invalidateSize();
+        fitNearDigMap(nearDigHits());
+      }).observe(el);
+    }
     addBasemap(nearDigMap, Lref);
     refreshNearDigMapMarkers();
     setTimeout(()=>{

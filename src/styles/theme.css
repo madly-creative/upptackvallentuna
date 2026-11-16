@@ -1,0 +1,198 @@
+/* ==========================================================================
+   Upptäck Vallentuna — designprofil 2026
+   Läggs ovanpå main.css. All färg kommer från platsens palett och styrs av
+   <html data-palette="a|b">. Byt palett genom att ändra ett attribut,
+   eller pröva med ?palett=b i adressen.
+
+   A · Rapsfält       — rapsgult, himmelsblått, ängsgrönt, tegelrött, kalkvitt
+   B · Runsten & sjö  — sjöblått, tegel, blekt raps, salvia, kalkvitt
+   ========================================================================== */
+
+:root{
+  /* --- Palett A: Rapsfält (default) --- */
+  --c-raps:#F3C63F;
+  --c-sky:#A8D2EE;
+  --c-meadow:#2E6A45;
+  --c-meadow-deep:#1F4A30;
+  --c-brick:#B5472F;
+  --c-brick-deep:#933823;
+  --c-chalk:#F8F6F0;
+  --c-chalk-2:#EFEBE1;
+  --c-ink:#16241B;
+
+  /* Band: bakgrund + text per sektion på startsidan */
+  --band-discover-bg:var(--c-raps);   --band-discover-fg:var(--c-ink);
+  --band-events-bg:#DDEFF9;           --band-events-fg:var(--c-ink);
+  --band-picks-bg:var(--c-brick);     --band-picks-fg:#FFF7EE;
+  --band-map-bg:var(--c-chalk);       --band-map-fg:var(--c-ink);
+  --band-guides-bg:var(--c-meadow);   --band-guides-fg:#F3F7EE;
+  --band-stories-bg:#FBF0CF;          --band-stories-fg:var(--c-ink);
+  --band-tip-bg:var(--c-sky);         --band-tip-fg:var(--c-ink);
+  --foot-bg:#132019;                  --foot-fg:#E7EEE5;
+
+  /* Typografi */
+  --font-display:"Bricolage Grotesque","Arial Narrow",system-ui,sans-serif;
+  --font-accent:"Instrument Serif",Georgia,"Times New Roman",serif;
+  --font-body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+
+  /* Befintliga tokens i main.css mappas om till paletten */
+  --ink:var(--c-ink);
+  --ink-soft:color-mix(in srgb,var(--c-ink) 68%,var(--c-chalk));
+  --paper:var(--c-chalk);
+  --paper-2:var(--c-chalk-2);
+  --card:#ffffff;
+  --moss:var(--c-meadow);
+  --moss-deep:var(--c-meadow-deep);
+  --rust:var(--c-brick);
+  --rust-deep:var(--c-brick-deep);
+  --line:color-mix(in srgb,var(--c-ink) 14%,transparent);
+  --line-soft:color-mix(in srgb,var(--c-ink) 8%,transparent);
+  --radius:20px;
+  --radius-sm:12px;
+  --max:1240px;
+  --font-serif:var(--font-display);
+  --font-sans:var(--font-body);
+  --band-pad:clamp(64px,8vw,120px);
+}
+
+:root[data-palette="b"]{
+  /* --- Palett B: Runsten & sjö --- */
+  --c-raps:#F1D47A;
+  --c-sky:#1D4766;
+  --c-meadow:#86A88A;
+  --c-meadow-deep:#1D4766;
+  --c-brick:#C9583C;
+  --c-brick-deep:#A6442C;
+  --c-chalk:#F4EFE6;
+  --c-chalk-2:#E9E1D3;
+  --c-ink:#13212C;
+
+  --band-discover-bg:var(--c-raps);   --band-discover-fg:var(--c-ink);
+  --band-events-bg:var(--c-chalk);    --band-events-fg:var(--c-ink);
+  --band-picks-bg:#E9DCC8;            --band-picks-fg:var(--c-ink);
+  --band-map-bg:#DCE7EC;              --band-map-fg:var(--c-ink);
+  --band-guides-bg:var(--c-brick);    --band-guides-fg:#FFF5EC;
+  --band-stories-bg:#1D4766;          --band-stories-fg:#F4EFE6;
+  --band-tip-bg:var(--c-raps);        --band-tip-fg:var(--c-ink);
+  --foot-bg:#0F1A23;                  --foot-fg:#E4E9EC;
+}
+
+body{font-family:var(--font-body);font-size:16.5px;background:var(--paper);overflow-x:clip}
+
+/* ---------- Topp ---------- */
+.topbar{background:color-mix(in srgb,var(--paper) 92%,transparent)}
+.nav > button,.nav .nav-dd-btn,.util-btn{font-size:14.5px;color:var(--ink)}
+.nav > button.on::after,.nav .nav-dd-btn.on::after{height:2.5px;background:var(--c-brick)}
+.btn-outline{background:var(--ink);color:var(--paper);border-color:var(--ink);font-size:13px;padding:12px 20px}
+.btn-outline:hover{background:var(--c-brick);border-color:var(--c-brick);color:#fff}
+
+/* ---------- Rubriker ---------- */
+#main h1,#main h2{font-family:var(--font-display);font-weight:800;letter-spacing:-.025em;line-height:1.02;text-wrap:balance}
+#view-start .band h2{font-size:clamp(36px,5.2vw,68px)}
+
+/* Kursiva underrubriker (serif) */
+.home-discover-lede,.guides-home-lede,.today-brief-meta,.nara-dig-titles p,
+#view-start .band .wtip{
+  font-family:var(--font-accent);font-style:italic;font-weight:400;
+  font-size:clamp(21px,2.1vw,28px)!important;line-height:1.2;letter-spacing:0;
+  color:inherit!important;opacity:.85;margin-top:10px!important;max-width:34ch;
+}
+
+/* ---------- Band: helbreddsfärgfält ---------- */
+.band{padding-block:var(--band-pad);color:var(--band-fg);background:var(--band-bg);transition:background-color .4s,color .4s}
+.band:has(> :only-child[hidden]){display:none}
+.band--discover{--band-bg:var(--band-discover-bg);--band-fg:var(--band-discover-fg)}
+.band--events{--band-bg:var(--band-events-bg);--band-fg:var(--band-events-fg)}
+.band--picks{--band-bg:var(--band-picks-bg);--band-fg:var(--band-picks-fg)}
+.band--map{--band-bg:var(--band-map-bg);--band-fg:var(--band-map-fg)}
+.band--guides{--band-bg:var(--band-guides-bg);--band-fg:var(--band-guides-fg)}
+.band--stories{--band-bg:var(--band-stories-bg);--band-fg:var(--band-stories-fg)}
+.band--tip{--band-bg:var(--band-tip-bg);--band-fg:var(--band-tip-fg)}
+
+/* Rubriker, länkar och knappar i ett band ärver bandets textfärg */
+.band .sec-head h2,.band .sec-head .more,.band > * > h2,
+.band .guides-home-head,.band .guides-home-head h2,.band .guides-home-all,
+.band .today-brief-head h2,.band .home-discover h2,.band .nara-dig-head h2,.band .nara-dig-titles,
+.band .route-actions .btn-secondary,.band .today-brief-head .btn-secondary{color:inherit}
+.band .btn-secondary,.band .guides-home-all,.band .sec-head .more{
+  border:2px solid currentColor;background:transparent;border-radius:999px;
+  padding:12px 20px;font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+}
+.band .btn-secondary:hover,.band .guides-home-all:hover,.band .sec-head .more:hover{background:var(--band-fg);color:var(--band-bg)}
+
+/* Sektioner inuti band: inga extra marginaler, mer luft mellan rubrik och innehåll */
+.band .sec{padding:0 28px;margin-inline:auto}
+.band .sec + .sec{margin-top:clamp(56px,7vw,96px)}
+.band .sec-head{margin-bottom:clamp(28px,3.4vw,44px);align-items:flex-end}
+
+/* ---------- Hero ---------- */
+.home-event-hero{min-height:min(76vh,700px)}
+.home-event-card h2,.home-event-card h3{font-family:var(--font-display);font-weight:800;letter-spacing:-.02em}
+.home-event-card{border-radius:24px}
+
+/* ---------- Vart vill du i dag? (rapsgult band) ---------- */
+.band--discover .home-discover{background:none;border:0;padding:0 28px}
+.band--discover .home-discover-head{max-width:none;margin-bottom:28px}
+.band--discover .home-discover h2{font-size:clamp(40px,6vw,80px);color:inherit}
+.home-discover-search{max-width:760px;border-radius:22px;border:0;box-shadow:0 18px 50px -24px rgba(0,0,0,.35);background:#fff}
+.home-discover-search input{font-size:18px;color:#16241B}
+.home-discover-search-go{background:var(--c-ink);color:#fff;border-radius:14px}
+.home-discover-pill{background:rgba(255,255,255,.8);border:0;color:#16241B;font-size:15px;padding:10px 18px}
+.home-discover-pill:hover{background:#fff}
+.home-discover-wx{color:inherit;opacity:.8}
+
+/* ---------- Evenemang ---------- */
+.band--events .today-brief{margin:0 auto;padding:0 28px}
+.band--events .today-brief .inner{background:none;border:0;box-shadow:none;padding:0;border-radius:0}
+.band--events .today-brief-head{margin-bottom:clamp(28px,3.4vw,44px)}
+.band--events .today-card{border-radius:24px;border:0;background:#fff}
+
+/* ---------- Handplockat (tegel) ---------- */
+.pick-feature{border-radius:32px;min-height:min(60vh,540px)}
+.tcard{border-radius:24px;min-height:300px}
+.pick-feature h3,.tcard h3{font-family:var(--font-display);font-weight:800;letter-spacing:-.02em}
+
+/* ---------- Karta ---------- */
+.band--map .nara-dig{margin:0 auto;padding:0 28px}
+.band--map .nara-dig-head h2{font-size:clamp(36px,5.2vw,68px)}
+.nara-dig-map-wrap{border-radius:28px;overflow:hidden}
+
+/* ---------- Guider + eftermiddag (ängsgrönt) ---------- */
+.band--guides .guides-sec{background:none;margin:0;padding:0}
+.band--guides .guides-sec::before,.band--guides .guides-sec::after{display:none}
+.guide-card{border:0;border-radius:24px;color:var(--c-ink)}
+.guide-card h3{font-family:var(--font-display);font-weight:800;letter-spacing:-.02em}
+.band--guides .route-sec{border-top:1px solid color-mix(in srgb,currentColor 35%,transparent);padding-top:clamp(40px,5vw,64px)}
+.band--guides .journey-step{border:0;border-radius:20px;color:var(--c-ink)}
+.band--guides .journey-arrow{color:inherit}
+
+/* ---------- Berättelser ---------- */
+.levererar-latest{border:0;border-radius:28px;background:#fff;color:var(--c-ink)}
+.levererar-latest h3{font-family:var(--font-display);font-weight:800;font-size:clamp(28px,3vw,40px);letter-spacing:-.02em}
+.weekly-fact-card{border-radius:28px;background:var(--c-ink);min-height:300px}
+:root[data-palette="b"] .weekly-fact-card{background:var(--c-brick)}
+.weekly-fact-card blockquote{font-family:var(--font-accent);font-style:italic;font-size:clamp(28px,3.2vw,44px);line-height:1.08}
+
+/* ---------- Tipsa-banner ---------- */
+.band--tip .smultron-banner{margin:0 auto}
+.band--tip .smultron-banner .inner{background:none;border:0;box-shadow:none;color:inherit;padding:0;border-radius:0;align-items:flex-end}
+.band--tip .smultron-banner h2{font-size:clamp(40px,6vw,80px);color:inherit}
+.band--tip .smultron-banner-copy p{font-size:18px;max-width:60ch;opacity:.85}
+.band--tip .smultron-banner-eyebrow{color:inherit;opacity:.7}
+.band--tip .smultron-banner-cta{background:var(--c-ink);color:#fff;border:0;border-radius:999px;padding:16px 26px;font-size:16px;font-weight:700}
+.band--tip .smultron-banner-sprig{opacity:.9}
+
+/* ---------- Footer ---------- */
+.sitefooter{background:var(--foot-bg);color:var(--foot-fg);border-top:0;margin-top:0}
+.sitefooter a,.sitefooter button,.sitefooter .foot-h,.sitefooter p{color:inherit}
+.sitefooter .foot-h{opacity:.6}
+
+@media (max-width:720px){
+  .band .sec,.band--discover .home-discover,.band--events .today-brief,.band--map .nara-dig{padding-left:18px;padding-right:18px}
+  .band--guides .guides-sec-inner{padding:0 18px}
+  .band--tip .smultron-banner{padding:0 18px}
+}
+@media (prefers-reduced-motion:reduce){.band{transition:none}}
+
+/* Tipsa-bandets brödtext ärver bandets färg (main.css sätter ljus text för mörk bakgrund) */
+.band--tip .smultron-banner-copy p{color:inherit}

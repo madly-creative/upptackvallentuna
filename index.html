@@ -6,7 +6,7 @@
   <title>Upptäck Vallentuna — lokal guide till fik, gårdar, natur & evenemang</title>
   <meta name="description" content="Din handplockade guide till småföretag, caféer, gårdsbutiker, naturpärlor och evenemang i Vallentuna. Lokalt på riktigt.">
   <link rel="canonical" href="https://upptackvallentuna.se/">
-  <meta name="theme-color" content="#37472f">
+  <meta name="theme-color" content="#F8F6F0">
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -35,14 +35,19 @@
         var s=q||localStorage.getItem("uv-home-hero")||"events";
         if(s!=="classic"&&s!=="events") s="events";
         document.documentElement.setAttribute("data-home-hero", s);
+        /* Palett: A (Rapsfält) som standard, B (Runsten & sjö) via ?palett=b */
+        var pq=new URLSearchParams(location.search).get("palett");
+        if(pq==="a"||pq==="b") localStorage.setItem("uv-palette", pq);
+        var pal=localStorage.getItem("uv-palette");
+        document.documentElement.setAttribute("data-palette", pal==="b"?"b":"a");
       }catch(e){ document.documentElement.setAttribute("data-home-hero","events"); }
     })();
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <!-- Non-blocking fonts (system stack paints first) -->
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet"></noscript>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Serif:ital@0;1&family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Serif:ital@0;1&family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"></noscript>
   <!-- Leaflet CSS/JS loaded on demand when map opens -->
   <link rel="stylesheet" href="/src/styles/main.css">
   <script type="application/ld+json">
@@ -286,21 +291,14 @@
     </div>
   </div>
 
-  <!-- 2. Helgen / Just nu (evenemang + öppet + väder i ett) -->
-  <section class="today-brief" id="todayBrief" aria-label="Helgen i Vallentuna">
+  <div class="return-banner" id="returnBanner" hidden>
     <div class="inner">
-      <header class="today-brief-head">
-        <div>
-          <h2 id="todayBriefTitle">Helgen i Vallentuna</h2>
-          <p class="today-brief-meta" id="todayBriefMeta"></p>
-        </div>
-        <button type="button" class="btn-secondary" onclick="showView('hander')">Alla evenemang →</button>
-      </header>
-      <div class="today-brief-feature" id="todayBriefFeature"></div>
-      <div class="today-brief-grid" id="todayBriefGrid"></div>
+      <span id="returnText"></span>
+      <button type="button" id="returnBtn">Öppna igen →</button>
     </div>
-  </section>
+  </div>
 
+  <div class="band band--discover">
   <!-- Discover — search-first place invite -->
   <section class="home-discover" id="homeDiscover" aria-labelledby="homeDiscoverTitle">
     <div class="home-discover-shell">
@@ -334,30 +332,27 @@
     </div>
   </section>
 
-  <div class="return-banner" id="returnBanner" hidden>
-    <div class="inner">
-      <span id="returnText"></span>
-      <button type="button" id="returnBtn">Öppna igen →</button>
-    </div>
   </div>
 
-  <aside class="smultron-banner" id="smultronBanner" hidden aria-labelledby="smultronBannerTitle">
+  <div class="band band--events">
+  <!-- 2. Helgen / Just nu (evenemang + öppet + väder i ett) -->
+  <section class="today-brief" id="todayBrief" aria-label="Helgen i Vallentuna">
     <div class="inner">
-      <img class="smultron-banner-sprig" src="/assets/shared/smultron-sprig.webp" alt="" width="310" height="369" decoding="async" aria-hidden="true">
-      <div class="smultron-banner-copy">
-        <p class="smultron-banner-eyebrow">Nytt</p>
-        <h2 id="smultronBannerTitle">Tipsa om era smultronställen</h2>
-        <p>Ja, vi vet — ett smultronställe vill man helst hålla för sig själv. Men har du ett guldkorn du ändå vill dela — en utsikt, en picknickplats, en fridfull bänk under ett pilträd — hör av dig. Vi kikar på det, och du blir krediterad om det hamnar på kartan.</p>
-      </div>
-      <div class="smultron-banner-actions">
-        <button type="button" class="smultron-banner-cta" id="smultronBannerCta">Tipsa oss →</button>
-      </div>
+      <header class="today-brief-head">
+        <div>
+          <h2 id="todayBriefTitle">Helgen i Vallentuna</h2>
+          <p class="today-brief-meta" id="todayBriefMeta"></p>
+        </div>
+        <button type="button" class="btn-secondary" onclick="showView('hander')">Alla evenemang →</button>
+      </header>
+      <div class="today-brief-feature" id="todayBriefFeature"></div>
+      <div class="today-brief-grid" id="todayBriefGrid"></div>
     </div>
-  </aside>
+  </section>
 
-  <!-- 3. Upptäck runt hörnet — karta -->
-  <div id="naraDigRoot"></div>
+  </div>
 
+  <div class="band band--picks">
   <!-- 4. Handplockat just nu -->
   <div class="sec picks-sec">
     <div class="sec-head">
@@ -370,6 +365,15 @@
     <div class="picks-grid" id="picksGrid"></div>
   </div>
 
+  </div>
+
+  <div class="band band--map">
+  <!-- 3. Upptäck runt hörnet — karta -->
+  <div id="naraDigRoot"></div>
+
+  </div>
+
+  <div class="band band--guides">
   <!-- 5. Färdiga guider -->
   <section class="sec guides-sec" id="guidesHomeSec" hidden aria-labelledby="guidesHomeTitle">
     <div class="guides-sec-inner">
@@ -399,6 +403,9 @@
     <div class="journey journey-timeline" id="routeGrid"></div>
   </div>
 
+  </div>
+
+  <div class="band band--stories">
   <!-- 7. Vallentuna levererar -->
   <div class="sec levererar-sec" id="levererarSec" hidden>
     <div class="sec-head">
@@ -428,6 +435,25 @@
     <div id="voicesFeature"></div>
     <div class="voice-more" id="voicesMore" hidden></div>
   </div>
+  </div>
+
+  <div class="band band--tip">
+  <aside class="smultron-banner" id="smultronBanner" hidden aria-labelledby="smultronBannerTitle">
+    <div class="inner">
+      <img class="smultron-banner-sprig" src="/assets/shared/smultron-sprig.webp" alt="" width="310" height="369" decoding="async" aria-hidden="true">
+      <div class="smultron-banner-copy">
+        <p class="smultron-banner-eyebrow">Nytt</p>
+        <h2 id="smultronBannerTitle">Tipsa om era smultronställen</h2>
+        <p>Ja, vi vet — ett smultronställe vill man helst hålla för sig själv. Men har du ett guldkorn du ändå vill dela — en utsikt, en picknickplats, en fridfull bänk under ett pilträd — hör av dig. Vi kikar på det, och du blir krediterad om det hamnar på kartan.</p>
+      </div>
+      <div class="smultron-banner-actions">
+        <button type="button" class="smultron-banner-cta" id="smultronBannerCta">Tipsa oss →</button>
+      </div>
+    </div>
+  </aside>
+
+  </div>
+
 </section>
 
 <!-- ===================== KATEGORI ===================== -->
