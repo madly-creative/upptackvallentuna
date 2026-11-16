@@ -1997,15 +1997,26 @@ import {
     if(!v || !heroFilmAllowed()) return false;
     const small=window.matchMedia("(max-width: 760px)").matches;
     const base=small?"/assets/hero/film-540":"/assets/hero/film-720";
-    v.innerHTML=`<source src="${base}.webm" type="video/webm"><source src="${base}.mp4" type="video/mp4">`;
+    // Safari/iOS: H.264 först (VP9-WebM avkodas i mjukvara eller inte alls). Övriga: WebM först.
+    const apple=/iP(hone|ad|od)|Macintosh/.test(navigator.userAgent) && !/Chrome|CriOS|Android/.test(navigator.userAgent);
+    const webm=`<source src="${base}.webm" type="video/webm">`, mp4=`<source src="${base}.mp4" type="video/mp4">`;
+    v.innerHTML=apple?mp4+webm:webm+mp4;
+    // iOS kräver att muted/playsinline finns som både egenskap och attribut innan play()
+    v.muted=true; v.defaultMuted=true; v.playsInline=true;
+    v.setAttribute('muted',''); v.setAttribute('playsinline',''); v.setAttribute('webkit-playsinline',''); v.setAttribute('autoplay','');
     v.addEventListener('playing',()=>v.classList.add('on'),{once:true});
     v.addEventListener('error',()=>v.remove(),{once:true});
     v.preload="auto";
     v.load();
-    const p=v.play(); if(p&&p.catch) p.catch(()=>{});
+    const tryPlay=()=>{ const p=v.play(); if(p&&p.catch) p.catch(()=>{}); };
+    tryPlay();
+    v.addEventListener('canplay',tryPlay,{once:true});
+    // Strömsparläge på iPhone blockerar autoplay; starta då vid första interaktion
+    const kick=()=>{ if(v.paused) tryPlay(); ['touchstart','pointerdown','scroll','keydown'].forEach(ev=>window.removeEventListener(ev,kick)); };
+    ['touchstart','pointerdown','scroll','keydown'].forEach(ev=>window.addEventListener(ev,kick,{passive:true}));
     // Pausa när heron inte syns, så att filmen inte drar batteri i onödan
     if('IntersectionObserver' in window){
-      new IntersectionObserver(([e])=>{ if(e.isIntersecting){ const q=v.play(); if(q&&q.catch) q.catch(()=>{}); } else v.pause(); }).observe(v);
+      new IntersectionObserver(([e])=>{ if(e.isIntersecting) tryPlay(); else v.pause(); }).observe(v);
     }
     return true;
   }
