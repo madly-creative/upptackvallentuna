@@ -1,3 +1,4 @@
 /* Entry stylesheet: base styles, then the 2026 design layer on top. */
 @import "./main.css";
 @import "./theme.css";
+@import "./motion.css";

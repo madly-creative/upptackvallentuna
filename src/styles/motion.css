@@ -1,0 +1,126 @@
+/* ═══════════════════════════════════════════════════════════════════
+   Mikroanimationer. Lugna, korta och billiga: bara opacity/transform,
+   inga bibliotek. Allt här stängs av med "reducera rörelse"
+   (main.css nollar animation/transition, och JS-delarna kollar själva).
+   ═══════════════════════════════════════════════════════════════════ */
+:root{
+  --ease-out:cubic-bezier(.2,.75,.2,1);
+  --ease-spring:cubic-bezier(.34,1.45,.5,1);
+}
+
+@keyframes uv-rise{from{opacity:0;translate:0 var(--rise,22px)}to{opacity:1;translate:0 0}}
+@keyframes uv-word{from{opacity:0;translate:0 .38em;filter:blur(6px)}to{opacity:1;translate:0 0;filter:blur(0)}}
+@keyframes uv-settle{from{scale:1.06}to{scale:1}}
+@keyframes uv-pin-drop{
+  0%{opacity:0;translate:0 -26px}
+  55%{opacity:1;translate:0 2px}
+  75%{translate:0 -4px}
+  100%{opacity:1;translate:0 0}
+}
+
+/* ── Hero: bilden landar, rubriken kommer ord för ord ─────────────
+   .intro sätts i <head> (bara utan reducera rörelse) och tas bort efter
+   första visningen, så att intro inte spelas om när man går tillbaka. */
+.hero-full h1 .w{display:inline-block}
+.intro .hero-full .hero-slides{animation:uv-settle 2.6s var(--ease-out) both}
+.intro .hero-full .hero-eyebrow{animation:uv-rise .7s var(--ease-out) .05s both;--rise:12px}
+.intro .hero-full h1 .w{animation:uv-word .8s var(--ease-out) both}
+.intro .hero-full h1 .w:nth-of-type(1){animation-delay:.14s}
+.intro .hero-full h1 .w:nth-of-type(2){animation-delay:.23s}
+.intro .hero-full h1 > span + span .w:nth-of-type(1){animation-delay:.32s}
+.intro .hero-full h1 > span + span .w:nth-of-type(2){animation-delay:.41s}
+.intro .hero-full #heroSub{animation:uv-rise .7s var(--ease-out) .55s both;--rise:14px}
+.intro .hero-full .hero-search{animation:uv-rise .7s var(--ease-out) .65s both;--rise:16px}
+.intro .hero-full .hero-chips{animation:uv-rise .7s var(--ease-out) .75s both;--rise:12px}
+/* Filmen bländar upp långsamt ur stillbilden */
+.hero-video{transition:opacity 1.6s var(--ease-out)}
+
+/* ── Banden vaknar när man scrollar ───────────────────────────────
+   motion.js lägger .rv på band under vecket och .in när de syns.
+   .done tar bort animationen efteråt, så omritningar inte spelar om. */
+.band.rv:not(.in) > *{opacity:0}
+.band.rv.in:not(.done) > *{animation:uv-rise .8s var(--ease-out) both;--rise:28px}
+
+/* Korten kommer ett i taget */
+.band.rv:not(.in) :is(.picks-row,.happen-more,.journey,.home-discover-pills,.guides-home-row,.nara-dig-filters) > *{opacity:0}
+.band.rv.in:not(.done) :is(.picks-row,.happen-more,.journey,.home-discover-pills,.guides-home-row,.nara-dig-filters) > *{
+  animation:uv-rise .7s var(--ease-out) both;--rise:18px;
+  animation-delay:calc(.16s + var(--i,0) * 70ms);
+}
+:is(.picks-row,.happen-more,.journey,.home-discover-pills,.guides-home-row,.nara-dig-filters,.cat-grid,.guides-grid) > :nth-child(2){--i:1}
+:is(.picks-row,.happen-more,.journey,.home-discover-pills,.guides-home-row,.nara-dig-filters,.cat-grid,.guides-grid) > :nth-child(3){--i:2}
+:is(.picks-row,.happen-more,.journey,.home-discover-pills,.guides-home-row,.nara-dig-filters,.cat-grid,.guides-grid) > :nth-child(4){--i:3}
+:is(.picks-row,.happen-more,.journey,.home-discover-pills,.guides-home-row,.nara-dig-filters,.cat-grid,.guides-grid) > :nth-child(5){--i:4}
+:is(.picks-row,.happen-more,.journey,.home-discover-pills,.guides-home-row,.nara-dig-filters,.cat-grid,.guides-grid) > :nth-child(6){--i:5}
+:is(.picks-row,.happen-more,.journey,.home-discover-pills,.guides-home-row,.nara-dig-filters,.cat-grid,.guides-grid) > :nth-child(n+7){--i:6}
+
+/* Veckans guide: bilden landar mjukt när uppslaget dyker upp */
+.band--spread.rv.in:not(.done) .guide-spread-media img{animation:uv-settle 1.8s var(--ease-out) both}
+
+/* Kategori- och guidesidor: korten kommer ett i taget när vyn öppnas */
+.view.on :is(.cat-grid,.guides-grid) > *{animation:uv-rise .6s var(--ease-out) both;--rise:14px;animation-delay:calc(var(--i,0) * 55ms)}
+
+/* ── Kort som svarar ──────────────────────────────────────────────
+   Samma rörelse överallt: kortet lyfts, bilden zoomar några procent. */
+:is(.tcard,.pick-feature,.ev-feature,.ev,.journey-step,.guide-card,.levererar-latest){
+  transition:transform .4s var(--ease-out),box-shadow .4s var(--ease-out),scale .18s ease;
+}
+:is(.tcard,.pick-feature,.ev-feature,.ev,.journey-step,.guide-card,.levererar-latest) :is(.im,.thumb,.ll-img,.card-img,.gc-img){
+  transition:transform .8s var(--ease-out);
+}
+@media (hover:hover){
+  :is(.tcard,.pick-feature,.ev-feature,.journey-step,.guide-card,.levererar-latest):hover{
+    box-shadow:0 1px 0 rgba(22,36,27,.05),0 28px 44px -26px rgba(22,36,27,.55);
+  }
+  :is(.tcard,.pick-feature,.ev-feature,.ev,.journey-step,.guide-card,.levererar-latest):hover :is(.im:not(.is-native),.thumb,.ll-img,.card-img,.gc-img){transform:scale(1.05)}
+}
+/* Mobil: kortet trycks ner lite vid tryck */
+@media (hover:none){
+  :is(.tcard,.pick-feature,.ev-feature,.ev,.journey-step,.guide-card,.levererar-latest,.guide-spread-cta):active{scale:.975}
+}
+
+/* ── Sökrutan växer mjukt vid fokus ───────────────────────────── */
+.hero-full .hero-search{transition:width .45s var(--ease-out),box-shadow .45s var(--ease-out)}
+.hero-full .hero-search:focus-within{width:min(600px,100%);box-shadow:0 0 0 3px rgba(243,198,63,.55),0 24px 60px -20px rgba(0,0,0,.55)}
+.home-discover-search{transition:max-width .45s var(--ease-out),box-shadow .45s var(--ease-out)}
+.home-discover-search:focus-within{max-width:800px;box-shadow:0 0 0 3px rgba(243,198,63,.6),0 24px 60px -24px rgba(0,0,0,.4)}
+:is(.hero-search-go,.home-discover-search-go){transition:transform .2s var(--ease-out),background-color .2s}
+:is(.hero-search-go,.home-discover-search-go):active{transform:scale(.94)}
+
+/* ── Chipsen fylls i Rapsfält-gult ────────────────────────────────
+   Gul färg sveper in från vänster, i stället för en platt färgbyte. */
+:is(.hero-chip,.home-discover-pill){
+  background-image:linear-gradient(var(--c-raps,#F3C63F),var(--c-raps,#F3C63F));
+  background-repeat:no-repeat;background-position:left center;background-size:0% 100%;
+  transition:background-size .38s var(--ease-out),color .25s,border-color .25s,scale .15s ease;
+}
+@media (hover:hover){
+  :is(.hero-chip,.home-discover-pill):hover{background-size:100% 100%;color:var(--c-ink,#16241B);border-color:var(--c-raps,#F3C63F)}
+}
+:is(.hero-chip,.home-discover-pill):active{background-size:100% 100%;color:var(--c-ink,#16241B);border-color:var(--c-raps,#F3C63F);scale:.96}
+.home-discover-pill:hover .home-discover-live-dot{background:var(--c-ink,#16241B)}
+
+/* ── Kartnålarna studsar ner en gång när kartan syns ──────────── */
+.pins-drop :is(.nara-dig-pin,.pin){animation:uv-pin-drop .7s var(--ease-out) both}
+.pins-drop .leaflet-marker-icon:nth-child(4n+2) :is(.nara-dig-pin,.pin){animation-delay:.07s}
+.pins-drop .leaflet-marker-icon:nth-child(4n+3) :is(.nara-dig-pin,.pin){animation-delay:.14s}
+.pins-drop .leaflet-marker-icon:nth-child(4n) :is(.nara-dig-pin,.pin){animation-delay:.21s}
+.pins-drop .leaflet-marker-icon:nth-child(n+24) :is(.nara-dig-pin,.pin){animation-delay:.28s}
+
+/* ── Kortbilden som flyger upp till undersidans toppbild ──────── */
+.uv-fly{
+  position:fixed;z-index:999;pointer-events:none;
+  background-size:cover;background-position:center;background-repeat:no-repeat;
+  will-change:top,left,width,height;
+}
+
+/* ── Sidbyten mellan de statiska sidorna: webbläsarens View Transitions */
+@media (prefers-reduced-motion: no-preference){
+  @view-transition{navigation:auto}
+  ::view-transition-old(root),::view-transition-new(root){animation-duration:.32s}
+}
+
+@media (prefers-reduced-motion: reduce){
+  .band.rv > *,.band.rv :is(.picks-row,.happen-more,.journey,.home-discover-pills,.guides-home-row,.nara-dig-filters) > *{opacity:1!important}
+  .uv-fly{display:none}
+}
