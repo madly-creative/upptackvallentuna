@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="sv" data-home-hero="events">
+<html lang="sv" data-home-hero="classic">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Upptäck Vallentuna — lokal guide till fik, gårdar, natur & evenemang</title>
   <meta name="description" content="Din handplockade guide till småföretag, caféer, gårdsbutiker, naturpärlor och evenemang i Vallentuna. Lokalt på riktigt.">
   <link rel="canonical" href="https://upptackvallentuna.se/">
-  <meta name="theme-color" content="#37472f">
+  <meta name="theme-color" content="#F8F6F0">
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -32,19 +32,19 @@
     (function(){
       try{
         var q=new URLSearchParams(location.search).get("hero");
-        var s=q||localStorage.getItem("uv-home-hero")||"events";
-        if(s!=="classic"&&s!=="events") s="events";
+        var s=q||localStorage.getItem("uv-home-hero")||"classic";
+        if(s!=="classic"&&s!=="events") s="classic";
         document.documentElement.setAttribute("data-home-hero", s);
-      }catch(e){ document.documentElement.setAttribute("data-home-hero","events"); }
+      }catch(e){ document.documentElement.setAttribute("data-home-hero","classic"); }
     })();
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <!-- Non-blocking fonts (system stack paints first) -->
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet"></noscript>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"></noscript>
   <!-- Leaflet CSS/JS loaded on demand when map opens -->
-  <link rel="stylesheet" href="/src/styles/main.css">
+  <link rel="stylesheet" href="/src/styles/site.css">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -80,13 +80,13 @@
 
 <header class="topbar">
   <div class="brand" onclick="showView('start')" role="link" aria-label="Upptäck Vallentuna — startsida" title="Upptäck Vallentuna">
-    <img class="logo" src="/assets/shared/logo.svg" alt="Upptäck Vallentuna" width="230" height="112" decoding="async" />
+    <img class="logo" src="/assets/shared/logo.svg" alt="Upptäck Vallentuna" width="195" height="50" decoding="async" />
   </div>
   <nav class="nav" aria-label="Huvudmeny">
-    <button id="nav-start" class="on" onclick="showView('start')">Upptäck Vallentuna</button>
+    <button id="nav-start" class="on" onclick="showView('start')" hidden>Start</button>
     <div class="nav-dd" id="navUpplev">
       <button type="button" id="nav-upplev" class="nav-dd-btn" aria-haspopup="true" aria-expanded="false" aria-controls="navUpplevMenu" onclick="toggleUpplevMenu(event)">
-        Upplev Vallentuna
+        Upplev
         <svg class="chev" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <div class="nav-dd-menu" id="navUpplevMenu" role="menu">
@@ -103,9 +103,9 @@
     <button id="nav-hander" onclick="showView('hander')">Evenemang</button>
     <button id="nav-karta" onclick="showView('karta')">Karta</button>
     <button id="nav-guider" type="button" onclick="showView('guider')" hidden>Guider</button>
-    <button id="nav-levererar" type="button" onclick="openLevererarMoment('')">Vallentuna levererar</button>
+    <button id="nav-levererar" type="button" onclick="openLevererarMoment('')">Berättelser</button>
     <button id="nav-roester" type="button" onclick="openVoicesNav()" hidden>Bygdens röster</button>
-    <button id="nav-om" type="button" onclick="showView('om')">Om Upptäck Vallentuna</button>
+    <button id="nav-om" type="button" onclick="showView('om')" hidden>Om Upptäck Vallentuna</button>
   </nav>
   <div class="nav-utils">
     <button class="util-btn" type="button" id="navFavBtn" onclick="showView('favoriter')" aria-label="Favoriter" title="Favoriter">
@@ -116,9 +116,6 @@
     <button class="util-btn" type="button" onclick="showView('sok')" aria-label="Sök">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.7"/><path d="M16.5 16.5 20 20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
       <span>Sök</span>
-    </button>
-    <button class="util-btn" type="button" onclick="showView('listor')" aria-label="Listor">
-      <span>Listor</span>
     </button>
     <button class="btn-outline" type="button" onclick="setTipKind('place');showView('skicka')">Tipsa oss</button>
     <button class="menu-toggle" type="button" id="menuToggle" aria-label="Öppna meny" aria-expanded="false" aria-controls="mobileNav" onclick="toggleMobileNav(true)">
@@ -286,21 +283,14 @@
     </div>
   </div>
 
-  <!-- 2. Helgen / Just nu (evenemang + öppet + väder i ett) -->
-  <section class="today-brief" id="todayBrief" aria-label="Helgen i Vallentuna">
+  <div class="return-banner" id="returnBanner" hidden>
     <div class="inner">
-      <header class="today-brief-head">
-        <div>
-          <h2 id="todayBriefTitle">Helgen i Vallentuna</h2>
-          <p class="today-brief-meta" id="todayBriefMeta"></p>
-        </div>
-        <button type="button" class="btn-secondary" onclick="showView('hander')">Alla evenemang →</button>
-      </header>
-      <div class="today-brief-feature" id="todayBriefFeature"></div>
-      <div class="today-brief-grid" id="todayBriefGrid"></div>
+      <span id="returnText"></span>
+      <button type="button" id="returnBtn">Öppna igen →</button>
     </div>
-  </section>
+  </div>
 
+  <div class="band band--discover">
   <!-- Discover — search-first place invite -->
   <section class="home-discover" id="homeDiscover" aria-labelledby="homeDiscoverTitle">
     <div class="home-discover-shell">
@@ -334,30 +324,27 @@
     </div>
   </section>
 
-  <div class="return-banner" id="returnBanner" hidden>
-    <div class="inner">
-      <span id="returnText"></span>
-      <button type="button" id="returnBtn">Öppna igen →</button>
-    </div>
   </div>
 
-  <aside class="smultron-banner" id="smultronBanner" hidden aria-labelledby="smultronBannerTitle">
+  <div class="band band--events">
+  <!-- 2. Helgen / Just nu (evenemang + öppet + väder i ett) -->
+  <section class="today-brief" id="todayBrief" aria-label="Helgen i Vallentuna">
     <div class="inner">
-      <img class="smultron-banner-sprig" src="/assets/shared/smultron-sprig.webp" alt="" width="310" height="369" decoding="async" aria-hidden="true">
-      <div class="smultron-banner-copy">
-        <p class="smultron-banner-eyebrow">Nytt</p>
-        <h2 id="smultronBannerTitle">Tipsa om era smultronställen</h2>
-        <p>Ja, vi vet — ett smultronställe vill man helst hålla för sig själv. Men har du ett guldkorn du ändå vill dela — en utsikt, en picknickplats, en fridfull bänk under ett pilträd — hör av dig. Vi kikar på det, och du blir krediterad om det hamnar på kartan.</p>
-      </div>
-      <div class="smultron-banner-actions">
-        <button type="button" class="smultron-banner-cta" id="smultronBannerCta">Tipsa oss →</button>
-      </div>
+      <header class="today-brief-head">
+        <div>
+          <h2 id="todayBriefTitle">Helgen i Vallentuna</h2>
+          <p class="today-brief-meta" id="todayBriefMeta"></p>
+        </div>
+        <button type="button" class="btn-secondary" onclick="showView('hander')">Alla evenemang →</button>
+      </header>
+      <div class="today-brief-feature" id="todayBriefFeature"></div>
+      <div class="today-brief-grid" id="todayBriefGrid"></div>
     </div>
-  </aside>
+  </section>
 
-  <!-- 3. Upptäck runt hörnet — karta -->
-  <div id="naraDigRoot"></div>
+  </div>
 
+  <div class="band band--picks">
   <!-- 4. Handplockat just nu -->
   <div class="sec picks-sec">
     <div class="sec-head">
@@ -370,6 +357,15 @@
     <div class="picks-grid" id="picksGrid"></div>
   </div>
 
+  </div>
+
+  <div class="band band--map">
+  <!-- 3. Upptäck runt hörnet — karta -->
+  <div id="naraDigRoot"></div>
+
+  </div>
+
+  <div class="band band--guides">
   <!-- 5. Färdiga guider -->
   <section class="sec guides-sec" id="guidesHomeSec" hidden aria-labelledby="guidesHomeTitle">
     <div class="guides-sec-inner">
@@ -399,6 +395,9 @@
     <div class="journey journey-timeline" id="routeGrid"></div>
   </div>
 
+  </div>
+
+  <div class="band band--stories">
   <!-- 7. Vallentuna levererar -->
   <div class="sec levererar-sec" id="levererarSec" hidden>
     <div class="sec-head">
@@ -428,6 +427,25 @@
     <div id="voicesFeature"></div>
     <div class="voice-more" id="voicesMore" hidden></div>
   </div>
+  </div>
+
+  <div class="band band--tip">
+  <aside class="smultron-banner" id="smultronBanner" hidden aria-labelledby="smultronBannerTitle">
+    <div class="inner">
+      <img class="smultron-banner-sprig" src="/assets/shared/smultron-sprig.webp" alt="" width="310" height="369" decoding="async" aria-hidden="true">
+      <div class="smultron-banner-copy">
+        <p class="smultron-banner-eyebrow">Nytt</p>
+        <h2 id="smultronBannerTitle">Tipsa om era smultronställen</h2>
+        <p>Ja, vi vet — ett smultronställe vill man helst hålla för sig själv. Men har du ett guldkorn du ändå vill dela — en utsikt, en picknickplats, en fridfull bänk under ett pilträd — hör av dig. Vi kikar på det, och du blir krediterad om det hamnar på kartan.</p>
+      </div>
+      <div class="smultron-banner-actions">
+        <button type="button" class="smultron-banner-cta" id="smultronBannerCta">Tipsa oss →</button>
+      </div>
+    </div>
+  </aside>
+
+  </div>
+
 </section>
 
 <!-- ===================== KATEGORI ===================== -->
@@ -766,7 +784,7 @@
   <div class="foot-inner">
     <div class="foot-brand">
       <button type="button" class="foot-logo" onclick="showView('start')" aria-label="Till startsidan">
-        <img src="/assets/shared/logo.svg" alt="" width="230" height="112" decoding="async" />
+        <img src="/assets/shared/logo.svg" alt="" width="195" height="50" decoding="async" />
       </button>
       <p class="foot-tag" id="footTag">Tillsammans gör vi Vallentuna levande.</p>
       <p class="foot-lede">Handplockad guide till fik, gårdar, natur och evenemang — lokalt på riktigt.</p>
@@ -804,6 +822,7 @@
         <li><a href="mailto:info@upptackvallentuna.se">info@upptackvallentuna.se</a></li>
         <li><a href="/evenemang.html">Evenemangskalender</a></li>
         <li><button type="button" onclick="showView('om')">Om Upptäck Vallentuna</button></li>
+        <li><button type="button" onclick="showView('listor')">Dina listor</button></li>
         <li data-pwa-install-entry><button type="button" onclick="promptPwaInstall()">Lägg till på hemskärmen</button></li>
         <li><a href="/integritet.html">Integritet</a></li>
       </ul>

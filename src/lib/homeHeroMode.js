@@ -2,8 +2,8 @@
  * Homepage hero layout experiment.
  *
  * Modes:
- * - "events"  — event-first hero + discover/search below (default while we evaluate)
- * - "classic" — original rotating landscape + search + weather card
+ * - "events"  — event-first hero + discover/search below
+ * - "classic" — landscape hero with search + today card (default since the 2026 redesign)
  *
  * How to switch (survives merge):
  * 1. URL:  ?hero=classic  or  ?hero=events  (also saved to localStorage)
@@ -17,7 +17,7 @@
  *   ?heroPad=3  — pad hero slides with next upcoming events (preview only)
  */
 export const HOME_HERO_STORAGE_KEY = "uv-home-hero";
-export const HOME_HERO_DEFAULT = "events";
+export const HOME_HERO_DEFAULT = "classic";
 
 export function resolveHomeHeroMode({
   search = typeof location !== "undefined" ? location.search : "",

@@ -1,0 +1,128 @@
+/* Upptäck Vallentuna — 2026-profilen för de statiska sidorna (plats, guide, evenemang, om, integritet).
+   Laddas sist och skriver över seo.css / seo-pages.css. Samma tokens som src/styles/theme.css. */
+:root{
+  --c-raps:#F3C63F;--c-sky:#A8D2EE;--c-meadow:#2E6A45;--c-meadow-deep:#1F4A30;
+  --c-lake:#1D4766;--c-chalk:#F8F6F0;--c-chalk-2:#EFEBE1;--c-ink:#16241B;--c-night:#132019;
+  --font-display:"Familjen Grotesk","Helvetica Neue",Arial,system-ui,sans-serif;
+  --font-body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  /* gamla variabler pekar om till nya profilen */
+  --paper:var(--c-chalk);--ink:var(--c-ink);--ink-soft:#4C5A50;--moss:var(--c-meadow);--moss-deep:var(--c-meadow-deep);
+  --rust:var(--c-meadow);--rust-deep:var(--c-meadow-deep);--card:#fff;
+  --font-serif:var(--font-display);--font-sans:var(--font-body);
+}
+.seo-page{
+  --font-serif:var(--font-display);--font-sans:var(--font-body);
+  background:var(--c-chalk);color:var(--c-ink);font-family:var(--font-body);
+  display:flex;flex-direction:column;min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+.seo-page main{flex:1 0 auto}
+.seo-top,.seo-foot,.built-by,.seo-main{box-sizing:border-box}
+
+/* Topp: samma känsla som appens meny */
+.seo-top{
+  position:sticky;top:0;z-index:20;max-width:none;width:100%;margin:0;
+  padding:14px max(20px,calc((100% - 1184px)/2));
+  background:color-mix(in srgb,var(--c-chalk) 92%,transparent);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(22,36,27,.08);
+}
+.seo-brand{display:inline-flex;align-items:center;line-height:0}
+.seo-brand img{height:40px;width:auto;display:block}
+.seo-top nav{gap:6px 22px;align-items:center}
+.seo-top nav a{font:500 15px/1 var(--font-body);color:var(--c-ink);padding:8px 0;border-bottom:2px solid transparent}
+.seo-top nav a:hover{border-bottom-color:rgba(22,36,27,.25)}
+.seo-top nav a[aria-current="page"]{color:var(--c-ink);border-bottom-color:var(--c-raps)}
+
+/* Innehåll */
+.seo-main{max-width:760px;padding:clamp(40px,6vw,72px) 20px clamp(56px,7vw,96px)}
+.seo-main h1{
+  font-family:var(--font-display);font-weight:700;color:var(--c-ink);
+  font-size:clamp(40px,6vw,68px);line-height:1;letter-spacing:-.03em;margin:0 0 18px;text-wrap:balance;
+}
+.seo-main h2,.ev-seo-month-h{
+  font-family:var(--font-display);font-weight:700;color:var(--c-ink);
+  font-size:clamp(24px,2.6vw,32px);line-height:1.1;letter-spacing:-.02em;margin:40px 0 12px;
+}
+.seo-main h3{font-family:var(--font-display);font-weight:700;letter-spacing:-.01em}
+.seo-main .lede{font-size:clamp(18px,1.6vw,21px);line-height:1.5;color:var(--ink-soft);max-width:60ch;text-wrap:pretty;margin-bottom:16px}
+.seo-main p,.seo-main li{font-size:16.5px;line-height:1.65;text-wrap:pretty}
+.seo-main a{color:var(--c-meadow);text-decoration-thickness:1.5px;text-underline-offset:3px}
+.seo-main a:hover{color:var(--c-meadow-deep)}
+.seo-main .om-quote,.seo-main blockquote{color:var(--c-ink);margin:28px 0;border-left:3px solid var(--c-raps);padding-left:18px;font-family:var(--font-display);font-style:normal;font-size:24px;line-height:1.3}
+.seo-main em,.seo-main i{font-style:normal}
+
+/* Bilder och metadata */
+.seo-hero-img,.seo-fact-art,.seo-fact-ph{border-radius:24px}
+.seo-hero-img{aspect-ratio:16/10;margin-bottom:28px}
+.seo-meta{font-size:14px;color:var(--ink-soft)}
+.seo-meta time + span::before{content:" · "}
+.seo-main > p.seo-meta:first-of-type{font:700 12px/1.4 var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--c-meadow);margin-bottom:12px}
+.tipsare-credit{font-style:normal}
+
+/* Öppettider */
+.hours-table{font-size:15.5px;background:#fff;border-radius:18px;overflow:hidden;border-collapse:separate;border-spacing:0}
+.hours-table td{padding:12px 18px;border-bottom:1px solid rgba(22,36,27,.07)}
+.hours-table tr:last-child td{border-bottom:0}
+
+/* Guide-stopp som numrerade kort */
+.seo-guide-stops{list-style:none;padding:0;counter-reset:stop;display:grid;gap:14px}
+.seo-guide-stops li{counter-increment:stop;position:relative;margin:0;padding:18px 20px 18px 66px;background:#fff;border-radius:20px}
+.seo-guide-stops li::before{
+  content:counter(stop);position:absolute;left:18px;top:18px;width:32px;height:32px;border-radius:50%;
+  display:grid;place-items:center;background:var(--c-meadow);color:#fff;font:700 14px/1 var(--font-body)}
+.seo-guide-stops h3{font-size:20px;margin:4px 0 6px}
+.seo-guide-stops h3 a{color:var(--c-ink);text-decoration:none}
+.seo-guide-stops h3 a:hover{color:var(--c-meadow)}
+.seo-guide-stops p{margin:0;color:var(--ink-soft)}
+
+/* Knappar/länkar längst ned */
+.seo-actions{gap:10px}
+.seo-actions a,.seo-cta a,.seo-place-link a{
+  display:inline-flex;align-items:center;gap:6px;padding:12px 20px;border-radius:999px;
+  background:var(--c-ink);color:#fff;font:700 14px/1 var(--font-body);text-decoration:none}
+.seo-actions a:hover,.seo-cta a:hover,.seo-place-link a:hover{background:var(--c-meadow);color:#fff}
+.seo-actions a + a{background:transparent;color:var(--c-ink);box-shadow:inset 0 0 0 1.5px var(--c-ink)}
+.seo-actions a + a:hover{background:var(--c-ink);color:#fff}
+
+/* Evenemangslistan */
+.chip,.event-pills .chip{
+  border-radius:999px;border:1.5px solid rgba(22,36,27,.18);background:#fff;color:var(--c-ink);
+  font:600 14px/1 var(--font-body);padding:9px 16px;min-height:0;min-width:0}
+.chip.on,.event-pills .chip.on{background:var(--c-ink);border-color:var(--c-ink);color:#fff}
+.ev-seo{background:#fff;border:0;border-radius:22px;padding:22px 24px;box-shadow:0 18px 34px -28px rgba(22,36,27,.5)}
+.ev-seo time{color:var(--c-meadow);font-size:12px;letter-spacing:.1em}
+.ev-seo .cat{display:inline-block;padding:5px 10px;border-radius:999px;background:var(--c-raps);color:var(--c-ink);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase}
+.ev-seo h2{font-size:24px;margin:10px 0 6px}
+.ev-seo h2 a{color:var(--c-ink);text-decoration:none}
+.ev-seo h2 a:hover{color:var(--c-meadow)}
+.ev-seo .host{color:var(--ink-soft);font-size:14px}
+.seo-main .event-count{color:var(--ink-soft);letter-spacing:.1em}
+
+/* Fot: mörkt band som på startsidan */
+.seo-foot{
+  max-width:none;width:100%;margin:0;flex-wrap:wrap;align-items:center;gap:8px 12px;
+  padding:36px max(20px,calc((100% - 1184px)/2)) 12px;border:0;
+  background:var(--c-night);color:#E7EEE5;font-size:14px}
+.seo-foot a{color:#E7EEE5;text-decoration:none}
+.seo-foot a:hover{color:var(--c-raps)}
+.seo-foot span{opacity:.35}
+.built-by{margin:0;background:var(--c-night);color:#E7EEE5;opacity:1;padding:8px 20px 32px;font-size:12px}
+.built-by a{color:rgba(231,238,229,.7)}
+
+@media (max-width:640px){
+  .seo-top{padding:10px 16px}
+  .seo-brand img{height:32px}
+  .seo-top nav{gap:4px 16px}
+  .seo-top nav a{font-size:14px}
+  .seo-main{padding-inline:16px}
+  .seo-guide-stops li{padding:16px 16px 16px 58px}
+  .seo-guide-stops li::before{left:14px;top:16px}
+}
+.seo-main .om-sign{font-family:var(--font-display);font-style:normal;font-size:20px}
+body.seo-page{margin:0}
+.seo-hero-img{width:100%;height:auto;object-fit:cover}
+
+/* Rubriker: -4 % spärrning överallt (Juha 2026-11-16) */
+:root{--display-track:-.04em}
+h1,h2,h3,h4,.em-title,.ev-seo-month-h{letter-spacing:var(--display-track)!important}

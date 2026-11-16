@@ -761,11 +761,11 @@ import {
     },
   };
 
-    const cats=[{key:"alla",label:"Allt"},{key:"fika",label:"Fika & Mat"},{key:"gard",label:"Gård & Handelsträdgård"},{key:"natur",label:"Natur & Historia"},{key:"butik",label:"Butik & Kultur"},{key:"loppis",label:"Loppis"},{key:"smultronstalle",label:"Smultronställen"},{key:"guidning",label:"Guidning"}];
+    const cats=[{key:"alla",label:"Allt"},{key:"fika",label:"Fika & Mat"},{key:"gard",label:"Gård & Handelsträdgård"},{key:"natur",label:"Natur & Historia"},{key:"butik",label:"Butiker"},{key:"kultur",label:"Kultur"},{key:"loppis",label:"Loppis"},{key:"smultronstalle",label:"Smultronställen"},{key:"guidning",label:"Guidning"}];
 
   const DOW=["SÖN","MÅN","TIS","ONS","TOR","FRE","LÖR"];
   const MON=["JAN","FEB","MAR","APR","MAJ","JUN","JUL","AUG","SEP","OKT","NOV","DEC"];
-  const typeLabel={fika:"FIKA",gard:"HANDLA LOKALT",butik:"BUTIK",loppis:"LOPPIS",natur:"NATUR",smultronstalle:"SMULTRONSTÄLLE",guidning:"GUIDNING"};
+  const typeLabel={fika:"FIKA",gard:"HANDLA LOKALT",butik:"BUTIK",kultur:"KULTUR",loppis:"LOPPIS",natur:"NATUR",smultronstalle:"SMULTRONSTÄLLE",guidning:"GUIDNING"};
 
   // Editorial category landings (nav + view-kategori)
   const CATEGORIES={
@@ -1147,7 +1147,7 @@ import {
         reasons.push(outdoor[Math.abs([...p.name].reduce((a,c)=>a+c.charCodeAt(0),0))%outdoor.length]);
       }
     }
-    if(ctx.mood==="rough" && (["fika","butik"].includes(p.type) || hasTag(p,"inomhus"))){
+    if(ctx.mood==="rough" && (["fika","butik","kultur"].includes(p.type) || hasTag(p,"inomhus"))){
       const indoor=["Mysigt inomhus","Tak över huvudet","Varm dryck väntar","Innekos"];
       if(!reasons.some(r=>indoor.includes(r))){
         reasons.push(indoor[Math.abs([...p.name].reduce((a,c)=>a+c.charCodeAt(0),0))%indoor.length]);
@@ -1575,8 +1575,12 @@ import {
       fillOpacity:1,
       className:"nara-dig-you",
     }).addTo(nearDigMap);
-    nearDigMap.setView([nearDigPos.lat, nearDigPos.lng], 13);
+    if(KOMMUN_BOUNDS && KOMMUN_BOUNDS.contains([nearDigPos.lat, nearDigPos.lng])) nearDigMap.setView([nearDigPos.lat, nearDigPos.lng], 13);
   }
+
+  /* Vallentuna kommun, with some margin. Keeps the home map local. */
+  const KOMMUN_MIN_ZOOM=10;
+  let KOMMUN_BOUNDS=null;
 
   function fitNearDigMap(hits){
     const Lref=window.L;
@@ -1586,8 +1590,13 @@ import {
       return;
     }
     const bounds=Lref.latLngBounds(hits.map(h=>[h.place.lat, h.place.lng]));
-    if(nearDigPos) bounds.extend([nearDigPos.lat, nearDigPos.lng]);
-    nearDigMap.fitBounds(bounds.pad(0.18));
+    /* Only pull the visitor into view when they are actually in/near the kommun —
+       otherwise the map zooms out to half of Scandinavia. */
+    if(nearDigPos && KOMMUN_BOUNDS.contains([nearDigPos.lat, nearDigPos.lng])) bounds.extend([nearDigPos.lat, nearDigPos.lng]);
+    const size=nearDigMap.getSize();
+    if(!size.x || !size.y) return; /* container not laid out yet; ResizeObserver refits */
+    nearDigMap.fitBounds(bounds.pad(0.18), { maxZoom:14 });
+    if(nearDigMap.getZoom() < KOMMUN_MIN_ZOOM) nearDigMap.setView(CONFIG.center, KOMMUN_MIN_ZOOM);
   }
 
   async function initNearDigMap(){
@@ -1600,11 +1609,25 @@ import {
       try{ nearDigMap.remove(); }catch(err){}
       nearDigMap=null;
     }
+    KOMMUN_BOUNDS=Lref.latLngBounds([59.40, 17.85], [59.75, 18.50]);
     nearDigMap=Lref.map("naraDigMap",{
       zoomControl:false,
-      scrollWheelZoom:true,
+      scrollWheelZoom:false,
       attributionControl:false,
+      minZoom:KOMMUN_MIN_ZOOM,
+      maxBounds:KOMMUN_BOUNDS.pad(0.15),
+      maxBoundsViscosity:0.8,
     }).setView(CONFIG.center, CONFIG.zoom || 12);
+    if(typeof ResizeObserver==="function"){
+      let lastW=0;
+      new ResizeObserver(([entry])=>{
+        const w=Math.round(entry.contentRect.width);
+        if(!nearDigMap || !w || w===lastW) return;
+        lastW=w;
+        nearDigMap.invalidateSize();
+        fitNearDigMap(nearDigHits());
+      }).observe(el);
+    }
     addBasemap(nearDigMap, Lref);
     refreshNearDigMapMarkers();
     setTimeout(()=>{
@@ -1797,6 +1820,7 @@ import {
         ${fav}
       </div>
       <div class="bd">
+        <time class="ev-cal" datetime="${e.date}" aria-hidden="true"><span class="dow">${DOW[d.getDay()]}</span><span class="d">${d.getDate()}</span><span class="m">${MON[d.getMonth()]}</span></time>
         <h3>${e.title}</h3>
         <div class="meta">
           <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s6-5.2 6-10a6 6 0 1 0-12 0c0 4.8 6 10 6 10z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="11" r="2" stroke="currentColor" stroke-width="2"/></svg>${e.host}</span>
@@ -2492,15 +2516,12 @@ import {
         : (weekend?`Helgen i ${K}`:`Händer i ${K}`);
     }
 
-    const openRanked=rankedPlaces().filter(x=>x.open && isTimedVenue(x.p)).slice(0,3);
-    const openN=openVenueCount();
     if(metaEl){
       const bits=[];
       if(ctx.temp!=null){
         const wk=ctx.code!=null?weatherKind(ctx.code):null;
         bits.push(`${ctx.temp}°${wk?.t?" · "+wk.t:""}`);
       }
-      bits.push(openN?`${openN} ställen öppna`:"Kolla öppettider");
       if(eventsToday.length) bits.push(eventsToday.length===1?"1 event idag":`${eventsToday.length} event idag`);
       else if(recurringTodayList.length) bits.push(recurringTodayList.length===1?"1 återkommande idag":`${recurringTodayList.length} återkommande idag`);
       else if(weekend && liveEvents.length) bits.push("Se helgens program");
@@ -2555,22 +2576,9 @@ import {
       }
     }
 
-    let openBody="";
-    if(openRanked.length){
-      openBody=`<div class="tc-list">${openRanked.map(({p,reasons,mins})=>{
-        const sub=mins!==Infinity&&mins<=75?`Stänger om ${mins} min`
-          :(p.short||reasons.find(r=>!/^Öppet|väder|Soligt|ute|Landskapet|utflykt|inomhus|Tak över|Innekos|Varm dryck/i.test(r))||p.cat);
-        return todayBriefItem(p.img, escHtml(p.name), escHtml(sub), `openPlace('${jsEsc(p.name)}')`);
-      }).join("")}</div>`;
-    } else {
-      openBody=`<p class="tc-empty">Få ställen har öppet i just den här stunden — planera med kartan eller kom tillbaka senare.</p>`;
-    }
-    // Single utility card — Passar vädret removed (often duplicated Öppet nu; events need the space)
-    grid.innerHTML=`<article class="today-card today-card-open">
-      <p class="tc-label">Öppet nu${openN?` · ${openN}`:""}</p>
-      ${openBody}
-      <button type="button" class="tc-foot" onclick="showOpenNowOnMap()">Visa på karta →</button>
-    </article>`;
+    // "Öppet nu" card removed in the 2026 redesign — the map's "Öppet nu" filter covers it.
+    grid.innerHTML="";
+    grid.hidden=true;
 
     try{ renderHomeEventHero(); }catch(e){}
   }
@@ -3149,7 +3157,7 @@ import {
   }
 
   function indoorCandidates(){
-    return places.filter(p=>hasTag(p,"inomhus")||p.type==="butik"||p.type==="loppis"||p.name.includes("Kulturhus")||p.name.includes("Stenugns"))
+    return places.filter(p=>hasTag(p,"inomhus")||p.type==="butik"||p.type==="kultur"||p.type==="loppis"||p.name.includes("Kulturhus")||p.name.includes("Stenugns"))
       .filter(p=>p.type!=="natur")
       .sort((a,b)=>scorePlace(b).score-scorePlace(a).score);
   }
