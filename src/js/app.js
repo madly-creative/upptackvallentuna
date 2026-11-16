@@ -2644,9 +2644,6 @@ import {
     const source=fact.source
       ?`<p class="weekly-fact-source">Källa: ${escHtml(fact.source)}</p>`
       :"";
-    const media=fact.image
-      ?`<img class="weekly-fact-art" src="${escHtml(fact.image)}" alt="" width="1024" height="682" decoding="async" loading="lazy" />`
-      :`<div class="weekly-fact-ph">${sagen?"✦":"?"}</div>`;
     let cta="";
     if(fact.relatedPlace){
       const place=placeBySlug(fact.relatedPlace, places) || places.find(p=>(p.slug||placeSlug(p.name))===fact.relatedPlace);
@@ -2658,15 +2655,17 @@ import {
       cta=`<button type="button" class="weekly-fact-cta" onclick="document.getElementById('naraDig')?.scrollIntoView({behavior:'smooth',block:'start'})">Utforska bygden på kartan →</button>`;
     }
     card.innerHTML=`
-      <div class="weekly-fact-copy">
-        <div class="eyebrow">${sagen?"Enligt sägnen…":"Veckans Visste du att"}</div>
-        <blockquote>${escHtml(fact.title)}</blockquote>
+      <p class="eyebrow">${sagen?"Enligt sägnen":"Visste du att"}</p>
+      <blockquote>${escHtml(fact.shortFact || fact.title)}</blockquote>
+      <button type="button" class="weekly-fact-more" aria-expanded="false" aria-controls="weeklyFactBody"
+        onclick="const o=this.getAttribute('aria-expanded')==='true';this.setAttribute('aria-expanded',String(!o));document.getElementById('weeklyFactBody').hidden=o;this.firstChild.textContent=o?'Läs mer ':'Visa mindre '">Läs mer <span aria-hidden="true">→</span></button>
+      <div class="weekly-fact-body" id="weeklyFactBody" hidden>
+        <h3>${escHtml(fact.title)}</h3>
         ${sagen?`<p class="weekly-fact-sagen">Folktro — inte fastslagen historia.</p>`:""}
         <p>${escHtml(fact.longFact)}</p>
         ${source}
         ${cta}
-      </div>
-      <div class="weekly-fact-media" aria-hidden="true">${media}</div>`;
+      </div>`;
   }
   function renderPicks(){
     const grid=document.getElementById('picksGrid'); if(!grid) return;
@@ -3318,27 +3317,28 @@ import {
   }
   function renderGuidesHomeCards(){
     const wrap=document.getElementById("guidesHomeTeaser");
+    const media=document.getElementById("guideSpreadMedia");
     if(!wrap) return;
-    if(!guides.length){ wrap.innerHTML=""; return; }
+    if(!guides.length){ wrap.innerHTML=""; if(media) media.innerHTML=""; return; }
     const ordered=guidesForHomeFilter(guides, "popular", month, 3);
     if(!ordered.length){
       wrap.innerHTML=`<p class="guides-home-empty">Inga guider just nu — kom tillbaka snart.</p>`;
       return;
     }
-    wrap.innerHTML=ordered.map((g,i)=>{
-      const img=g.heroImg || guideResolvedStops(g)[0]?.placeObj?.img || "";
-      const kicker=g.kicker || seasonLabel(g.season);
-      const feat=i===0?" featured":"";
-      return `<button type="button" class="guide-card${feat}" onclick="openGuide('${g.slug}')">
-        <div class="im" style="background-image:url('${escHtml(img)}')"></div>
-        <div class="bd">
-          <div class="tag">${escHtml(kicker)}</div>
-          <h3>${escHtml(g.title)}</h3>
-          <p>${escHtml(g.intro)}</p>
-          <span class="lnk">Läs guiden →</span>
-        </div>
-      </button>`;
-    }).join("");
+    const [g,...rest]=ordered;
+    const stops=guideResolvedStops(g);
+    const img=g.heroImg || stops[0]?.placeObj?.img || "";
+    if(media) media.innerHTML=img?`<img src="${escHtml(img)}" alt="" loading="lazy" decoding="async">`:"";
+    const meta=["Veckans guide", stops.length?`${stops.length} stopp`:"", g.kicker || seasonLabel(g.season)].filter(Boolean).join(" · ");
+    wrap.innerHTML=`
+      <p class="guide-spread-eyebrow">${escHtml(meta)}</p>
+      <h2 id="guidesHomeTitle">${escHtml(g.title)}</h2>
+      <p class="guide-spread-intro">${escHtml(g.intro)}</p>
+      <button type="button" class="guide-spread-cta" onclick="openGuide('${g.slug}')">Läs guiden →</button>
+      <nav class="guide-spread-list" aria-label="Fler guider">
+        ${rest.map(r=>`<button type="button" onclick="openGuide('${r.slug}')"><span>${escHtml(r.title)}</span><span aria-hidden="true">→</span></button>`).join("")}
+        <button type="button" class="all" onclick="showView('guider')"><span>Alla guider</span><span aria-hidden="true">→</span></button>
+      </nav>`;
   }
   function renderGuidesHome(){
     syncGuidesVisibility();
@@ -3509,7 +3509,7 @@ import {
       }
     }
     // Event tomorrow
-    const tmr=addDays(now,1); const tmrISO=iso(tmr);
+    const tmrISO=addDaysISO(todayISO,1);
     const tomorrow=liveEvents.find(e=>e.date===tmrISO);
     if(tomorrow){
       const key="ev_"+tomorrow.date+"_"+tomorrow.title;

@@ -368,21 +368,15 @@
 
   </div>
 
-  <div class="band band--guides">
-  <!-- 5. Färdiga guider -->
-  <section class="sec guides-sec" id="guidesHomeSec" hidden aria-labelledby="guidesHomeTitle">
-    <div class="guides-sec-inner">
-      <header class="guides-home-head">
-        <div class="guides-home-copy">
-          <h2 id="guidesHomeTitle">Färdiga guider för alla slags dagar</h2>
-          <p class="guides-home-lede">Berättade stopp och smultronställen — vi har gjort jobbet, du njuter.</p>
-        </div>
-        <button type="button" class="guides-home-all" onclick="showView('guider')">Alla guider →</button>
-      </header>
-      <div class="guides-home-row" id="guidesHomeTeaser"></div>
-    </div>
+  <div class="band band--spread">
+  <!-- 5. Veckans guide som tidningsuppslag -->
+  <section class="guide-spread" id="guidesHomeSec" hidden aria-labelledby="guidesHomeTitle">
+    <div class="guide-spread-media" id="guideSpreadMedia" aria-hidden="true"></div>
+    <div class="guide-spread-copy" id="guidesHomeTeaser"></div>
   </section>
+  </div>
 
+  <div class="band band--guides">
   <!-- 6. Gör en eftermiddag -->
   <div class="sec route-sec">
     <div class="sec-head">
@@ -413,11 +407,6 @@
     <div id="levererarTeaser"></div>
   </div>
 
-  <!-- 8. Redaktionell story — Veckans Visste du att -->
-  <div class="sec weekly-fact-sec">
-    <article class="weekly-fact-card" id="weeklyFactCard" aria-label="Veckans Visste du att"></article>
-  </div>
-
   <!-- Bygdens röster — gömd -->
   <div class="sec voices-sec" id="voicesSec" hidden>
     <div class="sec-head">
@@ -430,6 +419,11 @@
     <div id="voicesFeature"></div>
     <div class="voice-more" id="voicesMore" hidden></div>
   </div>
+  </div>
+
+  <div class="band band--fact">
+  <!-- 8. Visste du att — bara typografi -->
+  <article class="weekly-fact-card" id="weeklyFactCard" aria-label="Veckans Visste du att"></article>
   </div>
 
   <div class="band band--tip">
