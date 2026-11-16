@@ -8,11 +8,11 @@ import { placeHasType } from "../data/places.js";
 export const WALK_KMH = 5;
 
 export const NEAR_PIN_COLORS = {
-  fika: "#a85a3a",
-  natur: "#3d4f3a",
-  butik: "#2a3228",
-  gard: "#c4a882",
-  loppis: "#c4a882",
+  fika: "#1D4766",
+  natur: "#2E6A45",
+  butik: "#16241B",
+  gard: "#B8891A",
+  loppis: "#B8891A",
   /** Berry red — reads as its own “hidden gem” layer on the map. */
   smultronstalle: "#c4454a",
 };

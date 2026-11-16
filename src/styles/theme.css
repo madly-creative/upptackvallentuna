@@ -14,8 +14,10 @@
   --c-sky:#A8D2EE;
   --c-meadow:#2E6A45;
   --c-meadow-deep:#1F4A30;
-  --c-brick:#B5472F;
-  --c-brick-deep:#933823;
+  --c-lake:#1D4766;        /* sjöblått: accent och kontrast (ersätter tegelrött i A) */
+  --c-lake-deep:#14334A;
+  --c-brick:var(--c-lake); /* bakåtkompatibelt alias */
+  --c-brick-deep:var(--c-lake-deep);
   --c-chalk:#F8F6F0;
   --c-chalk-2:#EFEBE1;
   --c-ink:#16241B;
@@ -23,7 +25,7 @@
   /* Band: bakgrund + text per sektion på startsidan */
   --band-discover-bg:var(--c-raps);   --band-discover-fg:var(--c-ink);
   --band-events-bg:#DDEFF9;           --band-events-fg:var(--c-ink);
-  --band-picks-bg:var(--c-brick);     --band-picks-fg:#FFF7EE;
+  --band-picks-bg:var(--c-lake);      --band-picks-fg:#F8F6F0;
   --band-map-bg:var(--c-chalk);       --band-map-fg:var(--c-ink);
   --band-guides-bg:var(--c-meadow);   --band-guides-fg:#F3F7EE;
   --band-stories-bg:#FBF0CF;          --band-stories-fg:var(--c-ink);
@@ -45,6 +47,7 @@
   --moss-deep:var(--c-meadow-deep);
   --rust:var(--c-brick);
   --rust-deep:var(--c-brick-deep);
+  --accent-soft:color-mix(in srgb,var(--rust) 12%,transparent);
   --line:color-mix(in srgb,var(--c-ink) 14%,transparent);
   --line-soft:color-mix(in srgb,var(--c-ink) 8%,transparent);
   --radius:20px;
@@ -61,6 +64,8 @@
   --c-sky:#1D4766;
   --c-meadow:#86A88A;
   --c-meadow-deep:#1D4766;
+  --c-lake:#1D4766;
+  --c-lake-deep:#14334A;
   --c-brick:#C9583C;
   --c-brick-deep:#A6442C;
   --c-chalk:#F4EFE6;
@@ -208,3 +213,8 @@ body{font-family:var(--font-body);font-size:16.5px;background:var(--paper);overf
   padding:10px 14px;border-radius:999px;cursor:pointer;white-space:nowrap}
 .uv-palette-switch button[aria-pressed="true"]{background:#fff;color:#111}
 @media (max-width:480px){.uv-palette-switch span{display:none}}
+
+/* Rester av den gamla rosttonen i main.css följer nu paletten */
+.weekly-fact-card .eyebrow,.voice-feature .eyebrow,.hero-full h1 .heart{color:var(--c-raps)}
+.status-pill.soon{background:var(--accent-soft)}
+.plats-side .fav-toggle.on{background:var(--accent-soft)}
