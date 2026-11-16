@@ -658,3 +658,10 @@ h1,h2,h3,h4,.em-title,.ev-seo-month-h{letter-spacing:var(--display-track)!import
   .hero-full .hero-chips{justify-content:flex-start;max-width:100%;margin-right:0;padding-right:0}
 }
 @media (min-width:560px) and (max-width:900px){.hero-full .hero-chips{justify-content:center}}
+
+/* Gör en eftermiddag: sajtens ljusa grund, uppslaget ovanför bär det gröna */
+.band--guides{--band-bg:var(--c-chalk);--band-fg:var(--c-ink)}
+.band--guides .journey-step{background:#fff;box-shadow:0 1px 0 rgba(22,36,27,.06),0 10px 28px rgba(22,36,27,.07)}
+@media (max-width:720px){
+  .band--guides .journey,.band--picks .picks-grid,.band--guides .guides-home-row{scroll-padding-inline:18px}
+}
