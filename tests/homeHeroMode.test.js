@@ -10,8 +10,8 @@ import {
 
 describe("homeHeroMode", () => {
   it("defaults to the experiment mode", () => {
-    expect(HOME_HERO_DEFAULT).toBe("events");
-    expect(resolveHomeHeroMode({ search: "", storage: null })).toBe("events");
+    expect(HOME_HERO_DEFAULT).toBe("classic");
+    expect(resolveHomeHeroMode({ search: "", storage: null })).toBe("classic");
   });
 
   it("URL param wins and can persist", () => {

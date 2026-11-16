@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="sv" data-home-hero="events">
+<html lang="sv" data-home-hero="classic">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,17 +32,17 @@
     (function(){
       try{
         var q=new URLSearchParams(location.search).get("hero");
-        var s=q||localStorage.getItem("uv-home-hero")||"events";
-        if(s!=="classic"&&s!=="events") s="events";
+        var s=q||localStorage.getItem("uv-home-hero")||"classic";
+        if(s!=="classic"&&s!=="events") s="classic";
         document.documentElement.setAttribute("data-home-hero", s);
-      }catch(e){ document.documentElement.setAttribute("data-home-hero","events"); }
+      }catch(e){ document.documentElement.setAttribute("data-home-hero","classic"); }
     })();
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <!-- Non-blocking fonts (system stack paints first) -->
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Serif:ital@0;1&family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Serif:ital@0;1&family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"></noscript>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"></noscript>
   <!-- Leaflet CSS/JS loaded on demand when map opens -->
   <link rel="stylesheet" href="/src/styles/site.css">
   <script type="application/ld+json">
@@ -83,10 +83,10 @@
     <img class="logo" src="/assets/shared/logo.svg" alt="Upptäck Vallentuna" width="230" height="112" decoding="async" />
   </div>
   <nav class="nav" aria-label="Huvudmeny">
-    <button id="nav-start" class="on" onclick="showView('start')">Upptäck Vallentuna</button>
+    <button id="nav-start" class="on" onclick="showView('start')" hidden>Start</button>
     <div class="nav-dd" id="navUpplev">
       <button type="button" id="nav-upplev" class="nav-dd-btn" aria-haspopup="true" aria-expanded="false" aria-controls="navUpplevMenu" onclick="toggleUpplevMenu(event)">
-        Upplev Vallentuna
+        Upplev
         <svg class="chev" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <div class="nav-dd-menu" id="navUpplevMenu" role="menu">
@@ -103,9 +103,9 @@
     <button id="nav-hander" onclick="showView('hander')">Evenemang</button>
     <button id="nav-karta" onclick="showView('karta')">Karta</button>
     <button id="nav-guider" type="button" onclick="showView('guider')" hidden>Guider</button>
-    <button id="nav-levererar" type="button" onclick="openLevererarMoment('')">Vallentuna levererar</button>
+    <button id="nav-levererar" type="button" onclick="openLevererarMoment('')">Berättelser</button>
     <button id="nav-roester" type="button" onclick="openVoicesNav()" hidden>Bygdens röster</button>
-    <button id="nav-om" type="button" onclick="showView('om')">Om Upptäck Vallentuna</button>
+    <button id="nav-om" type="button" onclick="showView('om')" hidden>Om Upptäck Vallentuna</button>
   </nav>
   <div class="nav-utils">
     <button class="util-btn" type="button" id="navFavBtn" onclick="showView('favoriter')" aria-label="Favoriter" title="Favoriter">
@@ -116,9 +116,6 @@
     <button class="util-btn" type="button" onclick="showView('sok')" aria-label="Sök">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.7"/><path d="M16.5 16.5 20 20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
       <span>Sök</span>
-    </button>
-    <button class="util-btn" type="button" onclick="showView('listor')" aria-label="Listor">
-      <span>Listor</span>
     </button>
     <button class="btn-outline" type="button" onclick="setTipKind('place');showView('skicka')">Tipsa oss</button>
     <button class="menu-toggle" type="button" id="menuToggle" aria-label="Öppna meny" aria-expanded="false" aria-controls="mobileNav" onclick="toggleMobileNav(true)">
@@ -825,6 +822,7 @@
         <li><a href="mailto:info@upptackvallentuna.se">info@upptackvallentuna.se</a></li>
         <li><a href="/evenemang.html">Evenemangskalender</a></li>
         <li><button type="button" onclick="showView('om')">Om Upptäck Vallentuna</button></li>
+        <li><button type="button" onclick="showView('listor')">Dina listor</button></li>
         <li data-pwa-install-entry><button type="button" onclick="promptPwaInstall()">Lägg till på hemskärmen</button></li>
         <li><a href="/integritet.html">Integritet</a></li>
       </ul>

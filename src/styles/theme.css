@@ -27,7 +27,7 @@
 
   /* Typografi */
   --font-display:"Bricolage Grotesque","Arial Narrow",system-ui,sans-serif;
-  --font-accent:"Instrument Serif",Georgia,"Times New Roman",serif;
+  --font-accent:var(--font-body); /* underrubriker: sans, inte serif */
   --font-body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
 
   /* Befintliga tokens i main.css mappas om till paletten */
@@ -70,8 +70,8 @@ body{font-family:var(--font-body);font-size:16.5px;background:var(--paper);overf
 /* Kursiva underrubriker (serif) */
 .home-discover-lede,.guides-home-lede,.today-brief-meta,.nara-dig-titles p,
 #view-start .band .wtip{
-  font-family:var(--font-accent);font-style:italic;font-weight:400;
-  font-size:clamp(21px,2.1vw,28px)!important;line-height:1.2;letter-spacing:0;
+  font-family:var(--font-body);font-style:normal;font-weight:400;
+  font-size:clamp(18px,1.7vw,22px)!important;line-height:1.4;letter-spacing:0;
   color:inherit!important;opacity:.85;margin-top:10px!important;max-width:34ch;
 }
 
@@ -147,7 +147,7 @@ body{font-family:var(--font-body);font-size:16.5px;background:var(--paper);overf
 .levererar-latest{border:0;border-radius:28px;background:#fff;color:var(--c-ink)}
 .levererar-latest h3{font-family:var(--font-display);font-weight:800;font-size:clamp(28px,3vw,40px);letter-spacing:-.02em}
 .weekly-fact-card{border-radius:28px;background:var(--c-ink);min-height:300px}
-.weekly-fact-card blockquote{font-family:var(--font-accent);font-style:italic;font-size:clamp(28px,3.2vw,44px);line-height:1.08}
+.weekly-fact-card blockquote{font-family:var(--font-display);font-style:normal;font-weight:800;letter-spacing:-.02em;font-size:clamp(28px,3vw,40px);line-height:1.05}
 
 /* ---------- Tipsa-banner ---------- */
 .band--tip .smultron-banner{margin:0 auto}
@@ -224,3 +224,59 @@ body{font-family:var(--font-body);font-size:16.5px;background:var(--paper);overf
 }
 .sitefooter .foot-list a,.sitefooter .foot-list a:visited{color:var(--foot-fg);opacity:.85}
 .sitefooter .foot-list a:hover{color:var(--c-raps);opacity:1}
+
+/* ==========================================================================
+   Startsidan v2: landskapshero, berättelseband, kortare meny
+   ========================================================================== */
+
+/* Hero: Vallentuna själv, sökningen i bilden, mer luft */
+.hero-full{min-height:min(84vh,760px)}
+.hero-full h1{font-family:var(--font-display);font-weight:800;letter-spacing:-.035em;line-height:.95;font-size:clamp(46px,7.4vw,104px);max-width:11ch}
+.hero-full .hero-tagline{font-family:var(--font-body);font-style:normal;font-weight:500;font-size:clamp(19px,1.9vw,24px);letter-spacing:0}
+.hero-full .greet{letter-spacing:.16em}
+.hero-search{max-width:640px;border-radius:22px;box-shadow:0 18px 50px -20px rgba(0,0,0,.45)}
+.hero-search input{font-size:18px}
+.hero-search input::placeholder{font-style:normal}
+.hero-full .btn-primary{background:var(--c-raps);color:var(--c-ink);border-color:var(--c-raps)}
+.hero-full .btn-primary:hover{background:#fff;border-color:#fff}
+
+/* Dagskortet: bara väder och dagens evenemang */
+#livePulse,#heroSeasonRow{display:none!important}
+.hero-today{border-radius:24px;max-width:340px}
+
+@media (max-width:720px){
+  .hero-full{min-height:0}
+  .hero-full .cta{display:flex;flex-wrap:wrap;gap:10px}
+  .hero-full .cta > button{flex:1 1 140px;justify-content:center}
+  .hero-today{max-width:none}
+}
+
+/* Evenemang: ingen tom rad där "Öppet nu" låg */
+.band--events .today-brief-grid[hidden]{display:none}
+
+/* Berättelser: Vallentuna levererar + Veckans visste du att sida vid sida */
+@media (min-width:900px){
+  .band--stories{
+    display:grid;align-items:stretch;column-gap:24px;
+    grid-template-columns:minmax(28px,1fr) minmax(0,calc(var(--max)/2 - 40px)) minmax(0,calc(var(--max)/2 - 40px)) minmax(28px,1fr);
+  }
+  .band--stories > *{grid-column:2 / 4}
+  .band--stories > .levererar-sec{grid-column:2;padding:0;margin:0;max-width:none;display:flex;flex-direction:column}
+  .band--stories > .weekly-fact-sec{grid-column:3;padding:0;margin:0;max-width:none;display:flex;flex-direction:column;justify-content:flex-end}
+  .band--stories > .levererar-sec #levererarTeaser{flex:1;display:flex}
+  .band--stories .levererar-latest{grid-template-columns:1fr;grid-template-rows:240px auto;flex:1}
+  .band--stories .weekly-fact-card{grid-template-columns:1fr;flex:1}
+  .band--stories .weekly-fact-media{display:none}
+  .band .sec.weekly-fact-sec{margin-top:0}
+}
+/* På dator står rubriken för berättelserna över båda korten */
+@media (min-width:900px){
+  .band--stories > .weekly-fact-sec{padding-top:calc(var(--stories-head,0px))}
+}
+
+/* Ingen serif längre: det som var kursiv serif i main.css blir rak sans */
+.hero-search input::placeholder,.searchbar input::placeholder,.wtip,.pick-quote blockquote,.ev-empty,
+.sitefooter .foot-tag,.events-page h1 em,.weekly-fact-card .weekly-fact-sagen,.verk-no-address,
+.om-body p.big,.om-body .om-quote,.om-body .om-sign,.plats-main p.lead,.tipsare-credit,.plats-proof,
+.voice-feature .vf-quote,.guide-outro,.portratt-quote p,.moment .moment-sign,.levererar-empty{font-style:normal}
+.sitefooter .foot-tag{font-family:var(--font-display);font-weight:700;letter-spacing:-.01em}

@@ -2515,15 +2515,12 @@ import {
         : (weekend?`Helgen i ${K}`:`Händer i ${K}`);
     }
 
-    const openRanked=rankedPlaces().filter(x=>x.open && isTimedVenue(x.p)).slice(0,3);
-    const openN=openVenueCount();
     if(metaEl){
       const bits=[];
       if(ctx.temp!=null){
         const wk=ctx.code!=null?weatherKind(ctx.code):null;
         bits.push(`${ctx.temp}°${wk?.t?" · "+wk.t:""}`);
       }
-      bits.push(openN?`${openN} ställen öppna`:"Kolla öppettider");
       if(eventsToday.length) bits.push(eventsToday.length===1?"1 event idag":`${eventsToday.length} event idag`);
       else if(recurringTodayList.length) bits.push(recurringTodayList.length===1?"1 återkommande idag":`${recurringTodayList.length} återkommande idag`);
       else if(weekend && liveEvents.length) bits.push("Se helgens program");
@@ -2578,22 +2575,9 @@ import {
       }
     }
 
-    let openBody="";
-    if(openRanked.length){
-      openBody=`<div class="tc-list">${openRanked.map(({p,reasons,mins})=>{
-        const sub=mins!==Infinity&&mins<=75?`Stänger om ${mins} min`
-          :(p.short||reasons.find(r=>!/^Öppet|väder|Soligt|ute|Landskapet|utflykt|inomhus|Tak över|Innekos|Varm dryck/i.test(r))||p.cat);
-        return todayBriefItem(p.img, escHtml(p.name), escHtml(sub), `openPlace('${jsEsc(p.name)}')`);
-      }).join("")}</div>`;
-    } else {
-      openBody=`<p class="tc-empty">Få ställen har öppet i just den här stunden — planera med kartan eller kom tillbaka senare.</p>`;
-    }
-    // Single utility card — Passar vädret removed (often duplicated Öppet nu; events need the space)
-    grid.innerHTML=`<article class="today-card today-card-open">
-      <p class="tc-label">Öppet nu${openN?` · ${openN}`:""}</p>
-      ${openBody}
-      <button type="button" class="tc-foot" onclick="showOpenNowOnMap()">Visa på karta →</button>
-    </article>`;
+    // "Öppet nu" card removed in the 2026 redesign — the map's "Öppet nu" filter covers it.
+    grid.innerHTML="";
+    grid.hidden=true;
 
     try{ renderHomeEventHero(); }catch(e){}
   }
