@@ -67,7 +67,7 @@
   --c-chalk-2:#E9E1D3;
   --c-ink:#13212C;
 
-  --band-discover-bg:var(--c-raps);   --band-discover-fg:var(--c-ink);
+  --band-discover-bg:#1D4766;         --band-discover-fg:#F4EFE6;
   --band-events-bg:var(--c-chalk);    --band-events-fg:var(--c-ink);
   --band-picks-bg:#E9DCC8;            --band-picks-fg:var(--c-ink);
   --band-map-bg:#DCE7EC;              --band-map-fg:var(--c-ink);
@@ -77,6 +77,7 @@
   --foot-bg:#0F1A23;                  --foot-fg:#E4E9EC;
 }
 
+html{overflow-x:clip}
 body{font-family:var(--font-body);font-size:16.5px;background:var(--paper);overflow-x:clip}
 
 /* ---------- Topp ---------- */
@@ -196,3 +197,14 @@ body{font-family:var(--font-body);font-size:16.5px;background:var(--paper);overf
 
 /* Tipsa-bandets brödtext ärver bandets färg (main.css sätter ljus text för mörk bakgrund) */
 .band--tip .smultron-banner-copy p{color:inherit}
+
+/* ---------- Palettväljare (bara i förhandsvisning/lokalt, se src/lib/paletteSwitch.js) ---------- */
+.uv-palette-switch{position:fixed;z-index:3000;left:50%;transform:translateX(-50%);
+  bottom:calc(16px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:4px;
+  background:#111;color:#fff;border-radius:999px;padding:6px;box-shadow:0 16px 40px -10px rgba(0,0,0,.6);
+  font-family:var(--font-body);max-width:calc(100vw - 24px)}
+.uv-palette-switch span{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;opacity:.6;padding:0 10px}
+.uv-palette-switch button{border:0;background:transparent;color:#fff;font:600 14px var(--font-body);
+  padding:10px 14px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.uv-palette-switch button[aria-pressed="true"]{background:#fff;color:#111}
+@media (max-width:480px){.uv-palette-switch span{display:none}}
