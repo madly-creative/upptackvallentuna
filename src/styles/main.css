@@ -1863,11 +1863,15 @@
   .guide-card{
     border:1px solid var(--line-soft);border-radius:18px;overflow:hidden;background:var(--card);
     cursor:pointer;transition:transform .15s,box-shadow .15s;text-align:left;padding:0;
-    font:inherit;color:inherit;display:block;width:100%;
+    font:inherit;color:inherit;width:100%;
+    /* <button> centrerar sitt innehåll vertikalt; i en grid-rad där korten sträcks
+       till samma höjd hamnade bilden då en bit ner. Flex-kolumn låser den mot toppen. */
+    display:flex;flex-direction:column;justify-content:flex-start;align-items:stretch;
   }
   .guide-card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
   .guide-card .im{aspect-ratio:16/10;background-size:cover;background-position:center;background-color:var(--paper-2)}
-  .guide-card .bd{padding:18px 20px 20px}
+  .guide-card .bd{padding:18px 20px 20px;flex:1}
+  .guide-card .im{flex:none;width:100%}
   .guide-card .tag{
     font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
     color:var(--rust);margin-bottom:8px;
