@@ -246,6 +246,41 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://upptackvallentuna.se/plats/livstensleden.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/plats/ingaleden.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/plats/ubbysjon-runt.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/plats/olhamraleden.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/plats/roslagsleden-etapp-4.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/plats/bromseby-naturreservat.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/plats/morbytorpsslingan.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://upptackvallentuna.se/evenemang/sommarkvall-med-live-jazz-2026-08-07.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -486,12 +521,27 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://upptackvallentuna.se/evenemang/faures-requiem-2026-11-22.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://upptackvallentuna.se/evenemang/scenfredag-lowdown-saints-2026-11-27.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://upptackvallentuna.se/evenemang/solglantans-julmarknad-2026-11-28.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/evenemang/julmarknad-pa-bygdegarden-i-ekskogen-2026-11-28.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/evenemang/en-stunds-musik-i-vada-kyrka-2026-11-28.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -551,7 +601,17 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://upptackvallentuna.se/evenemang/julkonsert-med-osseby-gospel-2026-12-05.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://upptackvallentuna.se/evenemang/julmarknad-i-lindholmen-2026-12-06.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/evenemang/julkonsert-med-vallentuna-gospel-och-young-voices-2026-12-06.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -562,6 +622,16 @@
   </url>
   <url>
     <loc>https://upptackvallentuna.se/evenemang/vallentuna-julmarknad-2026-12-12.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/evenemang/julkonsert-med-vallentuna-blasorkester-2026-12-12.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/evenemang/julkonsert-med-cantaton-och-fortissimo-2026-12-14.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>

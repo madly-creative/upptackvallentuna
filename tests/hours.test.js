@@ -145,3 +145,16 @@ describe("isOpenAt", () => {
     expect(meta.seasonNote).toMatch(/Kårsta/);
   });
 });
+
+describe("new trails and reserves (Nov 2026)", () => {
+  const names = ["Livstensleden","Ingaleden","Ubbysjön runt","Olhamraleden","Roslagsleden etapp 4","Bromseby naturreservat","Mörbytorpsslingan"];
+  it("are always open outdoor nature places with images on disk", async () => {
+    const { existsSync } = await import("node:fs");
+    for (const n of names) {
+      const p = places.find((x) => x.name === n);
+      expect(p?.type).toBe("natur");
+      expect(PLACE_META[n]?.hours.every((h) => h === "always")).toBe(true);
+      expect(existsSync("public" + p.img)).toBe(true);
+    }
+  });
+});

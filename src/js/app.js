@@ -761,6 +761,100 @@ import {
       <p>Samma verksamhet finns på två ställen till. <strong>Träffpunkten Karby</strong> håller till i Mötesplats KUBen, Vadavägen 1C i Brottby, helgfria måndagar och fredagar 10–14 (caféet till 13 på måndagar och till 12.30 på fredagar). <strong>Träffpunkten Kårsta</strong> finns i församlingsgården, Kårstaby 9, helgfria torsdagar 12.30–15.30.</p>
       <p>Vissa tisdagar stänger Allévägen redan 12.30: 17 november och 15 december 2026. Stängt 24, 25 och 31 december samt 1 och 6 januari. Under öppettid: 08-587 857 60 eller <a href="mailto:traffpunkten@vallentuna.se">traffpunkten@vallentuna.se</a>. Program: <a href="https://www.vallentuna.se/uppleva-och-gora/evenemang-och-motesplatser/motesplatser/traffpunkten-allevagen-10" target="_blank" rel="noopener">vallentuna.se</a>.</p>`
     },
+    "Livstensleden":{
+      address:"Frösunda kyrka, Frösunda",
+      facts:["5,6 km slinga","Pilgrimsled","Runristning","Ljudguide"],
+      localPhotos:true,
+      photoCredit:"Foto: Naturkartan / Vallentuna kommun.",
+      images:[
+        {url:"/assets/upplev/livstensleden/cover.webp",alt:"Frösunda kyrka bakom blommande växter vid Livstensleden"},
+        {url:"/assets/upplev/livstensleden/markering.webp",alt:"Pilgrimsledens markering i skogen"},
+        {url:"/assets/upplev/livstensleden/vandring.webp",alt:"Vandrare på ängen längs leden"}
+      ],
+      body:`<p><strong>Livstensleden</strong> är den kortaste av Vallentunas tre pilgrimsleder: en slinga på 5,6 km som börjar och slutar vid Frösundagården. Längs vägen finns sex stopp: Frösunda kyrka, en skogsglänta med myrstack, S:t Olofs källa, Livstens ristning, Klashagen och Livstens hamn. Vid flera av dem kan du lyssna på berättelser i Naturkartan.</p>
+      <p>Stigarna slingrar sig och delar av sträckan går på traktorväg, så räkna med lite ojämn terräng. Parkera vid Frösunda kyrka eller vid Lindholmens station.</p>
+      <p>Mer: <a href="https://www.naturkartan.se/sv/stockholms-lan/livstens-leden-vallentuna-pilgrimsleder" target="_blank" rel="noopener">Naturkartan</a>.</p>`
+    },
+    "Ingaleden":{
+      address:"Frösunda kyrka – Lindholmens station",
+      facts:["18,1 km","Grön – enkel","Medeltidskyrkor","Barnvagn ok"],
+      localPhotos:true,
+      photoCredit:"Foto: Einarspetz, Wikimedia Commons (CC BY-SA 3.0); Naturkartan / Vallentuna kommun.",
+      images:[
+        {url:"/assets/upplev/ingaleden/cover.webp",alt:"Frösunda kyrka, där Ingaleden börjar"},
+        {url:"/assets/upplev/ingaleden/landskap.webp",alt:"Öppet odlingslandskap längs Ingaleden"}
+      ],
+      body:`<p><strong>Ingaleden</strong> är kommunens längsta vandringsled, 18,1 km. Den börjar vid Frösunda kyrka och Frösundagården, några hundra meter från Frösunda station, och slutar vid Lindholmens station. Leden har fått namn efter Inga från Snåttsta och går genom socknarna Frösunda, Markim och Orkesta, med medeltidskyrkor längs vägen.</p>
+      <p>Det mesta går på väg, med en kort bit traktorväg, så den fungerar med barnvagn. Åk Roslagsbanan till start och hem igen från Lindholmen.</p>
+      <p>Mer: <a href="https://www.naturkartan.se/sv/stockholms-lan/ingaleden-vallentuna-pilgrimsleder" target="_blank" rel="noopener">Naturkartan</a>.</p>`
+    },
+    "Ubbysjön runt":{
+      address:"Lindholmsvägen, mellan Ormsta och Lindholmen",
+      facts:["2,1 km","Fågelsjö","Två broar","Grillplatser"],
+      localPhotos:true,
+      photoCredit:"Foto: Adam Pawelec, Vallentuna kommun (Naturkartan).",
+      images:[
+        {url:"/assets/upplev/ubbysjon-runt/cover.webp",alt:"Träbro över Ubbysjön"},
+        {url:"/assets/upplev/ubbysjon-runt/stig.webp",alt:"Grusstig längs Ubbysjön"},
+        {url:"/assets/upplev/ubbysjon-runt/skog.webp",alt:"Skogsstig vid Ubbysjön"}
+      ],
+      body:`<p><strong>Ubbysjön</strong> är en fågelrik, igenväxande sjö mellan Ormsta och Lindholmen. Slingan runt sjön är 2,1 km, blåmarkerad, och korsar vattnet på två broar i norr och söder. Här ses bland annat trana, fiskgjuse, svarthakedopping och brun kärrhök.</p>
+      <p>Vindskydd och grillplatser byggdes 2021, och två digitala tipspromenader (en för vuxna, en för barn) följer leden. Parkering finns vid Lindholmsvägen.</p>
+      <p>Mer: <a href="https://www.naturkartan.se/sv/stockholms-lan/ubbysjon-runt" target="_blank" rel="noopener">Naturkartan</a>.</p>`
+    },
+    "Olhamraleden":{
+      address:"Vallentuna station – Olhamra, Angarnssjöängen",
+      facts:["4,4 km","Medelsvår","Från stationen","Rosa markering"],
+      localPhotos:true,
+      photoCredit:"Foto: Naturkartan / Vallentuna kommun.",
+      images:[
+        {url:"/assets/upplev/olhamraleden/cover.webp",alt:"Skogsväg längs Olhamraleden"},
+        {url:"/assets/upplev/olhamraleden/stig.webp",alt:"Stig med rosa markering"},
+        {url:"/assets/upplev/olhamraleden/skylt.webp",alt:"Vägvisare på Olhamraleden"}
+      ],
+      body:`<p><strong>Olhamraleden</strong> går 4,4 km från Vallentuna station, förbi Vallentuna IP, till Olhamra-entrén vid Angarnssjöängens naturreservat. Du behöver alltså ingen bil för att komma ut till en av länets bästa fågelsjöar.</p>
+      <p>Leden passerar urskogsliknande skog, berghällar och sumpmark och går över rötter och sten, så den räknas som medelsvår. Följ de rosa markeringarna på träden. Motorcykel och ridning är inte tillåtet.</p>
+      <p>Mer: <a href="https://www.naturkartan.se/sv/stockholms-lan/olhamraleden" target="_blank" rel="noopener">Naturkartan</a>.</p>`
+    },
+    "Roslagsleden etapp 4":{
+      address:"Toftesta holme – Domarudden",
+      facts:["19,6 km","Blå – medel","Cirka 5 timmar","Bastu vid målet"],
+      localPhotos:true,
+      photoCredit:"Foto: Visit Roslagen / Bosse Lind och Naturkartan; Domarudden: Udo Schröter, Wikimedia Commons (CC BY-SA 3.0).",
+      images:[
+        {url:"/assets/upplev/roslagsleden-etapp-4/cover.webp",alt:"Vandrare på Roslagsleden etapp 4"},
+        {url:"/assets/upplev/roslagsleden-etapp-4/trehorningen.webp",alt:"Sjön Trehörningen längs etappen"},
+        {url:"/assets/upplev/roslagsleden-etapp-4/domarudden.webp",alt:"Domaruddens friluftsgård vid etappens mål"}
+      ],
+      body:`<p><strong>Roslagsledens fjärde etapp</strong> går 19,6 km från Toftesta holme till Domarudden. Den är blåklassad (medel) och tar ungefär fem timmar. Leden är målad med orange band på träden och skyltad vid flera korsningar.</p>
+      <p>Du går genom skogar med höga naturvärden runt Tärnan, nära Bromseby och Trehörningsskogens naturreservat. Vid sjön Trehörningen bor bäver, och deras dammar kan ibland svämma över delar av leden. Vid målet på Domaruddens friluftsgård, i Österåker, finns mat, bastu, bad i Drängsjön och stugor.</p>
+      <p>Närmaste buss vid starten är Össeby-Garns kyrka. Mer: <a href="https://www.naturkartan.se/sv/stockholms-lan/roslagsleden-etapp-4-toftestaholme-domarudden" target="_blank" rel="noopener">Naturkartan</a>.</p>`
+    },
+    "Bromseby naturreservat":{
+      address:"Via Roslagsleden från Rumsättravägen",
+      facts:["Sedan 1946","18,5 ha","Natura 2000","Svampskog"],
+      localPhotos:true,
+      photoCredit:"Foto: Länsstyrelsen Stockholm.",
+      images:[
+        {url:"/assets/upplev/bromseby-naturreservat/cover.webp",alt:"Spång genom Bromseby naturreservat"},
+        {url:"/assets/upplev/bromseby-naturreservat/skog.webp",alt:"Skyltat in i reservatet från Roslagsleden"}
+      ],
+      body:`<p><strong>Bromseby</strong> är ett litet naturreservat på 18,5 hektar med barr-, bland- och sumpskog, skyddat sedan 1946 och del av Natura 2000. Här är det tyst, svampen växer bra och med lite tur hör du tjäder eller uggla.</p>
+      <p>Parkera vid Rumsättravägen, cirka 700 meter efter Brollsta golfklubb. Från bommen är det ungefär 3 km längs Roslagsleden etapp 4 till reservatet, så räkna med en längre promenad på grusväg. Vid Harsjön i närheten finns vindskydd med eldplats. Reservatet förvaltas av Länsstyrelsen.</p>
+      <p>Mer: <a href="https://www.naturkartan.se/sv/stockholms-lan/bromseby-2" target="_blank" rel="noopener">Naturkartan</a>.</p>`
+    },
+    "Mörbytorpsslingan":{
+      address:"Lindholmens station, Lindholmen",
+      facts:["4,7 km","Grön – enkel","Rullstolsvänlig","Från stationen"],
+      localPhotos:true,
+      photoCredit:"Foto: Naturkartan / Vallentuna kommun.",
+      images:[
+        {url:"/assets/upplev/morbytorpsslingan/cover.webp",alt:"Fruktträd längs vägen vid Mörbytorp"}
+      ],
+      body:`<p><strong>Mörbytorpsslingan</strong> är en av kommunens tillgänglighetsslingor: 4,7 km som börjar och slutar vid Lindholmens station. Den går genom ett område med röda stugor och vita knutar, med rötter tillbaka till 1600-talet.</p>
+      <p>Ungefär 90 procent av sträckan är grus och resten asfalt. Backarna är måttliga (3–5 procent), och slingan är testad av en rullstolsanvändare. Parkering finns vid stationen.</p>
+      <p>Mer: <a href="https://www.naturkartan.se/sv/stockholms-lan/tillganglighetsslingan-morbytorp" target="_blank" rel="noopener">Naturkartan</a>.</p>`
+    },
   };
 
     const cats=[{key:"alla",label:"Allt"},{key:"fika",label:"Fika & Mat"},{key:"gard",label:"Gård & Handelsträdgård"},{key:"natur",label:"Natur & Historia"},{key:"butik",label:"Butiker"},{key:"kultur",label:"Kultur"},{key:"loppis",label:"Loppis"},{key:"smultronstalle",label:"Smultronställen"},{key:"guidning",label:"Guidning"}];
@@ -839,7 +933,14 @@ import {
     "Vallentuna skolmuseum":"2026-08-20",
     "Sweden History Tours":"2026-08-25",
     "Hökeriet":"2026-08-31",
-    "Träffpunkten Allévägen 10":"2026-11-11"
+    "Träffpunkten Allévägen 10":"2026-11-11",
+    "Livstensleden":"2026-11-17",
+    "Ingaleden":"2026-11-17",
+    "Ubbysjön runt":"2026-11-17",
+    "Olhamraleden":"2026-11-17",
+    "Roslagsleden etapp 4":"2026-11-17",
+    "Bromseby naturreservat":"2026-11-17",
+    "Mörbytorpsslingan":"2026-11-17"
   };
 
   const previewTodayISO=resolvePreviewTodayISO();

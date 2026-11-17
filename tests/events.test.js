@@ -132,6 +132,27 @@ describe("events calendar", () => {
     expect(EVENT_CONTENT["Solgläntans julmarknad"]).toBeTruthy();
   });
 
+  it("November–December 2026 additions are complete and sourced", () => {
+    const added = [
+      ["Faurés Requiem", "2026-11-22"],
+      ["En stunds musik i Vada kyrka", "2026-11-28"],
+      ["Julmarknad på Bygdegården i Ekskogen", "2026-11-28"],
+      ["Julkonsert med Össeby Gospel", "2026-12-05"],
+      ["Julkonsert med Vallentuna Gospel och Young Voices", "2026-12-06"],
+      ["Julkonsert med Vallentuna Blåsorkester", "2026-12-12"],
+      ["Julkonsert med Cantaton och Fortissimo", "2026-12-14"],
+    ];
+    for (const [title, date] of added) {
+      const e = events.find((x) => x.title === title);
+      expect(e?.date).toBe(date);
+      expect(e?.img).toMatch(/^\/assets\/evenemang\/[a-z0-9-]+\/cover\.webp$/);
+      expect(e?.source).toMatch(/^https:\/\//);
+      expect(e?.note).not.toMatch(/\p{Extended_Pictographic}/u);
+      expect(EVENT_CONTENT[title]).toBeTruthy();
+    }
+    expect(events.find((x) => x.title === "Julkonsert med Össeby kyrkokör")?.time).toBe("18:00 – 19:00");
+  });
+
   it("eventSlug is url-safe", () => {
     const s = eventSlug(events[0]);
     expect(s).toMatch(/^[a-z0-9-]+$/);
