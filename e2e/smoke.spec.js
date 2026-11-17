@@ -14,7 +14,7 @@ test("evenemang SEO page lists calendar", async ({ page }) => {
   await expect(page.locator("h1")).toContainText("Evenemang");
   // Bara kommande evenemang, som bildkort i horisontella rader, plus datumremsa
   await expect(page.locator(".evx-rail .evx-card").first()).toBeVisible();
-  await expect(page.locator("#evxStrip button.evx-d").first()).toBeVisible();
+  await expect(page.locator(".evx-strip button.evx-d").first()).toBeVisible();
   await expect(page.locator(".evx-chip", { hasText: "Alla" })).toHaveAttribute("aria-pressed", "true");
 });
 

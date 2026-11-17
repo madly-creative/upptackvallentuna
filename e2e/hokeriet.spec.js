@@ -18,5 +18,7 @@ test("Sommarbuffé på Hökeriet is listed in calendar", async ({ page }) => {
   await page.goto("/");
   await page.locator(".hero-chip", { hasText: "Evenemang" }).click();
   await expect(page.locator("#view-hander")).toHaveClass(/on/);
-  await expect(page.locator("#eventsFull")).toContainText("Sommarbuffé på Hökeriet");
+  // Passerat evenemang (aug) ligger i kalenderns arkiv "Tidigare i år"
+  await expect(page.locator("#handerEvx .evx-card").first()).toBeVisible();
+  await expect(page.locator("#handerEvx .evx-archive")).toContainText("Sommarbuffé på Hökeriet");
 });
