@@ -48,6 +48,8 @@ import {
   isOutdoorBathPlace,
   isHotSwimWeather,
   picksWhyForWeather,
+  isPromotable,
+  editorialBoost,
 } from "../lib/picksFit.js";
 import {
   matchesPrimaryOrSecondary,
@@ -2156,7 +2158,7 @@ import {
     return `<span class="status-pill closed">Stängt</span>`;
   }
   function pickToday(){
-    return rankedPlaces().filter(x=>x.open||x.score>10).slice(0,4).map(x=>x.p);
+    return rankedPlaces().filter(x=>isPromotable(x.p)&&(x.open||x.score>10)).slice(0,4).map(x=>x.p);
   }
   function renderScoreRow(){ /* merged into renderPicks */ }
   const WEATHER_SVG={
@@ -2939,9 +2941,9 @@ import {
 
   function pickBest(type,except=new Set(),{preferOpen=true}={}){
     const scored=places
-      .filter(p=>placeHasType(p,type))
+      .filter(p=>placeHasType(p,type) && isPromotable(p))
       .map(p=>{
-        let s=scorePlace(p).score+(hasTag(p,"barn")?2:0);
+        let s=scorePlace(p).score+(hasTag(p,"barn")?2:0)+editorialBoost(p);
         if(preferOpen && isOpen(p)) s+=12;
         // Timed venues that are closed get pushed down so afternoon routes stay usable
         if(preferOpen && isTimedVenue(p) && !isOpen(p)) s-=20;
@@ -3163,11 +3165,11 @@ import {
 
   function indoorCandidates(){
     return places.filter(p=>hasTag(p,"inomhus")||p.type==="butik"||p.type==="kultur"||p.type==="loppis"||p.name.includes("Kulturhus")||p.name.includes("Stenugns"))
-      .filter(p=>p.type!=="natur")
-      .sort((a,b)=>scorePlace(b).score-scorePlace(a).score);
+      .filter(p=>p.type!=="natur" && isPromotable(p))
+      .sort((a,b)=>scorePlace(b).score+editorialBoost(b)-scorePlace(a).score-editorialBoost(a));
   }
   function outdoorCandidates(){
-    return places.filter(p=>p.type==="natur"||hasTag(p,"ute")).sort((a,b)=>scorePlace(b).score-scorePlace(a).score);
+    return places.filter(p=>(p.type==="natur"||hasTag(p,"ute")) && isPromotable(p)).sort((a,b)=>scorePlace(b).score+editorialBoost(b)-scorePlace(a).score-editorialBoost(a));
   }
   function renderWxShare(){
     const card=document.getElementById('wxShareCard'); if(!card) return;

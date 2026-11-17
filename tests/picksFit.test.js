@@ -29,6 +29,7 @@ const automat = {
   name: "AutoMat Kårsta",
   cat: "Matbutik",
   type: "butik",
+  noPromote: true,
   short: "Obemannad matbutik.",
 };
 const angarn = {
@@ -215,5 +216,39 @@ describe("picksFit weather", () => {
     expect(picksWhyForWeather({ mood: "nice", temp: 28, weatherLabel: "Soligt", hot: true })).toMatch(
       /bad/i
     );
+  });
+});
+
+describe("noPromote flag", () => {
+  it("keeps flagged places out of curated picks but in the catalog", async () => {
+    const { places } = await import("../src/data/places.js");
+    const { guides } = await import("../src/data/guides.js");
+    const { isPromotable } = await import("../src/lib/picksFit.js");
+    const flagged = places.filter((p) => p.noPromote).map((p) => p.name);
+    expect(flagged).toContain("Silver & Sånt");
+    expect(flagged).toContain("AutoMat Kårsta");
+    for (const name of flagged) {
+      expect(isPromotable(places.find((p) => p.name === name))).toBe(false);
+    }
+    // Hand-written guides must not route people to flagged places either
+    const guideStops = guides.flatMap((g) => g.stops.map((s) => s.place));
+    for (const name of flagged) expect(guideStops).not.toContain(name);
+
+    const ranked = places.map((p, i) => ({ p, score: 100 - i, open: true }));
+    const prepared = prepareRankedForPicks(ranked, "mild", {});
+    for (const name of flagged) expect(prepared.map((x) => x.p.name)).not.toContain(name);
+  });
+
+  it("gives bagerier and hantverk an edge in the picks pool", async () => {
+    const { editorialBoost, CRAFT_BOOST } = await import("../src/lib/picksFit.js");
+    expect(editorialBoost({ name: "Vallboden", cat: "Hantverk & Butik" })).toBe(CRAFT_BOOST);
+    expect(editorialBoost({ name: "Vallentuna Konditori", cat: "Konditori & Fika" })).toBe(CRAFT_BOOST);
+    expect(editorialBoost({ name: "Silver & Sånt", cat: "Smycken & Hantverk", noPromote: true })).toBe(0);
+    const prepared = prepareRankedForPicks(
+      [{ p: angarn, score: 50 }, { p: bageri, score: 45 }],
+      "mild",
+      {},
+    );
+    expect(prepared[0].p.name).toBe("Stenugnsbageri");
   });
 });
