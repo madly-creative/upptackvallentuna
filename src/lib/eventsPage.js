@@ -1,9 +1,9 @@
 /**
- * Evenemangssidan (evenemang.html): datumremsa, filter och en horisontell kortrad per period.
- * Korten renderas av scripts/generate-seo.mjs vid bygget. Här grupperas de om efter dagens datum,
- * så passerade evenemang försvinner även om sajten inte byggts om sedan dess.
+ * Evenemangskalendern (evx-*): datumremsa, filter och en horisontell kortrad per period.
+ * Används av den statiska evenemang.html och av appens vy "Händer i …".
+ * Markupen kommer från src/lib/eventCards.js. Här grupperas korten om efter dagens datum,
+ * så passerade evenemang försvinner även om sidan inte byggts om sedan dess.
  */
-const DAYS = ["Sön", "Mån", "Tis", "Ons", "Tor", "Fre", "Lör"];
 const DAYS_LONG = ["söndag", "måndag", "tisdag", "onsdag", "torsdag", "fredag", "lördag"];
 const MONTHS = ["januari", "februari", "mars", "april", "maj", "juni", "juli", "augusti", "september", "oktober", "november", "december"];
 const STRIP_DAYS = 42;
@@ -18,17 +18,24 @@ const addDays = (d, n) => {
 };
 const reduceMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-function init() {
-  const list = document.getElementById("evxList");
-  if (!list) return;
-  const strip = document.getElementById("evxStrip");
-  const chips = document.getElementById("evxChips");
-  const empty = document.getElementById("evxEmpty");
-  const next = document.getElementById("evxNext");
-  const bar = document.getElementById("evxBar");
+/**
+ * @param {HTMLElement} root element med klassen .evx
+ * @param {{ header?: string, onOpen?: (key: string, ev: MouseEvent) => boolean|void }} opts
+ *   header: väljare för ett fast sidhuvud som remsan ska ligga under.
+ *   onOpen: anropas vid klick på ett kort; returnera true för att stoppa länken.
+ * @returns {{ refresh: () => void }}
+ */
+export function mountEventsPage(root, { header = ".seo-top", onOpen } = {}) {
+  const $ = (sel) => root.querySelector(sel);
+  const list = $(".evx-list");
+  const strip = $(".evx-strip");
+  const chips = $(".evx-chips");
+  const empty = $(".evx-empty");
+  const next = $(".evx-next");
+  const bar = $(".evx-bar");
+  if (!list || !strip || !chips) return { refresh() {} };
 
-  const now = new Date();
-  const today = noon(iso(now));
+  const today = noon(iso(new Date()));
   const todayISO = iso(today);
   const monday = addDays(today, -((today.getDay() + 6) % 7));
   const nextMonday = addDays(monday, 7);
@@ -53,9 +60,9 @@ function init() {
   // Passerade sedan bygget: ut ur raderna, in i arkivet
   const gone = all.filter((e) => e.end < todayISO);
   if (gone.length) {
-    const count = document.getElementById("evxPastCount");
+    const count = $(".evx-past-count");
     if (count) count.textContent = String(Number(count.textContent || 0) + gone.length);
-    const ul = document.querySelector("#evxArchive ul");
+    const ul = $(".evx-archive ul");
     if (ul) {
       const li = document.createElement("li");
       li.innerHTML = "<b>Nyss</b> ";
@@ -81,8 +88,9 @@ function init() {
 
   function groupOf(e) {
     const d = noon(e.date) < today ? today : noon(e.date);
-    if (d < nextMonday) return ["vecka", "Den här veckan", `${monday.getDate()}–${addDays(nextMonday, -1).getDate()} ${MONTHS[addDays(nextMonday, -1).getMonth()].slice(0, 3)}`];
-    if (d < afterNext) return ["nasta", "Nästa vecka", `${nextMonday.getDate()}–${addDays(afterNext, -1).getDate()} ${MONTHS[addDays(afterNext, -1).getMonth()].slice(0, 3)}`];
+    const span = (a, b) => `${a.getDate()}–${b.getDate()} ${MONTHS[b.getMonth()].slice(0, 3)}`;
+    if (d < nextMonday) return ["vecka", "Den här veckan", span(monday, addDays(nextMonday, -1))];
+    if (d < afterNext) return ["nasta", "Nästa vecka", span(nextMonday, addDays(afterNext, -1))];
     const m = MONTHS[d.getMonth()];
     const label = m[0].toUpperCase() + m.slice(1) + (d.getFullYear() !== today.getFullYear() ? ` ${d.getFullYear()}` : "");
     return [e.date.slice(0, 7), label, ""];
@@ -103,6 +111,7 @@ function init() {
     next.append(`${upcoming.length} på gång i bygden. Närmast: `);
     const a = document.createElement("a");
     a.href = first.el.getAttribute("href");
+    a.dataset.key = first.el.dataset.key || "";
     a.textContent = first.title;
     next.append(a, `, ${whenWord(first)}${/^\d/.test(first.time) ? ` kl ${first.time.split("–")[0]}` : ""}.`);
   } else if (next) {
@@ -129,16 +138,14 @@ function init() {
     const rail = section.querySelector(".evx-rail");
     const nav = section.querySelector(".evx-nav");
     if (!rail || !nav) return;
-    const overflow = rail.scrollWidth > rail.clientWidth + 4;
-    nav.hidden = !overflow;
+    nav.hidden = rail.scrollWidth <= rail.clientWidth + 4;
     const [prev, nxt] = nav.querySelectorAll("button");
     prev.disabled = rail.scrollLeft < 4;
     nxt.disabled = rail.scrollLeft + rail.clientWidth >= rail.scrollWidth - 4;
   }
 
   function render() {
-    const fn = FILTERS[current];
-    const shown = upcoming.filter(fn);
+    const shown = upcoming.filter(FILTERS[current]);
     chips.querySelectorAll(".evx-chip").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.f === current)));
 
     // Kortrader: återanvänd kortnoderna, bygg om sektionerna
@@ -154,8 +161,9 @@ function init() {
       const sec = document.createElement("section");
       sec.className = "evx-grp";
       sec.dataset.key = g.key;
-      sec.setAttribute("aria-labelledby", `evx-h-${g.key}`);
-      sec.innerHTML = `<div class="evx-grp-h"><h2 id="evx-h-${g.key}"></h2><div class="evx-nav" hidden><button type="button" data-dir="-1" aria-label="Föregående">←</button><button type="button" data-dir="1" aria-label="Nästa">→</button></div></div><div class="evx-rail"></div>`;
+      const hid = `evx-h-${g.key}-${root.id || "p"}`;
+      sec.setAttribute("aria-labelledby", hid);
+      sec.innerHTML = `<div class="evx-grp-h"><h2 id="${hid}"></h2><div class="evx-nav" hidden><button type="button" data-dir="-1" aria-label="Föregående">←</button><button type="button" data-dir="1" aria-label="Nästa">→</button></div></div><div class="evx-rail"></div>`;
       const h = sec.querySelector("h2");
       h.textContent = `${g.label} `;
       const small = document.createElement("small");
@@ -166,7 +174,7 @@ function init() {
       frag.append(sec);
     }
     list.replaceChildren(frag);
-    empty.hidden = shown.length > 0;
+    if (empty) empty.hidden = shown.length > 0;
     list.querySelectorAll(".evx-grp").forEach(railNav);
 
     // Datumremsa: sex veckor från måndag, prick på dagar med (filtrerade) evenemang
@@ -187,7 +195,9 @@ function init() {
         html += `<div class="evx-mo"><i>${MONTHS[month].slice(0, 3)}</i>`;
       }
       const n = s >= todayISO ? counts[s] || 0 : 0;
-      const cls = ["evx-d", (d.getDay() === 0 || d.getDay() === 6) && "we", n && "has", n > 1 && "many", s === todayISO && "today", s < todayISO && "past"].filter(Boolean).join(" ");
+      const cls = ["evx-d", (d.getDay() === 0 || d.getDay() === 6) && "we", n && "has", n > 1 && "many", s === todayISO && "today", s < todayISO && "past"]
+        .filter(Boolean)
+        .join(" ");
       const label = `${DAYS_LONG[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]}${n ? `, ${n} evenemang` : ""}${s === todayISO ? ", i dag" : ""}`;
       html += n
         ? `<button type="button" class="${cls}" data-d="${s}" aria-label="${label}"><span>${d.getDate()}</span><span class="dot"></span></button>`
@@ -196,16 +206,33 @@ function init() {
     strip.innerHTML = `${html}</div>`;
   }
 
+  function headerHeight() {
+    const el = document.querySelector(header);
+    if (!el) return 0;
+    const pos = getComputedStyle(el).position;
+    return pos === "sticky" || pos === "fixed" ? el.getBoundingClientRect().height : 0;
+  }
+  function syncTop() {
+    root.style.setProperty("--evx-top", `${headerHeight()}px`);
+  }
+  // Efter filterbyte krymper listan: se till att den börjar direkt under den fasta remsan
+  function keepListInView() {
+    const barBottom = bar.getBoundingClientRect().bottom;
+    const listTop = list.getBoundingClientRect().top;
+    if (listTop < barBottom) window.scrollTo({ top: window.scrollY + listTop - barBottom - 8, behavior: "auto" });
+  }
+
   function jumpTo(dateISO, btn) {
     strip.querySelectorAll(".sel").forEach((x) => x.classList.remove("sel"));
     btn?.classList.add("sel");
-    const cards = [...list.querySelectorAll(".evx-card")];
-    const card = cards.find((c) => c.dataset.date <= dateISO && (c.dataset.end || c.dataset.date) >= dateISO);
+    const card = [...list.querySelectorAll(".evx-card")].find(
+      (c) => c.dataset.date <= dateISO && (c.dataset.end || c.dataset.date) >= dateISO
+    );
     if (!card) return;
     const section = card.closest(".evx-grp");
     const rail = card.parentElement;
     const behavior = reduceMotion() ? "auto" : "smooth";
-    const top = section.getBoundingClientRect().top + window.scrollY - bar.getBoundingClientRect().height - topOffset() - 12;
+    const top = section.getBoundingClientRect().top + window.scrollY - bar.getBoundingClientRect().height - headerHeight() - 12;
     window.scrollTo({ top, behavior });
     const padL = parseFloat(getComputedStyle(rail).scrollPaddingLeft) || 0;
     rail.scrollTo({ left: card.offsetLeft - rail.offsetLeft - padL, behavior });
@@ -214,62 +241,65 @@ function init() {
     card.classList.add("flash");
   }
 
-  // Efter filterbyte krymper listan: se till att den börjar direkt under den fasta remsan
-  function keepListInView() {
-    const barBottom = bar.getBoundingClientRect().bottom;
-    const listTop = list.getBoundingClientRect().top;
-    if (listTop < barBottom) window.scrollTo({ top: window.scrollY + listTop - barBottom - 8, behavior: "auto" });
-  }
-
-  function topOffset() {
-    const top = document.querySelector(".seo-top");
-    return top && getComputedStyle(top).position === "sticky" ? top.getBoundingClientRect().height : 0;
-  }
-  function syncTop() {
-    document.documentElement.style.setProperty("--evx-top", `${topOffset()}px`);
+  function setFilter(f) {
+    current = f;
+    try {
+      sessionStorage.setItem("evx-filter", current);
+    } catch {}
+    render();
+    strip.scrollLeft = 0;
+    keepListInView();
   }
 
   chips.addEventListener("click", (e) => {
     const b = e.target.closest(".evx-chip");
     if (!b) return;
-    current = b.getAttribute("aria-pressed") === "true" && b.dataset.f !== "alla" ? "alla" : b.dataset.f;
-    try { sessionStorage.setItem("evx-filter", current); } catch {}
-    render();
-    strip.scrollLeft = 0;
-    keepListInView();
+    setFilter(b.getAttribute("aria-pressed") === "true" && b.dataset.f !== "alla" ? "alla" : b.dataset.f);
   });
-  empty.addEventListener("click", (e) => {
-    if (!e.target.closest("[data-f]")) return;
-    current = "alla";
-    render();
-    keepListInView();
+  empty?.addEventListener("click", (e) => {
+    if (e.target.closest("[data-f]")) setFilter("alla");
   });
   strip.addEventListener("click", (e) => {
     const b = e.target.closest("button[data-d]");
     if (b) jumpTo(b.dataset.d, b);
   });
-  list.addEventListener("click", (e) => {
-    const b = e.target.closest(".evx-nav button");
-    if (!b) return;
-    const rail = b.closest(".evx-grp").querySelector(".evx-rail");
-    rail.scrollBy({ left: Number(b.dataset.dir) * rail.clientWidth * 0.85, behavior: reduceMotion() ? "auto" : "smooth" });
+  root.addEventListener("click", (e) => {
+    const nav = e.target.closest(".evx-nav button");
+    if (nav) {
+      const rail = nav.closest(".evx-grp").querySelector(".evx-rail");
+      rail.scrollBy({ left: Number(nav.dataset.dir) * rail.clientWidth * 0.85, behavior: reduceMotion() ? "auto" : "smooth" });
+      return;
+    }
+    const link = e.target.closest("a[data-key]");
+    if (!link || !onOpen || e.metaKey || e.ctrlKey || e.shiftKey || e.button > 0) return;
+    if (onOpen(link.dataset.key, e) === true) e.preventDefault();
   });
-  list.addEventListener("scroll", (e) => {
-    if (e.target.classList?.contains("evx-rail")) railNav(e.target.closest(".evx-grp"));
-  }, true);
+  list.addEventListener(
+    "scroll",
+    (e) => {
+      if (e.target.classList?.contains("evx-rail")) railNav(e.target.closest(".evx-grp"));
+    },
+    true
+  );
   let raf = 0;
-  window.addEventListener("resize", () => {
+  const refresh = () => {
     cancelAnimationFrame(raf);
     raf = requestAnimationFrame(() => {
       syncTop();
       list.querySelectorAll(".evx-grp").forEach(railNav);
     });
-  });
+  };
+  window.addEventListener("resize", refresh);
 
   syncTop();
   render();
-  document.documentElement.classList.add("evx-ready");
+  root.classList.add("evx-ready");
+  return { refresh };
 }
 
-if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
-else init();
+// Den statiska evenemang.html monterar sig själv
+const staticRoot = typeof document !== "undefined" ? document.querySelector(".seo-main.evx") : null;
+if (staticRoot) {
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => mountEventsPage(staticRoot));
+  else mountEventsPage(staticRoot);
+}
