@@ -12,8 +12,10 @@ test("home loads with hero and today module", async ({ page }) => {
 test("evenemang SEO page lists calendar", async ({ page }) => {
   await page.goto("/evenemang.html");
   await expect(page.locator("h1")).toContainText("Evenemang");
-  await expect(page.getByText("Smaka på Vallentuna")).toBeVisible();
-  await expect(page.getByText("Julmarknad i centrum")).toBeVisible();
+  // Bara kommande evenemang, som bildkort i horisontella rader, plus datumremsa
+  await expect(page.locator(".evx-rail .evx-card").first()).toBeVisible();
+  await expect(page.locator("#evxStrip button.evx-d").first()).toBeVisible();
+  await expect(page.locator(".evx-chip", { hasText: "Alla" })).toHaveAttribute("aria-pressed", "true");
 });
 
 test("integritet page is reachable", async ({ page }) => {
