@@ -10,14 +10,26 @@ const RAINY_CODES = [
   51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 71, 73, 75, 77, 80, 81, 82, 85, 86, 95, 96, 99,
 ];
 
-/** Never feature these as Handplockat experiences (still on map / platsidor). */
-const HANDPLOCK_NEVER = new Set([
-  "AutoMat Kårsta", // matbutik — nyttig i katalogen, inte en upplevelse att highlighta
-]);
+/**
+ * Editorial flag on a place: `noPromote: true` in src/data/places.js.
+ * The place stays in search, map, categories and its own platsida, but is
+ * never featured in curated bands (Handplockat, Eftermiddag, Väder + …).
+ */
+export function isPromotable(p) {
+  return !!p?.name && !p.noPromote;
+}
 
-export function isHandplockEligible(p) {
-  if (!p?.name) return false;
-  return !HANDPLOCK_NEVER.has(p.name);
+/** @deprecated Use isPromotable — kept for older call sites/tests. */
+export const isHandplockEligible = isPromotable;
+
+/** What the guide wants to lift: bagerier, konditorier, hantverk, gårdar. */
+const CRAFT_RE = /bageri|bakverk|konditori|hantverk|gårdsbutik|handelsträdgård/i;
+
+/** Score bonus for curated bands only (catalog/map ordering stays neutral). */
+export const CRAFT_BOOST = 12;
+export function editorialBoost(p) {
+  if (!isPromotable(p)) return 0;
+  return CRAFT_RE.test(`${p.cat || ""} ${p.name || ""}`) ? CRAFT_BOOST : 0;
 }
 
 /** Outdoor swim / beach. */
@@ -123,7 +135,10 @@ export function daypartTypesForMood(daypart, isWeekend, mood, opts = {}) {
  * Keeps diversity — only reorders baths ahead within the eligibility set.
  */
 export function prepareRankedForPicks(ranked, mood, opts = {}) {
-  const eligible = (ranked || []).filter((x) => isHandplockEligible(x?.p));
+  const eligible = (ranked || [])
+    .filter((x) => isPromotable(x?.p))
+    .map((x) => ({ ...x, score: (x.score ?? 0) + editorialBoost(x.p) }))
+    .sort((a, b) => b.score - a.score);
   let list = filterRankedForWeather(eligible, mood, opts);
   if (!isHotSwimWeather(opts.temp, opts.code) || list.length < 2) return list;
 
@@ -145,7 +160,7 @@ export function prepareRankedForPicks(ranked, mood, opts = {}) {
  * @param {{ mood?: string, temp?: number|null, code?: number|null, isTimedVenue?: (p:object)=>boolean }} opts
  */
 export function pickWeatherFitPlace(ranked, opts = {}) {
-  const list = ranked || [];
+  const list = (ranked || []).filter((x) => isPromotable(x?.p));
   const mood = opts.mood || "mild";
   const hot = isHotSwimWeather(opts.temp, opts.code);
   const timed = opts.isTimedVenue || (() => true);

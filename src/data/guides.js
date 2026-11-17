@@ -98,10 +98,6 @@ export const guides = [
         text: "Tillbaka mot byn, titta in på Vallboden. Keramik och hantverk i liten skala, personligt urval, lokala händer bakom hyllorna. Det är den sortens butik man går in i utan lista — och kommer ut med något man faktiskt vill ha.",
       },
       {
-        place: "Silver & Sånt",
-        text: "Ett stenkast bort i centrumpassagen: Silver & Sånt. Smycken och klockor, eget och utvalt — ett litet glimtstopp innan maten. Titta runt, fråga, eller bara njut av lugnet mellan hyllorna.",
-      },
-      {
         place: "Gästis Kök & Bar",
         text: "När kvällen närmar sig: Gästis vid Tuna Torg. Mat och dryck mitt i centrum, utan att ni behöver lämna torget. Avsluta dagen där ni kan sitta kvar en stund — bygden utanför fönstret, tallriken framför er.",
       },
@@ -353,10 +349,6 @@ export const guides = [
       {
         place: "Vallboden",
         text: "På Centralvägen: Vallboden. Keramik och hantverk i liten skala. Gå in utan lista. Kom ut med något ni faktiskt vill ha — eller bara med en trevlig stund.",
-      },
-      {
-        place: "Silver & Sånt",
-        text: "Genom centrumpassagen till Silver & Sånt. Smycken och klockor, eget och utvalt — ett litet glimtstopp mellan hantverk och mat.",
       },
       {
         place: "Gästis Kök & Bar",
