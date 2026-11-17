@@ -8,7 +8,6 @@ import { fileURLToPath } from "node:url";
 import { places, placeSlug, schemaTypeFor, resolvePlaceRef } from "../src/data/places.js";
 import { PLACE_META } from "../src/data/placeMeta.js";
 import { events, eventSlug, groupEventsByMonth } from "../src/data/events.js";
-import { EVENT_FILTERS, eventCatLabel, filterKeyForCat } from "../src/data/eventCategories.js";
 import { guides, seasonLabel } from "../src/data/guides.js";
 import { SITE } from "../src/data/site.js";
 import { producers, producersAtPlaceSlug, producerSlug } from "../src/data/producers.js";
@@ -704,70 +703,69 @@ const evListJsonLd = {
   url: `${base}/evenemang.html`,
   isPartOf: { "@type": "WebSite", name: SITE.name, url: `${base}/` },
 };
-const evFilterChips = EVENT_FILTERS.map(
-  (f, i) =>
-    `      <button type="button" class="chip${i === 0 ? " on" : ""}" data-filter="${esc(f.key)}" aria-pressed="${i === 0 ? "true" : "false"}">${esc(f.label)}</button>`
-).join("\n");
-const evArticles = groupEventsByMonth(
-  events.slice().sort((a, b) => a.date.localeCompare(b.date))
-)
-  .map((g) => {
-    const articles = g.events
-      .map((e) => {
-        const slug = eventSlug(e);
-        const fk = filterKeyForCat(e.cat);
-        return `    <article class="ev-seo" data-filter="${esc(fk)}">
-      <time datetime="${esc(e.date)}">${esc(e.when)}</time>
-      <span class="cat">${esc(eventCatLabel(e.cat))}</span>
-      <h2><a href="/evenemang/${slug}.html">${esc(e.title)}</a></h2>
-      <p class="host">${esc(e.host)}${e.time ? ` · ${esc(e.time)}` : ""}</p>
-      <p>${esc(e.note)}</p>
-    </article>`;
-      })
-      .join("\n");
-    return `  <section class="ev-seo-month" data-month="${esc(g.key)}" aria-labelledby="seo-month-${esc(g.key)}">
-    <h2 class="ev-seo-month-h" id="seo-month-${esc(g.key)}">${esc(g.label)}</h2>
-${articles}
-  </section>`;
-  })
-  .join("\n");
-const evFilterScript = `<script>
-(function(){
-  var bar=document.getElementById('eventFilters');
-  var list=document.getElementById('evSeoList');
-  var count=document.getElementById('eventCount');
-  if(!bar||!list) return;
-  var months=[].slice.call(list.querySelectorAll('.ev-seo-month'));
-  var items=[].slice.call(list.querySelectorAll('.ev-seo'));
-  var empty=document.getElementById('evSeoEmpty');
-  function apply(key){
-    bar.querySelectorAll('.chip').forEach(function(b){
-      var on=b.getAttribute('data-filter')===key;
-      b.classList.toggle('on',on);
-      b.setAttribute('aria-pressed',on?'true':'false');
-    });
-    var n=0;
-    items.forEach(function(el){
-      var show=key==='alla'||el.getAttribute('data-filter')===key;
-      el.hidden=!show;
-      if(show) n++;
-    });
-    months.forEach(function(sec){
-      var visible=sec.querySelectorAll('.ev-seo:not([hidden])').length;
-      sec.hidden=visible===0;
-    });
-    if(count) count.textContent=key==='alla'? (n+' evenemang') : (n+' av '+items.length);
-    if(empty) empty.hidden=n>0;
+/* Evenemangssidan: datumremsa + filter överst, en horisontell kortrad per period.
+   Grupperingen görs här per byggdatum (för crawlers/utan JS) och om i webbläsaren
+   med dagens datum (src/lib/eventsPage.js), så sidan aldrig visar passerade evenemang. */
+const EV_DAYS = ["Sön", "Mån", "Tis", "Ons", "Tor", "Fre", "Lör"];
+const EV_MONTHS = ["januari", "februari", "mars", "april", "maj", "juni", "juli", "augusti", "september", "oktober", "november", "december"];
+const evToday = new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Stockholm" });
+const evNoon = (iso) => new Date(`${iso}T12:00:00`);
+const evIsFree = (e) => /fri entré|gratis/i.test(e.note || "");
+const evIsJul = (e) => /jul/i.test(e.title || "");
+const evShortTime = (e) => {
+  const when = String(e.when || "");
+  if (!when.includes(" · ")) return when; // flerdagars: "Fre–sön 14–16 aug"
+  const t = String(e.time || when.split(" · ")[1] || "");
+  return t.replace(/:00/g, "").replace(/\s*–\s*/, "–");
+};
+const evSorted = events.slice().sort((a, b) => a.date.localeCompare(b.date) || String(a.time || "").localeCompare(String(b.time || "")));
+const evUpcoming = evSorted.filter((e) => (e.endDate || e.date) >= evToday);
+const evPast = evSorted.filter((e) => (e.endDate || e.date) < evToday);
+function evCard(e) {
+  const d = evNoon(e.date);
+  const badges = [evIsFree(e) && "Gratis", e.kids && "Barn"].filter(Boolean);
+  return `<a class="evx-card" href="/evenemang/${eventSlug(e)}.html" data-date="${esc(e.date)}" data-end="${esc(e.endDate || e.date)}"${evIsFree(e) ? " data-free" : ""}${e.kids ? " data-kids" : ""}${evIsJul(e) ? " data-jul" : ""}>
+          <span class="evx-ph"><img src="${esc(e.img)}" alt="" loading="lazy" decoding="async" width="560" height="420"><span class="evx-cal"><b>${d.getDate()}</b><span>${EV_DAYS[d.getDay()]}</span></span>${badges.length ? `<span class="evx-badges">${badges.map((x) => `<i>${x}</i>`).join("")}</span>` : ""}</span>
+          <span class="evx-body"><span class="evx-time">${esc(evShortTime(e))}</span><h3>${esc(e.title)}</h3><span class="evx-host">${esc(String(e.host || "").split(" / ")[0])}</span></span>
+        </a>`;
+}
+/** Samma regler som i eventsPage.js: den här veckan, nästa vecka, sedan per månad. */
+function evGroupsFor(list, todayISO) {
+  const t = evNoon(todayISO);
+  const mon = new Date(t); mon.setDate(t.getDate() - ((t.getDay() + 6) % 7));
+  const next = new Date(mon); next.setDate(mon.getDate() + 7);
+  const after = new Date(mon); after.setDate(mon.getDate() + 14);
+  const yr = t.getFullYear();
+  const groups = [];
+  for (const e of list) {
+    const d = evNoon(e.date) < t ? t : evNoon(e.date);
+    let key, label;
+    if (d < next) { key = "vecka"; label = "Den här veckan"; }
+    else if (d < after) { key = "nasta"; label = "Nästa vecka"; }
+    else { key = e.date.slice(0, 7); const m = EV_MONTHS[d.getMonth()]; label = m[0].toUpperCase() + m.slice(1) + (d.getFullYear() !== yr ? ` ${d.getFullYear()}` : ""); }
+    let g = groups.find((x) => x.key === key);
+    if (!g) groups.push((g = { key, label, events: [] }));
+    g.events.push(e);
   }
-  bar.addEventListener('click',function(e){
-    var btn=e.target.closest('[data-filter]');
-    if(!btn) return;
-    apply(btn.getAttribute('data-filter'));
-  });
-  apply('alla');
-})();
-</script>`;
-
+  return groups;
+}
+const evRails = evGroupsFor(evUpcoming, evToday)
+  .map(
+    (g) => `    <section class="evx-grp" data-key="${esc(g.key)}" aria-labelledby="evx-h-${esc(g.key)}">
+      <div class="evx-grp-h"><h2 id="evx-h-${esc(g.key)}">${esc(g.label)} <small>${g.events.length} st</small></h2><div class="evx-nav" hidden><button type="button" data-dir="-1" aria-label="Föregående">←</button><button type="button" data-dir="1" aria-label="Nästa">→</button></div></div>
+      <div class="evx-rail">
+        ${g.events.map(evCard).join("\n        ")}
+      </div>
+    </section>`
+  )
+  .join("\n");
+const evArchive = groupEventsByMonth(evPast)
+  .map(
+    (g) => `        <li><b>${esc(g.label)}</b> ${g.events
+      .map((e) => `<a href="/evenemang/${eventSlug(e)}.html">${esc(e.title)}</a>`)
+      .join('<span aria-hidden="true"> · </span>')}</li>`
+  )
+  .join("\n");
 writeFileSync(
   join(root, "evenemang.html"),
   `<!DOCTYPE html>
@@ -815,19 +813,34 @@ writeFileSync(
       <a href="/integritet.html">Integritet</a>
     </nav>
   </header>
-  <main class="seo-main">
-    <h1>Evenemang i ${esc(SITE.kommun)}</h1>
-    <p class="lede">Handplockade marknader, matdagar och kultur i bygden. Uppgifter är hämtade från arrangörerna — kolla alltid källan närmare datum.</p>
-    <p class="events-tip-cta">Vill du tipsa om en plats eller ett evenemang? <a class="lnk" href="/#skicka">Hör av dig!</a></p>
-    <div class="filter-row event-pills" id="eventFilters" role="navigation" aria-label="Evenemangskategorier">
-${evFilterChips}
+  <main class="seo-main evx">
+    <div class="evx-head">
+      <h1>Evenemang i ${esc(SITE.kommun)}</h1>
+      <p class="evx-next" id="evxNext">${evUpcoming.length} evenemang på gång i bygden, handplockade från arrangörerna.</p>
     </div>
-    <p class="event-count" id="eventCount" aria-live="polite"></p>
-    <div class="ev-seo-list" id="evSeoList">
-${evArticles}
+    <div class="evx-bar" id="evxBar">
+      <div class="evx-strip" id="evxStrip" aria-label="Datum de kommande sex veckorna"></div>
+      <div class="evx-chips" id="evxChips" role="group" aria-label="Filtrera evenemang">
+        <button type="button" class="evx-chip" data-f="alla" aria-pressed="true">Alla</button>
+        <button type="button" class="evx-chip" data-f="helg" aria-pressed="false">I helgen <em></em></button>
+        <button type="button" class="evx-chip" data-f="gratis" aria-pressed="false">Gratis <em></em></button>
+        <button type="button" class="evx-chip" data-f="barn" aria-pressed="false">Med barn <em></em></button>
+        <button type="button" class="evx-chip" data-f="jul" aria-pressed="false">Jul <em></em></button>
+      </div>
     </div>
-    <p class="ev-empty" id="evSeoEmpty" hidden>Inga evenemang i den här kategorin just nu.</p>
-    <p class="seo-cta"><a href="/#hander">Öppna den interaktiva kalendern →</a> · <a href="/#skicka">Tipsa oss</a></p>
+    <div class="evx-list" id="evxList">
+${evRails}
+    </div>
+    <p class="evx-empty" id="evxEmpty" hidden>Inget som matchar just nu. <button type="button" class="lnk" data-f="alla">Visa alla</button></p>
+    <div class="evx-foot">
+      <details class="evx-archive" id="evxArchive">
+        <summary><b>Tidigare i år</b> <span id="evxPastCount">${evPast.length}</span> evenemang som redan har varit</summary>
+        <ul>
+${evArchive}
+        </ul>
+      </details>
+      <a class="evx-tip" href="/#skicka"><b>Saknas något?</b><span>Tipsa om ett evenemang så lägger vi in det. Uppgifterna kommer från arrangörerna, så kolla alltid källan närmare datum.</span></a>
+    </div>
   </main>
   <footer class="seo-foot">
     <a href="/">Startsida</a>
@@ -839,7 +852,7 @@ ${evArticles}
     <a href="mailto:${esc(SITE.contactEmail)}">Tips</a>
   </footer>
   <p class="built-by"><a href="https://www.fvno.se/" target="_blank" rel="noopener">Byggd av Formverket Norrort</a></p>
-  ${evFilterScript}
+  <script type="module" src="/src/lib/eventsPage.js"></script>
 </body>
 </html>
 `,

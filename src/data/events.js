@@ -4,6 +4,7 @@
  * Past dates auto-hide i appen. Tider kan ändras — käll-URL i `source`.
  */
 const FALLBACK_IMG = "/assets/hero/2.webp";
+// `kids: true` = barn-/familjeevenemang (filtret "Med barn" på evenemangssidan).
 
 export const events = [
   {
@@ -36,6 +37,7 @@ export const events = [
     when: "Tor 13 aug · 14:00",
     time: "14:00 – 15:30",
     cat: "KULTUR",
+    kids: true,
     note: "Lovbio på Vallentuna Teater — Disneys Vaiana i live action. Biljetter 90 kr via Nortic.",
     img: "/assets/evenemang/lovbio-vaiana/cover.webp",
     source: "https://nortic.se/ticket/event/82660",
@@ -172,6 +174,7 @@ export const events = [
     when: "Lör 29 aug · 11–14",
     time: "11:00 – 14:00",
     cat: "NATUR",
+    kids: true,
     note: "Prova-på-dag på Vallentuna IP med ~30 föreningar och aktörer — idrott, fritid och natur för hela familjen. Fri entré. Samma dag som Smaka på Vallentuna i Markim.",
     img: "/assets/upplev/vallentuna-naturreservat/cover.webp",
     source: "https://www.vallentuna.se/fritid-och-kultur/kulturskola/aktuellt-och-evenemang/",
@@ -371,6 +374,7 @@ export const events = [
     when: "Lör 17 okt · 11–12",
     time: "11:00 – 12:00",
     cat: "KULTUR",
+    kids: true,
     note: "Ramsor, sång och rörelse för barn 3–5 år med vuxen — tema höst, under ledning av musikpedagog Paula Ekström. Kulturrummet, Vallentuna Kulturhus. Gratis, ingen föranmälan.",
     img: "/assets/evenemang/barnkul-musikmums-hostlek/cover.webp",
     source:
@@ -418,6 +422,7 @@ export const events = [
     when: "Tor 29 okt · 14:00",
     time: "14:00 – 15:30",
     cat: "KULTUR",
+    kids: true,
     note: "Lovbio på Vallentuna Teater — äventyrsfilm efter Martin Widmarks böcker om Nelly Rapp.",
     img: "/assets/evenemang/lovbio-nelly-rapp/cover.webp",
     imgFit: "native",
@@ -518,6 +523,7 @@ export const events = [
     when: "Tor 19 nov · 17–19",
     time: "17:00 – 19:00",
     cat: "KULTUR",
+    kids: true,
     note: "Orkesta hembygdsförening visar den animerade filmen från 2001. Biljett 50 kr. Kiosk med korv, popcorn och dryck. Lindholmsvägen 245.",
     img: "/assets/evenemang/filmvisning-shrek/cover.webp",
     source: "https://www.orkestahembygd.se/event/filmvisning",
@@ -542,6 +548,7 @@ export const events = [
     when: "Lör 21 nov · 11:00",
     time: "11:00 – 11:40",
     cat: "KULTUR",
+    kids: true,
     note: "Familjeföreställning från 4 år med komik och musik, Teater Pero. Kulturrummet, Vallentuna Kulturhus.",
     img: "/assets/evenemang/barnkul-hoppsan/cover.webp",
     imgFit: "native",
@@ -567,6 +574,7 @@ export const events = [
     when: "Sön 22 nov · 14:00",
     time: "14:00 – 14:30",
     cat: "KULTUR",
+    kids: true,
     note: "Dramalek och dockteater för barn 3–6 år i vuxet sällskap. Entré 50 kr. Orkesta hembygdsförening, Lindholmsvägen 245.",
     img: "/assets/evenemang/barnteater-den-fula-ankungen/cover.webp",
     imgFit: "native",
@@ -652,6 +660,7 @@ export const events = [
     when: "Sön 29 nov · 13:00",
     time: "13:00 – 13:45",
     cat: "KULTUR",
+    kids: true,
     note: "Familjeföreställning med LasseMajas detektivbyrå i Vallentuna Kulturhus, från 4 år. Saffranet är stulet inför jul. Arrangör Teater Bristol. Biljett 195 kr.",
     img: "/assets/evenemang/saffransmysteriet/cover.webp",
     source: "https://www.mynewsdesk.com/se/teater-bristol/events/saffransmysteriet-vallentuna-111121",
