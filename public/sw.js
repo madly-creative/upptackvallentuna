@@ -1,5 +1,5 @@
 /* Upptäck Vallentuna — minimal shell cache. No push, no background sync. */
-const CACHE = "uv-shell-v7";
+const CACHE = "uv-shell-v8";
 
 const PRECACHE = [
   "/",
@@ -11,6 +11,7 @@ const PRECACHE = [
   "/icons/icon-512-maskable.png",
   "/icons/apple-touch-icon.png",
   "/icons/mark.svg",
+  "/icons/favicon.svg",
   "/assets/shared/logo.svg",
 ];
 
