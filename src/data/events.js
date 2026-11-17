@@ -573,6 +573,18 @@ export const events = [
     source: "https://www.orkestahembygd.se/event/barnteater-bockarna-bruse-pagta",
   },
   {
+    host: "Vallentuna församling",
+    title: "Faurés Requiem",
+    date: "2026-11-22",
+    addedDate: "2026-11-17",
+    when: "Sön 22 nov · 18:00",
+    time: "18:00",
+    cat: "KULTUR",
+    note: "Damkören Vocales framför Faurés Requiem i Vallentuna kyrka med Susanne Francett (sopran), Christiane Höjlund (alt) och Sigvard Selinus (orgel och piano). Dirigent Stefan Fred. Fri entré.",
+    img: "/assets/evenemang/faures-requiem/cover.webp",
+    source: "https://www.svenskakyrkan.se/kalender?eventId=4dc1525b9c774fa6bfc2bc90d45d8719&webId=1374643",
+  },
+  {
     host: "Vallentuna Bluesförening / Kultur Vallentuna",
     title: "Scenfredag – Lowdown Saints",
     date: "2026-11-27",
@@ -595,6 +607,31 @@ export const events = [
     note: "Julmarknad hos kattpensionatet och katthemmet i Grävelsta. Butiken är öppen, lokala hantverkare finns på plats, och det serveras glögg. Man kan också hälsa på katterna.",
     img: "/assets/evenemang/solglantans-julmarknad/cover.webp",
     source: "https://vallentunakattcenter.se/",
+  },
+  {
+    host: "Kårsta-Ekskogens Bygdegårdsförening",
+    title: "Julmarknad på Bygdegården i Ekskogen",
+    date: "2026-11-28",
+    addedDate: "2026-11-17",
+    when: "Lör 28 nov · 11–14:30",
+    time: "11:00 – 14:30",
+    cat: "MARKNAD",
+    note: "Traditionell julmarknad i bygdegården med kransar, ljus, julblommor, hembakat, honung och julgodis från lokala utställare. Tomten kommer kl. 12–13, och det finns julfika, lotteri, tipsrunda för barn och musikanter.",
+    img: "/assets/evenemang/julmarknad-ekskogen/cover.webp",
+    imgFit: "native",
+    source: "https://bygdegarden.nu/evenemang/julmarknad-pa-bygdegarden",
+  },
+  {
+    host: "Össeby församling och Össeby hembygdsförening",
+    title: "En stunds musik i Vada kyrka",
+    date: "2026-11-28",
+    addedDate: "2026-11-17",
+    when: "Lör 28 nov · 15:00",
+    time: "15:00",
+    cat: "KULTUR",
+    note: "Tango, jazz och klassiskt med Maija Staff (sång), Inger Nordebo-Dahlkvist (piano och orgel) och Jan Dahlkvist (kontrabas). Fri entré.",
+    img: "/assets/evenemang/en-stunds-musik-vada/cover.webp",
+    source: "https://www.svenskakyrkan.se/osseby/hostens-konsertprogram",
   },
   {
     host: "Jano / Vallentuna Teater",
@@ -725,6 +762,18 @@ export const events = [
     source: "https://www.hembygd.se/vallentuna/activities/57331",
   },
   {
+    host: "Össeby församling",
+    title: "Julkonsert med Össeby Gospel",
+    date: "2026-12-05",
+    addedDate: "2026-11-17",
+    when: "Lör 5 dec · 15–16",
+    time: "15:00 – 16:00",
+    cat: "KULTUR",
+    note: "Össeby Gospel under ledning av Evelina Gard sjunger in julen i Kårsta kyrka. Fri entré.",
+    img: "/assets/evenemang/julkonsert-osseby-gospel/cover.webp",
+    source: "https://www.svenskakyrkan.se/kalender?eventId=4e28463e98c34a47952720c257bdba8d",
+  },
+  {
     host: "Orkesta Bygdegård Lindholmen",
     title: "Julmarknad i Lindholmen",
     date: "2026-12-06",
@@ -734,6 +783,18 @@ export const events = [
     note: "Julmarknad i bygdegården med hantverk, lokala smaker, fika och (enligt arrangören) ponnyridning. Utställare bokar bord via julmarknad@orkestahembygd.se.",
     img: "/assets/evenemang/julmarknad-lindholmen/cover.webp",
     source: "https://www.orkestahembygd.se/event",
+  },
+  {
+    host: "Vallentuna församling",
+    title: "Julkonsert med Vallentuna Gospel och Young Voices",
+    date: "2026-12-06",
+    addedDate: "2026-11-17",
+    when: "Sön 6 dec · 19–20",
+    time: "19:00 – 20:00",
+    cat: "KULTUR",
+    note: "Vallentuna Gospel och Young Voices under ledning av Anders Henriksson, med kompgrupp och stråkensemble, i Vallentuna kyrka. Entré 50 kr, biljetter via Nortic från 23 november.",
+    img: "/assets/evenemang/julkonsert-vallentuna-gospel/cover.webp",
+    source: "https://www.svenskakyrkan.se/kalender?eventId=71eb9730e0364652a2a6612832c547cf",
   },
   {
     host: "Tuna Bio / Kultur Vallentuna",
@@ -758,6 +819,30 @@ export const events = [
     note: "Julstämning på Tuna Torg & Torgpassagen — glögg, hantverk och lokala delikatesser. Arrangeras av Hemmaplan Media i samarbete med Vallentuna Centrum och Fastpartner.",
     img: "/assets/evenemang/julmarknad-centrum/cover.webp",
     source: "https://hemmaplanmedia.se/event",
+  },
+  {
+    host: "Össeby församling",
+    title: "Julkonsert med Vallentuna Blåsorkester",
+    date: "2026-12-12",
+    addedDate: "2026-11-17",
+    when: "Lör 12 dec · 15–16",
+    time: "15:00 – 16:00",
+    cat: "KULTUR",
+    note: "Vallentuna Blåsorkester under ledning av musiklärare från Vallentuna Kulturskola spelar i Kårsta kyrka. Fri entré.",
+    img: "/assets/evenemang/julkonsert-blasorkester/cover.webp",
+    source: "https://www.svenskakyrkan.se/kalender?eventId=ecf996314b47497dbb94dcce3922b720",
+  },
+  {
+    host: "Vallentunakören Cantaton",
+    title: "Julkonsert med Cantaton och Fortissimo",
+    date: "2026-12-14",
+    addedDate: "2026-11-17",
+    when: "Mån 14 dec · 19–20",
+    time: "19:00 – 20:00",
+    cat: "KULTUR",
+    note: "Vallentunakören Cantaton och Stockholmskören Fortissimo i Vallentuna kyrka, med Petter Almén (piano), Elias Dalenbring (bas) och Edvin Grahn (trummor). Entré 100 kr via Swish, student, pensionär och barn 50 kr.",
+    img: "/assets/evenemang/julkonsert-cantaton/cover.webp",
+    source: "https://www.svenskakyrkan.se/kalender?eventId=3300e5894b0843af8dd73d9986c329cf",
   },
   {
     host: "Össeby församling",
@@ -790,6 +875,34 @@ export const events = [
 }));
 
 export const EVENT_CONTENT = {
+  "Faurés Requiem": {
+    body: `<p>Söndag 22 november kl. 18 i <strong>Vallentuna kyrka</strong>. Damkören Vocales med Susanne Francett (sopran), Christiane Höjlund (alt) och Sigvard Selinus (orgel och piano), under ledning av Stefan Fred. Fri entré.</p>
+      <p>Källa: <a href="https://www.svenskakyrkan.se/kalender?eventId=4dc1525b9c774fa6bfc2bc90d45d8719&amp;webId=1374643" target="_blank" rel="noopener">Svenska kyrkan Vallentuna</a>. Foto: Helen Simonsson, Wikimedia Commons (CC BY-SA 4.0).</p>`,
+  },
+  "Julmarknad på Bygdegården i Ekskogen": {
+    body: `<p>Lördag 28 november kl. 11–14.30 i <strong>Kårsta-Ekskogens bygdegård</strong> i Ekskogen. Lokala utställare säljer kransar, betongtomtar, julblommor, ljus, hembakat, honung, kaffe och julgodis.</p>
+      <p>Tomten tar emot önskelistor kl. 12–13. Det finns julfika, smörgåsar, lotteri till förmån för bygdegården, tipsrunda för barn och musikanter. Arrangör: Kårsta-Ekskogens Bygdegårdsförening, <a href="https://bygdegarden.nu/evenemang/julmarknad-pa-bygdegarden" target="_blank" rel="noopener">bygdegarden.nu</a>.</p>`,
+  },
+  "En stunds musik i Vada kyrka": {
+    body: `<p>Lördag 28 november kl. 15 i <strong>Vada kyrka</strong>. Blandad repertoar av tango, jazz och klassiskt med Maija Staff (sång), Inger Nordebo-Dahlkvist (piano och orgel) och Jan Dahlkvist (kontrabas). Fri entré. Össeby församling i samarbete med Össeby hembygdsförening.</p>
+      <p>Källa: <a href="https://www.svenskakyrkan.se/osseby/hostens-konsertprogram" target="_blank" rel="noopener">Össeby församlings konsertprogram</a>. Foto: EnDumEn, Wikimedia Commons (CC BY-SA 3.0).</p>`,
+  },
+  "Julkonsert med Össeby Gospel": {
+    body: `<p>Lördag 5 december kl. 15–16 i <strong>Kårsta kyrka</strong>. Össeby Gospel under ledning av Evelina Gard. Fri entré.</p>
+      <p>Källa: <a href="https://www.svenskakyrkan.se/kalender?eventId=4e28463e98c34a47952720c257bdba8d" target="_blank" rel="noopener">Svenska kyrkan</a>. Foto: Ulkl, Wikimedia Commons (public domain).</p>`,
+  },
+  "Julkonsert med Vallentuna Gospel och Young Voices": {
+    body: `<p>Andra söndagen i advent, 6 december kl. 19–20, i <strong>Vallentuna kyrka</strong>. Vallentuna Gospel och Young Voices under ledning av Anders Henriksson, med kompgrupp och stråkensemble.</p>
+      <p>Entré 50 kr. Biljetter via Nortic, släpps 23 november. Källa: <a href="https://www.svenskakyrkan.se/kalender?eventId=71eb9730e0364652a2a6612832c547cf" target="_blank" rel="noopener">Svenska kyrkan</a>. Foto: Kateryna Baiduzha, Wikimedia Commons (CC BY-SA 4.0).</p>`,
+  },
+  "Julkonsert med Vallentuna Blåsorkester": {
+    body: `<p>Lördag 12 december kl. 15–16 i <strong>Kårsta kyrka</strong>. Vallentuna Blåsorkester under ledning av musiklärare från Vallentuna Kulturskola. Fri entré.</p>
+      <p>Källa: <a href="https://www.svenskakyrkan.se/kalender?eventId=ecf996314b47497dbb94dcce3922b720" target="_blank" rel="noopener">Svenska kyrkan</a> och <a href="https://www.svenskakyrkan.se/osseby/hostens-konsertprogram" target="_blank" rel="noopener">Össeby församlings konsertprogram</a>. Historisk bild: Riksantikvarieämbetet via Wikimedia Commons (fri från kända upphovsrättsliga begränsningar).</p>`,
+  },
+  "Julkonsert med Cantaton och Fortissimo": {
+    body: `<p>Måndag 14 december kl. 19–20 i <strong>Vallentuna kyrka</strong>. Vallentunakören Cantaton i samarbete med Stockholmskören Fortissimo, med körledare och musiker från Kungliga Musikhögskolan: Petter Almén (piano), Elias Dalenbring (bas) och Edvin Grahn (trummor). Körledare Mikaela Lindgren och Lovisa Brynolfsson.</p>
+      <p>Entré 100 kr via Swish (student, pensionär och barn 50 kr). Källa: <a href="https://www.svenskakyrkan.se/kalender?eventId=3300e5894b0843af8dd73d9986c329cf" target="_blank" rel="noopener">Svenska kyrkan</a>. Foto: Zquid, Wikimedia Commons (CC BY-SA 4.0).</p>`,
+  },
   "Utomhusbio – Grannfejden": {
     body: `<p>Söndag 9 augusti kl. 21–23 vid Orkesta bygdegård i Lindholmen. Fri entré — ta med filt eller campingstol. Filmen <em>Grannfejden</em> (feelgood/drama). Popcorn och biosnacks till försäljning.</p>
       <p>Kalender: <a href="https://www.orkestahembygd.se/event" target="_blank" rel="noopener">orkestahembygd.se/event</a>.</p>`,
