@@ -124,3 +124,11 @@
   .band.rv > *,.band.rv :is(.picks-row,.happen-more,.journey,.home-discover-pills,.guides-home-row,.nara-dig-filters) > *{opacity:1!important}
   .uv-fly{display:none}
 }
+
+/* Mobil: evenemangskorten står still och utan kanttoning.
+   Ingen inglidning när bandet kommer in i bild, och ingen fade över
+   kortet i högerkanten av den swipebara raden. Desktop är oförändrad. */
+@media (max-width:720px){
+  .band--events.rv > *,.band.rv .happen-more > *{opacity:1!important;animation:none!important}
+  .happen-scroll .happen-scroll-fade{display:none}
+}
