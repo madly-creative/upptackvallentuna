@@ -9,6 +9,12 @@
  * Utdata: Markdown med tabeller + regelbaserade signaler. --json ger rådata för vidare analys.
  * Tål både Umami v2- och v3-API:ets svarsformat (url/path, värde-objekt, rapport-endpoints).
  */
+import { spawnSync } from "node:child_process";
+// Bakom proxy (HTTPS_PROXY): Nodes fetch följer den bara med NODE_USE_ENV_PROXY=1 → starta om med den.
+if ((process.env.HTTPS_PROXY || process.env.https_proxy) && !process.env.NODE_USE_ENV_PROXY) {
+  const r = spawnSync(process.execPath, ["--no-warnings", ...process.argv.slice(1)], { stdio: "inherit", env: { ...process.env, NODE_USE_ENV_PROXY: "1" } });
+  process.exit(r.status ?? 1);
+}
 const API = process.env.UMAMI_API_URL || "https://api.umami.is/v1";
 const SITE = process.env.UMAMI_WEBSITE_ID || "f52ab92f-5136-450c-b9b7-cef84fe73c02";
 const KEY = process.env.UMAMI_API_KEY || "";
