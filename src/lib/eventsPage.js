@@ -254,7 +254,9 @@ export function mountEventsPage(root, { header = ".seo-top", onOpen } = {}) {
   chips.addEventListener("click", (e) => {
     const b = e.target.closest(".evx-chip");
     if (!b) return;
-    setFilter(b.getAttribute("aria-pressed") === "true" && b.dataset.f !== "alla" ? "alla" : b.dataset.f);
+    const f = b.getAttribute("aria-pressed") === "true" && b.dataset.f !== "alla" ? "alla" : b.dataset.f;
+    setFilter(f);
+    window.ut?.track("filter", { kind: "evenemang", value: f });
   });
   empty?.addEventListener("click", (e) => {
     if (e.target.closest("[data-f]")) setFilter("alla");

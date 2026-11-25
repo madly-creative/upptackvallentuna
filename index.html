@@ -62,6 +62,7 @@
     }
   }
   </script>
+  <script defer src="/ut.js" data-spa></script>
   <script>
     // Analytics after first paint — keep it off the critical path
     (function(){
@@ -70,6 +71,8 @@
         s.src='https://cloud.umami.is/script.js';
         s.defer=true;
         s.dataset.websiteId='f52ab92f-5136-450c-b9b7-cef84fe73c02';
+        // SPA: sidvisningar skickas per vy av /ut.js (ut.page) i stället för automatiskt
+        s.dataset.autoTrack='false';
         document.head.appendChild(s);
       }
       if('requestIdleCallback' in window) requestIdleCallback(loadUmami,{timeout:4000});
@@ -81,7 +84,7 @@
 
 <a class="skip" href="#main">Hoppa till innehåll</a>
 
-<header class="topbar">
+<header class="topbar" data-sec="nav">
   <div class="brand" onclick="showView('start')" role="link" aria-label="Upptäck Vallentuna — startsida" title="Upptäck Vallentuna">
     <img class="logo" src="/assets/shared/logo.svg" alt="Upptäck Vallentuna" width="195" height="50" decoding="async" />
   </div>
@@ -127,7 +130,7 @@
   </div>
 </header>
 <div class="mnav-bg" id="mnavBg" onclick="toggleMobileNav(false)" hidden></div>
-<aside class="mnav" id="mobileNav" aria-label="Mobilmeny" hidden>
+<aside class="mnav" id="mobileNav" data-sec="nav-mobil" aria-label="Mobilmeny" hidden>
   <div class="mnav-head">
     <strong>Meny</strong>
     <button type="button" class="mnav-close" aria-label="Stäng meny" onclick="toggleMobileNav(false)">
@@ -182,7 +185,7 @@
   </div>
 </div>
 
-<div class="modal-bg event-modal-bg" id="eventModal" role="dialog" aria-modal="true" aria-labelledby="eventModalTitle" hidden>
+<div class="modal-bg event-modal-bg" id="eventModal" data-sec="evenemang-modal" role="dialog" aria-modal="true" aria-labelledby="eventModalTitle" hidden>
   <div class="modal event-modal" onclick="event.stopPropagation()">
     <button type="button" class="em-close" aria-label="Stäng" onclick="closeEventModal()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
@@ -206,8 +209,8 @@
 <section class="view on" id="view-start">
   <!-- EVENT HERO first (classic landscape kept below for ?hero=classic) -->
   <!-- Event-first hero (experiment; toggle via ?hero=classic|events) -->
-  <section class="home-event-hero" id="homeEventHero" aria-label="Aktuellt evenemang"></section>
-  <div class="hero-full" id="heroFull" hidden>
+  <section class="home-event-hero" id="homeEventHero" data-sec="hero-evenemang" aria-label="Aktuellt evenemang"></section>
+  <div class="hero-full" id="heroFull" data-sec="hero" hidden>
     <div class="hero-slides" id="heroSlides" aria-hidden="true">
       <div class="hero-slide on" style="background-image:url('/assets/hero/film-poster.webp')"></div>
       <!-- Herofilm: källor sätts av JS (bootHeroFilm) så att den aldrig laddas vid datasparläge/reducerad rörelse -->
@@ -241,7 +244,7 @@
     </div>
   </div>
 
-  <div class="band band--discover">
+  <div class="band band--discover" data-sec="vart-vill-du">
   <!-- Discover — search-first place invite -->
   <section class="home-discover" id="homeDiscover" aria-labelledby="homeDiscoverTitle">
     <div class="home-discover-shell">
@@ -277,7 +280,7 @@
 
   </div>
 
-  <div class="band band--events">
+  <div class="band band--events" data-sec="helgen">
   <!-- 2. Helgen / Just nu (evenemang + öppet + väder i ett) -->
   <section class="today-brief" id="todayBrief" aria-label="Helgen i Vallentuna">
     <div class="inner">
@@ -295,7 +298,7 @@
 
   </div>
 
-  <div class="band band--picks">
+  <div class="band band--picks" data-sec="handplockat">
   <!-- 4. Handplockat just nu -->
   <div class="sec picks-sec">
     <div class="sec-head">
@@ -310,13 +313,13 @@
 
   </div>
 
-  <div class="band band--map">
+  <div class="band band--map" data-sec="nara-dig">
   <!-- 3. Upptäck runt hörnet — karta -->
   <div id="naraDigRoot"></div>
 
   </div>
 
-  <div class="band band--spread">
+  <div class="band band--spread" data-sec="veckans-guide">
   <!-- 5. Veckans guide som tidningsuppslag -->
   <section class="guide-spread" id="guidesHomeSec" hidden aria-labelledby="guidesHomeTitle">
     <div class="guide-spread-media" id="guideSpreadMedia" aria-hidden="true"></div>
@@ -324,7 +327,7 @@
   </section>
   </div>
 
-  <div class="band band--guides">
+  <div class="band band--guides" data-sec="rutt">
   <!-- 6. Gör en eftermiddag -->
   <div class="sec route-sec">
     <div class="sec-head">
@@ -342,7 +345,7 @@
 
   </div>
 
-  <div class="band band--stories">
+  <div class="band band--stories" data-sec="berattelser">
   <!-- 7. Vallentuna levererar -->
   <div class="sec levererar-sec" id="levererarSec" hidden>
     <div class="sec-head">
@@ -369,12 +372,12 @@
   </div>
   </div>
 
-  <div class="band band--fact">
+  <div class="band band--fact" data-sec="visste-du">
   <!-- 8. Visste du att — bara typografi -->
   <article class="weekly-fact-card" id="weeklyFactCard" aria-label="Veckans Visste du att"></article>
   </div>
 
-  <div class="band band--tip">
+  <div class="band band--tip" data-sec="tipsa">
   <aside class="smultron-banner" id="smultronBanner" hidden aria-labelledby="smultronBannerTitle">
     <div class="inner">
       <img class="smultron-banner-sprig" src="/assets/shared/smultron-sprig.webp" alt="" width="310" height="369" decoding="async" aria-hidden="true">
@@ -711,7 +714,7 @@
 </section>
 </main>
 
-<footer class="sitefooter">
+<footer class="sitefooter" data-sec="footer">
   <div class="foot-inner">
     <div class="foot-brand">
       <button type="button" class="foot-logo" onclick="showView('start')" aria-label="Till startsidan">
