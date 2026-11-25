@@ -9,6 +9,7 @@ import { places, placeSlug, schemaTypeFor, resolvePlaceRef } from "../src/data/p
 import { PLACE_META } from "../src/data/placeMeta.js";
 import { events, eventSlug, groupEventsByMonth } from "../src/data/events.js";
 import { evxPageHTML } from "../src/lib/eventCards.js";
+import { eventJsonLd, isPastEvent, nextEdition } from "../src/lib/eventSchema.js";
 import { guides, seasonLabel } from "../src/data/guides.js";
 import { SITE } from "../src/data/site.js";
 import { producers, producersAtPlaceSlug, producerSlug } from "../src/data/producers.js";
@@ -530,6 +531,8 @@ for (const fact of facts) {
   factUrls.push({ loc: canonical, priority: "0.65" });
 }
 
+/** Byggdagens datum i Stockholm — avgör vad som räknas som passerat. */
+const evToday = new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Stockholm" });
 const evDir = join(root, "public/evenemang");
 if (existsSync(evDir)) rmSync(evDir, { recursive: true });
 mkdirSync(evDir, { recursive: true });
@@ -541,34 +544,28 @@ for (const e of events) {
   const canonical = `${base}${path}`;
   const ogImage = ogImgFor(e.img);
   const desc = (e.note || e.title).slice(0, 160);
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Event",
-    name: e.title,
-    description: e.note,
-    startDate: e.date,
-    eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
-    eventStatus: "https://schema.org/EventScheduled",
+  const jsonLd = eventJsonLd(e, {
+    canonical,
     image: ogImage,
-    url: canonical,
-    location: {
-      "@type": "Place",
-      name: e.host,
-      address: {
-        "@type": "PostalAddress",
-        addressLocality: SITE.kommun,
-        addressCountry: "SE",
-      },
-    },
-    organizer: { "@type": "Organization", name: e.host },
-    ...(e.source ? { sameAs: [e.source] } : {}),
-  };
+    places,
+    kommun: SITE.kommun,
+    placeUrl: (p) => `${base}/plats/${p.slug || placeSlug(p.name)}.html`,
+  });
+  const past = isPastEvent(e, evToday);
+  const next = past ? nextEdition(e, events, evToday) : null;
+  // Passerat evenemang: sidan finns kvar (inkommande länkar), men pekar vidare.
+  const pastNote = !past
+    ? ""
+    : next
+      ? `<p class="seo-cta"><a href="/evenemang/${esc(eventSlug(next))}.html">Det här har redan varit. Nästa tillfälle: ${esc(next.title)}, ${esc(next.when)} →</a></p>`
+      : `<p class="seo-cta"><a href="/evenemang.html">Det här har redan varit. Se vad som händer framöver →</a></p>`;
 
   const body = `
     <p class="seo-meta"><time datetime="${esc(e.date)}">${esc(e.when)}</time><span>${esc(e.cat)}</span></p>
     <h1>${esc(e.title)}</h1>
     <p class="lede">${esc(e.host)} · ${esc(e.time)}</p>
     <p>${esc(e.note)}</p>
+    ${pastNote}
     <div class="seo-actions">
       <a href="/evenemang.html">Alla evenemang</a>
       <a href="/?view=hander">Öppna i guiden</a>
@@ -589,7 +586,8 @@ for (const e of events) {
     }),
     "utf8"
   );
-  eventUrls.push({ loc: canonical, priority: "0.7" });
+  // Passerade evenemang hålls utanför sitemap (sidorna finns kvar).
+  if (!past) eventUrls.push({ loc: canonical, priority: "0.7" });
 }
 
 const guideDir = join(root, "public/guide");
@@ -706,7 +704,6 @@ const evListJsonLd = {
 };
 /* Evenemangssidan: samma kalender som appens vy (src/lib/eventCards.js + eventsPage.js).
    Grupperas här per byggdatum (för crawlers/utan JS) och om i webbläsaren med dagens datum. */
-const evToday = new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Stockholm" });
 const evPageHTML = evxPageHTML(events, { todayISO: evToday, title: `Evenemang i ${esc(SITE.kommun)}` });
 writeFileSync(
   join(root, "evenemang.html"),
