@@ -25,7 +25,7 @@ const DOW = WEEKDAY_ORDER_MON_FIRST.map((n) => formatWeekday(n, { capitalize: tr
 /** Index matches PLACE_META.hours (0 = Sunday). */
 const SCHEMA_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const umamiScript = SITE.umamiWebsiteId
-  ? `<script defer src="https://cloud.umami.is/script.js" data-website-id="${SITE.umamiWebsiteId}"></script>`
+  ? `<script defer src="https://cloud.umami.is/script.js" data-website-id="${SITE.umamiWebsiteId}"></script>\n  <script defer src="/ut.js"></script>`
   : "";
 
 /** facts.json — read from disk so Node doesn't need JSON import attributes. */

@@ -1065,7 +1065,12 @@ import {
   const liveEvents=events.filter(e=>e.date>=todayISO).sort((a,b)=>a.date.localeCompare(b.date));
   const eventsToday=liveEvents.filter(e=>e.date===todayISO);
   const eventsByHost={};liveEvents.forEach(e=>{(eventsByHost[e.host]=eventsByHost[e.host]||[]).push(e);});
-  function trackEvent(n,l){if(window.umami){try{umami.track(n,{label:l});}catch(e){}}}
+  // Mätning → public/ut.js (trackingplan: docs/trackingplan.md). Klick, utgående länkar,
+  // scrolldjup och sedda sektioner fångas automatiskt; här bara avsiktliga handlingar + sidvisningar.
+  function trackAction(type,item){try{window.ut?.action(type,item);}catch(e){}}
+  function trackOutbound(kind,url,name){try{window.ut?.outbound(kind,url,{name});}catch(e){}}
+  function trackSearch(q,hits){try{window.ut?.track('search',{q:String(q).toLowerCase().slice(0,60),hits:hits===0?'0':hits<=3?'1-3':'4+'});}catch(e){}}
+  function trackPage(v){try{window.ut?.page(virtualPath(v));}catch(e){}}
 
   // UX-TEST-V1 mobile nav
   function toggleMobileNav(open){
@@ -1160,7 +1165,7 @@ import {
     else {favorites.add(key);bumpInterest(key,"saves");}
     saveJSON(LS_FAV,[...favorites]);
     updateFavBadge();
-    trackEvent(favorites.has(key)?'fav-add':'fav-remove',key);
+    trackAction(favorites.has(key)?'fav_add':'fav_remove',key);
     renderFavorites();
     refreshPulse();
     return favorites.has(key);
@@ -1171,7 +1176,7 @@ import {
     favorites.delete(key);
     saveJSON(LS_FAV,[...favorites]);
     updateFavBadge();
-    trackEvent('fav-remove',key);
+    trackAction('fav_remove',key);
     renderFavorites();
     refreshPulse();
     const platsName=document.getElementById('platsName')?.textContent;
@@ -1841,7 +1846,7 @@ import {
       return `<button type="button" class="btn-ghost-ink" onclick="closeEventModal();openPlace('${jsEsc(hostPlace.name)}')">Visa ${escHtml(hostPlace.name)} →</button>`;
     }
     if(e.source){
-      return `<a class="btn-ghost-ink" href="${String(e.source).replace(/"/g,"&quot;")}" target="_blank" rel="noopener" onclick="trackEvent('event-source','${jsEsc(e.title)}')">Mer info →</a>`;
+      return `<a class="btn-ghost-ink" href="${String(e.source).replace(/"/g,"&quot;")}" target="_blank" rel="noopener">Mer info →</a>`;
     }
     const q=encodeURIComponent(e.host+", Vallentuna");
     return `<a class="btn-ghost-ink" href="https://www.google.com/maps/search/?api=1&query=${q}" target="_blank" rel="noopener">Hitta platsen →</a>`;
@@ -1957,7 +1962,7 @@ import {
       document.body.style.overflow="hidden";
       modal.querySelector('.em-close')?.focus();
     }
-    trackEvent('event-open', e.title);
+    trackAction('event_open', e.title);
   }
   function closeEventModal(){
     const modal=document.getElementById('eventModal');
@@ -2041,7 +2046,7 @@ import {
     }
     const e=findEventByKey(key); if(!e) return;
     remindEventRef=e;
-    trackEvent('reminder', e.title);
+    trackAction('reminder', e.title);
     const pop=document.getElementById('remindPop'); if(!pop) return;
     const g=document.getElementById('remindGcal');
     if(g) g.href=googleCalUrl(e);
@@ -2978,6 +2983,7 @@ import {
       <div class="travel">→</div>
     </article>`;
   }
+  let searchTrackTimer=0, lastTrackedQuery="";
   function runSearch(){
     initSearchUI();
     const box=document.getElementById('searchResults'); if(!box) return;
@@ -2996,6 +3002,12 @@ import {
     const eventHits=q ? liveEvents.filter(eventMatchesSearch) : [];
     const recurringHits=q ? recurring.filter(recurringMatchesSearch) : [];
     const producerHits=q ? producers.filter(producerMatchesSearch) : [];
+    // Mät färdigskrivna sökningar (vänta tills användaren slutat skriva)
+    clearTimeout(searchTrackTimer);
+    if(q.length>=2 && q!==lastTrackedQuery){
+      const hits=placeHits.length+eventHits.length+recurringHits.length+producerHits.length;
+      searchTrackTimer=setTimeout(()=>{ lastTrackedQuery=q; trackSearch(q,hits); },1500);
+    }
     if(!placeHits.length && !eventHits.length && !recurringHits.length && !producerHits.length){
       box.innerHTML=`<div class="ev-empty">Inga träffar — prova ett annat ord eller färre filter.</div>`;
       return;
@@ -3114,14 +3126,14 @@ import {
     if(mapsBtn){
       if(mapsUrl){
         mapsBtn.hidden=false;
-        mapsBtn.onclick=()=>{ window.open(mapsUrl,"_blank","noopener"); trackEvent("route-maps",""); };
+        mapsBtn.onclick=()=>{ trackOutbound("maps",mapsUrl,"rutt"); window.open(mapsUrl,"_blank","noopener"); };
       } else {
         mapsBtn.hidden=true;
         mapsBtn.onclick=null;
       }
     }
   }
-  function reshuffleRoute(){routeSeed++;renderRoute();trackEvent('route-reshuffle','');}
+  function reshuffleRoute(){routeSeed++;renderRoute();trackAction('route_reshuffle','');}
 
   function placeRouteCardHTML(p,stepLabel){
     const step=stepLabel || typeLabel[p.type] || p.cat;
@@ -3214,7 +3226,6 @@ import {
     closeUpplevMenu();
     renderCategory();
     showView('kategori',{category:currentCategory});
-    trackEvent('view-category', currentCategory);
   }
   function renderCategory(){
     const cat=CATEGORIES[currentCategory]||CATEGORIES.attgora;
@@ -3298,7 +3309,7 @@ import {
     try{
       if(navigator.share){await navigator.share({title:`Upptäck ${K}`,text});}
       else {await navigator.clipboard.writeText(text);pushNotify("Kopierat","Väderlistan ligger i urklipp.");}
-      trackEvent('wx-share',ctx.mood);
+      trackAction('share_weather',ctx.mood);
     }catch(e){}
   }
 
@@ -3324,7 +3335,7 @@ import {
     document.getElementById('newListName').value="";
     activeListId=id;
     renderLists();
-    trackEvent('list-create',name);
+    trackAction('list_create',name);
   }
   function deleteList(id){
     if(!confirm("Ta bort listan?")) return;
@@ -3479,7 +3490,6 @@ import {
       outroEl.innerHTML=`${g.outro||""}${g.signature?`<span class="sig">${g.signature}</span>`:""}`;
     }
     showView('guide',{historyMode:opts.historyMode,guide:slug,fromPopstate:opts.historyMode==="none"});
-    trackEvent('view-guide', slug);
   }
   function saveGuideAsList(slug){
     const g=guideBySlug(slug, guides); if(!g) return;
@@ -3493,14 +3503,14 @@ import {
     saveJSON(LS_LISTS,lists);
     activeListId=L.id;
     pushNotify("Sparad som lista", g.title);
-    trackEvent('guide-save-list', slug);
+    trackAction('guide_save_list', slug);
   }
   function planGuideRoute(slug){
     const g=guideBySlug(slug, guides); if(!g) return;
     const stops=guideResolvedStops(g).map(s=>s.placeObj);
     const url=mapsRouteUrl(stops);
     if(!url){ pushNotify("Ingen rutt", "Guiden saknar platser med koordinater."); return; }
-    trackEvent('planera-rutt', slug);
+    trackOutbound('maps',url,slug);
     window.open(url, "_blank", "noopener");
   }
   function planRouteFromList(id){
@@ -3508,7 +3518,7 @@ import {
     const objs=L.places.map(n=>places.find(p=>p.name===n)).filter(Boolean);
     const url=mapsRouteUrl(objs);
     if(!url){ pushNotify("Ingen rutt", "Listan behöver minst en plats med koordinater."); return; }
-    trackEvent('planera-rutt', L.name);
+    trackOutbound('maps',url,L.name);
     window.open(url, "_blank", "noopener");
   }
   function removeFromList(id,name){
@@ -3532,7 +3542,7 @@ import {
     if(!L.places.includes(name)) L.places.push(name);
     saveJSON(LS_LISTS,lists);
     pushNotify("Sparad i lista",`${name} → ${L.name}`);
-    trackEvent('list-add',name);
+    trackAction('list_add',name);
   }
   function shareList(id){
     const L=lists.find(x=>x.id===id); if(!L) return;
@@ -3540,7 +3550,7 @@ import {
     url.hash=`lista=${encodeURIComponent(JSON.stringify({n:L.name,p:L.places}))}`;
     const link=url.toString();
     navigator.clipboard?.writeText(link).then(()=>pushNotify("Länk kopierad",L.name)).catch(()=>prompt("Kopiera länken:",link));
-    trackEvent('list-share',L.name);
+    trackAction('list_share',L.name);
   }
   function importListFromHash(){
     if(!location.hash.startsWith("#lista=")) return;
@@ -3653,7 +3663,7 @@ import {
           ? "Nästan klart — kolla info@upptackvallentuna.se (även skräppost) och bekräfta aktiveringsmejlet. Sedan fungerar tipsen."
           : "Tack! Tipset är skickat till info@upptackvallentuna.se — syns inte publikt förrän det godkänts.";
         ["plName","plKind","plWhere","plNote","plWeb","plEmail"].forEach(id=>{const el=document.getElementById(id);if(el) el.value="";});
-        trackEvent("place-submit",name);
+        trackAction('submit_place',name);
       }catch(err){
         const mailto=buildMailtoUrl(subject,fields);
         if(msg){
@@ -3681,7 +3691,7 @@ import {
           ? "Nästan klart — kolla info@upptackvallentuna.se (även skräppost) och bekräfta aktiveringsmejlet. Sedan fungerar tipsen."
           : "Tack! Tipset är skickat till info@upptackvallentuna.se — syns inte publikt förrän det godkänts.";
         ["smName","smWhere","smNote","smTipsare","smEmail"].forEach(id=>{const el=document.getElementById(id);if(el) el.value="";});
-        trackEvent("smultron-submit",name);
+        trackAction('submit_smultron',name);
       }catch(err){
         const mailto=buildMailtoUrl(subject,fields);
         if(msg){
@@ -3720,7 +3730,7 @@ import {
         : "Tack! Tipset är skickat till info@upptackvallentuna.se — syns inte publikt förrän det godkänts.";
       ["evTitle","evHost","evDate","evTime","evNote","evEmail"].forEach(id=>{const el=document.getElementById(id);if(el) el.value="";});
       renderPendingAdmin();
-      trackEvent("event-submit",title);
+      trackAction('submit_event',title);
     }catch(err){
       const mailto=buildMailtoUrl(subject,fields);
       if(msg){
@@ -3762,7 +3772,7 @@ import {
     renderEventsFull();
     renderPendingAdmin();
     pushNotify("Event godkänt",e.title);
-    trackEvent('event-approve',e.title);
+    trackAction('admin_approve',e.title);
   }
 
   function openReport(){
@@ -3789,7 +3799,7 @@ import {
       });
       closeReport();
       pushNotify("Tack för tipset","Vi tar med rapporten i nästa uppdatering.");
-      trackEvent('report',type);
+      trackAction('report',type);
     }catch(err){
       pushNotify(
         "Kunde inte skicka automatiskt",
@@ -3824,14 +3834,14 @@ import {
       userPos={lat:pos.coords.latitude,lng:pos.coords.longitude};
       saveJSON(LS_GEO_ASKED,true);
       // TODO: bryter mot integritetskrav satta för feature/nara-dig — se separat uppstädning.
-      trackEvent('geo','granted');
+      trackAction('geo_granted');
       renderPicks();
       renderRoute();
       if(document.getElementById('view-sok')?.classList.contains('on')) runSearch();
       if(map){buildList();renderFilter();}
     },()=>{
       // TODO: bryter mot integritetskrav satta för feature/nara-dig — se separat uppstädning.
-      trackEvent('geo','denied');
+      trackAction('geo_denied');
       // TODO: bryter mot integritetskrav satta för feature/nara-dig — se separat uppstädning.
       alert("Kunde inte hämta din plats. Du kan fortsätta utan den.");
     },{enableHighAccuracy:false,timeout:8000,maximumAge:300000});
@@ -3962,11 +3972,11 @@ import {
       const evs=eventsByHost[p.name]||[];
       const evHtml=evs.length?`<div class="ev-badge">📅 ${evs[0].title} · ${evs[0].when}</div>`:'';
       const dir=`https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}`;
-      const webLink=p.url?`<a class="weblink" href="${p.url}" target="_blank" rel="noopener" onclick="trackEvent('website','${jsEsc(p.name)}')">🌐 Besök hemsidan →</a>`:'';
+      const webLink=p.url?`<a class="weblink" href="${p.url}" target="_blank" rel="noopener">🌐 Besök hemsidan →</a>`:'';
       const hook=p.url
         ?""
-        :`<div class="hook">Äger du den här verksamheten och saknar hemsida? <a href="https://www.fvno.se/" target="_blank" rel="noopener" onclick="trackEvent('hook-formverket','${jsEsc(p.name)}')">Synas bättre →</a></div>`;
-      const html=`<div class="card-img" style="background-image:url('${p.img}')"></div><div class="card-body"><div class="cat">${p.cat}</div><h3>${p.name}</h3><p>${p.blurb}</p>${tipsareCreditHTML(p)}${tag}${evHtml}${webLink?`<div class="card-actions" style="margin-bottom:6px">${webLink}</div>`:""}<div class="card-actions"><a class="btn-dir" href="${dir}" target="_blank" rel="noopener" onclick="trackEvent('hitta-hit','${jsEsc(p.name)}')">📍 Hitta hit</a></div><button class="popup-more" onclick="openPlace('${jsEsc(p.name)}')">Läs mer →</button>${hook}</div>`;
+        :`<div class="hook">Äger du den här verksamheten och saknar hemsida? <a href="https://www.fvno.se/" target="_blank" rel="noopener">Synas bättre →</a></div>`;
+      const html=`<div class="card-img" style="background-image:url('${p.img}')"></div><div class="card-body"><div class="cat">${p.cat}</div><h3>${p.name}</h3><p>${p.blurb}</p>${tipsareCreditHTML(p)}${tag}${evHtml}${webLink?`<div class="card-actions" style="margin-bottom:6px">${webLink}</div>`:""}<div class="card-actions"><a class="btn-dir" href="${dir}" target="_blank" rel="noopener">📍 Hitta hit</a></div><button class="popup-more" onclick="openPlace('${jsEsc(p.name)}')">Läs mer →</button>${hook}</div>`;
       markers.push(L.marker([p.lat,p.lng],{icon:pinIcon(p.color,open?'':'closed')}).addTo(map).bindPopup(html,{closeButton:false,maxWidth:262}));
     });
     buildFilters();buildList();renderFilter();
@@ -4124,7 +4134,7 @@ import {
     const rec=document.getElementById('recurringSection');
     if(rec) root.querySelector('.evx-extra')?.append(rec);
     renderRecurringSection();
-    evxApi=mountEventsPage(root,{header:'.topbar',onOpen:(key)=>{openEvent(key);trackEvent('event-open',key);return true;}});
+    evxApi=mountEventsPage(root,{header:'.topbar',onOpen:(key)=>{openEvent(key);return true;}});
     root.querySelector('.evx-tip')?.addEventListener('click',ev=>{ev.preventDefault();setTipKind('event');showView('skicka');});
   }
   renderEventsFull();
@@ -4287,8 +4297,8 @@ import {
       p._km=null;
       info += `<div class="irow"><span class="k">Möte</span><span class="v">På platsen enligt bokning</span></div>`;
     }
-    if(p.phone) info += `<div class="irow"><span class="k">Telefon</span><span class="v"><a href="tel:${p.phone.replace(/\s/g,'')}" onclick="trackEvent('phone','${jsEsc(p.name)}')">${p.phone}</a></span></div>`;
-    if(p.url) info += `<div class="irow"><span class="k">Hemsida</span><span class="v"><a href="${p.url}" target="_blank" rel="noopener" onclick="trackEvent('website','${jsEsc(p.name)}')">Besök hemsidan →</a></span></div>`;
+    if(p.phone) info += `<div class="irow"><span class="k">Telefon</span><span class="v"><a href="tel:${p.phone.replace(/\s/g,'')}">${p.phone}</a></span></div>`;
+    if(p.url) info += `<div class="irow"><span class="k">Hemsida</span><span class="v"><a href="${p.url}" target="_blank" rel="noopener">Besök hemsidan →</a></span></div>`;
     document.getElementById('platsInfo').innerHTML=info;
     const trav=document.getElementById('platsTravel'); if(trav) trav.innerHTML=travelHTML(p);
     const hrsEl=document.getElementById('platsHours'); if(hrsEl) hrsEl.innerHTML=hoursTableHTML(p);
@@ -4299,7 +4309,7 @@ import {
       if(isMappablePlace(p)){
         dir.hidden=false;
         dir.href=`https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}`;
-        dir.onclick=()=>trackEvent('hitta-hit',p.name);
+        
       } else {
         dir.hidden=true;
         dir.removeAttribute('href');
@@ -4311,7 +4321,7 @@ import {
       ? `<div class="plats-ev"><div class="lbl">📅 Händer här</div><h4>${evs[0].title}</h4><div class="when">${evs[0].when}</div><p>${evs[0].note}</p><div class="remind-actions">${remindBtnHTML(evs[0])}</div></div>` : '';
     document.getElementById('platsHook').innerHTML = sourcesHTML(p) + (p.url
       ? ""
-      : `<div style="margin-top:12px">Äger du den här verksamheten och saknar hemsida? <a href="https://www.fvno.se/" target="_blank" rel="noopener" onclick="trackEvent('hook-formverket','${jsEsc(p.name)}')">Synas bättre →</a></div>`);
+      : `<div style="margin-top:12px">Äger du den här verksamheten och saknar hemsida? <a href="https://www.fvno.se/" target="_blank" rel="noopener">Synas bättre →</a></div>`);
     showView('plats');
     const slug=placeSlug(p.name);
     let mode=opts.historyMode;
@@ -4330,7 +4340,18 @@ import {
       L.marker([p.lat,p.lng],{icon:pinIcon(p.color,'')}).addTo(miniMap);
       miniMap.invalidateSize();
     },80);
-    trackEvent('view-place',p.name);
+  }
+  /** Läsbar sökväg per SPA-vy för Umami (Journeys/Funnels): /, /app/guider, /app/plats/<slug> … */
+  function virtualPath(v){
+    const slug={
+      plats:()=>getPlatsSlugFromLocation(),
+      guide:()=>currentGuideSlug,
+      kategori:()=>currentCategory,
+      portratt:()=>currentPortraitSlug,
+      verksamhet:()=>currentProducerSlug,
+    }[v]?.();
+    if(v==="start") return "/";
+    return "/app/"+v+(slug?"/"+encodeURIComponent(String(slug)):"");
   }
   function currentViewId(){
     return document.querySelector('.view.on')?.id?.replace(/^view-/,"")||"start";
@@ -4598,7 +4619,7 @@ import {
         placeCard.hidden=false;
         S('portrattPlaceName', place.name);
         S('portrattPlaceGo', `Besök ${place.name} →`);
-        placeCard.onclick=()=>{ trackEvent('portrait-place', pr.slug); openPlace(place.name); };
+        placeCard.onclick=()=>openPlace(place.name);
       } else placeCard.hidden=true;
     }
     const also=document.getElementById('portrattAlso');
@@ -4613,7 +4634,6 @@ import {
       } else also.hidden=true;
     }
     showView('portratt',{historyMode:opts.historyMode,portrait:pr.slug,fromPopstate:opts.historyMode==="none"});
-    trackEvent('view-portrait', pr.slug);
   }
   function goBackFromPortratt(){
     if(history.state?.uv==="view" && history.state?.view==="portratt"){
@@ -4874,7 +4894,8 @@ import {
     if(v==='guider') renderGuidesGrid();
     if(v==='levererar') renderLevererarView();
     if(v==='hander') evxApi?.refresh();
-    trackEvent('view-'+v, '');
+    // Virtuell sidvisning efter att anroparen hunnit sätta slug/URL (plats, guide …)
+    setTimeout(()=>trackPage(v),0);
     if(v==='start'){
       try{ refreshHeroToday(); }catch(e){}
       try{ renderPicks(); }catch(e){}
@@ -4945,7 +4966,6 @@ import {
     }
     const histMode=opts.historyMode || (opts.fromPopstate ? "none" : "push");
     showView('verksamhet',{historyMode:histMode,verksamhet:slug,fromPopstate:opts.fromPopstate});
-    trackEvent('view-producer', pr.name);
   }
   function clearVerksamhetParam(){
     try{
@@ -4986,7 +5006,6 @@ import {
     document.getElementById("smultronBannerCta")?.addEventListener("click",()=>{
       setTipKind("smultron");
       showView("skicka");
-      trackEvent("smultron-banner-cta","");
     });
   }
 
@@ -4994,6 +5013,8 @@ import {
   setTimeout(()=>{ try{ applyLevererarHash(); }catch(e){} }, 20);
   setTimeout(bootPlaceDeepLink, 30);
   setTimeout(bootProducerDeepLink, 35);
+  // Första sidvisningen om ingen djuplänk redan har skickat en
+  setTimeout(()=>trackPage(currentViewId()), 400);
   try{ syncSmultronNav(); }catch(e){}
   setTimeout(bootSmultronBanner, 0);
 
@@ -5053,5 +5074,5 @@ Object.assign(window, {
   toggleOpenNow,
   toggleSearchFilter,
   toggleUpplevMenu,
-  trackEvent
+  trackAction
 });
