@@ -13,6 +13,7 @@ export default defineConfig({
         evenemang: resolve(__dirname, "evenemang.html"),
         om: resolve(__dirname, "om.html"),
         integritet: resolve(__dirname, "integritet.html"),
+        nyhetsbrev: resolve(__dirname, "nyhetsbrev.html"),
       },
     },
   },

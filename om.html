@@ -32,6 +32,7 @@
   <script src="/pwa-boot.js" defer></script>
   <script defer src="https://cloud.umami.is/script.js" data-website-id="f52ab92f-5136-450c-b9b7-cef84fe73c02"></script>
   <script defer src="/ut.js"></script>
+  <script defer src="/nyhetsbrev.js"></script>
 </head>
 <body class="seo-page">
   <header class="seo-top">
@@ -59,6 +60,22 @@
       <p>Så: välkommen. Ge dig ut, hälsa på grannen, upptäck något du inte visste fanns.</p>
       <p class="om-sign">— Juha</p>
     </div>
+    <section class="letter letter--inline" data-sec="nyhetsbrev-om" aria-labelledby="letterOmTitle">
+      <div class="letter-copy">
+        <h2 id="letterOmTitle">Vill du ha mina tips direkt?</h2>
+        <p>Då och då skriver jag ett kort brev om det jag hittat i bygden: nya ställen, helger värda att planera för, människorna bakom. Högst ett par gånger i månaden.</p>
+      </div>
+      <form class="letter-form" data-nyhetsbrev novalidate>
+        <div class="letter-row">
+          <label class="sr-only" for="letterEmail-om">Din e-postadress</label>
+          <input id="letterEmail-om" type="email" name="email" required autocomplete="email" inputmode="email" placeholder="din@mejl.se">
+          <button type="submit">Skicka mig tipsen</button>
+        </div>
+        <input class="letter-hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <p class="letter-consent">Du får först ett mejl där du bekräftar. Adressen används bara till breven, skickas via Brevo inom EU, och du avslutar med en länk i varje brev. <a href="/integritet.html#nyhetsbrev">Så hanterar jag din adress</a>.</p>
+        <p class="letter-status" role="status" aria-live="polite"></p>
+      </form>
+    </section>
     <p class="seo-cta"><a href="/">Tillbaka till guiden →</a></p>
   </main>
   <footer class="seo-foot">
