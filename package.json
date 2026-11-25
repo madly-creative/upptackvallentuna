@@ -16,7 +16,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "typecheck": "node -e \"console.log('no TS yet')\""
+    "typecheck": "node -e \"console.log('no TS yet')\"",
+    "newsletter:draft": "node scripts/newsletter-draft.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.54.2",
