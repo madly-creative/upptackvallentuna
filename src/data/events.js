@@ -9,6 +9,7 @@ const FALLBACK_IMG = "/assets/hero/2.webp";
 export const events = [
   {
     host: "Hökeriet",
+    venue: "hokeriet",
     title: "Sommarkväll med Live-Jazz",
     date: "2026-08-07",
     when: "Fre 7 aug · 19–21",
@@ -20,6 +21,7 @@ export const events = [
   },
   {
     host: "Orkesta Bygdegård Lindholmen",
+    venue: "orkesta-bygdegard",
     title: "Utomhusbio – Grannfejden",
     date: "2026-08-09",
     when: "Sön 9 aug · 21–23",
@@ -31,6 +33,7 @@ export const events = [
   },
   {
     host: "Tuna Bio / Kultur Vallentuna",
+    venue: "vallentuna-teater",
     title: "Lovbio: Vaiana",
     date: "2026-08-13",
     addedDate: "2026-08-10",
@@ -44,8 +47,10 @@ export const events = [
   },
   {
     host: "Gravröset Festival / Svista",
+    venue: "svista",
     title: "Gravröset Festival",
     date: "2026-08-14",
+    endDate: "2026-08-16",
     when: "Fre–sön 14–16 aug",
     time: "12:00 – 14:00 (sön)",
     cat: "FESTIVAL",
@@ -55,6 +60,7 @@ export const events = [
   },
   {
     host: "Väsby kvarnförening / Kultur Vallentuna",
+    venue: "vasby-kvarn",
     title: "Drop-in Väsby kvarn",
     date: "2026-08-15",
     addedDate: "2026-08-10",
@@ -67,6 +73,7 @@ export const events = [
   },
   {
     host: "VaDoM / Vallentuna Dans och Musikförening",
+    venue: "rosenlundsvagen-14",
     title: "Living Room Concert — Roslagens ungdomsspelmanslag",
     date: "2026-08-18",
     addedDate: "2026-08-14",
@@ -79,6 +86,7 @@ export const events = [
   },
   {
     host: "Orkesta Bygdegård Lindholmen",
+    venue: "orkesta-bygdegard",
     title: "Brädspelskväll",
     date: "2026-08-19",
     when: "Ons 19 aug · 18–21",
@@ -90,6 +98,7 @@ export const events = [
   },
   {
     host: "Hökeriet",
+    venue: "hokeriet",
     title: "Sommarbuffé på Hökeriet",
     date: "2026-08-21",
     when: "Fre 21 aug · 19–21",
@@ -101,6 +110,7 @@ export const events = [
   },
   {
     host: "Orkesta Bygdegård Lindholmen",
+    venue: "orkesta-bygdegard",
     title: "Linedance en-dagskurs",
     date: "2026-08-22",
     when: "Lör 22 aug · 10–13",
@@ -112,6 +122,7 @@ export const events = [
   },
   {
     host: "Väsby kvarnförening / Kultur Vallentuna",
+    venue: "vasby-kvarn",
     title: "Drop-in Väsby kvarn",
     date: "2026-08-22",
     addedDate: "2026-08-10",
@@ -124,6 +135,7 @@ export const events = [
   },
   {
     host: "Bara man Vill",
+    venue: "rosendalsskolan-sodra",
     title: "Linedance — Kickoff & gratis prova på",
     date: "2026-08-23",
     when: "Sön 23 aug · 17–20:30",
@@ -135,6 +147,7 @@ export const events = [
   },
   {
     host: "Tuna Bio / Kultur Vallentuna",
+    venue: "vallentuna-teater",
     title: "Bio Halvåtta: The Invite",
     date: "2026-08-27",
     addedDate: "2026-08-10",
@@ -147,6 +160,7 @@ export const events = [
   },
   {
     host: "Vallentuna Kulturhus",
+    venue: "vallentuna-kulturhus",
     title: "Scenfredag – Axman Band",
     date: "2026-08-28",
     when: "Fre 28 aug · 19:00",
@@ -158,6 +172,7 @@ export const events = [
   },
   {
     host: "Hökeriet",
+    venue: "hokeriet",
     title: "Viskväll med Lindar och Liljor",
     date: "2026-08-28",
     when: "Fre 28 aug · 19–21",
@@ -169,6 +184,7 @@ export const events = [
   },
   {
     host: "Vallentuna kommun",
+    venue: "vallentuna-ip",
     title: "Naturen och idrottens dag",
     date: "2026-08-29",
     when: "Lör 29 aug · 11–14",
@@ -181,6 +197,7 @@ export const events = [
   },
   {
     host: "Langhard Lantbruk",
+    venue: "langhard-lantbruk",
     title: "Smaka på Vallentuna",
     date: "2026-08-29",
     when: "Lör 29 aug · 11–14",
@@ -192,6 +209,7 @@ export const events = [
   },
   {
     host: "Hökeriet",
+    venue: "hokeriet",
     title: "Granby Vikingagård — guidad visning",
     date: "2026-08-30",
     when: "Sön 30 aug · 14–15",
@@ -203,8 +221,10 @@ export const events = [
   },
   {
     host: "Vallentuna Hockey",
+    venue: "vallentuna-ishall",
     title: "Vallentuna Hockey Week",
     date: "2026-09-04",
+    endDate: "2026-09-12",
     when: "4–12 sep",
     time: "Matcher kväll/helg",
     cat: "SPORT",
@@ -214,6 +234,7 @@ export const events = [
   },
   {
     host: "Frösunda Hembygdsförening / Sunda Frön",
+    venue: "frosunda-station",
     title: "Frösunda skördemarknad",
     date: "2026-09-05",
     when: "Lör 5 sep · 11–14",
@@ -225,6 +246,7 @@ export const events = [
   },
   {
     host: "Väsby kvarnförening / Kultur Vallentuna",
+    venue: "vasby-kvarn",
     title: "Kvarnens dag",
     date: "2026-09-05",
     addedDate: "2026-08-10",
@@ -237,6 +259,7 @@ export const events = [
   },
   {
     host: "Orkesta hembygdsförening",
+    venue: "orkesta-bygdegard",
     title: "Höstfest / Skördefest i Lindholmen",
     date: "2026-09-06",
     when: "Sön 6 sep · 11–15",
@@ -248,6 +271,7 @@ export const events = [
   },
   {
     host: "Hökeriet",
+    venue: "hokeriet",
     title: "Kokroki",
     date: "2026-09-19",
     addedDate: "2026-09-03",
@@ -260,6 +284,7 @@ export const events = [
   },
   {
     host: "Vallentuna Hembygdsförening",
+    venue: "vallentuna-kulturhus",
     title: "Hembygdstorsdag — Porkalaparentesen",
     date: "2026-09-03",
     addedDate: "2026-08-14",
@@ -272,6 +297,7 @@ export const events = [
   },
   {
     host: "Jano / Vallentuna Teater",
+    venue: "vallentuna-teater",
     title: "Jano — Sylvia Vrethammar",
     date: "2026-09-20",
     when: "Sön 20 sep · 18:30",
@@ -283,6 +309,7 @@ export const events = [
   },
   {
     host: "Vallentuna Bluesförening / Kultur Vallentuna",
+    venue: "vallentuna-teater",
     title: "B.B. & The Blues Shacks",
     date: "2026-10-02",
     addedDate: "2026-08-10",
@@ -295,6 +322,7 @@ export const events = [
   },
   {
     host: "Vallentuna Hembygdsförening",
+    venue: "vallentuna-kulturhus",
     title: "Hembygdstorsdag — Svensk militärmusik",
     date: "2026-10-01",
     addedDate: "2026-08-14",
@@ -307,6 +335,7 @@ export const events = [
   },
   {
     host: "Jano / Vallentuna Teater",
+    venue: "vallentuna-teater",
     title: "Jano — Hans Backenroth Quartet",
     date: "2026-10-04",
     when: "Sön 4 okt · 18:30",
@@ -318,6 +347,7 @@ export const events = [
   },
   {
     host: "Kultur Vallentuna / Riksteatern",
+    venue: "vallentuna-teater",
     title: "Riksteatern: Den enfaldige mördaren",
     date: "2026-10-08",
     addedDate: "2026-08-10",
@@ -330,6 +360,7 @@ export const events = [
   },
   {
     host: "Kultur Vallentuna / Smakresan Vallentuna",
+    venue: "vallentuna-kulturhus",
     title: "Tema MAT & Smakresan Vallentuna",
     date: "2026-10-10",
     addedDate: "2026-09-14",
@@ -343,6 +374,7 @@ export const events = [
   },
   {
     host: "Kultur Vallentuna",
+    venue: "vallentuna-kulturhus",
     title: "Kulturlunch: Jag har ett abnormt konstbegär",
     date: "2026-10-14",
     addedDate: "2026-10-12",
@@ -356,6 +388,7 @@ export const events = [
   },
   {
     host: "Kultur Vallentuna",
+    venue: "vallentuna-kulturhus",
     title: "Föreställning: Under ytan",
     date: "2026-10-16",
     addedDate: "2026-10-12",
@@ -368,6 +401,7 @@ export const events = [
   },
   {
     host: "Kultur Vallentuna",
+    venue: "vallentuna-kulturhus",
     title: "barnKUL: Musikmums",
     date: "2026-10-17",
     addedDate: "2026-10-12",
@@ -382,6 +416,7 @@ export const events = [
   },
   {
     host: "Orkesta Bygdegård Lindholmen",
+    venue: "orkesta-bygdegard",
     title: "Pub & musikquiz",
     date: "2026-10-17",
     when: "Lör 17 okt · 19–22",
@@ -393,6 +428,7 @@ export const events = [
   },
   {
     host: "Jano / Vallentuna Teater",
+    venue: "vallentuna-teater",
     title: "Jano — Carin Lundin / Ronnie Gardiner",
     date: "2026-10-18",
     when: "Sön 18 okt · 18:30",
@@ -404,6 +440,7 @@ export const events = [
   },
   {
     host: "Vallentuna Bluesförening / Kultur Vallentuna",
+    venue: "vallentuna-kulturhus",
     title: "Scenfredag – Mr Bob’s Machinery",
     date: "2026-10-23",
     addedDate: "2026-08-10",
@@ -416,6 +453,7 @@ export const events = [
   },
   {
     host: "Tuna Bio / Kultur Vallentuna",
+    venue: "vallentuna-teater",
     title: "Lovbio: Nelly Rapp – Porten till underjorden",
     date: "2026-10-29",
     addedDate: "2026-10-28",
@@ -431,6 +469,7 @@ export const events = [
   },
   {
     host: "Tuna Bio / Kultur Vallentuna",
+    venue: "vallentuna-teater",
     title: "Bio Halvåtta: Arkipelag",
     date: "2026-10-29",
     addedDate: "2026-10-28",
@@ -445,6 +484,7 @@ export const events = [
   },
   {
     host: "Jano / Vallentuna Teater",
+    venue: "vallentuna-teater",
     title: "Jano — Johan Stengård Big Band",
     date: "2026-11-01",
     when: "Sön 1 nov · 18:30",
@@ -456,6 +496,7 @@ export const events = [
   },
   {
     host: "Kultur Vallentuna",
+    venue: "vallentuna-kulturhus",
     title: "Kulturlunch: Washoku med Yukiko Duke",
     date: "2026-11-04",
     addedDate: "2026-10-28",
@@ -469,6 +510,7 @@ export const events = [
   },
   {
     host: "Vallentuna Hembygdsförening / Kultur Vallentuna",
+    venue: "vallentuna-kulturhus",
     title: "Hembygdstorsdag — Flygande tunnan",
     date: "2026-11-05",
     addedDate: "2026-10-28",
@@ -481,6 +523,7 @@ export const events = [
   },
   {
     host: "Bara man Vill / Angarns Bio",
+    venue: "angarn",
     title: "Inspirationsdag om det här med Livet!",
     date: "2026-11-07",
     addedDate: "2026-09-25",
@@ -493,6 +536,7 @@ export const events = [
   },
   {
     host: "Åbybergskyrkan / Kultur Vallentuna",
+    venue: "vallentuna-kulturhus",
     title: "Samtal i samtiden: Hopp!",
     date: "2026-11-10",
     addedDate: "2026-10-12",
@@ -506,6 +550,7 @@ export const events = [
   },
   {
     host: "Jano / Vallentuna Teater",
+    venue: "vallentuna-teater",
     title: "Jano — Miriam Aida",
     date: "2026-11-15",
     when: "Sön 15 nov · 18:30",
@@ -517,6 +562,7 @@ export const events = [
   },
   {
     host: "Orkesta Bygdegård Lindholmen",
+    venue: "orkesta-bygdegard",
     title: "Filmvisning: Shrek",
     date: "2026-11-19",
     addedDate: "2026-10-28",
@@ -530,6 +576,7 @@ export const events = [
   },
   {
     host: "Tuna Bio / Kultur Vallentuna",
+    venue: "vallentuna-teater",
     title: "Bio Halvåtta: Jävla karlar",
     date: "2026-11-19",
     addedDate: "2026-10-28",
@@ -542,6 +589,7 @@ export const events = [
   },
   {
     host: "Kultur Vallentuna",
+    venue: "vallentuna-kulturhus",
     title: "barnKUL: Hoppsan! med Teater Pero",
     date: "2026-11-21",
     addedDate: "2026-10-28",
@@ -556,6 +604,7 @@ export const events = [
   },
   {
     host: "The Family Jukebox / Vallentuna Teater",
+    venue: "vallentuna-teater",
     title: "The Family Jukebox – Varieté",
     date: "2026-11-21",
     addedDate: "2026-10-28",
@@ -568,6 +617,7 @@ export const events = [
   },
   {
     host: "Orkesta Bygdegård Lindholmen",
+    venue: "orkesta-bygdegard",
     title: "Barnteater: Den fula ankungen",
     date: "2026-11-22",
     addedDate: "2026-10-28",
@@ -582,6 +632,7 @@ export const events = [
   },
   {
     host: "Vallentuna församling",
+    venue: "vallentuna-kyrka",
     title: "Faurés Requiem",
     date: "2026-11-22",
     addedDate: "2026-11-17",
@@ -594,6 +645,7 @@ export const events = [
   },
   {
     host: "Vallentuna Bluesförening / Kultur Vallentuna",
+    venue: "vallentuna-kulturhus",
     title: "Scenfredag – Lowdown Saints",
     date: "2026-11-27",
     addedDate: "2026-10-28",
@@ -606,6 +658,7 @@ export const events = [
   },
   {
     host: "Solgläntans kattpensionat och katthem",
+    venue: "solglantan",
     title: "Solgläntans julmarknad",
     date: "2026-11-28",
     addedDate: "2026-11-11",
@@ -618,6 +671,7 @@ export const events = [
   },
   {
     host: "Kårsta-Ekskogens Bygdegårdsförening",
+    venue: "ekskogens-bygdegard",
     title: "Julmarknad på Bygdegården i Ekskogen",
     date: "2026-11-28",
     addedDate: "2026-11-17",
@@ -631,6 +685,7 @@ export const events = [
   },
   {
     host: "Össeby församling och Össeby hembygdsförening",
+    venue: "vada-kyrka",
     title: "En stunds musik i Vada kyrka",
     date: "2026-11-28",
     addedDate: "2026-11-17",
@@ -643,6 +698,7 @@ export const events = [
   },
   {
     host: "Jano / Vallentuna Teater",
+    venue: "vallentuna-teater",
     title: "Jano — Vivian Buczek",
     date: "2026-11-29",
     when: "Sön 29 nov · 18:30",
@@ -654,6 +710,7 @@ export const events = [
   },
   {
     host: "Teater Bristol",
+    venue: "vallentuna-kulturhus",
     title: "Saffransmysteriet",
     date: "2026-11-29",
     addedDate: "2026-10-28",
@@ -667,6 +724,7 @@ export const events = [
   },
   {
     host: "Hemmaplan Media / Vallentuna Centrum",
+    venue: "tuna-torg",
     title: "Vallentuna Höstmarknad",
     date: "2026-09-19",
     addedDate: "2026-08-18",
@@ -679,8 +737,10 @@ export const events = [
   },
   {
     host: "Konstrundan Täby Vallentuna",
+    venue: "konstrundan",
     title: "Konstrundan — öppna ateljéer",
     date: "2026-09-12",
+    endDate: "2026-09-13",
     addedDate: "2026-08-10",
     when: "Lör–sön 12–13 sep · 11–17",
     time: "11:00 – 17:00",
@@ -691,6 +751,7 @@ export const events = [
   },
   {
     host: "Tuna Bio / Kultur Vallentuna",
+    venue: "vallentuna-teater",
     title: "Bio Halvåtta",
     date: "2026-09-17",
     addedDate: "2026-08-10",
@@ -703,6 +764,7 @@ export const events = [
   },
   {
     host: "Vadom / Kultur Vallentuna",
+    venue: "vallentuna-kulturhus",
     title: "Musik i handlingstider",
     date: "2026-09-19",
     addedDate: "2026-08-10",
@@ -715,8 +777,10 @@ export const events = [
   },
   {
     host: "Vallentuna kommun",
+    venue: "vallentuna-kommun",
     title: "Beredskapsveckan",
     date: "2026-09-21",
+    endDate: "2026-09-27",
     when: "21–27 sep",
     time: "Vecka",
     cat: "KULTUR",
@@ -726,6 +790,7 @@ export const events = [
   },
   {
     host: "Kårsta bibliotek",
+    venue: "karsta-bibliotek",
     title: "Medborgardialog — Kårsta",
     date: "2026-09-23",
     when: "Ons 23 sep · 15–17",
@@ -737,6 +802,7 @@ export const events = [
   },
   {
     host: "Karby bibliotek",
+    venue: "karby-bibliotek",
     title: "Medborgardialog — Karby",
     date: "2026-09-24",
     when: "Tor 24 sep · 15–17",
@@ -748,6 +814,7 @@ export const events = [
   },
   {
     host: "Vallentuna kommun",
+    venue: "tuna-torg",
     title: "Tryggare Vallentuna-dagen",
     date: "2026-09-26",
     when: "Lör 26 sep · 11–15",
@@ -759,6 +826,7 @@ export const events = [
   },
   {
     host: "Vallentuna Hembygdsförening / Kultur Vallentuna",
+    venue: "vallentuna-kulturhus",
     title: "Hembygdstorsdag — Vallentuna på 60-talet",
     date: "2026-12-03",
     addedDate: "2026-10-28",
@@ -772,6 +840,7 @@ export const events = [
   },
   {
     host: "Össeby församling",
+    venue: "karsta-kyrka",
     title: "Julkonsert med Össeby Gospel",
     date: "2026-12-05",
     addedDate: "2026-11-17",
@@ -784,6 +853,7 @@ export const events = [
   },
   {
     host: "Orkesta Bygdegård Lindholmen",
+    venue: "orkesta-bygdegard",
     title: "Julmarknad i Lindholmen",
     date: "2026-12-06",
     when: "Sön 6 dec · 11–15",
@@ -795,6 +865,7 @@ export const events = [
   },
   {
     host: "Vallentuna församling",
+    venue: "vallentuna-kyrka",
     title: "Julkonsert med Vallentuna Gospel och Young Voices",
     date: "2026-12-06",
     addedDate: "2026-11-17",
@@ -807,6 +878,7 @@ export const events = [
   },
   {
     host: "Tuna Bio / Kultur Vallentuna",
+    venue: "vallentuna-teater",
     title: "Bio Halvåtta: Wild Horse Nine",
     date: "2026-12-10",
     addedDate: "2026-10-28",
@@ -819,6 +891,7 @@ export const events = [
   },
   {
     host: "Hemmaplan Media / Vallentuna Centrum",
+    venue: "tuna-torg",
     title: "Vallentuna Julmarknad",
     date: "2026-12-12",
     addedDate: "2026-08-18",
@@ -831,6 +904,7 @@ export const events = [
   },
   {
     host: "Össeby församling",
+    venue: "karsta-kyrka",
     title: "Julkonsert med Vallentuna Blåsorkester",
     date: "2026-12-12",
     addedDate: "2026-11-17",
@@ -843,6 +917,7 @@ export const events = [
   },
   {
     host: "Vallentunakören Cantaton",
+    venue: "vallentuna-kyrka",
     title: "Julkonsert med Cantaton och Fortissimo",
     date: "2026-12-14",
     addedDate: "2026-11-17",
@@ -855,6 +930,7 @@ export const events = [
   },
   {
     host: "Össeby församling",
+    venue: "karsta-kyrka",
     title: "Julkonsert med Össeby kyrkokör",
     date: "2026-12-19",
     addedDate: "2026-10-28",
@@ -868,6 +944,7 @@ export const events = [
   },
   {
     host: "Vallentuna Bluesförening",
+    venue: "vallentuna-teater",
     title: "Mellandagsblues 2026",
     date: "2026-12-27",
     addedDate: "2026-10-28",
