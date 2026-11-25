@@ -15,6 +15,7 @@ Principer: få eventnamn, egenskaper i stället för nya namn, automatik före h
 | Vad söker folk efter som vi inte har? | `search {q, hits}` där `hits=0` = lucka i innehållet | Events → search |
 | Används evenemangsfiltren? | `filter {kind: evenemang, value}` | Events → filter |
 | Sparar/planerar man? | `action {type, item}`: fav_add, list_add, reminder, event_open, submit_* … | Events → action |
+| Fungerar nyhetsbrevet? | `action` `submit_newsletter` (item = sektion: `nyhetsbrev`, `nyhetsbrev-om`, `nyhetsbrev-sida`) delat med `page_summary.seen` för sektionen; `newsletter_confirmed` = bekräftad länk; `newsletter_error` (item = felkod) | Events → action, veckorapport |
 | Spelar herofilmen någon roll? | Herons `seen` vs. klick i `sec=hero` (sök, genvägar) jämfört med andra sektioner | Veckorapport |
 
 ## Eventkatalog (sex namn, inga fler utan att uppdatera denna fil)
@@ -34,10 +35,12 @@ Principer: få eventnamn, egenskaper i stället för nya namn, automatik före h
 ## Sektioner
 
 Märk ett block med `data-sec="namn"` så räknas det automatiskt (synlighet + klick). Startsidan har:
-`hero`, `hero-evenemang`, `vart-vill-du`, `helgen`, `handplockat`, `nara-dig`, `veckans-guide`, `rutt`, `berattelser`, `visste-du`, `tipsa`, samt `nav`, `nav-mobil`, `footer`, `evenemang-modal` (klick, inte synlighet).
+`hero`, `hero-evenemang`, `vart-vill-du`, `helgen`, `handplockat`, `nara-dig`, `veckans-guide`, `rutt`, `berattelser`, `visste-du`, `tipsa`, `nyhetsbrev`, samt `nav`, `nav-mobil`, `footer`, `evenemang-modal` (klick, inte synlighet).
 Omärkta block får vyns id (`hander`, `plats` …) eller närmaste sektions-id.
 
 ## Implementation
+
+- `public/nyhetsbrev.js` — formulär med `data-nyhetsbrev` (startsidan, Om, `/nyhetsbrev.html`). Skickar till `netlify/functions/subscribe.mjs` (Brevo, double opt-in) och mäter enligt ovan.
 
 - `public/ut.js` — hela mätlagret (kö tills Umami laddat, klick/utgående, sammanfattning, `window.ut`-API).
 - `index.html` — Umami med `data-auto-track="false"`; `ut.js` med `data-spa`. Vyer skickar `ut.page()` från `showView()` i `src/js/app.js`.

@@ -63,6 +63,7 @@
   }
   </script>
   <script defer src="/ut.js" data-spa></script>
+  <script defer src="/nyhetsbrev.js"></script>
   <script>
     // Analytics after first paint — keep it off the critical path
     (function(){
@@ -392,6 +393,26 @@
     </div>
   </aside>
 
+  </div>
+
+  <div class="band band--letter letter" data-sec="nyhetsbrev">
+    <div class="letter-inner">
+      <div class="letter-copy">
+        <p class="letter-eyebrow">Brev från Juha</p>
+        <h2>Mina bästa Vallentunatips, i din inkorg</h2>
+        <p>Då och då skickar jag ett kort mejl: ett ställe jag just hittat, en helg värd att planera för, något jag tycker att du inte ska missa. Högst ett par gånger i månaden. Inga annonser.</p>
+      </div>
+      <form class="letter-form" data-nyhetsbrev novalidate>
+        <div class="letter-row">
+          <label class="sr-only" for="letterEmail-start">Din e-postadress</label>
+          <input id="letterEmail-start" type="email" name="email" required autocomplete="email" inputmode="email" placeholder="din@mejl.se">
+          <button type="submit">Skicka mig tipsen</button>
+        </div>
+        <input class="letter-hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <p class="letter-consent">Du får först ett mejl där du bekräftar. Adressen används bara till breven, skickas via Brevo inom EU, och du avslutar med en länk i varje brev. <a href="/integritet.html#nyhetsbrev">Så hanterar jag din adress</a>.</p>
+        <p class="letter-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
   </div>
 
 </section>

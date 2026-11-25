@@ -667,6 +667,7 @@ const urls = [
   { loc: `${base}/`, priority: "1.0", changefreq: "daily" },
   { loc: `${base}/evenemang.html`, priority: "0.9", changefreq: "weekly" },
   { loc: `${base}/om.html`, priority: "0.6", changefreq: "monthly" },
+  { loc: `${base}/nyhetsbrev.html`, priority: "0.4", changefreq: "monthly" },
   { loc: `${base}/integritet.html`, priority: "0.3", changefreq: "yearly" },
   ...placeUrls.map((u) => ({ ...u, changefreq: "weekly" })),
   ...eventUrls.map((u) => ({ ...u, changefreq: "weekly" })),
