@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { handler, cleanEmail, redirectFor } from "../netlify/functions/subscribe.mjs";
+import { subscribe, cleanEmail, redirectFor } from "../netlify/functions/subscribe.mjs";
 
 const post = (body) => ({ httpMethod: "POST", body: JSON.stringify(body) });
 const ENV = { BREVO_API_KEY: "test-key", BREVO_LIST_ID: "7", BREVO_DOI_TEMPLATE_ID: "3" };
@@ -8,6 +8,11 @@ describe("subscribe (Brevo double opt-in)", () => {
   let saved;
   beforeEach(() => { saved = { ...process.env }; Object.assign(process.env, ENV); });
   afterEach(() => { process.env = saved; });
+
+  it("Netlify-handlern tar inte emot fetch som tredje argument (callback)", async () => {
+    const { handler } = await import("../netlify/functions/subscribe.mjs");
+    expect(handler.length).toBe(1);
+  });
 
   it("normaliserar och validerar e-post", () => {
     expect(cleanEmail("  Anna@Exempel.SE ")).toBe("anna@exempel.se");
@@ -18,7 +23,7 @@ describe("subscribe (Brevo double opt-in)", () => {
   it("skickar DOI-förfrågan med lista, mall och källa", async () => {
     let call;
     const fetchImpl = async (url, opts) => { call = { url, opts }; return { status: 201 }; };
-    const res = await handler(post({ email: "a@b.se", sec: "nyhetsbrev-om" }), {}, fetchImpl);
+    const res = await subscribe(post({ email: "a@b.se", sec: "nyhetsbrev-om" }), fetchImpl);
     expect(res.statusCode).toBe(200);
     expect(call.url).toMatch(/doubleOptinConfirmation$/);
     expect(call.opts.headers["api-key"]).toBe("test-key");
@@ -37,25 +42,25 @@ describe("subscribe (Brevo double opt-in)", () => {
   });
 
   it("befintlig kontakt (204) räknas som lyckad", async () => {
-    const res = await handler(post({ email: "a@b.se" }), {}, async () => ({ status: 204 }));
+    const res = await subscribe(post({ email: "a@b.se" }), async () => ({ status: 204 }));
     expect(res.statusCode).toBe(200);
   });
 
   it("honeypot svarar ok utan att anropa Brevo", async () => {
     let called = false;
-    const res = await handler(post({ email: "a@b.se", website: "spam" }), {}, async () => { called = true; });
+    const res = await subscribe(post({ email: "a@b.se", website: "spam" }), async () => { called = true; });
     expect(res.statusCode).toBe(200);
     expect(called).toBe(false);
   });
 
   it("ogiltig adress ger 400", async () => {
-    const res = await handler(post({ email: "nope" }), {}, async () => ({ status: 201 }));
+    const res = await subscribe(post({ email: "nope" }), async () => ({ status: 201 }));
     expect(res.statusCode).toBe(400);
   });
 
   it("saknad nyckel ger 503 not_configured", async () => {
     delete process.env.BREVO_API_KEY;
-    const res = await handler(post({ email: "a@b.se" }), {}, async () => ({ status: 201 }));
+    const res = await subscribe(post({ email: "a@b.se" }), async () => ({ status: 201 }));
     expect(res.statusCode).toBe(503);
     expect(JSON.parse(res.body).error).toBe("not_configured");
   });
@@ -68,13 +73,13 @@ describe("subscribe (Brevo double opt-in)", () => {
         ? { status: 400, json: async () => ({ code: "invalid_parameter", message: "Attribute KALLA does not exist" }) }
         : { status: 201 };
     };
-    const res = await handler(post({ email: "a@b.se" }), {}, fetchImpl);
+    const res = await subscribe(post({ email: "a@b.se" }), fetchImpl);
     expect(res.statusCode).toBe(200);
     expect(bodies[1].attributes).toBeUndefined();
   });
 
   it("leverantörsfel ger 502", async () => {
-    const res = await handler(post({ email: "a@b.se" }), {}, async () => ({ status: 401, json: async () => ({}) }));
+    const res = await subscribe(post({ email: "a@b.se" }), async () => ({ status: 401, json: async () => ({}) }));
     expect(res.statusCode).toBe(502);
   });
 });

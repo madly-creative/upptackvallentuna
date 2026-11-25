@@ -43,7 +43,11 @@ export function cleanEmail(raw) {
   return EMAIL_RE.test(email) ? email : null;
 }
 
-export async function handler(event, _ctx, fetchImpl = fetch) {
+// Netlify skickar (event, context, callback): fetch får inte ligga som tredje parameter,
+// då anropas callbacken i stället. Testerna använder subscribe() med egen fetch.
+export const handler = (event) => subscribe(event, fetch);
+
+export async function subscribe(event, fetchImpl) {
   if (event.httpMethod !== "POST") return reply(405, { error: "Method Not Allowed" });
 
   let body;
