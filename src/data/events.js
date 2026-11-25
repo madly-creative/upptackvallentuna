@@ -1140,6 +1140,7 @@ export const events = [
     time: "19:00 – 21:00",
     cat: "KULTUR",
     note: "Vallentunas deltävling i Funkisfestivalen, melodifestivalen för personer över 15 år inom LSS, på Vallentuna Teater. Nio artister sjunger live med orkester. Fribiljetter i biblioteket från 9 januari.",
+    img: "/assets/evenemang/funkisfestivalen/cover.webp",
     source: "https://www.vallentuna.se/uppleva-och-gora/evenemang-och-motesplatser/evenemang/evenemang/2026-11-11-funkisfestivalen-2027",
   },
   {
@@ -1226,7 +1227,7 @@ export const EVENT_CONTENT = {
   },
   "Funkisfestivalen 2027 i Vallentuna": {
     body: `<p>Fredag 22 januari kl. 19–21 på <strong>Vallentuna Teater</strong>. Funkisfestivalen är Sveriges största melodifestival för personer över 15 år inom LSS. Nio Vallentunaartister har tränat sång och framträdande med en lärare från Vallentuna Kulturskola, och alla sjunger live med en professionell orkester. Vinnaren går vidare till en regionfinal.</p>
-      <p>Fribiljetter hämtas i biblioteket från 9 januari, först till kvarn. Teckenspråkstolk på scenen, fika att köpa i pausen. Arrangör: Aktiv Fritid. Källa: <a href="https://www.vallentuna.se/uppleva-och-gora/evenemang-och-motesplatser/evenemang/evenemang/2026-11-11-funkisfestivalen-2027" target="_blank" rel="noopener">Vallentuna kommuns evenemangskalender</a>.</p>`,
+      <p>Fribiljetter hämtas i biblioteket från 9 januari, först till kvarn. Teckenspråkstolk på scenen, fika att köpa i pausen. Arrangör: Aktiv Fritid. Källa: <a href="https://www.vallentuna.se/uppleva-och-gora/evenemang-och-motesplatser/evenemang/evenemang/2026-11-11-funkisfestivalen-2027" target="_blank" rel="noopener">Vallentuna kommuns evenemangskalender</a>. Bild: illustration, Upptäck Vallentuna.</p>`,
   },
   "Live på bio: Flickan från Vilda Västern": {
     body: `<p>Lördag 23 januari kl. 19 på <strong>Vallentuna Teater</strong>. Puccinis guldruschdrama i Metropolitanoperans första nyproduktion av verket på över 30 år, regi Richard Jones. Vida Miknevičiūtė gör Minnie, SeokJong Baek banditen Dick Johnson och Christopher Maltman sheriffen Jack Rance. Keri-Lynn Wilson dirigerar. Italienska med svensk text, cirka 3 timmar 15 minuter med en paus.</p>
