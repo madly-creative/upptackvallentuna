@@ -306,6 +306,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://upptackvallentuna.se/evenemang/barnkul-sagoyoga-2026-11-28.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://upptackvallentuna.se/evenemang/jano-vivian-buczek-2026-11-29.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -316,12 +321,37 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://upptackvallentuna.se/evenemang/vernissage-soderbergarna-pa-klockarborg-2026-11-29.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/evenemang/jazzonsdag-med-basic-big-band-2026-12-02.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://upptackvallentuna.se/evenemang/hembygdstorsdag-vallentuna-pa-60-talet-2026-12-03.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://upptackvallentuna.se/evenemang/julkonsert-med-osseby-gospel-2026-12-05.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/evenemang/barnkul-film-en-apkul-jul-2026-12-05.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/evenemang/om-en-o-i-en-sjo-bokprat-med-gunilla-blome-2026-12-05.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/evenemang/live-pa-bio-simson-och-delila-2026-12-05.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -341,12 +371,22 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://upptackvallentuna.se/evenemang/luciakonsert-med-vallentuna-kulturskola-2026-12-11.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://upptackvallentuna.se/evenemang/vallentuna-julmarknad-2026-12-12.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://upptackvallentuna.se/evenemang/julkonsert-med-vallentuna-blasorkester-2026-12-12.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/evenemang/barnkul-julpyssel-2026-12-12.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -361,7 +401,42 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://upptackvallentuna.se/evenemang/juldagsbio-jonssonligan-och-wall-enberg-2026-12-25.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/evenemang/bio-halvatta-farskt-vatten-till-blommorna-2026-12-25.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://upptackvallentuna.se/evenemang/mellandagsblues-2026-2026-12-27.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/evenemang/spelaventyrsworkshop-2026-12-29.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/evenemang/lovfilm-zootropolis-2-2026-12-29.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/evenemang/funkisfestivalen-2027-i-vallentuna-2027-01-22.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/evenemang/live-pa-bio-flickan-fran-vilda-vastern-2027-01-23.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://upptackvallentuna.se/evenemang/varje-tugga-ar-en-maltid-richard-tellstrom-2027-01-24.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>

@@ -42,7 +42,8 @@ describe("events calendar", () => {
     expect(eventMonthLabel("2026-12", { showYear: true })).toBe("December 2026");
     const groups = groupEventsByMonth(upcomingEvents("2026-09-01"));
     expect(groups.length).toBeGreaterThanOrEqual(2);
-    expect(groups[0].label).toBe("September");
+    // Årtal visas när listan spänner över flera år (t.ex. när januari nästa år finns med).
+    expect(groups[0].label).toMatch(/^September/);
     expect(groups.every((g, i) => i === 0 || g.key >= groups[i - 1].key)).toBe(true);
     expect(groups.flatMap((g) => g.events).length).toBe(upcomingEvents("2026-09-01").length);
   });
