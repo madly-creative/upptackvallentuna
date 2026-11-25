@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { handler, cleanEmail } from "../netlify/functions/subscribe.mjs";
+import { handler, cleanEmail, redirectFor } from "../netlify/functions/subscribe.mjs";
 
 const post = (body) => ({ httpMethod: "POST", body: JSON.stringify(body) });
 const ENV = { BREVO_API_KEY: "test-key", BREVO_LIST_ID: "7", BREVO_DOI_TEMPLATE_ID: "3" };
@@ -25,6 +25,15 @@ describe("subscribe (Brevo double opt-in)", () => {
     const sent = JSON.parse(call.opts.body);
     expect(sent).toMatchObject({ email: "a@b.se", includeListIds: [7], templateId: 3, attributes: { KALLA: "nyhetsbrev-om" } });
     expect(sent.redirectionUrl).toContain("bekraftad=1");
+  });
+
+  it("bekräftelselänken går tillbaka till formulärets sajt, bara för egna domäner", () => {
+    delete process.env.NEWSLETTER_REDIRECT_URL;
+    expect(redirectFor({ origin: "https://deploy-preview-83--upptackvallentuna.netlify.app" }))
+      .toBe("https://deploy-preview-83--upptackvallentuna.netlify.app/nyhetsbrev.html?bekraftad=1");
+    expect(redirectFor({ origin: "https://upptackvallentuna.se" })).toBe("https://upptackvallentuna.se/nyhetsbrev.html?bekraftad=1");
+    expect(redirectFor({ origin: "https://evil.example" })).toBe("https://upptackvallentuna.se/nyhetsbrev.html?bekraftad=1");
+    expect(redirectFor({})).toBe("https://upptackvallentuna.se/nyhetsbrev.html?bekraftad=1");
   });
 
   it("befintlig kontakt (204) räknas som lyckad", async () => {
