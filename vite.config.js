@@ -14,6 +14,7 @@ export default defineConfig({
         om: resolve(__dirname, "om.html"),
         integritet: resolve(__dirname, "integritet.html"),
         nyhetsbrev: resolve(__dirname, "nyhetsbrev.html"),
+        butik: resolve(__dirname, "butik.html"),
       },
     },
   },

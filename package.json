@@ -17,7 +17,8 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "typecheck": "node -e \"console.log('no TS yet')\"",
-    "newsletter:draft": "node scripts/newsletter-draft.mjs"
+    "newsletter:draft": "node scripts/newsletter-draft.mjs",
+    "gelato:check": "node scripts/gelato-check.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.54.2",

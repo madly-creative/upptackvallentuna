@@ -82,3 +82,15 @@
   [headers.values]
     Content-Type = "application/manifest+json"
     Cache-Control = "public, max-age=3600"
+
+# Butiken: dold tills go-live (docs/butik.md). Tryckfilerna ska aldrig indexeras.
+[[headers]]
+  for = "/butik.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+  for = "/tryck/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow, noimageindex"
+    Cache-Control = "public, max-age=31536000, immutable"

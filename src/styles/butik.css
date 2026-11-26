@@ -1,0 +1,114 @@
+/* Butiken (butik.html). Bygger på seo-site.css-tokens: chalk, ink, meadow, raps. */
+.shop{max-width:1184px;margin:0 auto;padding:clamp(32px,5vw,64px) 20px clamp(56px,7vw,96px);box-sizing:border-box;width:100%}
+.shop h1{font-family:var(--font-display);font-weight:700;font-size:clamp(44px,7vw,88px);line-height:.95;letter-spacing:-.04em;margin:0 0 18px;text-wrap:balance}
+.shop h2{font-family:var(--font-display);font-weight:700;font-size:clamp(32px,4vw,52px);line-height:1;letter-spacing:-.04em;margin:0 0 16px}
+.shop .lede{font-size:clamp(18px,1.6vw,21px);line-height:1.5;color:var(--ink-soft);max-width:56ch;text-wrap:pretty}
+.shop-eyebrow{font:700 12px/1.2 var(--font-body);letter-spacing:.14em;text-transform:uppercase;color:var(--c-meadow);margin:0 0 14px}
+.shop a{color:var(--c-meadow);text-decoration-thickness:1.5px;text-underline-offset:3px}
+.shop .om-sign{font-family:var(--font-display);font-size:20px}
+
+.shop-hero{padding-bottom:clamp(24px,4vw,48px)}
+.shop-xmas{display:inline-block;margin:8px 0 0;padding:10px 16px;border-radius:999px;background:var(--c-raps);color:var(--c-ink);font:600 14.5px/1.3 var(--font-body)}
+.shop-xmas[hidden]{display:none}
+.shop-thanks{padding:clamp(24px,4vw,48px) 0 clamp(40px,5vw,64px);border-bottom:1px solid rgba(22,36,27,.1);margin-bottom:32px}
+.shop-thanks-mock{color:var(--ink-soft);font-size:14px}
+
+/* Motiv: stor bild + text, varannan spegelvänd */
+.shop-motifs{display:grid;gap:clamp(56px,8vw,120px);padding-block:clamp(16px,3vw,32px)}
+.shop-motif{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:clamp(28px,5vw,72px);align-items:center;scroll-margin-top:90px}
+.shop-motif--flip .shop-art{order:2}
+.shop-art{margin:0;border-radius:24px;overflow:hidden;background:#E6DFD3;aspect-ratio:4/5;display:grid;place-items:center;position:relative}
+.shop-art img{display:block;width:100%;height:100%;object-fit:cover;transition:opacity .25s}
+.shop-art[data-view="poster"] img,.shop-art[data-view="vykort"] img{
+  object-fit:contain;width:auto;height:auto;max-width:72%;max-height:86%;
+  box-shadow:0 2px 3px rgba(40,30,20,.12),0 18px 40px -12px rgba(40,30,20,.35)}
+.shop-art[data-view="vykort"] img{max-width:42%;transform:rotate(-3deg);border-radius:2px}
+.shop-copy{max-width:480px}
+.shop-text{font-size:17px;line-height:1.6;margin:0 0 12px;text-wrap:pretty}
+.shop-place{margin:0 0 26px;font-weight:600;font-size:15px}
+
+.shop-form{display:grid;gap:16px}
+.shop-form fieldset{border:0;margin:0;padding:0;min-width:0}
+.shop-opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.shop-opt{position:relative;cursor:pointer}
+.shop-opt input,.shop-swatch input{position:absolute;opacity:0;pointer-events:none}
+.shop-opt span{display:flex;flex-direction:column;gap:4px;padding:12px 14px;border-radius:14px;background:#fff;box-shadow:inset 0 0 0 1.5px rgba(22,36,27,.14);transition:box-shadow .15s,background .15s}
+.shop-opt b{font:700 15px/1.1 var(--font-body)}
+.shop-opt small{font-size:13.5px;color:var(--ink-soft)}
+.shop-opt input:checked + span{box-shadow:inset 0 0 0 2px var(--c-ink);background:#fff}
+.shop-opt input:focus-visible + span,.shop-swatch input:focus-visible + span{outline:2px solid var(--c-meadow);outline-offset:2px}
+.shop-frames{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.shop-frames[hidden]{display:none}
+.shop-frames legend{float:left;font:600 13px/1 var(--font-body);color:var(--ink-soft);margin-right:6px}
+.shop-swatch{position:relative;cursor:pointer}
+.shop-swatch span{display:inline-flex;align-items:center;gap:8px;padding:7px 12px 7px 8px;border-radius:999px;background:#fff;box-shadow:inset 0 0 0 1.5px rgba(22,36,27,.14);font:600 13.5px/1 var(--font-body)}
+.shop-swatch span::before{content:"";width:16px;height:16px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18)}
+.shop-swatch--ek span::before{background:linear-gradient(135deg,#C9A77A,#A9835A)}
+.shop-swatch--svart span::before{background:#1E1E1E}
+.shop-swatch--vit span::before{background:#F4F2EE}
+.shop-swatch input:checked + span{box-shadow:inset 0 0 0 2px var(--c-ink)}
+.shop-desc{margin:0;font-size:14.5px;color:var(--ink-soft)}
+.shop-buy{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.shop-price{font:700 26px/1 var(--font-display);letter-spacing:-.02em}
+.shop-add,.shop-pay{border:0;border-radius:999px;cursor:pointer;background:var(--c-ink);color:#fff;font:700 15px/1 var(--font-body);padding:16px 26px;transition:background .2s}
+.shop-add:hover,.shop-pay:hover:not(:disabled){background:var(--c-meadow)}
+.shop-pay:disabled{opacity:.4;cursor:default}
+
+/* Vem står bakom */
+.shop-about{display:grid;grid-template-columns:minmax(0,280px) minmax(0,1fr);gap:clamp(24px,4vw,56px);align-items:center;margin-top:clamp(72px,10vw,140px);padding:clamp(24px,4vw,48px);border-radius:28px;background:var(--c-chalk-2)}
+.shop-about-img{width:100%;height:auto;border-radius:6px;box-shadow:0 18px 40px -16px rgba(40,30,20,.4);transform:rotate(-2deg)}
+.shop-about p{font-size:17px;line-height:1.6;max-width:58ch;margin:0 0 12px}
+
+/* Info */
+.shop-info{margin-top:56px;border-top:1px solid rgba(22,36,27,.12)}
+.shop-info details{border-bottom:1px solid rgba(22,36,27,.12)}
+.shop-info summary{cursor:pointer;padding:18px 0;font:700 17px/1.2 var(--font-display);letter-spacing:-.01em;list-style:none;display:flex;justify-content:space-between}
+.shop-info summary::after{content:"+";font-weight:400;font-size:22px;line-height:.8}
+.shop-info details[open] summary::after{content:"−"}
+.shop-info p{margin:0 0 18px;font-size:15.5px;line-height:1.6;max-width:68ch}
+
+/* Varukorgsknapp i toppen */
+.shop-cart-btn{position:relative;display:inline-grid;place-items:center;width:40px;height:40px;border:0;border-radius:50%;background:var(--c-ink);color:#fff;cursor:pointer}
+.shop-cart-count{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;padding:0 4px;box-sizing:border-box;border-radius:999px;background:var(--c-raps);color:var(--c-ink);font:700 11px/18px var(--font-body);text-align:center}
+.shop-cart-count[hidden]{display:none}
+
+/* Varukorgslåda */
+.shop-drawer{position:fixed;inset:0;z-index:50;background:rgba(19,32,25,.45);display:flex;justify-content:flex-end}
+.shop-drawer[hidden]{display:none}
+.shop-drawer-panel{width:min(420px,100%);height:100%;overflow:auto;background:var(--c-chalk);padding:24px;box-sizing:border-box;display:flex;flex-direction:column;gap:16px;animation:shopIn .25s ease}
+@keyframes shopIn{from{transform:translateX(24px);opacity:0}}
+.shop-drawer-head{display:flex;justify-content:space-between;align-items:center}
+.shop-drawer h2{font:700 26px/1 var(--font-display);letter-spacing:-.03em;margin:0}
+.shop-x{border:0;background:none;font-size:32px;line-height:1;cursor:pointer;color:var(--c-ink);padding:4px 8px}
+.shop-lines{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.shop-line{display:grid;grid-template-columns:64px 1fr auto;gap:14px;align-items:start}
+.shop-line img{width:64px;height:auto;border-radius:3px;box-shadow:0 4px 10px -4px rgba(0,0,0,.3)}
+.shop-line b{display:block;font-size:15px}
+.shop-line small{display:block;font-size:13px;color:var(--ink-soft);margin:2px 0 8px}
+.shop-line-price{font-weight:700;font-size:15px;white-space:nowrap}
+.shop-qty{display:inline-flex;align-items:center;gap:2px;border-radius:999px;box-shadow:inset 0 0 0 1.5px rgba(22,36,27,.16)}
+.shop-qty button{border:0;background:none;width:30px;height:30px;font-size:17px;cursor:pointer;color:var(--c-ink)}
+.shop-qty output{min-width:18px;text-align:center;font-weight:600;font-size:14px}
+.shop-empty{color:var(--ink-soft)}
+.shop-sum{margin:auto 0 0;display:grid;gap:8px;border-top:1px solid rgba(22,36,27,.12);padding-top:16px}
+.shop-sum[hidden]{display:none}
+.shop-sum div{display:flex;justify-content:space-between;font-size:15px}
+.shop-sum dd{margin:0}
+.shop-total{font-weight:700;font-size:17px!important}
+.shop-pay{width:100%;padding:18px}
+.shop-pay-note{text-align:center;margin:-6px 0 0;font-size:13px;color:var(--ink-soft)}
+.shop-status{font-size:14px;margin:0}
+body.shop-locked{overflow:hidden}
+
+@media (max-width:820px){
+  .shop-motif{grid-template-columns:1fr}
+  .shop-motif--flip .shop-art{order:0}
+  .shop-copy{max-width:none}
+  .shop-about{grid-template-columns:1fr}
+  .shop-about-img{max-width:200px}
+}
+@media (max-width:420px){
+  .shop-opt span{padding:10px}
+  .shop-opt b{font-size:14px}
+}
+@media (prefers-reduced-motion:reduce){.shop-drawer-panel{animation:none}}
