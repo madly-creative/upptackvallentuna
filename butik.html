@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Butiken — Vallentuna på väggen — Upptäck Vallentuna</title>
+  <meta name="description" content="Posters, inramade tryck och vykort med motiv från Vallentuna: kyrkan, Väsby kvarn, kartan och bygden i en bild. Tryckt på beställning i Norden.">
+  <!-- GO-LIVE: ta bort raden nedan, lägg till nav-länk och sitemap-rad (se docs/butik.md) -->
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="canonical" href="https://upptackvallentuna.se/butik.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Vallentuna på väggen — Upptäck Vallentuna">
+  <meta property="og:description" content="Posters och vykort med motiv från bygden.">
+  <meta property="og:url" content="https://upptackvallentuna.se/butik.html">
+  <meta property="og:image" content="https://upptackvallentuna.se/assets/butik/vasby-kvarn-ram-ek.webp">
+  <meta property="og:locale" content="sv_SE">
+  <meta name="theme-color" content="#37472f">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+  <link rel="icon" href="/icons/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/icons/favicon.png" type="image/png" sizes="128x128">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/src/styles/seo-site.css">
+  <link rel="stylesheet" href="/src/styles/butik.css">
+  <script src="/pwa-boot.js" defer></script>
+  <script defer src="https://cloud.umami.is/script.js" data-website-id="f52ab92f-5136-450c-b9b7-cef84fe73c02"></script>
+  <script defer src="/ut.js"></script>
+  <script type="module" src="/src/shop/butik.js"></script>
+</head>
+<body class="seo-page shop-page">
+  <header class="seo-top">
+    <a class="seo-brand" href="/" aria-label="Upptäck Vallentuna – startsida"><img src="/assets/shared/logo.svg" alt="" width="195" height="50"></a>
+    <nav aria-label="Sekundär">
+      <a href="/">Startsida</a>
+      <a href="/evenemang.html">Evenemang</a>
+      <a href="/butik.html" aria-current="page">Butik</a>
+      <a href="/om.html">Om</a>
+      <button class="shop-cart-btn" type="button" data-cart-open data-track="varukorg" aria-label="Varukorg">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M5 7h14l-1.2 11.1a2 2 0 0 1-2 1.9H8.2a2 2 0 0 1-2-1.9L5 7Zm3 0a4 4 0 1 1 8 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        <span class="shop-cart-count" data-cart-count hidden>0</span>
+      </button>
+    </nav>
+  </header>
+
+  <main class="shop">
+    <section class="shop-thanks" data-sec="butik-tack" hidden>
+      <p class="shop-eyebrow">Tack för din beställning</p>
+      <h1>Nu trycks den åt dig.</h1>
+      <p class="lede">Kvittot kommer på mejl inom några minuter. Trycket görs på beställning i Norden och brukar vara framme på 3 till 7 arbetsdagar. Du får ett mejl med spårning när det skickats.</p>
+      <p class="shop-thanks-mock" data-mock hidden>(Testläge: ingen betalning gjordes.)</p>
+      <p class="om-sign">— Juha</p>
+    </section>
+
+    <section class="shop-hero" data-sec="butik-hero">
+      <p class="shop-eyebrow">Butiken</p>
+      <h1>Vallentuna på väggen</h1>
+      <p class="lede">Sex motiv från bygden, som posters, inramade tryck och vykort. Varje tryck görs på beställning, nära dig, och skickas hem till dörren.</p>
+      <p class="shop-xmas" data-xmas hidden></p>
+    </section>
+
+    <div class="shop-motifs" data-motifs></div>
+
+    <section class="shop-about" data-sec="butik-vem" aria-labelledby="shopAboutTitle">
+      <img class="shop-about-img" src="/assets/butik/vallentuna-kollage-720.webp" alt="" width="360" height="504" loading="lazy">
+      <div>
+        <p class="shop-eyebrow">Vem står bakom</p>
+        <h2 id="shopAboutTitle">Hej, jag heter Juha.</h2>
+        <p>Jag bor i Vallentuna och driver Upptäck Vallentuna, en handplockad guide till bygden. Motiven har jag tagit fram själv, utifrån platser i bygden som jag tycker om: kyrkan, kvarnen vid badet, runstenarna vid tingstaden och kartan över allt det där emellan.</p>
+        <p>Det du köper här hjälper sajten att förbli gratis och reklamfri, för både besökare och de lokala verksamheterna.</p>
+        <p><a href="/om.html">Läs varför sidan finns →</a></p>
+        <p class="om-sign">— Juha</p>
+      </div>
+    </section>
+
+    <section class="shop-info" data-sec="butik-info" aria-label="Leverans och villkor">
+      <details>
+        <summary>Frakt och leverans</summary>
+        <p>Vi skickar till Sverige, Norge, Danmark och Finland. Frakten är <span data-ship-std></span> för posters och <span data-ship-small></span> för enbart vykort, och fri när du handlar för <span data-ship-free></span> eller mer. Trycket görs av vår tryckpartner Gelato i Norden och levereras normalt inom 3 till 7 arbetsdagar.</p>
+      </details>
+      <details>
+        <summary>Betalning</summary>
+        <p>Du betalar med kort, Klarna eller Swish i Stripes säkra kassa. Vi ser aldrig dina kortuppgifter.</p>
+      </details>
+      <details>
+        <summary>Ångerrätt och reklamation</summary>
+        <p>Du har 14 dagars ångerrätt från att du tagit emot varan. Kommer något skadat eller felaktigt fram trycker vi ett nytt utan kostnad: mejla en bild till <a href="mailto:info@upptackvallentuna.se">info@upptackvallentuna.se</a>.</p>
+      </details>
+      <details>
+        <summary>Säljare</summary>
+        <p data-seller>Upptäck Vallentuna drivs av Madly <!-- GO-LIVE: org.nr och adress -->. info@upptackvallentuna.se</p>
+      </details>
+    </section>
+  </main>
+
+  <aside class="shop-drawer" data-drawer aria-label="Varukorg" hidden>
+    <div class="shop-drawer-panel" data-sec="butik-varukorg" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
+      <div class="shop-drawer-head">
+        <h2 id="cartTitle">Varukorg</h2>
+        <button type="button" class="shop-x" data-cart-close aria-label="Stäng">×</button>
+      </div>
+      <ul class="shop-lines" data-lines></ul>
+      <p class="shop-empty" data-empty>Varukorgen är tom.</p>
+      <dl class="shop-sum" data-sum hidden>
+        <div><dt>Varor</dt><dd data-subtotal></dd></div>
+        <div><dt data-ship-label>Frakt</dt><dd data-ship></dd></div>
+        <div class="shop-total"><dt>Totalt inkl. moms</dt><dd data-total></dd></div>
+      </dl>
+      <button type="button" class="shop-pay" data-checkout disabled>Till kassan</button>
+      <p class="shop-pay-note">Kort, Klarna eller Swish</p>
+      <p class="shop-status" data-status role="status" aria-live="polite"></p>
+    </div>
+  </aside>
+
+  <footer class="seo-foot">
+    <a href="/">Startsida</a>
+    <span>·</span>
+    <a href="/evenemang.html">Evenemang</a>
+    <span>·</span>
+    <a href="/om.html">Om Upptäck Vallentuna</a>
+    <span>·</span>
+    <a href="/integritet.html">Integritet</a>
+  </footer>
+  <p class="built-by"><a href="https://www.fvno.se/" target="_blank" rel="noopener">Byggd av Formverket Norrort</a></p>
+</body>
+</html>
