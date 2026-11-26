@@ -49,7 +49,7 @@ function motifHTML(m, i) {
       <p class="shop-eyebrow">${m.kicker}</p>
       <h2>${m.title}</h2>
       <p class="shop-text">${m.text}</p>
-      <p class="shop-place"><a href="${m.place.href}">${m.place.label} →</a></p>
+      ${m.place ? `<p class="shop-place"><a href="${m.place.href}">${m.place.label} →</a></p>` : ""}
       <form class="shop-form" data-form>
         <fieldset class="shop-opts"><legend class="sr-only">Format</legend>${fmt}</fieldset>
         <fieldset class="shop-frames" data-frames><legend>Ram</legend>${frames}</fieldset>

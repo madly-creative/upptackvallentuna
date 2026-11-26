@@ -88,12 +88,29 @@ export const MOTIFS = [
     products: ["poster", "poster-ram-svart", "poster-ram-vit", "poster-ram-ek", "vykort"],
   },
   {
+    slug: "arkils-tingstad",
+    title: "Arkils tingstad",
+    kicker: "Vikingatidens tingsplats",
+    text:
+      "Här samlades bygdens folk en gång för att skipa rätt, ett slags utomhusparlament från vikingatiden. Runstenarna står kvar i gräset, med slingorna i rött.",
+    place: { label: "Besök Arkils tingstad", href: "/plats/arkils-tingstad.html" },
+    products: ["poster", "poster-ram-svart", "poster-ram-vit", "poster-ram-ek", "vykort"],
+  },
+  {
+    slug: "osseby-kyrkoruin",
+    title: "Össeby kyrkoruin",
+    kicker: "Murar öppna mot himlen",
+    text:
+      "Kyrkoruinen i Össeby, där gräset växer mellan de gamla murarna och bänkarna står framme en sommardag. En stilla plats att stanna upp på.",
+    products: ["poster", "poster-ram-svart", "poster-ram-vit", "poster-ram-ek", "vykort"],
+  },
+  {
     slug: "vallentuna-karta",
     title: "Kartan",
     kicker: "Från Kårsta till Vallentunasjön",
     text:
       "En handritad karta över kommunen med Arkils tingstad, Össeby kyrkoruin, Lindö säteri och Roslagsbanan på väg mot Kårsta. Kartunderlag från OpenStreetMap.",
-    place: { label: "Besök Arkils tingstad", href: "/plats/arkils-tingstad.html" },
+    place: { label: "Utforska bygden i guiden", href: "/" },
     products: ["poster", "poster-ram-svart", "poster-ram-vit", "poster-ram-ek", "vykort"],
   },
 ];

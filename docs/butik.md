@@ -41,6 +41,6 @@ Kontrollera Gelato-kopplingen: `GELATO_API_KEY=… npm run gelato:check`.
 
 1. Ta bort `<meta name="robots" content="noindex,nofollow">` i `butik.html` och `X-Robots-Tag` för `/butik.html` i `netlify.toml`.
 2. Lägg till "Butik" i navigeringen på startsidan och de statiska sidorna, och `/butik.html` i sitemap (`scripts/generate-seo.mjs`).
-3. Fyll i säljaruppgifter (företagsnamn, org.nr, adress) under "Säljare" i `butik.html`.
+3. Fyll i säljaruppgifter (Madly: org.nr, adress) under "Säljare" i `butik.html`.
 4. Byt till `sk_live_…`, ny webhook i live-läge, `GELATO_ORDER_TYPE=order`.
 5. Gör ett riktigt köp av ett vykort och kontrollera att ordern dyker upp i Gelato.
